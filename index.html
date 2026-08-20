@@ -263,8 +263,11 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gset.done .grep{background:#f2f8f4;border-color:rgba(22,168,90,.4)}
 .ghint{font-size:11.5px;color:#a8987c;line-height:1.45;margin:2px 0 10px}
 .ghint b{color:#8a7f6f}
-.gset .ok{width:58px;height:54px;flex:none;border-radius:12px;border:1.5px solid #ddd0b8;
+.gset .ok{width:50px;height:54px;flex:none;border-radius:12px;border:1.5px solid #ddd0b8;
   background:#f7f1e4;font-size:21px;color:#bdac8e}
+.gset .clr{width:34px;height:54px;flex:none;border:0;background:none;font-size:14px;color:#e0d5c0;padding:0}
+.gset .clr.live{color:#b9a888}
+.gset.done .clr{color:#a8b8a8}
 .gset.done input{background:#f2f8f4;border-color:rgba(22,168,90,.4);color:#3a342c}
 .gset.done .ok{background:#16a85a;border-color:#16a85a;color:#fff}
 .gaddset{width:100%;margin-top:2px;border:1px dashed #d9ccb5;background:#fff;border-radius:11px;
@@ -320,6 +323,12 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .rbtn{border:1px solid rgba(243,236,223,.35);background:transparent;color:#f3ecdf;border-radius:10px;
   padding:11px 13px;font-size:12.5px;font-weight:700}
 .rbtn.dark{background:#e3a23f;border-color:#e3a23f;color:#3a342c}
+.rbtn.go{background:#2FB574;border-color:#2FB574;color:#fff;font-size:13px}
+.restbar.done{background:#1f6e4a;animation:rpulse 1.1s ease-in-out infinite}
+.restbar.done .rfill{background:#7ee2b0}
+.restbar.done .rclock{font-size:22px;letter-spacing:.5px}
+.restbar.done .rlbl{color:#a9e0c5}
+@keyframes rpulse{0%,100%{box-shadow:0 -6px 22px rgba(31,110,74,.35)}50%{box-shadow:0 -6px 34px rgba(47,181,116,.75)}}
 .hide{display:none}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -556,34 +565,34 @@ var FIG={
 };
 /* hareket → çizim + İngilizce arama adı */
 var EXMETA={
- 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.',150],
- 'Düz bench press':['bench','flat barbell bench press','Barı göğüs ortasına indir, dirsekler gövdeyle 45° açı yapsın.',180],
- 'Oturarak dambıl omuz press':['ohp','seated dumbbell shoulder press','Sırt dik. Dambıllar kulak hizasından baş üstüne çıkar.',150],
+ 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.',120],
+ 'Düz bench press':['bench','flat barbell bench press','Barı göğüs ortasına indir, dirsekler gövdeyle 45° açı yapsın.',150],
+ 'Oturarak dambıl omuz press':['ohp','seated dumbbell shoulder press','Sırt dik. Dambıllar kulak hizasından baş üstüne çıkar.',120],
  'Kablo yan kaldırış':['cableLat','cable lateral raise','Kabloyu vücudunun önünden çaprazla, kolu yana omuz hizasına aç. Omzunu yukarı kaldırma.',60],
  'Kafa üstü triceps ekstansiyon':['ohTri','overhead cable triceps extension','Halat başının arkasında, dirsekler sabit ve yukarıda; sadece ön kolu uzat.',90],
  'Halat pushdown':['pushdown','rope triceps pushdown','Dirsekler gövdene yapışık. Halatı aşağı it, en altta iki ucu dışa ayır.',60],
- 'Lat pulldown / Barfiks':['pulldown','lat pulldown','Göğsü yukarı ver, barı köprücük kemiğine çek. Kolla değil dirsekle çek.',150],
- 'Göğüs destekli row':['rowChest','chest supported dumbbell row','Göğsünü eğik sedyeye yasla, ağırlığı karnına doğru çek. Bele yük binmez.',120],
- 'Oturarak kablo row':['rowSeat','seated cable row','Göğüs dik, kolu karnına çek, sonda kürek kemiklerini sık. Gövdeyi sallama.',120],
+ 'Lat pulldown / Barfiks':['pulldown','lat pulldown','Göğsü yukarı ver, barı köprücük kemiğine çek. Kolla değil dirsekle çek.',120],
+ 'Göğüs destekli row':['rowChest','chest supported dumbbell row','Göğsünü eğik sedyeye yasla, ağırlığı karnına doğru çek. Bele yük binmez.',105],
+ 'Oturarak kablo row':['rowSeat','seated cable row','Göğüs dik, kolu karnına çek, sonda kürek kemiklerini sık. Gövdeyi sallama.',105],
  'Face pull':['facePull','face pull','Halatı yüz hizana çek, dirsekleri geriye ve yukarı aç. Duruşu düzeltir.',60],
  'Eğik dambıl curl':['curlIncline','incline dumbbell curl','Eğik sedyede kollar gövdenin gerisinde sarkar; biceps en gergin yerden çalışır.',90],
  'Kablo curl':['curlCable','cable biceps curl','Alt makara, dirsek gövdeye sabit. Kabloda gerginlik hiç kaybolmaz.',60],
- 'Squat / Hack squat':['squat','hack squat machine','Serbest squat formun oturmadıysa hack squat makinesiyle başla — öğrenmesi kolay, bel riski düşük.',180],
- 'Romanian deadlift':['rdl','romanian deadlift','Dizler hafif bükülü ve sabit. Kalçanı geri it, barı bacak boyunca indir. Sırtı yuvarlama.',180],
- 'Leg press':['legPress','leg press','Dizleri göğse doğru indir. Kalçan sedyeden kalkacak kadar derine inme.',150],
+ 'Squat / Hack squat':['squat','hack squat machine','Serbest squat formun oturmadıysa hack squat makinesiyle başla — öğrenmesi kolay, bel riski düşük.',150],
+ 'Romanian deadlift':['rdl','romanian deadlift','Dizler hafif bükülü ve sabit. Kalçanı geri it, barı bacak boyunca indir. Sırtı yuvarlama.',150],
+ 'Leg press':['legPress','leg press','Dizleri göğse doğru indir. Kalçan sedyeden kalkacak kadar derine inme.',120],
  'Leg curl':['legCurl','lying leg curl','Yüzüstü ya da oturarak topuğu kalçana doğru çek. Arka bacak izolasyonu.',90],
  'Leg extension':['legExt','leg extension','Oturarak bacağı düzleştir, tepede bir saniye sık. Ön bacak izolasyonu.',90],
  'Ayakta calf raise':['calf','standing calf raise','Topuğu tam yukarı kaldır, aşağıda tam gerilmeye izin ver. Yarım tekrar yapma.',60],
  'Oturarak dambıl yan kaldırış':['latRaise','seated dumbbell lateral raise','Dik sedyede otur (momentum yapamazsın), kolları yana omuz hizasına aç. Ağırlık hafif olacak.',60],
  'Tek kol kablo yan kaldırış':['cableLat','single arm cable lateral raise','Tek kol, yüksek tekrar. Kası hissetmesi en kolay varyasyon.',45],
- 'Makine omuz press':['ohpMachine','machine shoulder press','Sabit yörünge. Formu düşünmeden ağırlığa yüklenebilirsin.',120],
- 'Dar tutuş bench / Dips':['dips','triceps dips','Eller omuz genişliğinde, dirsekler gövdeye yakın. Dips yaparsan dik dur, öne eğilme.',150],
+ 'Makine omuz press':['ohpMachine','machine shoulder press','Sabit yörünge. Formu düşünmeden ağırlığa yüklenebilirsin.',105],
+ 'Dar tutuş bench / Dips':['dips','triceps dips','Eller omuz genişliğinde, dirsekler gövdeye yakın. Dips yaparsan dik dur, öne eğilme.',120],
  'Skullcrusher':['skull','ez bar skullcrusher','Sırtüstü yat. Sadece dirsekten bükerek barı alnına indir; üst kolun sabit ve dik kalır.',90],
  'Preacher curl':['preacher','preacher curl','Kolları eğik pede yasla. Gövdeyle hile yapmanı fiziksel olarak engeller.',90],
  'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.',60],
- 'Eğik press':['incline','incline machine chest press','Eğik açıda göğüs itişi. Üst göğüs ve ön omuz.',150],
- 'Geniş tutuş lat pulldown':['pulldown','wide grip lat pulldown','Geniş tutuş, sırt genişliği için. Yine dirsekle çekiyormuş gibi düşün.',120],
- 'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.',75],
+ 'Eğik press':['incline','incline machine chest press','Eğik açıda göğüs itişi. Üst göğüs ve ön omuz.',120],
+ 'Geniş tutuş lat pulldown':['pulldown','wide grip lat pulldown','Geniş tutuş, sırt genişliği için. Yine dirsekle çekiyormuş gibi düşün.',105],
+ 'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.',90],
  'Tek kol dambıl row':['rowOne','one arm dumbbell row','Bir diz ve el sedyede. Dambılı kalçana doğru çek, omuz aşağıda kalsın.',90],
  'Yan kaldırış':['latRaise','dumbbell lateral raise','Dirsek hafif bükülü, kolları yana aç. Omzunu yukarı kaldırma — trapez devralır.',60],
  'Triceps pushdown':['pushdown','triceps pushdown','Dirsekler sabit, halatı veya barı aşağı it. Gövdeyle bastırma.',60],
@@ -1578,38 +1587,77 @@ var timer={left:0,total:0,name:'',iv:null};
 function phone(){return forceMode===null?(window.innerWidth<760):(forceMode==='gym');}
 function setMode(m){forceMode=m;try{STORE.set(MODEKEY,m||'auto');}catch(e){}exIdx=0;render();}
 
-function beep(){
+var actx=null;
+/* iOS ses motorunu ilk dokunuşta uyandır — sonradan açılan bağlam sessiz kalıyor */
+function primeAudio(){
   try{
     var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
-    var c=new AC();
-    [0,220,440].forEach(function(off){
-      var o=c.createOscillator(),g=c.createGain();
-      o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=880;
-      var t0=c.currentTime+off/1000;
-      g.gain.setValueAtTime(.0001,t0);
-      g.gain.exponentialRampToValueAtTime(.3,t0+.02);
-      g.gain.exponentialRampToValueAtTime(.0001,t0+.18);
-      o.start(t0);o.stop(t0+.2);
-    });
+    if(!actx)actx=new AC();
+    if(actx.state==='suspended')actx.resume();
+    var o=actx.createOscillator(),g=actx.createGain();
+    g.gain.value=0.0001;o.connect(g);g.connect(actx.destination);
+    o.start();o.stop(actx.currentTime+0.01);
   }catch(e){}
 }
+function beep(){
+  try{
+    if(!actx)primeAudio();
+    if(!actx)return;
+    if(actx.state==='suspended')actx.resume();
+    [0,260,520].forEach(function(off){
+      var o=actx.createOscillator(),g=actx.createGain();
+      o.connect(g);g.connect(actx.destination);o.type='sine';
+      var t0=actx.currentTime+off/1000;
+      o.frequency.setValueAtTime(1046,t0);
+      g.gain.setValueAtTime(.0001,t0);
+      g.gain.exponentialRampToValueAtTime(.45,t0+.015);
+      g.gain.exponentialRampToValueAtTime(.0001,t0+.22);
+      o.start(t0);o.stop(t0+.24);
+    });
+  }catch(e){}
+  try{if(navigator.vibrate)navigator.vibrate([200,90,200,90,300]);}catch(e){}
+}
+var titleSaved='';
 function startRest(name){
-  stopRest();
-  timer.total=timer.left=restSec(name);timer.name=name;
+  clearRest();primeAudio();
+  timer.total=timer.left=restSec(name);timer.name=name;timer.done=false;
   timer.iv=setInterval(function(){
     timer.left--;
-    if(timer.left<=0){beep();stopRest();var el=document.getElementById('restbar');if(el)el.outerHTML=restBar();}
+    if(timer.left<=0){finishRest();}
     else tickRest();
   },1000);
-  var el=document.getElementById('restbar');if(el)el.outerHTML=restBar();
+  paintRest();
 }
-function stopRest(){if(timer.iv){clearInterval(timer.iv);timer.iv=null;}timer.left=0;}
+function finishRest(){
+  if(timer.iv){clearInterval(timer.iv);timer.iv=null;}
+  timer.left=0;timer.done=true;
+  beep();
+  try{titleSaved=document.title;document.title='⏰ DİNLENME BİTTİ';}catch(e){}
+  paintRest();
+}
+function clearRest(){
+  if(timer.iv){clearInterval(timer.iv);timer.iv=null;}
+  timer.left=0;timer.done=false;
+  try{if(titleSaved)document.title=titleSaved;}catch(e){}
+}
+function stopRest(){clearRest();}
+function paintRest(){var el=document.getElementById('restbar');if(el)el.outerHTML=restBar();}
 function tickRest(){
   var t=document.getElementById('restclock');if(t)t.textContent=mmss(timer.left);
   var b=document.getElementById('restfill');
   if(b)b.style.width=(timer.total?(1-timer.left/timer.total)*100:0).toFixed(1)+'%';
 }
 function restBar(){
+  if(timer.done)
+    return '<div id="restbar" class="restbar done">'+
+      '<div class="rfillwrap"><div class="rfill" style="width:100%"></div></div>'+
+      '<div class="rrow">'+
+        '<div><div class="rlbl">'+esc(timer.name)+'</div>'+
+          '<div class="rclock">DİNLENME BİTTİ</div></div>'+
+        '<div style="display:flex;gap:7px">'+
+          '<button class="rbtn" data-a="rest30">+30 sn</button>'+
+          '<button class="rbtn go" data-a="restskip">Sıradaki set →</button>'+
+        '</div></div></div>';
   if(!timer.iv)return '<div id="restbar"></div>';
   return '<div id="restbar" class="restbar">'+
     '<div class="rfillwrap"><div id="restfill" class="rfill" style="width:'+((1-timer.left/timer.total)*100).toFixed(1)+'%"></div></div>'+
@@ -1656,6 +1704,7 @@ function gymWorkout(){
       '<span class="mul">×</span>'+
       '<div class="grepwrap"><select class="grep'+(st2.rep==null?' ph':'')+'" data-s="rep">'+opts+'</select><span class="chev">▾</span></div>'+
       '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':'○')+'</button>'+
+      '<button class="clr'+((st2.kg!=null||st2.rep!=null)?' live':'')+'" data-a="setclear" data-i="'+i+'" aria-label="Seti temizle">✕</button>'+
     '</div>';
   }
   var hint=anyFilled
@@ -2016,7 +2065,14 @@ function applySet(t){
   r.ex[name]=r.ex[name]||[];
   while(r.ex[name].length<=i)r.ex[name].push({kg:null,rep:null});
   r.ex[name][i][sk]=n(t.value);
+  if(r.ex[name][i].kg==null||r.ex[name][i].rep==null)r.ex[name][i].d=false;
   if(t.tagName==='SELECT')t.className=t.className.replace(' ph','')+(t.value===''?' ph':'');
+  var rowEl=t.closest('.gset');
+  if(rowEl)rowEl.className='gset'+(r.ex[name][i].d?' done':'');
+  var okEl=rowEl&&rowEl.querySelector('.ok');
+  if(okEl)okEl.textContent=r.ex[name][i].d?'✓':'○';
+  var clrEl=rowEl&&rowEl.querySelector('.clr');
+  if(clrEl)clrEl.className='clr'+((r.ex[name][i].kg!=null||r.ex[name][i].rep!=null)?' live':'');
   save(cur);refreshEx(name);refresh();
 }
 
@@ -2062,6 +2118,7 @@ app.addEventListener('change',function(ev){
     fr.readAsText(file);ev.target.value='';}
 });
 app.addEventListener('click',function(ev){
+  if(!actx)primeAudio();
   var t=ev.target;
   if(t&&t.closest){var wrp=t.closest('[data-a]');if(wrp)t=wrp;}
   var a=t.getAttribute&&t.getAttribute('data-a');if(!a)return;
@@ -2083,13 +2140,26 @@ app.addEventListener('click',function(ev){
   else if(a==='goex'){exIdx=+t.getAttribute('data-i');zi('g-body',gymBody());}
   else if(a==='exprev'){if(exIdx>0){exIdx--;zi('g-body',gymBody());window.scrollTo(0,0);}}
   else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;zi('g-body',gymBody());window.scrollTo(0,0);}}
-  else if(a==='rest30'){timer.left+=30;timer.total+=30;tickRest();}
-  else if(a==='restskip'){stopRest();var rb=document.getElementById('restbar');if(rb)rb.outerHTML=restBar();}
+  else if(a==='rest30'){
+    if(timer.done){timer.done=false;timer.left=30;timer.total=30;
+      try{if(titleSaved)document.title=titleSaved;}catch(e){}
+      timer.iv=setInterval(function(){timer.left--;if(timer.left<=0)finishRest();else tickRest();},1000);}
+    else{timer.left+=30;timer.total+=30;}
+    paintRest();}
+  else if(a==='restskip'){clearRest();paintRest();}
   else if(a==='samelast'){
     var tp=PROGRAM[planOf(cur)],ex=tp.ex[exIdx],pv=prevSession(ex.n,cur);
     if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};
       rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep};});
       save(cur);zi('g-body',gymBody());}}
+  else if(a==='setclear'){
+    var tpc=PROGRAM[planOf(cur)],exc=tpc.ex[exIdx],ixc=+t.getAttribute('data-i');
+    var rc=D(cur);
+    if(rc.ex&&rc.ex[exc.n]&&rc.ex[exc.n][ixc]){
+      if(rc.ex[exc.n].length>exc.s&&ixc>=exc.s)rc.ex[exc.n].splice(ixc,1);
+      else rc.ex[exc.n][ixc]={kg:null,rep:null};
+      save(cur);zi('g-body',gymBody());
+    }}
   else if(a==='setdone'){
     var tp2=PROGRAM[planOf(cur)],ex2=tp2.ex[exIdx],ix3=+t.getAttribute('data-i');
     var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};
