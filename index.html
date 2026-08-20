@@ -198,7 +198,7 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .big{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1}
 .chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
 /* ================= SALON MODU ================= */
-body.gym .wrap{max-width:none;padding:0 0 calc(96px + env(safe-area-inset-bottom))}
+body.gym .wrap{max-width:none;padding:0 0 calc(108px + env(safe-area-inset-bottom))}
 body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;box-shadow:none}
 
 .gtop{position:sticky;top:0;z-index:30;background:#fbf8f2;border-bottom:1px solid #e4d9c2;
@@ -211,13 +211,21 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gsync{text-align:center;font-size:11px;color:#a8987c;font-weight:600;margin-top:6px}
 
-.gtabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;background:#fbf8f2;
-  border-top:1px solid #e4d9c2;padding-bottom:env(safe-area-inset-bottom);
-  box-shadow:0 -2px 12px rgba(60,52,44,.06)}
-.gtabs button{flex:1;border:0;background:none;padding:8px 2px 9px;font-size:10.5px;font-weight:700;color:#b3a488}
-.gtabs button.on{color:#3a342c}
-.gtabs .ic{display:block;font-size:19px;line-height:1.25;filter:grayscale(1) opacity(.55)}
-.gtabs button.on .ic{filter:none}
+.gtabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:4px;
+  background:rgba(250,246,238,.82);-webkit-backdrop-filter:saturate(180%) blur(22px);
+  backdrop-filter:saturate(180%) blur(22px);
+  border-top:1px solid rgba(180,164,136,.32);
+  padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
+.gtabs button{flex:1;border:0;background:transparent;border-radius:15px;padding:7px 2px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  font-size:10.5px;font-weight:600;color:#a1917a;letter-spacing:.1px;
+  transition:background .18s ease,color .18s ease,transform .18s ease;-webkit-tap-highlight-color:transparent}
+.gtabs .ic{width:25px;height:25px;display:block}
+.gtabs .ic svg{width:100%;height:100%;display:block}
+.gtabs button:active{transform:scale(.94)}
+.gtabs button.on{background:#3a342c;color:#f6efe1;font-weight:700;
+  box-shadow:0 3px 10px rgba(58,52,44,.22)}
+.gtabs button.on .lb{opacity:.95}
 
 .gpick{display:flex;gap:6px;overflow-x:auto;padding:12px 12px 4px;-webkit-overflow-scrolling:touch}
 .gchip{flex:none;border:1px solid #ddd0b8;background:#fbf8f2;border-radius:10px;padding:9px 13px;
@@ -244,6 +252,17 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   text-align:center;font-size:20px;font-weight:700;outline:none;-webkit-appearance:none}
 .gset input:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
 .gset .mul{font-size:13px;color:#c0b193;font-weight:700;flex:none}
+.grepwrap{flex:1;min-width:0;position:relative}
+.grep{width:100%;height:54px;border-radius:12px;border:1.5px solid #ddd0b8;background:#fff;
+  text-align:center;font-size:20px;font-weight:700;color:#3a342c;outline:none;
+  -webkit-appearance:none;appearance:none;padding:0 18px 0 6px;font-family:inherit}
+.grep.ph{color:#c0b193}
+.grep:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
+.grepwrap .chev{position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  font-size:11px;color:#c0b193;pointer-events:none}
+.gset.done .grep{background:#f2f8f4;border-color:rgba(22,168,90,.4)}
+.ghint{font-size:11.5px;color:#a8987c;line-height:1.45;margin:2px 0 10px}
+.ghint b{color:#8a7f6f}
 .gset .ok{width:58px;height:54px;flex:none;border-radius:12px;border:1.5px solid #ddd0b8;
   background:#f7f1e4;font-size:21px;color:#bdac8e}
 .gset.done input{background:#f2f8f4;border-color:rgba(22,168,90,.4);color:#3a342c}
@@ -288,8 +307,10 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gstats .v span{font-size:12px;color:#a8987c;font-weight:400;font-family:'Karla';margin-left:4px}
 .gmore{padding-top:10px}
 
-.restbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:45;
-  background:#3a342c;color:#f3ecdf;box-shadow:0 -4px 18px rgba(45,38,28,.3)}
+.restbar{position:fixed;left:0;right:0;bottom:calc(72px + env(safe-area-inset-bottom));z-index:45;
+  background:#3a342c;color:#f3ecdf;box-shadow:0 -6px 22px rgba(45,38,28,.32);
+  border-radius:16px 16px 0 0;overflow:hidden;animation:rslide .22s ease}
+@keyframes rslide{from{transform:translateY(100%)}to{transform:translateY(0)}}
 .rfillwrap{height:4px;background:rgba(243,236,223,.18)}
 .rfill{height:100%;background:#e3a23f;transition:width 1s linear}
 .rrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px}
@@ -1618,19 +1639,28 @@ function gymWorkout(){
   var cnt=Math.max(e.s,sets.length);
   var prev=prevSession(e.n,cur),ev=evalEx(sets,e),pg=progression(e.n);
 
-  var rows='';
+  var rows='',anyFilled=false;
   for(var i=0;i<cnt;i++){
     var st2=sets[i]||{kg:null,rep:null};
     var done=!!st2.d,filled=st2.kg!=null&&st2.rep!=null;
-    var ph=prev&&prev.sets[i]?prev.sets[i]:null;
+    if(filled)anyFilled=true;
+    /* öneri: önce bu seansın bir üstteki seti, yoksa geçen seansın aynı seti */
+    var up=(i>0&&sets[i-1]&&sets[i-1].kg!=null)?sets[i-1]:null;
+    var ph=up||(prev&&prev.sets[i]?prev.sets[i]:null);
+    var opts='<option value="">'+(ph&&ph.rep!=null?ph.rep:(e.r[0]+'-'+e.r[1]))+'</option>';
+    for(var q=1;q<=30;q++)
+      opts+='<option value="'+q+'"'+(st2.rep===q?' selected':'')+'>'+q+'</option>';
     rows+='<div class="gset'+(done?' done':'')+'" data-i="'+i+'">'+
       '<span class="num">'+(i+1)+'</span>'+
-      '<input data-s="kg" inputmode="decimal" placeholder="'+(ph?ph.kg:'kg')+'" value="'+(st2.kg==null?'':st2.kg)+'">'+
+      '<input class="gkg" data-s="kg" inputmode="decimal" placeholder="'+(ph&&ph.kg!=null?ph.kg:'kg')+'" value="'+(st2.kg==null?'':st2.kg)+'">'+
       '<span class="mul">×</span>'+
-      '<input data-s="rep" inputmode="numeric" placeholder="'+e.r[0]+'-'+e.r[1]+'" value="'+(st2.rep==null?'':st2.rep)+'">'+
-      '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':(filled?'✓':'○'))+'</button>'+
+      '<div class="grepwrap"><select class="grep'+(st2.rep==null?' ph':'')+'" data-s="rep">'+opts+'</select><span class="chev">▾</span></div>'+
+      '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':'○')+'</button>'+
     '</div>';
   }
+  var hint=anyFilled
+    ? 'Boş bir sete <b>○</b> basarsan üstteki setin aynısını doldurur ve kronometreyi başlatır.'
+    : 'Kilo ve tekrarı gir, sonra <b>○</b> ile seti bitir — <b>'+mmss(restSec(e.n))+'</b> kronometre otomatik başlar.';
 
   var dots='';
   for(var j=0;j<t.ex.length;j++){
@@ -1657,6 +1687,7 @@ function gymWorkout(){
            :'<span>İlk kez yapıyorsun — rahat bir ağırlıkla başla.</span>')+
     '</div>'+
     '<div class="gsets">'+rows+'</div>'+
+    '<div class="ghint">'+hint+'</div>'+
     '<button class="gaddset" data-a="addset">+ set ekle</button>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
       '<span style="color:'+ev.color+'">'+ev.label+'</span></div>'+
@@ -1737,16 +1768,36 @@ function gymTop(){
     (S.sync.token&&S.sync.gist?'<div class="gsync" data-a="syncnow">☁ '+syncLabel()+'</div>':'')+
   '</div>';
 }
-function gymTabs(){
-  var tabs=[['w','🏋️','Antrenman'],['d','📋','Gün'],['s','📈','Özet'],['m','⋯','Daha']];
-  return '<div class="gtabs">'+tabs.map(function(x){
-    return '<button class="'+(gTab===x[0]?'on':'')+'" data-a="gtab" data-k="'+x[0]+'">'+
-      '<span class="ic">'+x[1]+'</span>'+x[2]+'</button>';}).join('')+'</div>';
+var TABICON={
+ w:'<path d="M4 9v6M20 9v6M7 6.5v11M17 6.5v11M7 12h10" />',
+ d:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 8.5h6M9 12.5h6M9 16.5h3"/>',
+ s:'<path d="M4 19V5M4 19h16M8 15.5l3.5-4 3 2.5L20 8"/>',
+ m:'<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>'
+};
+function tabIcon(k){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '+
+    'stroke-linecap="round" stroke-linejoin="round">'+TABICON[k]+'</svg>';
 }
+function gymTabsInner(){
+  var tabs=[['w','Antrenman'],['d','Gün'],['s','Özet'],['m','Daha']];
+  return tabs.map(function(x){
+    return '<button class="'+(gTab===x[0]?'on':'')+'" data-a="gtab" data-k="'+x[0]+'" aria-current="'+(gTab===x[0])+'">'+
+      '<span class="ic">'+tabIcon(x[0])+'</span><span class="lb">'+x[1]+'</span></button>';}).join('');
+}
+function gymTabs(){return '<div class="gtabs" id="g-tabs">'+gymTabsInner()+'</div>';}
 function gymBody(){
   return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():gymMore();
 }
-function gymRefresh(){zi('g-body',gymBody());}
+var pendingRefresh=false;
+function typing(){
+  var ae=document.activeElement;
+  return !!(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.tagName==='SELECT'));
+}
+function gymRefresh(){
+  if(typing()){pendingRefresh=true;return;}   /* yazarken DOM'a dokunma */
+  pendingRefresh=false;zi('g-body',gymBody());
+}
+function gymTabsRefresh(){zi('g-tabs',gymTabsInner());}
 function renderGym(){
   document.body.className='gym';
   app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+restBar()+gymTabs();
@@ -1955,6 +2006,20 @@ function refreshEx(name){
 }
 function cssq(s){return s.replace(/"/g,'\\"');}
 
+function applySet(t){
+  var sk=t.getAttribute('data-s');
+  var box=t.closest('[data-i]'),row=t.closest('[data-ex]');
+  if(!box||!row)return;
+  var name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
+  var r=touch(cur);r.ex=r.ex||{};
+  if(!r.dt)r.dt=planOf(cur);
+  r.ex[name]=r.ex[name]||[];
+  while(r.ex[name].length<=i)r.ex[name].push({kg:null,rep:null});
+  r.ex[name][i][sk]=n(t.value);
+  if(t.tagName==='SELECT')t.className=t.className.replace(' ph','')+(t.value===''?' ph':'');
+  save(cur);refreshEx(name);refresh();
+}
+
 /* ============ OLAYLAR ============ */
 app.addEventListener('input',function(ev){
   var t=ev.target;
@@ -1967,15 +2032,7 @@ app.addEventListener('input',function(ev){
     if(f==='w'||f==='b'){refresh();}else{refreshDayMetrics();refresh();}
     return;}
   /* set kutuları */
-  var sk=t.getAttribute('data-s');
-  if(sk){
-    var box=t.closest('[data-i]'),row=t.closest('[data-ex]'),name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
-    var r2=touch(cur);r2.ex=r2.ex||{};
-    if(!r2.dt)r2.dt=planOf(cur);
-    r2.ex[name]=r2.ex[name]||[];
-    while(r2.ex[name].length<=i)r2.ex[name].push({kg:null,rep:null});
-    r2.ex[name][i][sk]=n(t.value);
-    save(cur);refreshEx(name);refresh();return;}
+  if(t.getAttribute('data-s')){applySet(t);return;}
   /* ayarlar */
   var g=t.getAttribute('data-g');
   if(g){
@@ -1986,6 +2043,7 @@ app.addEventListener('input',function(ev){
     S._st=Date.now();save();refresh();return;}
 });
 app.addEventListener('change',function(ev){
+  if(ev.target.getAttribute&&ev.target.getAttribute('data-s')){applySet(ev.target);return;}
   var a=ev.target.getAttribute('data-a');
   if(a==='dt'){var v0=ev.target.value;touch(cur).dt=v0;S.plan=S.plan||{};S.plan[cur]=v0;S._pt=Date.now();save(cur);render();}
   if(a==='reprange'){repRange=ev.target.value;
@@ -2018,7 +2076,7 @@ app.addEventListener('click',function(ev){
     if(!S.sync.token||!S.sync.gist){toast('anahtar ve gist ID gerekli');}
     else{STORE.set(KEY,JSON.stringify(S));syncNow();}}
   else if(a==='syncnow'){syncNow();}
-  else if(a==='gtab'){gTab=t.getAttribute('data-k');zi('g-body',gymBody());window.scrollTo(0,0);}
+  else if(a==='gtab'){gTab=t.getAttribute('data-k');zi('g-body',gymBody());gymTabsRefresh();window.scrollTo(0,0);}
   else if(a==='gym'){setMode('gym');}
   else if(a==='desktop'){setMode('desk');}
   else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;save(cur);render();}
@@ -2117,6 +2175,9 @@ app.addEventListener('click',function(ev){
 document.getElementById('mx').addEventListener('click',closeFig);
 document.getElementById('modal').addEventListener('click',function(e){if(e.target.id==='modal')closeFig();});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeFig();});
+document.addEventListener('focusout',function(){
+  setTimeout(function(){if(pendingRefresh&&!typing())gymRefresh();},80);
+});
 
 /* ============ AÇILIŞ ============ */
 STORE.get(KEY).then(function(res){
