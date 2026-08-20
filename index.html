@@ -197,6 +197,108 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 @media(max-width:700px){.duo{grid-template-columns:1fr}}
 .big{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1}
 .chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
+/* ================= SALON MODU ================= */
+body.gym .wrap{max-width:none;padding:0 0 calc(96px + env(safe-area-inset-bottom))}
+body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;box-shadow:none}
+
+.gtop{position:sticky;top:0;z-index:30;background:#fbf8f2;border-bottom:1px solid #e4d9c2;
+  padding:calc(9px + env(safe-area-inset-top)) 10px 9px}
+.gtoprow{display:flex;align-items:center;gap:6px}
+.gnavbtn{width:42px;height:42px;flex:none;border-radius:12px;border:1px solid #e4d9c2;background:#f7f1e4;
+  font-size:20px;color:#6b5f4d;line-height:1}
+.gdate{font-size:10.5px;letter-spacing:1.2px;color:#a8987c;font-weight:700}
+.gday{font-family:'Fraunces';font-size:16px;font-weight:600;line-height:1.2;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gsync{text-align:center;font-size:11px;color:#a8987c;font-weight:600;margin-top:6px}
+
+.gtabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;background:#fbf8f2;
+  border-top:1px solid #e4d9c2;padding-bottom:env(safe-area-inset-bottom);
+  box-shadow:0 -2px 12px rgba(60,52,44,.06)}
+.gtabs button{flex:1;border:0;background:none;padding:8px 2px 9px;font-size:10.5px;font-weight:700;color:#b3a488}
+.gtabs button.on{color:#3a342c}
+.gtabs .ic{display:block;font-size:19px;line-height:1.25;filter:grayscale(1) opacity(.55)}
+.gtabs button.on .ic{filter:none}
+
+.gpick{display:flex;gap:6px;overflow-x:auto;padding:12px 12px 4px;-webkit-overflow-scrolling:touch}
+.gchip{flex:none;border:1px solid #ddd0b8;background:#fbf8f2;border-radius:10px;padding:9px 13px;
+  font-size:12.5px;font-weight:700;color:#8a7f6f}
+.gchip.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+
+.gcard{background:#fbf8f2;border-top:1px solid #ece1cd;border-bottom:1px solid #ece1cd;padding:14px 14px 16px;margin-top:8px}
+.ghead{display:flex;gap:12px;align-items:flex-start}
+.gfig{width:74px;height:62px;flex:none;border-radius:11px;background:#f3ecdd;border:1px solid #e8dcc4;padding:3px}
+.gnum{font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#b3a488;font-weight:700}
+.gname{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.15;margin-top:2px}
+.gtgt{font-size:11.5px;color:#a8987c;font-weight:700;margin-top:3px}
+.gdesc{font-size:13px;color:#8a7f6f;line-height:1.45;margin-top:10px}
+.gprog{margin-top:10px;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:700}
+.gprev{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:11px;
+  border-top:1px dashed #e4d9c2;font-size:12.5px;color:#8a7f6f}
+.gprev b{color:#3a342c}
+.gcopy{margin-left:auto;border:1px solid #3a342c;background:#3a342c;color:#f3ecdf;border-radius:9px;
+  padding:8px 13px;font-size:12.5px;font-weight:700;flex:none}
+.gsets{margin-top:13px}
+.gset{display:flex;gap:8px;align-items:center;margin-bottom:9px}
+.gset .num{width:16px;flex:none;font-size:12px;font-weight:700;color:#c0b193;text-align:center}
+.gset input{flex:1;min-width:0;height:54px;border-radius:12px;border:1.5px solid #ddd0b8;background:#fff;
+  text-align:center;font-size:20px;font-weight:700;outline:none;-webkit-appearance:none}
+.gset input:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
+.gset .mul{font-size:13px;color:#c0b193;font-weight:700;flex:none}
+.gset .ok{width:58px;height:54px;flex:none;border-radius:12px;border:1.5px solid #ddd0b8;
+  background:#f7f1e4;font-size:21px;color:#bdac8e}
+.gset.done input{background:#f2f8f4;border-color:rgba(22,168,90,.4);color:#3a342c}
+.gset.done .ok{background:#16a85a;border-color:#16a85a;color:#fff}
+.gaddset{width:100%;margin-top:2px;border:1px dashed #d9ccb5;background:#fff;border-radius:11px;
+  padding:12px;font-size:12.5px;font-weight:700;color:#a8987c}
+.gfoot{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#a8987c;margin-top:12px}
+
+.gnav{display:flex;align-items:center;gap:10px;padding:14px}
+.garrow{width:54px;height:48px;flex:none;border-radius:12px;border:1px solid #ddd0b8;background:#fbf8f2;
+  font-size:22px;color:#6b5f4d;line-height:1}
+.garrow:disabled{opacity:.3}
+.gdots{flex:1;display:flex;gap:5px;justify-content:center;flex-wrap:wrap}
+.gdot{width:12px;height:12px;border-radius:50%;border:1.5px solid #ddd0b8;background:#fbf8f2;padding:0}
+.gdot.on{background:#3a342c;border-color:#3a342c;transform:scale(1.25)}
+.gdot.ok{background:#16a85a;border-color:#16a85a}
+.gdot.part{background:#f4ad15;border-color:#f4ad15}
+.gsess{text-align:center;font-size:12px;font-weight:700;color:#a8987c;padding:0 14px 14px}
+.gempty{padding:44px 24px;text-align:center;color:#a8987c;font-size:13px;line-height:1.5}
+.gempty b{display:block;font-family:'Fraunces';font-size:18px;color:#8a7f6f;margin-bottom:6px}
+
+.gsec{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:#a8987c;font-weight:700;
+  padding:18px 14px 8px}
+.ggrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:0 14px}
+.gfield label{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.5px;
+  text-transform:uppercase;color:#a8987c;font-weight:700;margin-bottom:5px}
+.gfield label span{color:#c9bda4;text-transform:none;letter-spacing:0}
+.ginp{width:100%;height:52px;border-radius:12px;border:1.5px solid #ddd0b8;background:#fff;
+  text-align:center;font-size:19px;font-weight:700;outline:none;-webkit-appearance:none}
+.ginp:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
+.gbar{height:4px;background:#efe7d6;border-radius:3px;margin-top:6px;overflow:hidden}
+.gbar i{display:block;height:100%;border-radius:3px}
+.gsups{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 14px}
+.gsup{border:1px solid #ddd0b8;background:#fbf8f2;border-radius:12px;padding:13px 12px;font-size:13.5px;
+  font-weight:700;color:#8a7f6f;text-align:left}
+.gsup span{display:block;font-size:11px;font-weight:600;color:#c0b193;margin-top:2px}
+.gsup.on span{color:inherit;opacity:.75}
+.gstats{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#ece1cd;margin-top:10px}
+.gstats > div{background:#fbf8f2;padding:14px}
+.gstats .l{font-size:10.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700}
+.gstats .v{font-family:'Fraunces';font-size:26px;font-weight:600;margin-top:3px}
+.gstats .v span{font-size:12px;color:#a8987c;font-weight:400;font-family:'Karla';margin-left:4px}
+.gmore{padding-top:10px}
+
+.restbar{position:fixed;left:0;right:0;bottom:calc(58px + env(safe-area-inset-bottom));z-index:45;
+  background:#3a342c;color:#f3ecdf;box-shadow:0 -4px 18px rgba(45,38,28,.3)}
+.rfillwrap{height:4px;background:rgba(243,236,223,.18)}
+.rfill{height:100%;background:#e3a23f;transition:width 1s linear}
+.rrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:11px 14px}
+.rlbl{font-size:10px;letter-spacing:1.1px;color:#bdae93;font-weight:700;
+  max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rclock{font-family:'Fraunces';font-size:27px;font-weight:600;line-height:1.05}
+.rbtn{border:1px solid rgba(243,236,223,.35);background:transparent;color:#f3ecdf;border-radius:10px;
+  padding:11px 13px;font-size:12.5px;font-weight:700}
+.rbtn.dark{background:#e3a23f;border-color:#e3a23f;color:#3a342c}
 .hide{display:none}
 @media(prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
@@ -433,40 +535,42 @@ var FIG={
 };
 /* hareket → çizim + İngilizce arama adı */
 var EXMETA={
- 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.'],
- 'Düz bench press':['bench','flat barbell bench press','Barı göğüs ortasına indir, dirsekler gövdeyle 45° açı yapsın.'],
- 'Oturarak dambıl omuz press':['ohp','seated dumbbell shoulder press','Sırt dik. Dambıllar kulak hizasından baş üstüne çıkar.'],
- 'Kablo yan kaldırış':['cableLat','cable lateral raise','Kabloyu vücudunun önünden çaprazla, kolu yana omuz hizasına aç. Omzunu yukarı kaldırma.'],
- 'Kafa üstü triceps ekstansiyon':['ohTri','overhead cable triceps extension','Halat başının arkasında, dirsekler sabit ve yukarıda; sadece ön kolu uzat.'],
- 'Halat pushdown':['pushdown','rope triceps pushdown','Dirsekler gövdene yapışık. Halatı aşağı it, en altta iki ucu dışa ayır.'],
- 'Lat pulldown / Barfiks':['pulldown','lat pulldown','Göğsü yukarı ver, barı köprücük kemiğine çek. Kolla değil dirsekle çek.'],
- 'Göğüs destekli row':['rowChest','chest supported dumbbell row','Göğsünü eğik sedyeye yasla, ağırlığı karnına doğru çek. Bele yük binmez.'],
- 'Oturarak kablo row':['rowSeat','seated cable row','Göğüs dik, kolu karnına çek, sonda kürek kemiklerini sık. Gövdeyi sallama.'],
- 'Face pull':['facePull','face pull','Halatı yüz hizana çek, dirsekleri geriye ve yukarı aç. Duruşu düzeltir.'],
- 'Eğik dambıl curl':['curlIncline','incline dumbbell curl','Eğik sedyede kollar gövdenin gerisinde sarkar; biceps en gergin yerden çalışır.'],
- 'Kablo curl':['curlCable','cable biceps curl','Alt makara, dirsek gövdeye sabit. Kabloda gerginlik hiç kaybolmaz.'],
- 'Squat / Hack squat':['squat','hack squat machine','Serbest squat formun oturmadıysa hack squat makinesiyle başla — öğrenmesi kolay, bel riski düşük.'],
- 'Romanian deadlift':['rdl','romanian deadlift','Dizler hafif bükülü ve sabit. Kalçanı geri it, barı bacak boyunca indir. Sırtı yuvarlama.'],
- 'Leg press':['legPress','leg press','Dizleri göğse doğru indir. Kalçan sedyeden kalkacak kadar derine inme.'],
- 'Leg curl':['legCurl','lying leg curl','Yüzüstü ya da oturarak topuğu kalçana doğru çek. Arka bacak izolasyonu.'],
- 'Leg extension':['legExt','leg extension','Oturarak bacağı düzleştir, tepede bir saniye sık. Ön bacak izolasyonu.'],
- 'Ayakta calf raise':['calf','standing calf raise','Topuğu tam yukarı kaldır, aşağıda tam gerilmeye izin ver. Yarım tekrar yapma.'],
- 'Oturarak dambıl yan kaldırış':['latRaise','seated dumbbell lateral raise','Dik sedyede otur (momentum yapamazsın), kolları yana omuz hizasına aç. Ağırlık hafif olacak.'],
- 'Tek kol kablo yan kaldırış':['cableLat','single arm cable lateral raise','Tek kol, yüksek tekrar. Kası hissetmesi en kolay varyasyon.'],
- 'Makine omuz press':['ohpMachine','machine shoulder press','Sabit yörünge. Formu düşünmeden ağırlığa yüklenebilirsin.'],
- 'Dar tutuş bench / Dips':['dips','triceps dips','Eller omuz genişliğinde, dirsekler gövdeye yakın. Dips yaparsan dik dur, öne eğilme.'],
- 'Skullcrusher':['skull','ez bar skullcrusher','Sırtüstü yat. Sadece dirsekten bükerek barı alnına indir; üst kolun sabit ve dik kalır.'],
- 'Preacher curl':['preacher','preacher curl','Kolları eğik pede yasla. Gövdeyle hile yapmanı fiziksel olarak engeller.'],
- 'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.'],
- 'Eğik press':['incline','incline machine chest press','Eğik açıda göğüs itişi. Üst göğüs ve ön omuz.'],
- 'Geniş tutuş lat pulldown':['pulldown','wide grip lat pulldown','Geniş tutuş, sırt genişliği için. Yine dirsekle çekiyormuş gibi düşün.'],
- 'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.'],
- 'Tek kol dambıl row':['rowOne','one arm dumbbell row','Bir diz ve el sedyede. Dambılı kalçana doğru çek, omuz aşağıda kalsın.'],
- 'Yan kaldırış':['latRaise','dumbbell lateral raise','Dirsek hafif bükülü, kolları yana aç. Omzunu yukarı kaldırma — trapez devralır.'],
- 'Triceps pushdown':['pushdown','triceps pushdown','Dirsekler sabit, halatı veya barı aşağı it. Gövdeyle bastırma.'],
- 'Cable crunch':['crunch','cable crunch abs','Diz üstü, halat başının arkasında. Karnını kıvırarak yere yaklaş, kalçadan bükülme.']
+ 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.',150],
+ 'Düz bench press':['bench','flat barbell bench press','Barı göğüs ortasına indir, dirsekler gövdeyle 45° açı yapsın.',180],
+ 'Oturarak dambıl omuz press':['ohp','seated dumbbell shoulder press','Sırt dik. Dambıllar kulak hizasından baş üstüne çıkar.',150],
+ 'Kablo yan kaldırış':['cableLat','cable lateral raise','Kabloyu vücudunun önünden çaprazla, kolu yana omuz hizasına aç. Omzunu yukarı kaldırma.',60],
+ 'Kafa üstü triceps ekstansiyon':['ohTri','overhead cable triceps extension','Halat başının arkasında, dirsekler sabit ve yukarıda; sadece ön kolu uzat.',90],
+ 'Halat pushdown':['pushdown','rope triceps pushdown','Dirsekler gövdene yapışık. Halatı aşağı it, en altta iki ucu dışa ayır.',60],
+ 'Lat pulldown / Barfiks':['pulldown','lat pulldown','Göğsü yukarı ver, barı köprücük kemiğine çek. Kolla değil dirsekle çek.',150],
+ 'Göğüs destekli row':['rowChest','chest supported dumbbell row','Göğsünü eğik sedyeye yasla, ağırlığı karnına doğru çek. Bele yük binmez.',120],
+ 'Oturarak kablo row':['rowSeat','seated cable row','Göğüs dik, kolu karnına çek, sonda kürek kemiklerini sık. Gövdeyi sallama.',120],
+ 'Face pull':['facePull','face pull','Halatı yüz hizana çek, dirsekleri geriye ve yukarı aç. Duruşu düzeltir.',60],
+ 'Eğik dambıl curl':['curlIncline','incline dumbbell curl','Eğik sedyede kollar gövdenin gerisinde sarkar; biceps en gergin yerden çalışır.',90],
+ 'Kablo curl':['curlCable','cable biceps curl','Alt makara, dirsek gövdeye sabit. Kabloda gerginlik hiç kaybolmaz.',60],
+ 'Squat / Hack squat':['squat','hack squat machine','Serbest squat formun oturmadıysa hack squat makinesiyle başla — öğrenmesi kolay, bel riski düşük.',180],
+ 'Romanian deadlift':['rdl','romanian deadlift','Dizler hafif bükülü ve sabit. Kalçanı geri it, barı bacak boyunca indir. Sırtı yuvarlama.',180],
+ 'Leg press':['legPress','leg press','Dizleri göğse doğru indir. Kalçan sedyeden kalkacak kadar derine inme.',150],
+ 'Leg curl':['legCurl','lying leg curl','Yüzüstü ya da oturarak topuğu kalçana doğru çek. Arka bacak izolasyonu.',90],
+ 'Leg extension':['legExt','leg extension','Oturarak bacağı düzleştir, tepede bir saniye sık. Ön bacak izolasyonu.',90],
+ 'Ayakta calf raise':['calf','standing calf raise','Topuğu tam yukarı kaldır, aşağıda tam gerilmeye izin ver. Yarım tekrar yapma.',60],
+ 'Oturarak dambıl yan kaldırış':['latRaise','seated dumbbell lateral raise','Dik sedyede otur (momentum yapamazsın), kolları yana omuz hizasına aç. Ağırlık hafif olacak.',60],
+ 'Tek kol kablo yan kaldırış':['cableLat','single arm cable lateral raise','Tek kol, yüksek tekrar. Kası hissetmesi en kolay varyasyon.',45],
+ 'Makine omuz press':['ohpMachine','machine shoulder press','Sabit yörünge. Formu düşünmeden ağırlığa yüklenebilirsin.',120],
+ 'Dar tutuş bench / Dips':['dips','triceps dips','Eller omuz genişliğinde, dirsekler gövdeye yakın. Dips yaparsan dik dur, öne eğilme.',150],
+ 'Skullcrusher':['skull','ez bar skullcrusher','Sırtüstü yat. Sadece dirsekten bükerek barı alnına indir; üst kolun sabit ve dik kalır.',90],
+ 'Preacher curl':['preacher','preacher curl','Kolları eğik pede yasla. Gövdeyle hile yapmanı fiziksel olarak engeller.',90],
+ 'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.',60],
+ 'Eğik press':['incline','incline machine chest press','Eğik açıda göğüs itişi. Üst göğüs ve ön omuz.',150],
+ 'Geniş tutuş lat pulldown':['pulldown','wide grip lat pulldown','Geniş tutuş, sırt genişliği için. Yine dirsekle çekiyormuş gibi düşün.',120],
+ 'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.',75],
+ 'Tek kol dambıl row':['rowOne','one arm dumbbell row','Bir diz ve el sedyede. Dambılı kalçana doğru çek, omuz aşağıda kalsın.',90],
+ 'Yan kaldırış':['latRaise','dumbbell lateral raise','Dirsek hafif bükülü, kolları yana aç. Omzunu yukarı kaldırma — trapez devralır.',60],
+ 'Triceps pushdown':['pushdown','triceps pushdown','Dirsekler sabit, halatı veya barı aşağı it. Gövdeyle bastırma.',60],
+ 'Cable crunch':['crunch','cable crunch abs','Diz üstü, halat başının arkasında. Karnını kıvırarak yere yaklaş, kalçadan bükülme.',60]
 };
 function descOf(name){var m=EXMETA[name];return m&&m[2]?m[2]:'';}
+function restSec(name){var m=EXMETA[name];return (m&&m[3])||90;}
+function mmss(x){var m=Math.floor(x/60),sc=x%60;return m+':'+(sc<10?'0':'')+sc;}
 function figSVG(name){
   var m=EXMETA[name],f=m&&FIG[m[0]];
   var inner=f?f():'<text x="60" y="55" text-anchor="middle" font-size="11" fill="#bfb097" font-family="Karla">çizim yok</text>';
@@ -582,7 +686,7 @@ function prevSession(name,before){
     var sets=(D(ks[i]).ex||{})[name];
     if(sets){var f=sets.filter(function(s){return s.kg!=null&&s.rep!=null;});
       if(f.length){var v=0;f.forEach(function(s){v+=s.kg*s.rep;});
-        out={date:ks[i],vol:v,txt:f.map(function(s){return s.kg+'×'+s.rep;}).join(' · ')};break;}}
+        out={date:ks[i],vol:v,sets:f,txt:f.map(function(s){return s.kg+'×'+s.rep;}).join(' · ')};break;}}
   }
   _pc[ck]=out;return out;
 }
@@ -1391,6 +1495,19 @@ function connectSync(tok){
     setSyncMsg('');toast('bulut bağlandı');render();
   }).catch(function(e){setSyncMsg('');toast('bağlanamadı: '+e.message);});
 }
+function makeCode(){
+  try{return 'FORM1-'+btoa(unescape(encodeURIComponent(S.sync.token+'|'+S.sync.gist)));}
+  catch(e){return '';}
+}
+function readCode(c){
+  c=(c||'').trim();
+  if(c.indexOf('FORM1-')!==0)return null;
+  try{
+    var raw=decodeURIComponent(escape(atob(c.slice(6)))),i=raw.lastIndexOf('|');
+    if(i<1)return null;
+    return {token:raw.slice(0,i),gist:raw.slice(i+1)};
+  }catch(e){return null;}
+}
 function syncCard(){
   var on=!!(S.sync.token&&S.sync.gist);
   return '<div class="card"><div class="hd"><h2>Bulut Senkron</h2>'+
@@ -1403,8 +1520,10 @@ function syncCard(){
        '</div>'+
        '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
          '<button class="ghostbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
+         '<button class="ghostbtn" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
          '<button class="ghostbtn" data-a="syncoff">Bağlantıyı kes</button>'+
        '</div>'+
+       '<div class="mhint" style="margin-top:9px">Yeni bir cihaz (ya da “Ana Ekrana Ekle” ile açılan uygulama) eklerken bu kodu kopyalayıp oraya yapıştır — anahtar ve gist ID’si tek seferde geçer.</div>'+
        '<div class="mhint" style="margin-top:10px">Değişiklikler birkaç saniye içinde otomatik gönderiliyor. Diğer cihazda sayfayı açtığında ya da sekmeye geri döndüğünde otomatik çekiliyor.</div>'
       :'<div class="settings" style="grid-template-columns:1fr">'+
          '<div><label>GitHub erişim anahtarı (classic, sadece “gist” yetkisi)</label>'+
@@ -1415,13 +1534,222 @@ function syncCard(){
        '</div>'+
        '<div style="margin-top:16px;padding-top:14px;border-top:1px dashed #d9ccb5">'+
          '<div class="settings" style="grid-template-columns:1fr">'+
-           '<div><label>İkinci cihaz — mevcut gist ID’sini gir</label>'+
+           '<div><label>Bağlantı kodu — diğer cihazdan kopyaladığın kod</label>'+
+             '<input class="inp" data-a="codeinp" placeholder="FORM1-…"></div>'+
+         '</div>'+
+         '<button class="ghostbtn dark" data-a="usecode" style="margin-top:10px">Kodu kullan ve bağlan</button>'+
+       '</div>'+
+       '<div style="margin-top:16px;padding-top:14px;border-top:1px dashed #d9ccb5">'+
+         '<div class="settings" style="grid-template-columns:1fr">'+
+           '<div><label>Ya da elle: mevcut gist ID’si</label>'+
              '<input class="inp" data-a="gistinp" placeholder="birinci cihazdaki ID" value="'+esc(S.sync.gist)+'"></div>'+
          '</div>'+
          '<button class="ghostbtn" data-a="joinsync" style="margin-top:10px">Mevcut buluta bağlan</button>'+
        '</div>'+
        '<div class="mhint" style="margin-top:12px">Anahtar yalnızca bu cihazın tarayıcısında saklanır; yedek dosyasına ve buluta gönderilmez.</div>')+
   '</div></div>';
+}
+
+/* ============ SALON MODU (telefon) ============ */
+var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0;
+var timer={left:0,total:0,name:'',iv:null};
+
+function phone(){return forceMode===null?(window.innerWidth<760):(forceMode==='gym');}
+function setMode(m){forceMode=m;try{STORE.set(MODEKEY,m||'auto');}catch(e){}exIdx=0;render();}
+
+function beep(){
+  try{
+    var AC=window.AudioContext||window.webkitAudioContext;if(!AC)return;
+    var c=new AC();
+    [0,220,440].forEach(function(off){
+      var o=c.createOscillator(),g=c.createGain();
+      o.connect(g);g.connect(c.destination);o.type='sine';o.frequency.value=880;
+      var t0=c.currentTime+off/1000;
+      g.gain.setValueAtTime(.0001,t0);
+      g.gain.exponentialRampToValueAtTime(.3,t0+.02);
+      g.gain.exponentialRampToValueAtTime(.0001,t0+.18);
+      o.start(t0);o.stop(t0+.2);
+    });
+  }catch(e){}
+}
+function startRest(name){
+  stopRest();
+  timer.total=timer.left=restSec(name);timer.name=name;
+  timer.iv=setInterval(function(){
+    timer.left--;
+    if(timer.left<=0){beep();stopRest();var el=document.getElementById('restbar');if(el)el.outerHTML=restBar();}
+    else tickRest();
+  },1000);
+  var el=document.getElementById('restbar');if(el)el.outerHTML=restBar();
+}
+function stopRest(){if(timer.iv){clearInterval(timer.iv);timer.iv=null;}timer.left=0;}
+function tickRest(){
+  var t=document.getElementById('restclock');if(t)t.textContent=mmss(timer.left);
+  var b=document.getElementById('restfill');
+  if(b)b.style.width=(timer.total?(1-timer.left/timer.total)*100:0).toFixed(1)+'%';
+}
+function restBar(){
+  if(!timer.iv)return '<div id="restbar"></div>';
+  return '<div id="restbar" class="restbar">'+
+    '<div class="rfillwrap"><div id="restfill" class="rfill" style="width:'+((1-timer.left/timer.total)*100).toFixed(1)+'%"></div></div>'+
+    '<div class="rrow">'+
+      '<div><div class="rlbl">DİNLENME · '+esc(timer.name)+'</div>'+
+        '<div id="restclock" class="rclock">'+mmss(timer.left)+'</div></div>'+
+      '<div style="display:flex;gap:7px">'+
+        '<button class="rbtn" data-a="rest30">+30 sn</button>'+
+        '<button class="rbtn dark" data-a="restskip">Atla</button>'+
+      '</div></div></div>';
+}
+
+/* --- antrenman sekmesi: tek hareket --- */
+function gymWorkout(){
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
+  var pick='<div class="gpick">'+Object.keys(PROGRAM).map(function(k){
+    return '<button class="gchip'+(dt===k?' on':'')+'" data-a="gdt" data-k="'+k+'"'+
+      (dt===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+esc(PROGRAM[k].code||PROGRAM[k].short)+'</button>';}).join('')+'</div>';
+
+  if(!t||!t.ex.length)
+    return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
+      'Bugün antrenman yok. Program günü değiştirmek istersen yukarıdan seç.</div>';
+
+  if(exIdx>=t.ex.length)exIdx=0;
+  var e=t.ex[exIdx];
+  var sets=(r.ex||{})[e.n]||[];
+  var cnt=Math.max(e.s,sets.length);
+  var prev=prevSession(e.n,cur),ev=evalEx(sets,e),pg=progression(e.n);
+
+  var rows='';
+  for(var i=0;i<cnt;i++){
+    var st2=sets[i]||{kg:null,rep:null};
+    var done=!!st2.d,filled=st2.kg!=null&&st2.rep!=null;
+    var ph=prev&&prev.sets[i]?prev.sets[i]:null;
+    rows+='<div class="gset'+(done?' done':'')+'" data-i="'+i+'">'+
+      '<span class="num">'+(i+1)+'</span>'+
+      '<input data-s="kg" inputmode="decimal" placeholder="'+(ph?ph.kg:'kg')+'" value="'+(st2.kg==null?'':st2.kg)+'">'+
+      '<span class="mul">×</span>'+
+      '<input data-s="rep" inputmode="numeric" placeholder="'+e.r[0]+'-'+e.r[1]+'" value="'+(st2.rep==null?'':st2.rep)+'">'+
+      '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':(filled?'✓':'○'))+'</button>'+
+    '</div>';
+  }
+
+  var dots='';
+  for(var j=0;j<t.ex.length;j++){
+    var ev2=evalEx((r.ex||{})[t.ex[j].n],t.ex[j]);
+    var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state!=='bos'?'part':''));
+    dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
+  }
+
+  return pick+
+  '<div class="gcard" data-ex="'+esc(e.n)+'">'+
+    '<div class="ghead">'+
+      '<button class="gfig" data-a="fig" data-n="'+esc(e.n)+'">'+figSVG(e.n)+'</button>'+
+      '<div style="flex:1;min-width:0">'+
+        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · '+esc(t.short)+'</div>'+
+        '<div class="gname">'+esc(e.n)+'</div>'+
+        '<div class="gtgt">'+e.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme</div>'+
+      '</div></div>'+
+    '<div class="gdesc">'+esc(descOf(e.n))+'</div>'+
+    (pg?'<div class="gprog" style="background:'+hexa(pg.type==='up'?C.green:C.amber,.13)+';color:'+(pg.type==='up'?C.green:C.amber)+'">'+
+        (pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':'≡ '+pg.streak+' seanstır '+pg.kg+' kg')+'</div>':'')+
+    '<div class="gprev">'+
+      (prev?'<span>Geçen sefer <b>'+esc(prev.txt)+'</b></span>'+
+            '<button class="gcopy" data-a="samelast">Aynısını doldur</button>'
+           :'<span>İlk kez yapıyorsun — rahat bir ağırlıkla başla.</span>')+
+    '</div>'+
+    '<div class="gsets">'+rows+'</div>'+
+    '<button class="gaddset" data-a="addset">+ set ekle</button>'+
+    '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
+      '<span style="color:'+ev.color+'">'+ev.label+'</span></div>'+
+  '</div>'+
+  '<div class="gnav">'+
+    '<button class="garrow" data-a="exprev"'+(exIdx===0?' disabled':'')+'>‹</button>'+
+    '<div class="gdots">'+dots+'</div>'+
+    '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
+  '</div>'+
+  '<div class="gsess">'+sessionLine(cur,dt)+'</div>';
+}
+
+/* --- gün sekmesi --- */
+function gymDay(){
+  var r=D(cur),T=S.targets;
+  function fld(k,lbl,unit,tgt,col,inv){
+    var v=r[k],p=(v==null||!tgt)?0:clamp(v/tgt*100);
+    var c2=v==null?'#dfd4bd':(inv?(v<=tgt*1.08?col:C.red):(p>=100?col:p>=75?C.amber:C.orange));
+    return '<div class="gfield"><label>'+lbl+(tgt?'<span>/ '+ti(tgt)+(unit?' '+unit:'')+'</span>':(unit?'<span>'+unit+'</span>':''))+'</label>'+
+      '<input class="ginp" data-f="'+k+'" inputmode="decimal" placeholder="'+(tgt?ti(tgt):'—')+'" value="'+(v==null?'':v)+'">'+
+      (tgt?'<div class="gbar"><i style="width:'+p.toFixed(0)+'%;background:'+c2+'"></i></div>':'')+'</div>';
+  }
+  var kr=supStreak('kreatin');
+  return '<div class="gsec">Ölçüm</div>'+
+    '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+fld('b','Bel','cm',null,C.teal)+'</div>'+
+    '<div class="gsec">Beslenme &amp; hareket</div>'+
+    '<div class="ggrid">'+fld('st','Adım','',T.steps,C.orange)+fld('kcal','Kalori','',T.kcal,C.blue,true)+
+      fld('p','Protein','g',T.protein,C.green)+fld('c','Karbonhidrat','g',T.carbs,C.amber)+
+      fld('f','Yağ','g',T.fat,C.violet)+'</div>'+
+    '<div class="gsec">Takviye'+(kr.n?' <span style="color:'+C.violet+'">· seri '+kr.n+' gün</span>':'')+'</div>'+
+    '<div class="gsups">'+SUPS.map(function(x){
+      var on=!!(r.sup&&r.sup[x[0]]);
+      return '<button class="gsup'+(on?' on':'')+'" data-a="sup" data-k="'+x[0]+'"'+
+        (on?' style="background:'+hexa(x[3],.16)+';border-color:'+hexa(x[3],.45)+';color:'+x[3]+'"':'')+'>'+
+        (on?'✓ ':'○ ')+x[1]+'<span>'+x[2]+'</span></button>';}).join('')+'</div>'+
+    '<div class="gsec">Not</div>'+
+    '<div style="padding:0 14px"><textarea class="note" data-f="note" placeholder="Enerji, ağrı, iştah…">'+esc(r.note)+'</textarea></div>';
+}
+
+/* --- özet sekmesi --- */
+function gymSum(){
+  var lw=lastW(),rem=lw!=null?lw-S.goal.weight:null;
+  var m=monday(today()),tam=0,plan=0;
+  for(var i=0;i<7;i++){var d=addD(m,i),dt=effDt(d),t=dt?PROGRAM[dt]:null;
+    if(t&&t.ex.length){plan++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)tam++;}}
+  var ds=chartDays();
+  var wp=ds.filter(function(d){return D(d).w!=null;}).map(function(d){return{d:d,v:D(d).w};});
+  var big=[
+    ['Güncel kilo',(lw==null?'—':lw.toFixed(1)),'kg',C.blue],
+    ['Hedefe kalan',(rem==null?'—':(rem<=0?'0':rem.toFixed(1))),'kg','#f4ad15'],
+    ['Bu hafta',tam+'/'+(plan||5),'antrenman',C.green],
+    ['Hafta',weekIdx(today())+'/'+S.weeks,'program',C.violet]
+  ];
+  return '<div class="gstats">'+big.map(function(x){
+      return '<div><div class="l" style="color:'+x[3]+'">'+x[0]+'</div>'+
+        '<div class="v">'+x[1]+'<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
+    '<div class="gsec">Kilo eğrisi</div><div style="padding:0 14px 6px">'+spark(wp,C.blue,S.goal.weight)+'</div>'+
+    '<div style="padding:0 14px">'+progressCard()+'</div>';
+}
+
+/* --- daha sekmesi --- */
+function gymMore(){
+  return '<div class="gmore">'+calendar()+syncCard()+settings()+
+    '<div style="padding:0 0 8px"><button class="ghostbtn" data-a="desktop" style="width:100%">Masaüstü görünüme geç</button></div></div>';
+}
+
+function gymTop(){
+  var dt=planOf(cur),t=PROGRAM[dt],isT=cur===today();
+  return '<div class="gtop">'+
+    '<div class="gtoprow">'+
+      '<button class="gnavbtn" data-a="prev">‹</button>'+
+      '<div style="flex:1;text-align:center;min-width:0">'+
+        '<div class="gdate">'+(isT?'BUGÜN':GUNU[pd(cur).getDay()].toUpperCase())+' · '+fdate(cur)+'</div>'+
+        '<div class="gday" style="color:'+(t?t.color:'#a8987c')+'">'+esc(t?t.label.split(' (')[0]:'planlanmadı')+'</div>'+
+      '</div>'+
+      '<button class="gnavbtn" data-a="next">›</button>'+
+    '</div>'+
+    (S.sync.token&&S.sync.gist?'<div class="gsync" data-a="syncnow">☁ '+syncLabel()+'</div>':'')+
+  '</div>';
+}
+function gymTabs(){
+  var tabs=[['w','🏋️','Antrenman'],['d','📋','Gün'],['s','📈','Özet'],['m','⋯','Daha']];
+  return '<div class="gtabs">'+tabs.map(function(x){
+    return '<button class="'+(gTab===x[0]?'on':'')+'" data-a="gtab" data-k="'+x[0]+'">'+
+      '<span class="ic">'+x[1]+'</span>'+x[2]+'</button>';}).join('')+'</div>';
+}
+function gymBody(){
+  return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():gymMore();
+}
+function gymRefresh(){zi('g-body',gymBody());}
+function renderGym(){
+  document.body.className='gym';
+  app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+restBar()+gymTabs();
 }
 
 /* ============ AYARLAR / RAPOR ============ */
@@ -1552,9 +1880,12 @@ function header(){
     '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">'+
       (S.sync.token&&S.sync.gist
         ?'<button class="ghostbtn" data-a="syncnow" title="Şimdi senkronize et">☁ '+syncLabel()+'</button>':'')+
+      '<button class="ghostbtn" data-a="gym">Salon modu</button>'+
       '<button class="ghostbtn" data-a="scroll">Ayarlar &amp; rapor ↓</button></div></div>';
 }
 function render(){
+  if(phone()){renderGym();return;}
+  document.body.className='';
   app.innerHTML=header()+
     '<div id="z-kpi">'+kpi()+'</div>'+
     '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
@@ -1571,14 +1902,16 @@ function render(){
 }
 /* boyama sonrası: sayfayı yeniden kurmadan ilgili bölümleri tazele */
 function repaint(){
-  document.getElementById('z-cal').innerHTML=calendar();
-  document.getElementById('z-day').innerHTML=dayCard();bindToday();
-  document.getElementById('z-week').innerHTML=weekTable();
-  document.getElementById('z-kpi').innerHTML=kpi();
-  document.getElementById('z-ch').innerHTML=trendChart()+adherence();
+  if(phone()){render();return;}
+  zi('z-cal',calendar());
+  var dz=document.getElementById('z-day');if(dz){dz.innerHTML=dayCard();bindToday();}
+  zi('z-week',weekTable());zi('z-kpi',kpi());zi('z-prg',progressCard());
+  zi('z-ch',trendChart()+adherence());
 }
 /* input odağını bozmadan hesaplananları tazele */
+function zi(id,html){var el=document.getElementById(id);if(el)el.innerHTML=html;}
 function refresh(){
+  if(phone()){gymRefresh();return;}
   document.getElementById('z-kpi').innerHTML=kpi();
   document.getElementById('z-ch').innerHTML=trendChart()+adherence();
   document.getElementById('z-prg').innerHTML=progressCard();
@@ -1610,13 +1943,15 @@ function refreshEx(name){
   if(!e)return;
   var row=document.querySelector('[data-ex="'+cssq(name)+'"]');if(!row)return;
   var ev=evalEx((D(cur).ex||{})[name],e);
-  var b=row.querySelector('[data-badge]');b.textContent=ev.label;b.style.color=ev.color;b.style.background=ev.bg;
-  row.querySelector('[data-vol]').innerHTML='hacim <b>'+ti(ev.vol)+'</b> kg';
+  var b=row.querySelector('[data-badge]');
+  if(b){b.textContent=ev.label;b.style.color=ev.color;b.style.background=ev.bg;}
+  var vo=row.querySelector('[data-vol]');if(vo)vo.innerHTML='hacim <b>'+ti(ev.vol)+'</b> kg';
   var p=prevSession(name,cur),tr=row.querySelector('[data-trend]');
-  if(p&&ev.vol>0){var d=(ev.vol-p.vol)/p.vol*100;
-    tr.innerHTML='<span style="color:'+(d>1?C.green:d<-1?C.orange:'#a8987c')+'"><b>'+(d>0?'+':'')+d.toFixed(0)+'%</b> hacim</span>';}
-  else tr.innerHTML='';
-  var se=document.querySelector('[data-sess]');if(se)se.innerHTML=sessionLine(cur);
+  if(tr){
+    if(p&&ev.vol>0){var d=(ev.vol-p.vol)/p.vol*100;
+      tr.innerHTML='<span style="color:'+(d>1?C.green:d<-1?C.orange:'#a8987c')+'"><b>'+(d>0?'+':'')+d.toFixed(0)+'%</b> hacim</span>';}
+    else tr.innerHTML='';}
+  var se=document.querySelector('[data-sess]');if(se)se.innerHTML=sessionLine(cur,planOf(cur));
 }
 function cssq(s){return s.replace(/"/g,'\\"');}
 
@@ -1634,7 +1969,7 @@ app.addEventListener('input',function(ev){
   /* set kutuları */
   var sk=t.getAttribute('data-s');
   if(sk){
-    var box=t.closest('.setbox'),row=t.closest('.exrow'),name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
+    var box=t.closest('[data-i]'),row=t.closest('[data-ex]'),name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
     var r2=touch(cur);r2.ex=r2.ex||{};
     if(!r2.dt)r2.dt=planOf(cur);
     r2.ex[name]=r2.ex[name]||[];
@@ -1683,6 +2018,45 @@ app.addEventListener('click',function(ev){
     if(!S.sync.token||!S.sync.gist){toast('anahtar ve gist ID gerekli');}
     else{STORE.set(KEY,JSON.stringify(S));syncNow();}}
   else if(a==='syncnow'){syncNow();}
+  else if(a==='gtab'){gTab=t.getAttribute('data-k');zi('g-body',gymBody());window.scrollTo(0,0);}
+  else if(a==='gym'){setMode('gym');}
+  else if(a==='desktop'){setMode('desk');}
+  else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;save(cur);render();}
+  else if(a==='goex'){exIdx=+t.getAttribute('data-i');zi('g-body',gymBody());}
+  else if(a==='exprev'){if(exIdx>0){exIdx--;zi('g-body',gymBody());window.scrollTo(0,0);}}
+  else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;zi('g-body',gymBody());window.scrollTo(0,0);}}
+  else if(a==='rest30'){timer.left+=30;timer.total+=30;tickRest();}
+  else if(a==='restskip'){stopRest();var rb=document.getElementById('restbar');if(rb)rb.outerHTML=restBar();}
+  else if(a==='samelast'){
+    var tp=PROGRAM[planOf(cur)],ex=tp.ex[exIdx],pv=prevSession(ex.n,cur);
+    if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};
+      rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep};});
+      save(cur);zi('g-body',gymBody());}}
+  else if(a==='setdone'){
+    var tp2=PROGRAM[planOf(cur)],ex2=tp2.ex[exIdx],ix3=+t.getAttribute('data-i');
+    var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};
+    var arr=rr3.ex[ex2.n]=rr3.ex[ex2.n]||[];
+    while(arr.length<=ix3)arr.push({kg:null,rep:null});
+    if(arr[ix3].kg==null||arr[ix3].rep==null){
+      var src=(ix3>0&&arr[ix3-1].kg!=null)?arr[ix3-1]:null;
+      if(!src){var pv2=prevSession(ex2.n,cur);src=pv2&&pv2.sets[ix3]?pv2.sets[ix3]:null;}
+      if(src){if(arr[ix3].kg==null)arr[ix3].kg=src.kg;if(arr[ix3].rep==null)arr[ix3].rep=src.rep;}
+    }
+    if(arr[ix3].kg==null||arr[ix3].rep==null){toast('önce kg ve tekrar gir');return;}
+    arr[ix3].d=!arr[ix3].d;
+    save(cur);zi('g-body',gymBody());
+    if(arr[ix3].d)startRest(ex2.n);
+  }
+  else if(a==='linkcode'){
+    var code=makeCode();
+    if(!code){toast('kod üretilemedi');}
+    else{try{navigator.clipboard.writeText(code);}catch(e){}
+      t.textContent='Kopyalandı';setTimeout(function(){t.textContent='Bağlantı kodunu kopyala';},1600);}}
+  else if(a==='usecode'){
+    var ci=document.querySelector('[data-a="codeinp"]'),parsed=readCode(ci?ci.value:'');
+    if(!parsed){toast('kod okunamadı — FORM1- ile başlamalı');}
+    else{S.sync.token=parsed.token;S.sync.gist=parsed.gist;
+      STORE.set(KEY,JSON.stringify(S));syncNow();}}
   else if(a==='syncoff'){
     S.sync={token:'',gist:'',auto:true,last:0};
     STORE.set(KEY,JSON.stringify(S));toast('bulut bağlantısı kesildi');render();}
@@ -1717,13 +2091,13 @@ app.addEventListener('click',function(ev){
   else if(a==='wnext'){if(wkOffset<0){wkOffset++;document.getElementById('z-week').innerHTML=weekTable();}}
   else if(a==='wnow'){wkOffset=0;document.getElementById('z-week').innerHTML=weekTable();}
   else if(a==='addset'){
-    var row=t.closest('.exrow'),name=row.getAttribute('data-ex');
+    var row=t.closest('[data-ex]'),name=row.getAttribute('data-ex');
     var r=touch(cur);r.ex=r.ex||{};r.ex[name]=r.ex[name]||[];
     var e=null;PROGRAM[planOf(cur)].ex.forEach(function(x){if(x.n===name)e=x;});
     while(r.ex[name].length<Math.max(e.s,r.ex[name].length))r.ex[name].push({kg:null,rep:null});
     r.ex[name].push({kg:null,rep:null});save(cur);render();}
   else if(a==='delset'){
-    var box=t.closest('.setbox'),row2=t.closest('.exrow'),name2=row2.getAttribute('data-ex'),i=+box.getAttribute('data-i');
+    var box=t.closest('[data-i]'),row2=t.closest('[data-ex]'),name2=row2.getAttribute('data-ex'),i=+box.getAttribute('data-i');
     var r3=touch(cur);if(r3.ex&&r3.ex[name2]){r3.ex[name2].splice(i,1);save(cur);render();}}
   else if(a==='usemacro'){
     var r4=touch(cur),kc=Math.round((r4.p||0)*4+(r4.c||0)*4+(r4.f||0)*9);
@@ -1761,7 +2135,8 @@ STORE.get(KEY).then(function(res){
   if(!S.startDate)S.startDate=today();
   cur=today();
   try{
-    render();
+    STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;render();})
+      .catch(function(){render();});
     if(S.sync.token&&S.sync.gist){
       syncNow(true);
       document.addEventListener('visibilitychange',function(){
