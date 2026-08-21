@@ -201,7 +201,7 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .big{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1}
 .chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
 /* ================= SALON MODU ================= */
-body.gym .wrap{max-width:none;padding:0 0 calc(108px + env(safe-area-inset-bottom))}
+body.gym .wrap{max-width:none;padding:0 0 calc(124px + env(safe-area-inset-bottom))}
 body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;box-shadow:none}
 
 .gtop{position:sticky;top:0;z-index:30;background:#fbf8f2;border-bottom:1px solid #e4d9c2;
@@ -214,12 +214,14 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .gsync{text-align:center;font-size:11px;color:#a8987c;font-weight:600;margin-top:6px}
 
-.gtabs{position:fixed;left:0;right:0;bottom:0;z-index:40;display:flex;gap:4px;
-  background:rgba(250,246,238,.82);-webkit-backdrop-filter:saturate(180%) blur(22px);
-  backdrop-filter:saturate(180%) blur(22px);
-  border-top:1px solid rgba(180,164,136,.32);
-  padding:7px 8px calc(7px + env(safe-area-inset-bottom))}
-.gtabs button{flex:1;border:0;background:transparent;border-radius:15px;padding:7px 2px 6px;
+.gtabs{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
+  z-index:40;display:flex;gap:4px;border-radius:34px;
+  background:rgba(250,246,238,.78);-webkit-backdrop-filter:saturate(190%) blur(26px);
+  backdrop-filter:saturate(190%) blur(26px);
+  border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 10px 30px rgba(50,42,30,.18),0 2px 6px rgba(50,42,30,.08);
+  padding:6px}
+.gtabs button{flex:1;border:0;background:transparent;border-radius:28px;padding:8px 2px 7px;
   display:flex;flex-direction:column;align-items:center;gap:3px;
   font-size:10.5px;font-weight:600;color:#a1917a;letter-spacing:.1px;
   transition:background .18s ease,color .18s ease,transform .18s ease;-webkit-tap-highlight-color:transparent}
@@ -227,7 +229,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gtabs .ic svg{width:100%;height:100%;display:block}
 .gtabs button:active{transform:scale(.94)}
 .gtabs button.on{background:#3a342c;color:#f6efe1;font-weight:700;
-  box-shadow:0 3px 10px rgba(58,52,44,.22)}
+  box-shadow:0 4px 12px rgba(58,52,44,.28)}
 .gtabs button.on .lb{opacity:.95}
 
 .gpick{display:flex;gap:6px;overflow-x:auto;padding:12px 12px 4px;-webkit-overflow-scrolling:touch}
@@ -287,7 +289,18 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gdot{width:12px;height:12px;border-radius:50%;border:1.5px solid #ddd0b8;background:#fbf8f2;padding:0}
 .gdot.on{background:#3a342c;border-color:#3a342c;transform:scale(1.25)}
 .gdot.ok{background:#16a85a;border-color:#16a85a}
+.gdot.near{background:#5aa832;border-color:#5aa832}
 .gdot.part{background:#f4ad15;border-color:#f4ad15}
+.gfinish{padding:2px 14px 4px}
+.gfbtn{width:100%;border:0;border-radius:16px;padding:16px;background:#3a342c;color:#f6efe1;
+  font-size:15px;font-weight:700;letter-spacing:.2px;box-shadow:0 6px 18px rgba(58,52,44,.24);
+  -webkit-tap-highlight-color:transparent}
+.gfbtn:active{transform:scale(.98)}
+.gfsub{text-align:center;font-size:11.5px;color:#a8987c;font-weight:600;margin-top:7px}
+.dsum{border-radius:18px;padding:18px;text-align:center}
+.dsumq{font-family:'Fraunces';font-size:42px;font-weight:600;line-height:1}
+.dsumv{font-size:14px;font-weight:700;margin-top:2px}
+.dsumr{font-size:12px;color:#8a7f6f;font-weight:600;margin-top:7px;line-height:1.5}
 .gsess{text-align:center;font-size:12px;font-weight:700;color:#a8987c;padding:0 14px 14px}
 .gempty{padding:44px 24px;text-align:center;color:#a8987c;font-size:13px;line-height:1.5}
 .gempty b{display:block;font-family:'Fraunces';font-size:18px;color:#8a7f6f;margin-bottom:6px}
@@ -477,7 +490,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .rwrap.done .rcard{box-shadow:0 24px 60px rgba(31,110,74,.4)}
 
 .rmini{position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(74px + env(safe-area-inset-bottom));z-index:55;
+  bottom:calc(92px + env(safe-area-inset-bottom));z-index:55;
   display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;
   background:rgba(58,52,44,.92);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
   color:#f6efe1;box-shadow:0 8px 24px rgba(40,33,24,.3);max-width:78vw}
@@ -1789,7 +1802,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v14 · 21 Ağu 2026';
+var APPVER='v15 · 21 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -1963,7 +1976,7 @@ function gymWorkout(){
   var dots='';
   for(var j=0;j<t.ex.length;j++){
     var ev2=evalEx((r.ex||{})[t.ex[j].n],t.ex[j]);
-    var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state!=='bos'?'part':''));
+    var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state==='yakin'?'near':(ev2.state!=='bos'?'part':'')));
     dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
   }
 
@@ -1995,6 +2008,11 @@ function gymWorkout(){
     '<div class="gdots">'+dots+'</div>'+
     '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
   '</div>'+
+  (exIdx>=t.ex.length-1
+    ?'<div class="gfinish"><button class="gfbtn" data-a="finish">Antrenmanı bitir</button>'+
+      '<div class="gfsub">'+(function(){var e3=sessionEval(cur,dt);
+        return e3&&!e3.empty?e3.tam+' / '+e3.total+' hareket tamam · '+ti(e3.vol)+' kg':'henüz kayıt yok';})()+'</div></div>'
+    :'')+
   '<div class="gsess">'+sessionLine(cur,dt)+'</div>';
 }
 
@@ -2248,6 +2266,31 @@ function detailLayer(){
           '<span class="sgain" style="color:'+col+'">'+(x.gain!=null?(x.gain>0?'+':'')+x.gain.toFixed(0)+'%':'')+'</span>'+
           '<span class="schev">›</span></button>';}).join('')+'</div>'
       :'<div class="sempty">Bu türde henüz kayıt yok</div>';
+  }
+  else if(dOpen.kind==='done'){
+    var dt2=planOf(cur),t2=PROGRAM[dt2],ev3=sessionEval(cur,dt2);
+    title='Antrenman bitti';sub=t2.label.split(' (')[0]+' · '+fdate(cur);
+    if(!ev3||ev3.empty)body='<div class="sempty">Bu güne hiç set girilmemiş</div>';
+    else{
+      var pctv=Math.round(ev3.q*100);
+      body='<div class="dsum" style="background:'+hexa(ev3.vcolor,.12)+'">'+
+        '<div class="dsumq" style="color:'+ev3.vcolor+'">%'+pctv+'</div>'+
+        '<div class="dsumv" style="color:'+ev3.vcolor+'">'+ev3.verdict+'</div>'+
+        '<div class="dsumr">'+ev3.tam+' / '+ev3.total+' hareket · '+ti(ev3.vol)+' kg toplam hacim'+
+        (ev3.trend!=null?' · geçen seansa göre <b style="color:'+(ev3.trend>1?C.green:ev3.trend<-1?C.orange:'#8a7f6f')+'">'+(ev3.trend>0?'+':'')+ev3.trend.toFixed(0)+'%</b>':'')+
+        '</div></div>'+
+        '<div class="exlist" style="margin-top:12px">'+t2.ex.map(function(x){
+          var v=evalEx((D(cur).ex||{})[x.n],x);
+          return '<div class="srow" style="pointer-events:none">'+
+            '<span class="exthumb">'+figSVG(x.n)+'</span>'+
+            '<span class="sname"><b>'+esc(x.n)+'</b><i>'+
+              (v.state==='bos'?'girilmedi':((D(cur).ex||{})[x.n]||[]).filter(function(z){return z.kg!=null&&z.rep!=null;})
+                .map(function(z){return z.kg+'×'+z.rep;}).join(' · '))+'</i></span>'+
+            '<span class="sgain" style="color:'+v.color+';min-width:auto;font-size:11px">'+v.label+'</span></div>';
+        }).join('')+'</div>'+
+        '<button class="mbtn dark" data-a="gosum" style="margin-top:14px">Özete git</button>'+
+        '<button class="mbtn" data-a="dclose">Antrenmana dön</button>';
+    }
   }
   else{
     var nm=dOpen.key,h=exSessionsData(nm),e=EXTGT[nm];
@@ -2748,6 +2791,11 @@ app.addEventListener('click',function(ev){
     dOpen={kind:t.getAttribute('data-kind'),key:t.getAttribute('data-key')};dClosing=false;
     zi('dlayer',''); var dl=document.getElementById('dlayer');
     if(dl)dl.outerHTML=detailLayer(); else render();}
+  else if(a==='finish'){
+    clearRest();dOpen={kind:'done',key:''};dClosing=false;
+    var dlf=document.getElementById('dlayer');if(dlf)dlf.outerHTML=detailLayer();else render();}
+  else if(a==='gosum'){
+    dOpen=null;dClosing=false;gTab='s';render();window.scrollTo(0,0);}
   else if(a==='dclose'){
     dClosing=true;var dl2=document.getElementById('dlayer');if(dl2)dl2.outerHTML=detailLayer();
     setTimeout(function(){dOpen=null;dClosing=false;
