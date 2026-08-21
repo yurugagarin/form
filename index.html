@@ -531,30 +531,30 @@ var C={green:'#16a85a',amber:'#f4ad15',orange:'#ef5a1e',red:'#dc2626',blue:'#3b8
        cyan:'#07a7c4',violet:'#8b5cf6',pink:'#ec4899',teal:'#0d9488'};
 
 var PROGRAM={
-  rest:{label:'Dinlenme',short:'Dinlenme',code:'',color:'#c0b193',ex:[]},
-  cardio:{label:'Kardiyo / yürüyüş',short:'Kardiyo',code:'KAR',color:C.teal,ex:[]},
-  gun1:{label:'Gün 1 · İtiş (Göğüs / Omuz / Triceps)',short:'Gün 1 İtiş',code:'İTİ',color:C.orange,ex:[
+  rest:{label:'Dinlenme',name:'Dinlenme',short:'Dinlenme',code:'',color:'#c0b193',ex:[]},
+  cardio:{label:'Kardiyo / yürüyüş',name:'Kardiyo',short:'Kardiyo',code:'KAR',color:C.teal,ex:[]},
+  gun1:{label:'İtiş · Göğüs / Omuz / Triceps',name:'İtiş',short:'İtiş',code:'İTİ',color:C.orange,ex:[
     {n:'Eğik dambıl press',s:3,r:[6,10]},
     {n:'Düz dambıl press',s:3,r:[8,12]},
     {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
     {n:'Kablo yan kaldırış',s:4,r:[12,20]},
     {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
     {n:'Halat pushdown',s:3,r:[12,15]}]},
-  gun2:{label:'Gün 2 · Çekiş (Sırt / Biceps)',short:'Gün 2 Çekiş',code:'ÇEK',color:C.blue,ex:[
+  gun2:{label:'Çekiş · Sırt / Biceps',name:'Çekiş',short:'Çekiş',code:'ÇEK',color:C.blue,ex:[
     {n:'Lat pulldown / Barfiks',s:4,r:[8,12]},
     {n:'Göğüs destekli row',s:3,r:[8,12]},
     {n:'Oturarak kablo row',s:3,r:[10,12]},
     {n:'Face pull',s:3,r:[15,20]},
     {n:'Eğik dambıl curl',s:3,r:[10,12]},
     {n:'Kablo curl',s:3,r:[10,15]}]},
-  gun3:{label:'Gün 3 · Bacak',short:'Gün 3 Bacak',code:'BAC',color:C.violet,ex:[
+  gun3:{label:'Bacak',name:'Bacak',short:'Bacak',code:'BAC',color:C.violet,ex:[
     {n:'Squat / Hack squat',s:3,r:[6,10]},
     {n:'Romanian deadlift',s:3,r:[8,12]},
     {n:'Leg press',s:3,r:[10,15]},
     {n:'Leg curl',s:3,r:[10,15]},
     {n:'Leg extension',s:2,r:[12,15]},
     {n:'Ayakta calf raise',s:4,r:[10,15]}]},
-  gun4:{label:'Gün 4 · Omuz & Kol ⭐ (öncelik)',short:'Gün 4 Omuz/Kol',code:'OMZ',color:C.green,ex:[
+  gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
     {n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
     {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
     {n:'Makine omuz press',s:3,r:[8,12]},
@@ -563,7 +563,7 @@ var PROGRAM={
     {n:'Skullcrusher',s:3,r:[10,12]},
     {n:'Preacher curl',s:3,r:[10,12]},
     {n:'Hammer curl',s:3,r:[10,15]}]},
-  gun5:{label:'Gün 5 · Üst Vücut + Karın',short:'Gün 5 Üst/Karın',code:'ÜST',color:C.pink,ex:[
+  gun5:{label:'Üst Vücut + Karın',name:'Üst Vücut + Karın',short:'Üst/Karın',code:'ÜST',color:C.pink,ex:[
     {n:'Eğik press',s:3,r:[8,12]},
     {n:'Geniş tutuş lat pulldown',s:3,r:[10,12]},
     {n:'Kablo fly',s:3,r:[12,15]},
@@ -842,7 +842,59 @@ function suggestDt(d){
 }
 function restOf(d){var r=S.restWeeks&&S.restWeeks[monday(d)];return (r&&r.length!=null)?r:S.restDays;}
 function isRest(d){var e=dtOf(d)||planned(d);if(e)return e==='rest';return restOf(d).indexOf(pd(d).getDay())>=0;}
+/* o gün, kendi haftasında (Pzt–Paz) kaçıncı antrenman? */
+function weekOrd(d){
+  var m=monday(d),n=0;
+  for(var i=0;i<7;i++){
+    var x=addD(m,i),dt=(S.days[x]&&S.days[x].dt)||(S.plan&&S.plan[x])||null;
+    if(!dt&&restOf(x).indexOf(pd(x).getDay())>=0)dt='rest';
+    if(dt&&PROGRAM[dt]&&PROGRAM[dt].ex.length){n++;if(x===d)return n;}
+  }
+  return 0;
+}
+/* başlıkta gösterilecek ad: haftadaki sıra + antrenman adı */
+function dayTitle(d){
+  var k=planOf(d),t=PROGRAM[k];
+  if(!t)return 'planlanmadı';
+  if(!t.ex.length)return t.name;
+  var o=weekOrd(d);
+  return (o?'Gün '+o+' · ':'')+t.name;
+}
 function planOf(d){return dtOf(d)||planned(d)||(isRest(d)?'rest':suggestDt(d));}
+/* o günün adı: "Gün 4" program türüdür; kullanıcı için asıl anlamlı olan
+   takvimde o haftanın kaçıncı antrenman günü olduğudur */
+function typeName(k){
+  var L=PROGRAM[k]&&PROGRAM[k].label;if(!L)return '';
+  var parts=L.split(' · ');
+  return (parts[1]||parts[0]).replace(/ ⭐.*/,'').replace(/\(.*/,'').trim();
+}
+function weekOrder(d){
+  var m=monday(d),n=0;
+  for(var i=0;i<7;i++){
+    var dd=addD(m,i),dt=(dd===d)?planOf(dd):effDt(dd);
+    var isT=ORDER.indexOf(dt)>=0;
+    if(isT)n++;
+    if(dd===d)return isT?n:null;
+  }
+  return null;
+}
+function weekPlanCount(d){
+  var m=monday(d),n=0;
+  for(var i=0;i<7;i++){var dd=addD(m,i);if(ORDER.indexOf((dd===d)?planOf(dd):effDt(dd))>=0)n++;}
+  return n;
+}
+function dayTitle(d){
+  var dt=planOf(d);
+  if(ORDER.indexOf(dt)<0)return PROGRAM[dt]?PROGRAM[dt].label.split(' (')[0]:'planlanmadı';
+  var o=weekOrder(d);
+  return (o?o+'. Gün · ':'')+typeName(dt);
+}
+function dayTitleShort(d){
+  var dt=planOf(d);
+  if(ORDER.indexOf(dt)<0)return PROGRAM[dt]?PROGRAM[dt].short:'';
+  var o=weekOrder(d);
+  return (o?o+'. GÜN · ':'')+typeName(dt).toUpperCase();
+}
 
 /* ============ DEPOLAMA ============ */
 /* ============ DEPOLAMA KATMANI ============
@@ -1242,7 +1294,8 @@ function dayCard(){
           '<button data-a="next" aria-label="Sonraki gün">›</button>'+
         '</div>'+
         '<div><h2>'+(isT?'Bugün':GUNU[pd(cur).getDay()])+'</h2>'+
-          '<div class="meta">'+flong(cur)+(pdn>0?' · Hafta '+wk+' · Program günü '+pdn:' · program başlamadı')+'</div></div>'+
+          '<div class="meta">'+flong(cur)+(pdn>0?' · Hafta '+wk:'')+
+            (function(){var o=weekOrder(cur);return o?' · bu haftanın '+o+'/'+weekPlanCount(cur)+' antrenmanı':'';})()+'</div></div>'+
       '</div>'+
       '<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">'+
         (isT?'':'<button class="ghostbtn" data-a="today">Bugüne dön</button>')+
@@ -1278,7 +1331,8 @@ function dayCard(){
   if(t&&t.ex.length){
     h+='<div style="background:'+hexa(t.color,.1)+';padding:11px 18px;border-top:1px solid #ece1cd;border-bottom:1px solid '+hexa(t.color,.28)+';'+
         'display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">'+
-      '<span class="serif" style="font-size:14px;color:'+t.color+'">'+esc(t.label)+'</span>'+
+      '<span class="serif" style="font-size:14px;color:'+t.color+'">'+esc(dayTitle(cur))+
+        '<span style="font-weight:400;color:#a8987c;font-size:12.5px;margin-left:8px">'+esc(t.label)+'</span></span>'+
       '<span data-sess style="font-size:12.5px;font-weight:700;color:#a8987c">'+sessionLine(cur,dt)+'</span></div>';
     h+='<div data-exlist>'+t.ex.map(function(e){return exRow(e,r);}).join('')+'</div>';
   } else {
@@ -1524,7 +1578,7 @@ function calendar(){
     '</div>'+
     '<div class="legend" style="padding:0 18px 16px;border-top:1px dashed #ece1cd;padding-top:11px">'+
       ORDER.map(function(k){return '<span style="font-weight:700;color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</span>'+
-        '<span style="color:#a8987c;margin-right:10px">'+PROGRAM[k].label.split(' · ')[1].replace(/ ⭐.*/,'').replace(/\(.*/,'').trim()+'</span>';}).join('')+
+        '<span style="color:#a8987c;margin-right:10px">'+PROGRAM[k].name+'</span>';}).join('')+
       '<span style="font-weight:700;color:'+C.teal+'">KAR</span><span style="color:#a8987c;margin-right:10px">Kardiyo</span>'+
       '<span style="font-weight:700;color:#8a7a5e">DİN</span><span style="color:#a8987c">Dinlenme</span>'+
     '</div></div>';
@@ -1815,7 +1869,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v16 · 21 Ağu 2026';
+var APPVER='v17 · 21 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -1998,7 +2052,7 @@ function gymWorkout(){
     '<div class="ghead">'+
       '<button class="gfig" data-a="fig" data-n="'+esc(e.n)+'">'+figSVG(e.n)+'</button>'+
       '<div style="flex:1;min-width:0">'+
-        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · '+esc(t.short)+'</div>'+
+        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · '+esc(dayTitleShort(cur))+'</div>'+
         '<div class="gname">'+esc(e.n)+'</div>'+
         '<div class="gtgt">'+e.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme</div>'+
       '</div></div>'+
@@ -2154,7 +2208,7 @@ function typeDonut(tv){
       var v=tv.vol[k];
       return '<button class="srow" data-a="dopen" data-kind="type" data-key="'+k+'">'+
         '<span class="sdot" style="background:'+PROGRAM[k].color+'"></span>'+
-        '<span class="sname">'+esc(PROGRAM[k].label.split(' · ')[1].replace(/ ⭐.*/,'').replace(/\(.*/,'').trim())+'</span>'+
+        '<span class="sname">'+esc(PROGRAM[k].name)+'</span>'+
         '<span class="sval">'+(v?ti(v)+' kg':'—')+'</span><span class="schev">›</span></button>';
     }).join('')+'</div></div>';
 }
@@ -2267,7 +2321,7 @@ function detailLayer(){
   }
   else if(dOpen.kind==='type'){
     var k=dOpen.key,list=typeExercises(k);
-    title=PROGRAM[k].label.split(' · ')[1].replace(/ ⭐.*/,'').replace(/\(.*/,'').trim();
+    title=PROGRAM[k].name;
     sub=list.length+' hareket kayıtlı';
     body=list.length
       ?'<div class="exlist">'+list.map(function(x){
@@ -2282,7 +2336,7 @@ function detailLayer(){
   }
   else if(dOpen.kind==='done'){
     var dt2=planOf(cur),t2=PROGRAM[dt2],ev3=sessionEval(cur,dt2);
-    title='Antrenman bitti';sub=t2.label.split(' (')[0]+' · '+fdate(cur);
+    title='Antrenman bitti';sub=dayTitle(cur)+' · '+fdate(cur);
     if(!ev3||ev3.empty)body='<div class="sempty">Bu güne hiç set girilmemiş</div>';
     else{
       var pctv=Math.round(ev3.q*100);
@@ -2412,7 +2466,7 @@ function gymMore(){
       paintBar()+calendarM()+
       '<div class="mlegend">'+ORDER.map(function(k){
         return '<span><b style="color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</b> '+
-          esc(PROGRAM[k].label.split(' · ')[1].replace(/ ⭐.*/,'').replace(/\(.*/,'').trim())+'</span>';}).join('')+
+          esc(PROGRAM[k].name)+'</span>';}).join('')+
         '<span><b style="color:#8a7a5e">DİN</b> Dinlenme</span></div>')+
 
     sect('prog','☰','Program & Hareketler',t.ex.length+' hareket · '+esc(t.short),
@@ -2475,7 +2529,7 @@ function gymTop(){
       '<button class="gnavbtn" data-a="prev">‹</button>'+
       '<div style="flex:1;text-align:center;min-width:0">'+
         '<div class="gdate">'+(isT?'BUGÜN':GUNU[pd(cur).getDay()].toUpperCase())+' · '+fdate(cur)+'</div>'+
-        '<div class="gday" style="color:'+(t?t.color:'#a8987c')+'">'+esc(t?t.label.split(' (')[0]:'planlanmadı')+'</div>'+
+        '<div class="gday" style="color:'+(t?t.color:'#a8987c')+'">'+esc(dayTitle(cur))+'</div>'+
       '</div>'+
       '<button class="gnavbtn" data-a="next">›</button>'+
     '</div>'+
