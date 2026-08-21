@@ -415,7 +415,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .mc{aspect-ratio:1/1;border-radius:7px;background:#efe7d6;display:flex;align-items:center;justify-content:center;
   font-size:9px;font-weight:700;border:1.5px solid transparent}
 .mc.rest{background:#cfc0a4}
-.mc.future{opacity:.5}
+.mc.future{opacity:.62}
 .mc.today{border-color:#e3a23f}
 .mc.sel{border-color:#3a342c}
 .mlegend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:11px;font-size:11px;color:#a8987c;font-weight:600}
@@ -1685,7 +1685,20 @@ function mergeRemote(rm){
     var r=rm.days[d],l=S.days[d];
     if(!l||(r._t||0)>(l._t||0)){S.days[d]=r;ch++;}
   });
-  if((rm._pt||0)>(S._pt||0)){S.plan=rm.plan||{};S._pt=rm._pt;ch++;}
+  /* takvim planı: günü gün birleştir. Karşı taraf daha yeniyse çakışanlarda o kazanır,
+     ama sadece bir tarafta olan günler her hâlükârda korunur. */
+  if(rm.plan){
+    S.plan=S.plan||{};
+    var newer=(rm._pt||0)>(S._pt||0);
+    Object.keys(rm.plan).forEach(function(k){
+      if(!(k in S.plan)){S.plan[k]=rm.plan[k];ch++;}
+      else if(newer&&S.plan[k]!==rm.plan[k]){S.plan[k]=rm.plan[k];ch++;}
+    });
+    if(newer){
+      Object.keys(S.plan).forEach(function(k){if(!(k in rm.plan)){delete S.plan[k];ch++;}});
+      S._pt=rm._pt;
+    }
+  }
   if((rm._st||0)>(S._st||0)){
     ['startDate','weeks','restDays','restWeeks','base','goal','targets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
@@ -1802,7 +1815,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v15 · 21 Ağu 2026';
+var APPVER='v16 · 21 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2358,7 +2371,7 @@ function calendarM(){
       else if(typeof q==='number'){bgc=qColor(q);tx=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
       cells+='<div class="mc'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+
         (d===cur?' sel':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
-        (future?'':code)+'</div>';
+        code+'</div>';
     }
     g+='<div class="mcalrow'+(wkNow===w+1?' now':'')+'"><span class="mwk">'+(w+1)+'</span>'+cells+'</div>';
   }
