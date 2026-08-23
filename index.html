@@ -202,6 +202,7 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
 /* ================= SALON MODU ================= */
 body.gym .wrap{max-width:none;padding:0 0 calc(124px + env(safe-area-inset-bottom))}
+body.gym .gnav~*{position:relative;z-index:1}
 body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;box-shadow:none}
 
 .gtop{position:sticky;top:0;z-index:30;background:#fbf8f2;border-bottom:1px solid #e4d9c2;
@@ -232,6 +233,16 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   box-shadow:0 4px 12px rgba(58,52,44,.28)}
 .gtabs button.on .lb{opacity:.95}
 
+.gdayhead{display:flex;align-items:center;gap:11px;padding:13px 14px 11px;background:#fbf8f2;
+  border-bottom:1px solid #ece1cd}
+.gdaybar{width:5px;align-self:stretch;border-radius:3px;flex:none;min-height:34px}
+.gdaytx{flex:1;min-width:0}
+.gdaykick{font-size:10px;letter-spacing:1.1px;color:#b3a488;font-weight:700}
+.gdayname{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.15;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gdaybtn{flex:none;border:1px solid #e4d9c2;background:#f7f1e4;border-radius:10px;padding:7px 11px;
+  font-size:11px;font-weight:700;color:#a1917a;-webkit-tap-highlight-color:transparent}
+.gdaybtn.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf;padding:7px 13px}
 .gpick{display:flex;gap:6px;overflow-x:auto;padding:12px 12px 4px;-webkit-overflow-scrolling:touch}
 .gchip{flex:none;border:1px solid #ddd0b8;background:#fbf8f2;border-radius:10px;padding:9px 13px;
   font-size:12.5px;font-weight:700;color:#8a7f6f}
@@ -281,7 +292,12 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   padding:12px;font-size:12.5px;font-weight:700;color:#a8987c}
 .gfoot{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#a8987c;margin-top:12px}
 
-.gnav{display:flex;align-items:center;gap:10px;padding:14px}
+.gnav{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:38;
+  display:flex;align-items:center;gap:10px;padding:7px 9px;border-radius:18px;
+  background:rgba(250,246,238,.82);-webkit-backdrop-filter:saturate(190%) blur(26px);
+  backdrop-filter:saturate(190%) blur(26px);border:1px solid rgba(255,255,255,.55);
+  box-shadow:0 8px 24px rgba(50,42,30,.16)}
+.gnavpad{height:78px}
 .garrow{width:54px;height:48px;flex:none;border-radius:12px;border:1px solid #ddd0b8;background:#fbf8f2;
   font-size:22px;color:#6b5f4d;line-height:1}
 .garrow:disabled{opacity:.3}
@@ -345,7 +361,29 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .exthumb.big{width:62px;height:52px}
 .exlist{display:flex;flex-direction:column;gap:1px}
 .duo2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.dlbl{font-size:10px;letter-spacing:.9px;font-weight:700;margin-bottom:4px}
+.dlbl{font-size:10px;letter-spacing:.9px;font-weight:700;margin-bottom:4px;
+  display:flex;align-items:center;gap:5px}
+.dlbl b{font-size:13px;letter-spacing:0;color:#3a342c}
+.dlbl .schev{margin-left:auto;font-size:15px}
+.dtap{display:block;width:100%;text-align:left;background:none;border:0;padding:0;
+  border-radius:10px;-webkit-tap-highlight-color:transparent;
+  transition:transform .16s ease,background .16s ease}
+.dtap:active{transform:scale(.97);background:#f3ecdd}
+/* ölçüm detayı */
+.mstats{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:14px}
+.mstats>div{background:#f7f1e4;border:1px solid #ece1cd;border-radius:12px;padding:10px 11px}
+.mstats .l{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;color:#a8987c}
+.mstats .v{font-family:'Fraunces';font-size:21px;font-weight:600;line-height:1.1;margin-top:3px}
+.mstats .v span{font-family:'Karla';font-size:11px;font-weight:700;color:#a8987c;margin-left:2px}
+.mstats .s{font-size:10.5px;font-weight:700;color:#b3a488;margin-top:2px}
+.mrow{display:flex;align-items:center;gap:9px;padding:9px 3px;border-bottom:1px solid #f0e8d8}
+.mrow:last-child{border-bottom:0}
+.mrd{font-size:11.5px;font-weight:700;color:#a8987c;width:56px;flex:none}
+.mrv{font-size:14px;font-weight:700;flex:1}
+.mrv span{font-size:10.5px;color:#b3a488;font-weight:700;margin-left:3px}
+.mrdelta{font-size:11.5px;font-weight:700;min-width:52px;text-align:right}
+.mrtrack{width:62px;height:6px;border-radius:4px;background:#efe7d6;overflow:hidden;flex:none}
+.mrtrack i{display:block;height:100%;border-radius:4px}
 
 /* ---- detay sayfası ---- */
 .dwrap{position:fixed;inset:0;z-index:70;display:flex;align-items:flex-end;justify-content:center}
@@ -490,7 +528,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .rwrap.done .rcard{box-shadow:0 24px 60px rgba(31,110,74,.4)}
 
 .rmini{position:fixed;left:50%;transform:translateX(-50%);
-  bottom:calc(92px + env(safe-area-inset-bottom));z-index:55;
+  bottom:calc(146px + env(safe-area-inset-bottom));z-index:55;
   display:flex;align-items:center;gap:9px;padding:10px 16px;border-radius:999px;
   background:rgba(58,52,44,.92);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
   color:#f6efe1;box-shadow:0 8px 24px rgba(40,33,24,.3);max-width:78vw}
@@ -545,8 +583,8 @@ var PROGRAM={
     {n:'Göğüs destekli row',s:3,r:[8,12]},
     {n:'Oturarak kablo row',s:3,r:[10,12]},
     {n:'Face pull',s:3,r:[15,20]},
-    {n:'Eğik dambıl curl',s:3,r:[10,12]},
-    {n:'Kablo curl',s:3,r:[10,15]}]},
+    {n:'Kablo curl',s:3,r:[10,15]},
+    {n:'Eğik dambıl curl',s:3,r:[10,12]}]},
   gun3:{label:'Bacak',name:'Bacak',short:'Bacak',code:'BAC',color:C.violet,ex:[
     {n:'Squat / Hack squat',s:3,r:[6,10]},
     {n:'Romanian deadlift',s:3,r:[8,12]},
@@ -556,19 +594,19 @@ var PROGRAM={
     {n:'Ayakta calf raise',s:4,r:[10,15]}]},
   gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
     {n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
-    {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
-    {n:'Makine omuz press',s:3,r:[8,12]},
-    {n:'Face pull',s:3,r:[15,20]},
-    {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
     {n:'Skullcrusher',s:3,r:[10,12]},
-    {n:'Preacher curl',s:3,r:[10,12]},
-    {n:'Hammer curl',s:3,r:[10,15]}]},
+    {n:'Hammer curl',s:3,r:[10,15]},
+    {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
+    {n:'Face pull',s:3,r:[15,20]},
+    {n:'Makine omuz press',s:3,r:[8,12]},
+    {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
+    {n:'Preacher curl',s:3,r:[10,12]}]},
   gun5:{label:'Üst Vücut + Karın',name:'Üst Vücut + Karın',short:'Üst/Karın',code:'ÜST',color:C.pink,ex:[
-    {n:'Eğik press',s:3,r:[8,12]},
     {n:'Geniş tutuş lat pulldown',s:3,r:[10,12]},
-    {n:'Kablo fly',s:3,r:[12,15]},
+    {n:'Eğik press',s:3,r:[8,12]},
     {n:'Tek kol dambıl row',s:3,r:[10,12]},
     {n:'Yan kaldırış',s:3,r:[15,20]},
+    {n:'Kablo fly',s:3,r:[12,15]},
     {n:'Triceps pushdown',s:3,r:[12,15]},
     {n:'Kablo curl',s:3,r:[12,15]},
     {n:'Cable crunch',s:3,r:[10,15]}]}
@@ -1870,7 +1908,7 @@ function syncCard(){
 
 /* ============ SALON MODU (telefon) ============ */
 var APPVER='v17 · 21 Ağu 2026';
-var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0;
+var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
 
@@ -1999,13 +2037,26 @@ function restBar(){
 /* --- antrenman sekmesi: tek hareket --- */
 function gymWorkout(){
   var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
-  var pick='<div class="gpick">'+Object.keys(PROGRAM).map(function(k){
-    return '<button class="gchip'+(dt===k?' on':'')+'" data-a="gdt" data-k="'+k+'"'+
-      (dt===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+esc(PROGRAM[k].code||PROGRAM[k].short)+'</button>';}).join('')+'</div>';
+  var col=(t&&t.color)||'#a8987c';
+  var isTr=ORDER.indexOf(dt)>=0;
+  var ord=isTr?weekOrder(cur):null;
+  var pick='<div class="gdayhead">'+
+      '<span class="gdaybar" style="background:'+col+'"></span>'+
+      '<div class="gdaytx">'+
+        '<div class="gdaykick">'+(cur===today()?'BUGÜN':fdate(cur).toUpperCase())+
+          (ord?' · '+ord+'. GÜN':'')+'</div>'+
+        '<div class="gdayname">'+esc(t?typeName(dt)||t.name:'Planlanmadı')+'</div>'+
+      '</div>'+
+      '<button class="gdaybtn'+(dtPick?' on':'')+'" data-a="dtpick" aria-label="Program gününü değiştir">'+
+        (dtPick?'✕':'değiştir')+'</button>'+
+    '</div>'+
+    (dtPick?'<div class="gpick">'+Object.keys(PROGRAM).map(function(k){
+      return '<button class="gchip'+(dt===k?' on':'')+'" data-a="gdt" data-k="'+k+'"'+
+        (dt===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+esc(PROGRAM[k].code||PROGRAM[k].short)+'</button>';}).join('')+'</div>':'');
 
   if(!t||!t.ex.length)
     return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
-      'Bugün antrenman yok. Program günü değiştirmek istersen yukarıdan seç.</div>';
+      'Bugün antrenman yok. Değiştirmek istersen yukarıdaki “değiştir”e dokun.</div>';
 
   if(exIdx>=t.ex.length)exIdx=0;
   var e=t.ex[exIdx];
@@ -2052,7 +2103,7 @@ function gymWorkout(){
     '<div class="ghead">'+
       '<button class="gfig" data-a="fig" data-n="'+esc(e.n)+'">'+figSVG(e.n)+'</button>'+
       '<div style="flex:1;min-width:0">'+
-        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · '+esc(dayTitleShort(cur))+'</div>'+
+        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · HAREKET</div>'+
         '<div class="gname">'+esc(e.n)+'</div>'+
         '<div class="gtgt">'+e.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme</div>'+
       '</div></div>'+
@@ -2075,6 +2126,7 @@ function gymWorkout(){
     '<div class="gdots">'+dots+'</div>'+
     '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
   '</div>'+
+  '<div class="gnavpad"></div>'+
   (exIdx>=t.ex.length-1
     ?'<div class="gfinish"><button class="gfbtn" data-a="finish">Antrenmanı bitir</button>'+
       '<div class="gfsub">'+(function(){var e3=sessionEval(cur,dt);
@@ -2275,10 +2327,14 @@ function gymSum(){
 
     '<div class="scard static">'+
       '<div class="shead"><div><div class="stitle">Kilo &amp; Bel</div>'+
-        '<div class="ssub">'+(lw!=null?lw.toFixed(1)+' kg':'—')+(bp.length?' · '+bp[bp.length-1].v.toFixed(1)+' cm':'')+'</div></div></div>'+
+        '<div class="ssub">grafiğe dokun, detayı gör</div></div></div>'+
       '<div class="duo2">'+
-        '<div><div class="dlbl" style="color:'+C.blue+'">KİLO</div>'+spark(wp,C.blue,S.goal.weight)+'</div>'+
-        '<div><div class="dlbl" style="color:'+C.teal+'">BEL</div>'+spark(bp,C.teal,null)+'</div>'+
+        '<button class="dtap" data-a="dopen" data-kind="measure" data-key="w">'+
+          '<div class="dlbl" style="color:'+C.blue+'">KİLO <b>'+(lw!=null?lw.toFixed(1):'—')+'</b><span class="schev">›</span></div>'+
+          spark(wp,C.blue,S.goal.weight)+'</button>'+
+        '<button class="dtap" data-a="dopen" data-kind="measure" data-key="b">'+
+          '<div class="dlbl" style="color:'+C.teal+'">BEL <b>'+(bp.length?bp[bp.length-1].v.toFixed(1):'—')+'</b><span class="schev">›</span></div>'+
+          spark(bp,C.teal,null)+'</button>'+
       '</div>'+
     '</div>'+
 
@@ -2334,6 +2390,56 @@ function detailLayer(){
           '<span class="schev">›</span></button>';}).join('')+'</div>'
       :'<div class="sempty">Bu türde henüz kayıt yok</div>';
   }
+  else if(dOpen.kind==='measure'){
+    var mk=dOpen.key==='b'?'b':'w',isW=(mk==='w');
+    var unit=isW?'kg':'cm',mcol=isW?C.blue:C.teal;
+    var pts=keys().filter(function(d){return D(d)[mk]!=null;}).map(function(d){return{d:d,v:D(d)[mk]};});
+    title=isW?'Kilo':'Bel çevresi';
+    sub=pts.length+' ölçüm'+(pts.length?' · '+fdate(pts[0].d)+' — '+fdate(pts[pts.length-1].d):'');
+    if(!pts.length)body='<div class="sempty">Henüz ölçüm girilmemiş</div>';
+    else{
+      var lastV=pts[pts.length-1].v,firstV=pts[0].v,tot=lastV-firstV;
+      var lo2=Math.min.apply(null,pts.map(function(p){return p.v;}));
+      var hi2=Math.max.apply(null,pts.map(function(p){return p.v;}));
+      /* son 7 gün ve ondan önceki 7 gün ortalaması */
+      function avgWin(from,to){
+        var a=pts.filter(function(p){return p.d>=from&&p.d<=to;});
+        return a.length?a.reduce(function(s2,p){return s2+p.v;},0)/a.length:null;
+      }
+      var end=pts[pts.length-1].d;
+      var av1=avgWin(addD(end,-6),end),av2=avgWin(addD(end,-13),addD(end,-7));
+      var wdiff=(av1!=null&&av2!=null)?av1-av2:null;
+      var goalV=isW?S.goal.weight:null;
+      var rem2=(goalV!=null)?lastV-goalV:null;
+      /* düşüş iyi → yeşil */
+      function dcol(v){return v==null?'#a8987c':(v<-0.05?C.green:(v>0.05?C.orange:'#a8987c'));}
+      function sgn(v,dg){return (v>0?'+':'')+v.toFixed(dg==null?1:dg);}
+
+      var cells=[
+        ['Şu an',lastV.toFixed(1),unit,'başlangıç '+firstV.toFixed(1),'#3a342c'],
+        ['Toplam değişim',sgn(tot),unit,fdate(pts[0].d)+'’den beri',dcol(tot)],
+        ['Son 7 gün ort.',(av1!=null?av1.toFixed(1):'—'),unit,
+          (wdiff!=null?'önceki haftaya '+sgn(wdiff):'önceki hafta verisi yok'),dcol(wdiff)],
+        (goalV!=null
+          ?['Hedefe kalan',(rem2<=0?'0':rem2.toFixed(1)),unit,'hedef '+goalV.toFixed(1)+' '+unit,'#f4ad15']
+          :['Aralık',lo2.toFixed(1)+'–'+hi2.toFixed(1),unit,'en düşük / en yüksek','#3a342c'])
+      ];
+      body='<div class="mstats">'+cells.map(function(x){
+          return '<div><div class="l">'+x[0]+'</div>'+
+            '<div class="v" style="color:'+x[4]+'">'+x[1]+'<span>'+x[2]+'</span></div>'+
+            '<div class="s">'+esc(x[3])+'</div></div>';}).join('')+'</div>'+
+        '<div class="dchart">'+measureLine(pts,mcol,goalV,unit)+'</div>'+
+        '<div class="dtable" style="margin-top:6px">'+pts.slice().reverse().slice(0,30).map(function(p,i,arr){
+          var nx=arr[i+1],dl=nx?p.v-nx.v:null;
+          var rel=(hi2>lo2)?(p.v-lo2)/(hi2-lo2):0.5;
+          return '<div class="mrow">'+
+            '<div class="mrd">'+fdate(p.d)+'</div>'+
+            '<div class="mrv">'+p.v.toFixed(1)+'<span>'+unit+'</span></div>'+
+            '<div class="mrtrack"><i style="width:'+(18+rel*82).toFixed(0)+'%;background:'+mcol+'"></i></div>'+
+            '<div class="mrdelta" style="color:'+dcol(dl)+'">'+(dl==null?'—':sgn(dl))+'</div>'+
+            '</div>';}).join('')+'</div>';
+    }
+  }
   else if(dOpen.kind==='done'){
     var dt2=planOf(cur),t2=PROGRAM[dt2],ev3=sessionEval(cur,dt2);
     title='Antrenman bitti';sub=dayTitle(cur)+' · '+fdate(cur);
@@ -2379,6 +2485,43 @@ function detailLayer(){
         '<button class="dclose" data-a="dclose">✕</button></div>'+
       '<div class="dbody">'+body+'</div>'+
     '</div></div>';
+}
+/* kilo / bel için büyük grafik — hedef çizgisi ve tarih ekseniyle */
+function measureLine(pts,col,goal,unit){
+  if(pts.length<2)return '<div class="sempty">En az 2 ölçüm gerekiyor</div>';
+  var W=340,H=168,PL=38,PR=14,TP=20,BT=28;
+  var vs=pts.map(function(p){return p.v;});
+  var lo=Math.min.apply(null,vs),hi=Math.max.apply(null,vs);
+  var gIn=goal!=null&&goal<hi+(hi-lo||1);
+  if(gIn){lo=Math.min(lo,goal);hi=Math.max(hi,goal);}
+  var pad=Math.max((hi-lo)*0.22,0.4);lo-=pad;hi+=pad;
+  var n=pts.length,st=(W-PL-PR)/(n-1);
+  function X(i){return PL+i*st;}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var id='ml'+Math.random().toString(36).slice(2,7);
+  var line=pts.map(function(p,i){return (i?'L':'M')+X(i).toFixed(1)+','+Y(p.v).toFixed(1);}).join(' ');
+  var g='<defs><linearGradient id="'+id+'" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0%" stop-color="'+col+'" stop-opacity=".26"/>'+
+    '<stop offset="100%" stop-color="'+col+'" stop-opacity="0"/></linearGradient></defs>';
+  [lo+(hi-lo)*0.15,(lo+hi)/2,hi-(hi-lo)*0.15].forEach(function(v){
+    g+='<line x1="'+PL+'" y1="'+Y(v).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+Y(v).toFixed(1)+'" stroke="#ece1cd" stroke-width="1"/>'+
+       '<text x="'+(PL-6)+'" y="'+(Y(v)+4).toFixed(1)+'" text-anchor="end" font-size="10" font-weight="700" fill="#b3a488" font-family="Karla">'+v.toFixed(1)+'</text>';});
+  if(gIn)
+    g+='<line x1="'+PL+'" y1="'+Y(goal).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+Y(goal).toFixed(1)+
+       '" stroke="'+C.green+'" stroke-width="1.4" stroke-dasharray="5 4"/>'+
+       '<text x="'+(W-PR)+'" y="'+(Y(goal)-5).toFixed(1)+'" text-anchor="end" font-size="9.5" font-weight="700" fill="'+C.green+'" font-family="Karla">HEDEF '+goal.toFixed(1)+'</text>';
+  g+='<path d="'+line+' L'+X(n-1).toFixed(1)+','+(H-BT)+' L'+X(0).toFixed(1)+','+(H-BT)+' Z" fill="url(#'+id+')"/>'+
+     '<path d="'+line+'" fill="none" stroke="'+col+'" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>';
+  pts.forEach(function(p,i){
+    var edge=(i===0||i===n-1);
+    g+='<circle cx="'+X(i).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="'+(edge?3.8:2.4)+'" fill="'+col+'" stroke="#fbf8f2" stroke-width="1.6"/>';
+    if(edge)
+      g+='<text x="'+X(i).toFixed(1)+'" y="'+(Y(p.v)-10).toFixed(1)+'" text-anchor="'+(i===0?'start':'end')+
+         '" font-size="11" font-weight="700" fill="'+col+'" font-family="Karla">'+p.v.toFixed(1)+'</text>';});
+  g+='<text x="'+PL+'" y="'+(H-8)+'" font-size="10" font-weight="600" fill="#b3a488" font-family="Karla">'+fdate(pts[0].d)+'</text>'+
+     '<text x="'+(W-PR)+'" y="'+(H-8)+'" text-anchor="end" font-size="10" font-weight="600" fill="#b3a488" font-family="Karla">'+fdate(pts[n-1].d)+'</text>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block">'+g+'</svg>'+
+    '<div class="dlbl2">'+n+' ölçüm · '+unit+'</div>';
 }
 function bigLine(h){
   if(h.length<2)return '<div class="sempty">En az 2 seans gerekiyor</div>';
@@ -2872,8 +3015,9 @@ app.addEventListener('click',function(ev){
   else if(a==='gtab'){gTab=t.getAttribute('data-k');zi('g-body',gymBody());gymTabsRefresh();window.scrollTo(0,0);}
   else if(a==='gym'){setMode('gym');}
   else if(a==='desktop'){setMode('desk');}
-  else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;save(cur);render();}
-  else if(a==='goex'){exIdx=+t.getAttribute('data-i');zi('g-body',gymBody());}
+  else if(a==='dtpick'){dtPick=!dtPick;zi('g-body',gymBody());}
+  else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;dtPick=false;save(cur);render();}
+  else if(a==='goex'){exIdx=+t.getAttribute('data-i');zi('g-body',gymBody());window.scrollTo(0,0);}
   else if(a==='exprev'){if(exIdx>0){exIdx--;zi('g-body',gymBody());window.scrollTo(0,0);}}
   else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;zi('g-body',gymBody());window.scrollTo(0,0);}}
   else if(a==='rest30'){
