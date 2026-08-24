@@ -381,6 +381,56 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .prtag{display:inline-block;vertical-align:3px;font-family:'Karla';font-size:9.5px;letter-spacing:.8px;
   font-weight:700;background:#f4ad15;color:#fff;border-radius:6px;padding:2px 6px}
 .dtsets span u{text-decoration:none;font-size:9px;color:#b3a488;margin-left:3px;font-weight:700}
+/* ---------- fotoğraf ---------- */
+.phtabs{display:flex;align-items:center;gap:5px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch}
+.phtab{flex:none;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;padding:7px 11px;
+  font-size:12px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  display:flex;align-items:center;gap:5px}
+.phtab.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+.phtab i{font-style:normal;font-size:9.5px;font-weight:700;background:#efe7d6;color:#a8987c;
+  border-radius:5px;padding:1px 5px}
+.phtab.on i{background:rgba(255,255,255,.2);color:#f3ecdf}
+.phsep{width:1px;height:20px;background:#e4d9c2;flex:none;margin:0 3px}
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px}
+.phcell{border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+  border-radius:11px;overflow:hidden;position:relative;display:block}
+.phcell img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:11px;border:1px solid #e8dcc4}
+.phcell:active{transform:scale(.97)}
+.phcap{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;
+  padding:14px 7px 5px;border-radius:0 0 11px 11px;color:#fff;font-size:10.5px;font-weight:700;
+  background:linear-gradient(to top,rgba(30,25,18,.78),rgba(30,25,18,0))}
+.phcap i{font-style:normal;opacity:.75}
+.phcmpsel{display:flex;align-items:center;gap:8px;margin-bottom:11px}
+.phcmpsel select{flex:1;min-width:0}
+.phar{color:#c0b193;font-weight:700;flex:none}
+.phcmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.phcl{font-size:9.5px;letter-spacing:.9px;font-weight:700;color:#a8987c;margin-bottom:5px}
+.phbig{border:0;background:none;padding:0;width:100%;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phbig img{width:100%;border-radius:11px;display:block;border:1px solid #e8dcc4}
+.phmiss{aspect-ratio:3/4;border-radius:11px;background:#f3ecdd;display:flex;align-items:center;
+  justify-content:center;text-align:center;font-size:11px;font-weight:700;color:#c0b193;padding:10px}
+.phnote{margin-top:9px;font-size:11.5px;font-weight:700;color:#a8987c}
+.phempty{padding:16px 2px;font-size:12.5px;line-height:1.6;color:#8a7f6f}
+.phday{margin-top:14px;padding-top:12px;border-top:1px solid #f0e8d8}
+.phdayl{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;color:#a8987c;margin-bottom:7px}
+.phthumbs{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
+.phth{position:relative;flex:none;width:70px}
+.phth>button:first-child{border:0;background:none;padding:0;display:block;width:100%;cursor:pointer}
+.phth img{width:70px;height:93px;object-fit:cover;border-radius:9px;display:block;border:1px solid #e8dcc4}
+.phth>span{display:block;text-align:center;font-size:9.5px;font-weight:700;color:#a8987c;margin-top:3px}
+.phdel{position:absolute;top:-5px;right:-5px;width:22px;height:22px;border-radius:50%;
+  border:1.5px solid #fbf8f2;background:#3a342c;color:#fff;font-size:11px;line-height:1;padding:0;cursor:pointer}
+.phup{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;
+  border-top:1px solid #f0e8d8}
+.phupl{font-size:11.5px;font-weight:700;color:#a8987c;flex:1;min-width:120px}
+.phupr{display:flex;gap:6px}
+.phadd{flex:none;border:1px dashed #ddd0b8;background:#fbf8f2;border-radius:9px;padding:8px 13px;
+  font-size:12px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phadd:active{background:#f3ecdd}
+.phadd span::before{content:'+ ';color:#c0b193}
+.calg .hl.pre,.mcalrow.pre .mwk{color:#c98b2e}
+.calg .cell.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
+.mcal .mc.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
 .dnav{position:sticky;top:0;z-index:25;display:flex;gap:5px;overflow-x:auto;padding:9px 2px;margin-bottom:4px;
   background:rgba(250,246,238,.9);-webkit-backdrop-filter:saturate(180%) blur(20px);
   backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #ece1cd;-webkit-overflow-scrolling:touch}
@@ -1371,6 +1421,22 @@ function lastB(){var a=keys().filter(function(d){return D(d).b!=null;});return a
 function firstB(){var a=keys().filter(function(d){return D(d).b!=null;});return a.length?D(a[0]).b:null;}
 function weekIdx(d){var m0=monday(S.startDate);return Math.floor(dayDiff(m0,monday(d))/7)+1;}
 function progDay(d){return dayDiff(S.startDate,d)+1;}
+/* Başlangıç tarihinden ÖNCE de kayıt olabilir (hafta 0, -1 …).
+   Takvim bu haftaları da göstersin, yoksa o antrenmanlar görünmez olur. */
+function hasData(d){
+  var r=S.days[d];if(!r)return false;
+  if(r.dt)return true;
+  if(r.ex&&Object.keys(r.ex).length)return true;
+  return r.w!=null||r.b!=null||r.kcal!=null||r.st!=null||r.p!=null||
+         r.sh!=null||r.arm!=null||r.ch!=null||r.sl!=null||
+         !!(r.sup&&Object.keys(r.sup).length)||!!r.note;
+}
+function firstWeek(){
+  var ks=keys().filter(hasData);
+  if(!ks.length)return 1;
+  return Math.min(1,weekIdx(ks[0]));
+}
+function wkLabel(w){return w>0?String(w):(w===0?'0':String(w));}
 
 /* ============ ÜST BAŞLIK + KPI ============ */
 function kpi(){
@@ -1893,16 +1959,17 @@ function weekTable(){
 var paintMode=null, fillArm=false;
 var PAINT=[['gun1','İTİ'],['gun2','ÇEK'],['gun3','BAC'],['gun4','OMZ'],['gun5','ÜST'],['cardio','KAR'],['rest','DİN'],['clear','Sil']];
 function calendar(){
-  var m0=monday(S.startDate),tod=today(),wkNow=weekIdx(tod);
+  var wFrom=firstWeek(),tod=today(),wkNow=weekIdx(tod);
+  var m0=addD(monday(S.startDate),(wFrom-1)*7),nW=S.weeks-wFrom+1;
   var WD=[1,2,3,4,5,6,0],WL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
-  var cols='30px repeat('+S.weeks+',1fr)';
+  var cols='30px repeat('+nW+',1fr)';
   var g='<div class="calg" style="grid-template-columns:'+cols+'"><span></span>';
-  for(var w=1;w<=S.weeks;w++)
-    g+='<span class="hl'+(w===wkNow?' now':'')+'">'+((w%5===0||w===1||w===wkNow)?w:'')+'</span>';
+  for(var w=wFrom;w<=S.weeks;w++)
+    g+='<span class="hl'+(w===wkNow?' now':'')+(w<1?' pre':'')+'">'+((w%5===0||w===1||w<1||w===wkNow)?wkLabel(w):'')+'</span>';
   WD.forEach(function(wd,ri){
     g+='<span class="dl">'+WL[ri]+'</span>';
-    for(var w=0;w<S.weeks;w++){
-      var d=addD(m0,w*7+ri),future=d>tod;
+    for(var w=0;w<nW;w++){
+      var d=addD(m0,w*7+ri),future=d>tod,preW=(wFrom+w)<1;
       var dt=effDt(d),t=dt?PROGRAM[dt]:null,code=(t&&t.code)||'';
       var rest=(dt==='rest');
       var q=future?null:dayQuality(d);
@@ -1910,8 +1977,8 @@ function calendar(){
       if(rest){txcol='#8a7a5e';}
       else if(future){txcol=code?'#b0a189':'#b5a68c';}
       else if(typeof q==='number'){bgc=qColor(q);txcol=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
-      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'');
-      var tip=fdate(d)+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
+      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'')+(preW?' pre':'');
+      var tip=fdate(d)+(preW?' · program öncesi':'')+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
       g+='<div class="'+cls+'" data-a="cell" data-d="'+d+'" title="'+esc(tip)+'"'+
          ' style="'+(bgc?'background:'+bgc+';':'')+'color:'+txcol+'">'+code+'</div>';
     }
@@ -1988,7 +2055,10 @@ function openFig(name){
   document.getElementById('mlink').href='https://www.youtube.com/results?search_query='+encodeURIComponent(enName(name)+' form');
   document.getElementById('modal').classList.add('on');
 }
-function closeFig(){document.getElementById('modal').classList.remove('on');}
+function closeFig(){
+  document.getElementById('modal').classList.remove('on');
+  var ml=document.getElementById('mlink');if(ml)ml.style.display='';
+}
 
 /* ============ TAKVİYE ============ */
 function tookSup(d,k){var r=S.days[d];return !!(r&&r.sup&&r.sup[k]);}
@@ -2288,7 +2358,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v18 · 23 Ağu 2026';
+var APPVER='v20 · 24 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2598,7 +2668,7 @@ function volByWeek(){
     if(d>today())return;
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
     var e=sessionEval(d,dt);if(!e||e.empty)return;
-    var w=weekIdx(d);if(w<1)w=1;
+    var w=weekIdx(d);
     m[w]=m[w]||{wk:w,total:0,reps:0,by:{}};
     m[w].total+=e.vol;m[w].by[dt]=(m[w].by[dt]||0)+e.vol;
     PROGRAM[dt].ex.forEach(function(x){
@@ -3059,12 +3129,13 @@ function bigLine(h){
 
 /* --- telefon için takvim: satır = hafta, sütun = gün (7 sütun ekrana sığar) --- */
 function calendarM(){
-  var m0=monday(S.startDate),tod=today(),wkNow=weekIdx(tod);
+  var wFrom=firstWeek(),tod=today(),wkNow=weekIdx(tod);
+  var m0=addD(monday(S.startDate),(wFrom-1)*7),nW=S.weeks-wFrom+1;
   var WL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
   var g='<div class="mcal"><div class="mcalhd"><span></span>'+
     WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
-  for(var w=0;w<S.weeks;w++){
-    var cells='';
+  for(var w=0;w<nW;w++){
+    var cells='',wn=wFrom+w,preW=wn<1;
     for(var i=0;i<7;i++){
       var d=addD(m0,w*7+i),future=d>tod;
       var dt=effDt(d),t=dt?PROGRAM[dt]:null,code=(t&&t.code)||'';
@@ -3074,10 +3145,10 @@ function calendarM(){
       else if(future)tx=code?'#b0a189':'#b5a68c';
       else if(typeof q==='number'){bgc=qColor(q);tx=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
       cells+='<div class="mc'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+
-        (d===cur?' sel':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
+        (d===cur?' sel':'')+(preW?' pre':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
         code+'</div>';
     }
-    g+='<div class="mcalrow'+(wkNow===w+1?' now':'')+'"><span class="mwk">'+(w+1)+'</span>'+cells+'</div>';
+    g+='<div class="mcalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+'"><span class="mwk">'+wkLabel(wn)+'</span>'+cells+'</div>';
   }
   return g+'</div>';
 }
@@ -3129,29 +3200,8 @@ function gymMore(){
           '<span class="mextx"><b>'+esc(e.n)+'</b><i>'+e.s+' × '+e.r[0]+'-'+e.r[1]+' · '+mmss(restSec(e.n))+' dinlenme</i>'+
           '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>')+
 
-    sect('pho','◪','Fotoğraf',photoDates().length+' kayıt · ~'+photoBytes()+' KB · senkron dışı',
-      (function(){
-        var ds=photoDates();
-        if(!cmpA&&ds.length)cmpA=ds[0];
-        if(!cmpB&&ds.length)cmpB=ds[ds.length-1];
-        var p2=photos();
-        var head=ds.length
-          ?'<div class="mrow2">'+
-             '<div class="mfield"><label>Önce</label><select class="ginp sel" data-a="cmp" data-w="a">'+
-               ds.map(function(d){return '<option value="'+d+'"'+(cmpA===d?' selected':'')+'>'+fdate(d)+'</option>';}).join('')+'</select></div>'+
-             '<div class="mfield"><label>Sonra</label><select class="ginp sel" data-a="cmp" data-w="b">'+
-               ds.map(function(d){return '<option value="'+d+'"'+(cmpB===d?' selected':'')+'>'+fdate(d)+'</option>';}).join('')+'</select></div></div>'+
-           '<div style="display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:10px">'+
-             [cmpA,cmpB].map(function(dd){
-               return dd&&p2[dd]?'<img src="'+p2[dd]+'" style="width:100%;border-radius:11px;display:block;border:1px solid #e8dcc4">'
-                 :'<div style="aspect-ratio:3/4;border-radius:11px;background:#f3ecdd"></div>';}).join('')+'</div>'+
-           (cmpA&&cmpB?'<div class="mhint2" style="margin-top:8px">'+Math.abs(dayDiff(cmpA,cmpB))+' gün arayla</div>':'')
-          :'<div class="mhint2">4 haftada bir aynı ışık ve pozla çek. Fotoğraflar senkronize edilmez, sadece bu telefonda kalır.</div>';
-        return head+
-          '<label class="mbtn dark" style="display:block;text-align:center;margin-top:11px">'+fdate(cur)+' için fotoğraf ekle'+
-            '<input type="file" accept="image/*" data-a="photoadd" style="display:none"></label>'+
-          (p2[cur]?'<button class="mbtn" data-a="photodel" data-d="'+cur+'">Bu günün fotoğrafını sil</button>':'');
-      })())+
+    sect('pho','◪','Fotoğraf',photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB',
+      phBody())+
 
     sect('rep','↗','Rapor',kd+' gün kayıtlı · sohbete yapıştır',
       '<div class="mfield"><label>Kapsam</label>'+
@@ -3184,7 +3234,8 @@ function gymMore(){
         mfld('deloadEvery','Deload (kaç haftada bir)',S.deloadEvery)+
       '</div>'+
       '<div class="mfield" style="margin-top:12px"><label>Program başlangıcı</label>'+
-        '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'"></div>')+
+        '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'">'+
+        '<div class="mhint2" style="margin-top:5px">'+startHint()+'</div></div>')+
 
     sect('app','⚙','Uygulama',APPVER,
       '<button class="mbtn" data-a="dl">Yedek indir</button>'+
@@ -3249,11 +3300,19 @@ function renderGym(){
 }
 
 /* ============ AYARLAR / RAPOR ============ */
+function startHint(){
+  if(!S.startDate)return 'tarih seçilmedi';
+  var pdn=progDay(today()),wk=weekIdx(today());
+  var last=addD(S.startDate,S.weeks*7-1);
+  return flong(S.startDate)+' başlangıç · bugün <b>'+(pdn>0?pdn+'. gün':'başlamadı')+'</b>'+
+    (pdn>0?' · hafta '+wkLabel(wk)+'/'+S.weeks+' · bitiş '+flong(last):'');
+}
 function settings(){
   var T=S.targets;
   return '<div class="card"><div class="hd"><h2>Program &amp; Hedefler</h2><span class="meta">değiştirdiğinde tüm hesaplar yenilenir</span></div>'+
   '<div class="pad"><div class="settings">'+
-    '<div><label>Program başlangıcı</label><input type="date" class="inp" data-g="startDate" value="'+S.startDate+'"></div>'+
+    '<div><label>Program başlangıcı</label><input type="date" class="inp" data-g="startDate" value="'+S.startDate+'">'+
+      '<div class="mhint">'+startHint()+'</div></div>'+
     '<div><label>Süre (hafta)</label><input class="inp r" data-g="weeks" inputmode="numeric" value="'+S.weeks+'"></div>'+
     '<div><label>Başlangıç kilo (kg)</label><input class="inp r" data-g="base.weight" inputmode="decimal" value="'+S.base.weight+'"></div>'+
     '<div><label>Hedef kilo (kg)</label><input class="inp r" data-g="goal.weight" inputmode="decimal" value="'+S.goal.weight+'"></div>'+
@@ -3506,20 +3565,43 @@ function ratioCardD(){
    Gist senkronuna dahil DEĞİL — base64 fotoğraf JSON'u şişirir ve senkronu bozar.
    Sadece bu cihazda, ayrı bir anahtarda durur. */
 var PKEY='emre:form:photos';
+/* Veri yapısı: _ph[tarih] = [{u:dataUrl, p:'on'|'yan'|'arka'}, ...]
+   Bir güne istediğin kadar fotoğraf girebilirsin; poz etiketi karşılaştırmayı anlamlı kılar. */
+var POSES=[['on','Ön'],['yan','Yan'],['arka','Arka']];
+function poseName(k){for(var i=0;i<POSES.length;i++)if(POSES[i][0]===k)return POSES[i][1];return 'Ön';}
 var _ph={};
 function photos(){return _ph;}
+function migratePhotos(o){
+  var out={};
+  Object.keys(o||{}).forEach(function(d){
+    var v=o[d];
+    if(typeof v==='string')out[d]=[{u:v,p:'on'}];
+    else if(Array.isArray(v))out[d]=v.map(function(x){
+      return (typeof x==='string')?{u:x,p:'on'}:{u:x.u,p:x.p||'on'};}).filter(function(x){return x.u;});
+  });
+  return out;
+}
 function loadPhotos(){
   try{
     return STORE.get(PKEY).then(function(r){
-      try{var o=JSON.parse((r&&r.value)||'{}');if(o&&typeof o==='object')_ph=o;}catch(e){}
+      try{var o=JSON.parse((r&&r.value)||'{}');if(o&&typeof o==='object')_ph=migratePhotos(o);}catch(e){}
     }).catch(function(){});
   }catch(e){return null;}
 }
-function photoDates(){return Object.keys(photos()).sort();}
+function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
+function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
 function savePhotos(){try{STORE.set(PKEY,JSON.stringify(_ph||{}));}catch(e){toast('depolama dolu — eski fotoğrafları sil');}}
 function photoBytes(){
-  var t=0,p=photos();Object.keys(p).forEach(function(d){t+=(p[d]||'').length;});
+  var t=0;photoDates().forEach(function(d){_ph[d].forEach(function(x){t+=(x.u||'').length;});});
   return Math.round(t*0.75/1024);
+}
+/* aynı pozun tarih tarih dizisi — asıl değişimi bu gösterir */
+function poseTrack(pose){
+  var out=[];
+  photoDates().forEach(function(d){
+    (_ph[d]||[]).forEach(function(x){if(x.p===pose)out.push({d:d,u:x.u});});
+  });
+  return out;
 }
 /* uzun kenarı 760px'e indir, jpeg 0.6 — ~60-90 KB */
 function shrinkImage(file,cb){
@@ -3540,44 +3622,114 @@ function shrinkImage(file,cb){
   fr.onerror=function(){cb(null);};
   fr.readAsDataURL(file);
 }
-var cmpA=null,cmpB=null;
-function photoCard(){
+/* --- görünüm durumu --- */
+var phPose='on', phView='track', cmpA=null, cmpB=null, phUp='on';
+function phDefaults(){
   var ds=photoDates();
-  if(!cmpA&&ds.length)cmpA=ds[0];
-  if(!cmpB&&ds.length)cmpB=ds[ds.length-1];
-  var body;
-  if(!ds.length){
-    body='<div style="padding:22px 18px;color:#8a7f6f;font-size:13.5px;line-height:1.6">'+
-      'Her 4 haftada bir aynı ışık ve pozla çek. Aynada göremediğin değişimi yan yana koyunca görürsün.'+
-      '<div style="margin-top:9px;font-size:12.5px;color:#a8987c">Fotoğraflar <b>senkronize edilmez</b>, sadece bu cihazda kalır — '+
-      'JSON senkronunu şişirmemesi için. Yedek almak istersen "Yedek indir"i kullan.</div></div>';
-  } else {
-    function sel(which,val){
-      return '<select class="inp" data-a="cmp" data-w="'+which+'" style="width:auto">'+
-        ds.map(function(d){return '<option value="'+d+'"'+(val===d?' selected':'')+'>'+flong(d)+'</option>';}).join('')+'</select>';
-    }
-    var p=photos();
-    body='<div style="padding:14px 18px">'+
-      '<div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:12px">'+
-        sel('a',cmpA)+'<span style="color:#c0b193;font-weight:700">→</span>'+sel('b',cmpB)+
-        '<span class="mhint" style="margin:0">'+
-          (cmpA&&cmpB?Math.abs(dayDiff(cmpA,cmpB))+' gün arayla':'')+'</span></div>'+
-      '<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">'+
-        [[cmpA,'ÖNCE'],[cmpB,'SONRA']].map(function(x){
-          return '<div><div class="eyebrow">'+x[1]+' · '+(x[0]?fdate(x[0]):'—')+'</div>'+
-            (x[0]&&p[x[0]]?'<img src="'+p[x[0]]+'" style="width:100%;border-radius:11px;display:block;margin-top:6px;border:1px solid #e8dcc4">'
-              :'<div style="height:180px;border-radius:11px;background:#f3ecdd;margin-top:6px"></div>')+'</div>';
-        }).join('')+'</div>'+
-      '<div class="mhint" style="margin-top:10px">'+ds.length+' fotoğraf · ~'+photoBytes()+' KB · sadece bu cihazda</div>'+
-    '</div>';
-  }
-  return '<div class="card"><div class="hd"><h2>Fotoğraf Karşılaştırma</h2>'+
-    '<span class="meta">'+(ds.length?ds.length+' kayıt':'4 haftada bir')+'</span></div>'+body+
-    '<div style="padding:0 18px 16px;display:flex;gap:9px;flex-wrap:wrap">'+
-      '<label class="ghostbtn" style="cursor:pointer">'+flong(cur)+' için fotoğraf ekle'+
-        '<input type="file" accept="image/*" data-a="photoadd" style="display:none"></label>'+
-      (photos()[cur]?'<button class="ghostbtn" data-a="photodel" data-d="'+cur+'">Bu günün fotoğrafını sil</button>':'')+
+  if(!ds.length){cmpA=null;cmpB=null;return ds;}
+  if(!cmpA||ds.indexOf(cmpA)<0)cmpA=ds[0];
+  if(!cmpB||ds.indexOf(cmpB)<0)cmpB=ds[ds.length-1];
+  return ds;
+}
+function openPhoto(d,ix){
+  var a=_ph[d]||[],x=a[ix];if(!x)return;
+  document.getElementById('mfg').innerHTML='<img src="'+x.u+'" style="width:100%;border-radius:12px;display:block">';
+  document.getElementById('mtitle').textContent=flong(d);
+  var w=weekIdx(d);
+  document.getElementById('msub').innerHTML='<b>'+poseName(x.p)+'</b> · hafta '+wkLabel(w)+
+    ' · '+(ix+1)+'/'+a.length+' fotoğraf';
+  var ml=document.getElementById('mlink');ml.style.display='none';
+  document.getElementById('modal').classList.add('on');
+}
+/* poz seçici + yükleme şeridi (iki arayüzde ortak) */
+function phPoseTabs(){
+  return POSES.map(function(x){
+    return '<button class="phtab'+(phPose===x[0]?' on':'')+'" data-a="phpose" data-k="'+x[0]+'">'+x[1]+
+      '<i>'+poseTrack(x[0]).length+'</i></button>';}).join('');
+}
+function phUploader(){
+  return '<div class="phup">'+
+    '<div class="phupl">'+flong(cur)+' için ekle</div>'+
+    '<div class="phupr">'+
+      POSES.map(function(x){
+        return '<label class="phadd"><span>'+x[1]+'</span>'+
+          '<input type="file" accept="image/*" multiple data-a="photoadd" data-p="'+x[0]+'" style="display:none"></label>';
+      }).join('')+
     '</div></div>';
+}
+/* --- galeri: bir pozun tüm tarihleri, kronolojik --- */
+function phTrack(){
+  var tr=poseTrack(phPose);
+  if(!tr.length)return '<div class="phempty">Bu poz için henüz fotoğraf yok.</div>';
+  return '<div class="phgrid">'+tr.map(function(x){
+    var ix=(_ph[x.d]||[]).findIndex(function(y){return y.u===x.u;});
+    return '<button class="phcell" data-a="phopen" data-d="'+x.d+'" data-i="'+ix+'">'+
+      '<img src="'+x.u+'" loading="lazy">'+
+      '<span class="phcap"><b>'+fdate(x.d)+'</b><i>H'+wkLabel(weekIdx(x.d))+'</i></span></button>';
+  }).join('')+'</div>'+
+  (tr.length>1?'<div class="phnote">'+tr.length+' fotoğraf · ilkinden sonuncusuna '+
+    Math.abs(dayDiff(tr[0].d,tr[tr.length-1].d))+' gün</div>':'');
+}
+/* --- karşılaştırma: iki tarih, seçili poz --- */
+function phCompare(ds){
+  if(ds.length<2)
+    return '<div class="phempty">Karşılaştırma için en az iki farklı <b>gün</b> gerekiyor. '+
+      'Şu an sadece '+fdate(ds[0])+' var — bir hafta sonra tekrar çekip buraya dön.</div>';
+  function pick(d){
+    var a=(_ph[d]||[]).filter(function(x){return x.p===phPose;});
+    return a.length?a[a.length-1]:null;
+  }
+  function sel(w,val){
+    return '<select class="ginp sel" data-a="cmp" data-w="'+w+'">'+
+      ds.map(function(d){return '<option value="'+d+'"'+(val===d?' selected':'')+'>'+fdate(d)+' · H'+wkLabel(weekIdx(d))+'</option>';}).join('')+
+    '</select>';
+  }
+  var A=pick(cmpA),B=pick(cmpB);
+  return '<div class="phcmpsel">'+sel('a',cmpA)+'<span class="phar">→</span>'+sel('b',cmpB)+'</div>'+
+    '<div class="phcmp">'+[[cmpA,A,'ÖNCE'],[cmpB,B,'SONRA']].map(function(x){
+      var ix=x[1]?(_ph[x[0]]||[]).indexOf(x[1]):-1;
+      return '<div><div class="phcl">'+x[2]+' · '+fdate(x[0])+'</div>'+
+        (x[1]?'<button class="phbig" data-a="phopen" data-d="'+x[0]+'" data-i="'+ix+'"><img src="'+x[1].u+'"></button>'
+             :'<div class="phmiss">'+poseName(phPose)+' fotoğrafı yok</div>')+'</div>';
+    }).join('')+'</div>'+
+    (cmpA&&cmpB?'<div class="phnote">'+Math.abs(dayDiff(cmpA,cmpB))+' gün arayla'+
+      (function(){var wa=D(cmpA).w,wb=D(cmpB).w;
+        return (wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'';})()+
+      '</div>':'');
+}
+/* --- o günün fotoğrafları + silme --- */
+function phToday(){
+  var a=_ph[cur]||[];
+  if(!a.length)return '';
+  return '<div class="phday"><div class="phdayl">'+fdate(cur)+' · '+a.length+' fotoğraf</div>'+
+    '<div class="phthumbs">'+a.map(function(x,i){
+      return '<div class="phth"><button data-a="phopen" data-d="'+cur+'" data-i="'+i+'"><img src="'+x.u+'"></button>'+
+        '<span>'+poseName(x.p)+'</span>'+
+        '<button class="phdel" data-a="photodel" data-d="'+cur+'" data-i="'+i+'" aria-label="Sil">✕</button></div>';
+    }).join('')+'</div></div>';
+}
+function phBody(){
+  var ds=phDefaults();
+  if(!ds.length)
+    return '<div class="phempty">Her hafta aynı ışık, aynı mesafe, aynı poz. Üç açıdan çek: ön, yan, arka.'+
+      '<br><br>Fotoğraflar <b>senkronize edilmez</b> — JSON senkronunu şişirmemesi için sadece bu cihazda kalır.</div>'+
+      phUploader();
+  return '<div class="phtabs">'+phPoseTabs()+
+      '<span class="phsep"></span>'+
+      '<button class="phtab'+(phView==='track'?' on':'')+'" data-a="phview" data-k="track">Galeri</button>'+
+      '<button class="phtab'+(phView==='cmp'?' on':'')+'" data-a="phview" data-k="cmp">Karşılaştır</button>'+
+    '</div>'+
+    (phView==='track'?phTrack():phCompare(ds))+
+    phToday()+phUploader();
+}
+function repaintPhoto(){
+  if(phone())zi('g-body',gymBody());
+  else zi('z-photo',photoCard());
+}
+function photoCard(){
+  return '<div class="card"><div class="hd"><h2>Fotoğraf</h2>'+
+    '<span class="meta">'+photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB · senkron dışı</span></div>'+
+    '<div style="padding:14px 18px 16px">'+phBody()+'</div></div>';
 }
 function render(){
   if(phone()){renderGym();return;}
@@ -3716,16 +3868,24 @@ app.addEventListener('change',function(ev){
   if(a==='cmp'){
     var wch=ev.target.getAttribute('data-w');
     if(wch==='a')cmpA=ev.target.value;else cmpB=ev.target.value;
-    zi('z-photo',photoCard());return;}
+    repaintPhoto();return;}
   if(a==='photoadd'){
-    var pf=ev.target.files&&ev.target.files[0];ev.target.value='';
-    if(!pf)return;
-    toast('fotoğraf işleniyor…');
-    shrinkImage(pf,function(dataUrl){
-      if(!dataUrl){toast('fotoğraf okunamadı');return;}
-      _ph=_ph||{};_ph[cur]=dataUrl;cmpB=cur;
-      if(!cmpA){var pds=photoDates();cmpA=pds[0];}
-      savePhotos();toast('fotoğraf eklendi');render();
+    var fl=ev.target.files;var pose=ev.target.getAttribute('data-p')||'on';
+    var arr=fl?Array.prototype.slice.call(fl):[];ev.target.value='';
+    if(!arr.length)return;
+    toast(arr.length>1?arr.length+' fotoğraf işleniyor…':'fotoğraf işleniyor…');
+    var done=0,ok=0;
+    arr.forEach(function(f){
+      shrinkImage(f,function(u){
+        done++;
+        if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];_ph[cur].push({u:u,p:pose});ok++;}
+        if(done===arr.length){
+          if(!ok){toast('fotoğraf okunamadı');return;}
+          phPose=pose;cmpB=cur;
+          var pds=photoDates();if(!cmpA||pds.indexOf(cmpA)<0)cmpA=pds[0];
+          savePhotos();toast(ok+' fotoğraf eklendi');render();
+        }
+      });
     });
     return;}
   if(a==='imp'){
@@ -3775,10 +3935,17 @@ app.addEventListener('click',function(ev){
     var tg=document.getElementById(t.getAttribute('data-t'));
     if(tg&&tg.scrollIntoView)tg.scrollIntoView({behavior:'smooth',block:'start'});}
   else if(a==='photodel'){
-    var pd2=t.getAttribute('data-d');
-    if(_ph&&_ph[pd2]){delete _ph[pd2];
-      if(cmpA===pd2)cmpA=null;if(cmpB===pd2)cmpB=null;
+    var pd2=t.getAttribute('data-d'),pi2=+t.getAttribute('data-i');
+    if(_ph&&_ph[pd2]&&_ph[pd2][pi2]!=null){
+      _ph[pd2].splice(pi2,1);
+      if(!_ph[pd2].length)delete _ph[pd2];
+      var pds2=photoDates();
+      if(pds2.indexOf(cmpA)<0)cmpA=pds2.length?pds2[0]:null;
+      if(pds2.indexOf(cmpB)<0)cmpB=pds2.length?pds2[pds2.length-1]:null;
       savePhotos();toast('fotoğraf silindi');render();}}
+  else if(a==='phpose'){phPose=t.getAttribute('data-k');repaintPhoto();}
+  else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
+  else if(a==='phopen'){openPhoto(t.getAttribute('data-d'),+t.getAttribute('data-i'));}
   else if(a==='usetdee'){
     var nv2=+t.getAttribute('data-v');
     if(nv2>0){S.targets.kcal=nv2;S._st=Date.now();save();
@@ -3929,7 +4096,9 @@ document.addEventListener('focusout',function(){
 
 /* ============ AÇILIŞ ============ */
 STORE.get(KEY).then(function(res){
+  var had=false;
   if(res&&res.value){var p=JSON.parse(res.value);
+    had=!!p.startDate;
     S.days=p.days||{};S.startDate=p.startDate||today();S.weeks=p.weeks||20;
     if(p.deloadEvery!=null)S.deloadEvery=p.deloadEvery;
     if(p.targets)S.targets=Object.assign(S.targets,p.targets);
@@ -3940,8 +4109,10 @@ STORE.get(KEY).then(function(res){
     if(p.plan&&typeof p.plan==='object')S.plan=p.plan;
     S._pt=p._pt||0;S._st=p._st||0;
     if(p.sync&&typeof p.sync==='object')S.sync=Object.assign(S.sync,p.sync);}
+  /* Başlangıç tarihi SADECE hiç kayıt yoksa bugüne çekilir.
+     Kayıtlı bir tarih varsa asla üzerine yazma. */
+  if(!had)S.startDate=today();
   if(migrateNames())STORE.set(KEY,JSON.stringify(S));
-  else S.startDate=today();
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
   cur=today();
