@@ -675,7 +675,7 @@ var PROGRAM={
     {n:'Halat pushdown',s:3,r:[12,15]}]},
   gun2:{label:'Çekiş · Sırt / Biceps',name:'Çekiş',short:'Çekiş',code:'ÇEK',color:C.blue,ex:[
     {n:'Lat pulldown / Barfiks',s:4,r:[8,12]},
-    {n:'Göğüs destekli row',s:3,r:[8,12]},
+    {n:'Makine row',s:3,r:[8,12]},
     {n:'Oturarak kablo row',s:3,r:[10,12]},
     {n:'Face pull',s:3,r:[15,20]},
     {n:'Kablo curl',s:3,r:[10,15]},
@@ -736,7 +736,7 @@ var EXMUS={
   'Kafa üstü triceps ekstansiyon':{tri:1},
   'Halat pushdown'               :{tri:1},
   'Lat pulldown / Barfiks'       :{back:1,bi:.5},
-  'Göğüs destekli row'           :{back:1,bi:.5,rear:.5},
+  'Makine row'                     :{back:1,bi:.5,rear:.5},
   'Oturarak kablo row'           :{back:1,bi:.5},
   'Face pull'                    :{rear:1,back:.5},
   'Kablo curl'                   :{bi:1},
@@ -943,7 +943,7 @@ var EXMETA={
  'Kafa üstü triceps ekstansiyon':['ohTri','overhead cable triceps extension','Halat başının arkasında, dirsekler sabit ve yukarıda; sadece ön kolu uzat.',90],
  'Halat pushdown':['pushdown','rope triceps pushdown','Dirsekler gövdene yapışık. Halatı aşağı it, en altta iki ucu dışa ayır.',60],
  'Lat pulldown / Barfiks':['pulldown','lat pulldown','Göğsü yukarı ver, barı köprücük kemiğine çek. Kolla değil dirsekle çek.',120],
- 'Göğüs destekli row':['rowChest','chest supported dumbbell row','Göğsünü eğik sedyeye yasla, ağırlığı karnına doğru çek. Bele yük binmez.',105],
+ 'Makine row':['rowChest','chest supported machine row','Göğüs destekli row makinesi ya da oturarak makine row — hangisi boşsa. Ağırlığı karnına doğru çek, omuzları geriye sık. Bele yük binmez.',105],
  'Oturarak kablo row':['rowSeat','seated cable row','Göğüs dik, kolu karnına çek, sonda kürek kemiklerini sık. Gövdeyi sallama.',105],
  'Face pull':['facePull','face pull','Halatı yüz hizana çek, dirsekleri geriye ve yukarı aç. Duruşu düzeltir.',60],
  'Eğik dambıl curl':['curlIncline','incline dumbbell curl','Eğik sedyede kollar gövdenin gerisinde sarkar; biceps en gergin yerden çalışır.',90],
@@ -1120,7 +1120,7 @@ function save(d){
 function touch(d){if(!S.days[d])S.days[d]=blank();return S.days[d];}
 
 /* eski hareket adlarını yeni adlara taşı — girilmiş veriler kaybolmaz */
-var RENAMES={'Düz bench press':'Düz dambıl press'};
+var RENAMES={'Düz bench press':'Düz dambıl press','Göğüs destekli row':'Makine row'};
 function migrateNames(){
   var n=0;
   Object.keys(S.days||{}).forEach(function(d){
@@ -2358,7 +2358,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v20 · 24 Ağu 2026';
+var APPVER='v21 · 24 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
