@@ -429,6 +429,11 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phadd:active{background:#f3ecdd}
 .phadd span::before{content:'+ ';color:#c0b193}
 .calg .hl.pre,.mcalrow.pre .mwk{color:#c98b2e}
+.calg .hl.dl{color:#b8860b}
+.calg .hl.dl i,.mcalrow.dl .mwk i{font-style:normal;display:block;font-size:8px;letter-spacing:.5px;
+  font-weight:800;color:#f4ad15;line-height:1}
+.calg .cell.dlc{background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(244,173,21,.16) 4px,rgba(244,173,21,.16) 8px)}
+.mcalrow.dl .mwk{color:#b8860b}
 .calg .cell.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
 .mcal .mc.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
 .dnav{position:sticky;top:0;z-index:25;display:flex;gap:5px;overflow-x:auto;padding:9px 2px;margin-bottom:4px;
@@ -438,6 +443,12 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   font-size:12.5px;font-weight:700;color:#8a7f6f;cursor:pointer;white-space:nowrap}
 .dnav button:hover{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
 .anch{scroll-margin-top:58px}
+.tgl{width:46px;height:27px;border-radius:999px;border:1px solid #ddd0b8;background:#efe7d6;
+  flex:none;padding:0;cursor:pointer;position:relative;transition:background .18s ease;-webkit-tap-highlight-color:transparent}
+.tgl i{position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(40,33,24,.25);transition:left .18s ease}
+.tgl.on{background:#16a85a;border-color:#16a85a}
+.tgl.on i{left:22px}
 .tdmsg{font-size:12px;font-weight:700;line-height:1.5;border-radius:11px;padding:10px 12px}
 .dlbanner{margin:10px 0 0;background:#3a342c;color:#f6efe1;font-size:12.5px;font-weight:700;
   padding:12px 14px;line-height:1.45}
@@ -982,7 +993,7 @@ function figSVG(name){
 function enName(name){var m=EXMETA[name];return m?m[1]:name;}
 
 /* ============ DURUM ============ */
-var S={ startDate:null, weeks:20, restDays:[3,0], restWeeks:{}, plan:{}, _pt:0, _st:0, deloadEvery:7,
+var S={ startDate:null, weeks:20, restDays:[3,0], restWeeks:{}, plan:{}, _pt:0, _st:0, deloadEvery:7, autoTargets:false,
   sync:{token:'',gist:'',auto:true,last:0},
   base:{weight:84.6,waist:null}, goal:{weight:75},
   targets:{steps:10000,kcal:2150,protein:175,carbs:215,fat:65},
@@ -1140,17 +1151,44 @@ function migrateNames(){
 /* set ağırlığı: hepsi yapıldı ve tekrarlar aralıktaysa tam,
    setler tam ama tekrar biraz eksikse neredeyse tam sayılır */
 var EXW={tam:1,yakin:0.85,kismi:0.5,dusuk:0.3,bos:0};
-function evalEx(sets,tgt){
+/* Deload haftasında hedef set sayısı yarıya iner, ağırlık aynı kalır. */
+function tgtOn(e,d){
+  if(!e)return e;
+  if(!isDeload(d||cur))return e;
+  return {n:e.n,s:Math.max(1,Math.round(e.s/2)),r:e.r,dl:true};
+}
+/* Bir set "etkili" sayılır:
+   - tekrar hedef aralığın içindeyse, VEYA
+   - ağırlık geçen seansa göre arttıysa ve tahmini 1RM,
+     eski ağırlıkla aralığın alt sınırında yapılan setin karşılığını geçiyorsa.
+   Ağırlık artırıp tekrarın düşmesi ilerlemedir, eksiklik değil. */
+function evalEx(sets,tgt,prev){
   var f=(sets||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
-  if(!f.length)return{state:'bos',vol:0,done:0,perf:0,label:'girilmedi',color:'#c0b193',bg:'#f3ecdd'};
+  if(!f.length)return{state:'bos',vol:0,done:0,perf:0,up:false,label:'girilmedi',color:'#c0b193',bg:'#f3ecdd'};
+  var pmx=null;
+  if(prev&&prev.sets&&prev.sets.length)
+    pmx=Math.max.apply(null,prev.sets.map(function(s){return s.kg;}));
+  var mx=Math.max.apply(null,f.map(function(s){return s.kg;}));
+  var up=(pmx!=null&&mx>pmx);
+  var bar=(pmx!=null)?e1rm(pmx,tgt.r[0]):null;   /* eski ağırlıkla alt sınır eşdeğeri */
   var vol=0,inRange=0;
-  f.forEach(function(s){vol+=s.kg*s.rep;if(s.rep>=tgt.r[0])inRange++;});
-  var perf=f.length,st,label,color,bg;
-  if(perf>=tgt.s&&inRange>=tgt.s){st='tam';label='tamamlandı';color=C.green;bg='rgba(22,168,90,.12)';}
-  else if(perf>=tgt.s){st='yakin';label='setler tam · tekrar az';color='#5aa832';bg='rgba(90,168,50,.14)';}
-  else if(perf>0){st='kismi';label=perf+'/'+tgt.s+' set';color=C.amber;bg='rgba(244,173,21,.16)';}
+  f.forEach(function(s){
+    vol+=s.kg*s.rep;
+    var ok=(s.rep>=tgt.r[0]);
+    if(!ok&&up&&bar!=null&&e1rm(s.kg,s.rep)>=bar)ok=true;
+    if(ok)inRange++;
+  });
+  var perf=f.length,need=tgt.s,st,label,color,bg;
+  var below=f.filter(function(s){return s.rep<tgt.r[0];}).length;
+  if(perf>=need&&inRange>=need){
+    st='tam';
+    label=up?(below?'ağırlık arttı · aralığa dön':'tamamlandı · ağırlık arttı')
+            :(tgt.dl?'deload tamam':'tamamlandı');
+    color=C.green;bg='rgba(22,168,90,.12)';}
+  else if(perf>=need){st='yakin';label='setler tam · tekrar az';color='#5aa832';bg='rgba(90,168,50,.14)';}
+  else if(perf>0){st='kismi';label=perf+'/'+need+' set';color=C.amber;bg='rgba(244,173,21,.16)';}
   else{st='dusuk';label='eksik';color=C.orange;bg='rgba(239,90,30,.13)';}
-  return{state:st,vol:vol,done:inRange,perf:perf,label:label,color:color,bg:bg};
+  return{state:st,vol:vol,done:inRange,perf:perf,up:up,need:need,label:label,color:color,bg:bg};
 }
 var _pc={},_sc={};
 function prevSession(name,before){
@@ -1173,12 +1211,13 @@ function _sessionEval(d,dt){
   var t=dt?PROGRAM[dt]:null; if(!t||!t.ex.length)return null;
   var r=D(d),vol=0,tam=0,giren=0,prevVol=0,hasPrev=false,wsum=0;
   t.ex.forEach(function(e){
-    var ev=evalEx((r.ex||{})[e.n],e);
+    var p=prevSession(e.n,d);
+    var ev=evalEx((r.ex||{})[e.n],tgtOn(e,d),p);
     vol+=ev.vol;
     wsum+=(EXW[ev.state]||0);
     if(ev.state==='tam'||ev.state==='yakin')tam++;
     if(ev.state!=='bos')giren++;
-    var p=prevSession(e.n,d); if(p){prevVol+=p.vol;hasPrev=true;}
+    if(p){prevVol+=p.vol;hasPrev=true;}
   });
   if(!giren)return{empty:true,total:t.ex.length};
   var pct=wsum/t.ex.length*100;
@@ -1301,7 +1340,7 @@ function tdeeAdvice(){
 }
 
 /* ============ DELOAD ============ */
-function deloadEvery(){return S.deloadEvery||7;}
+function deloadEvery(){return (S.deloadEvery==null)?7:S.deloadEvery;}
 function isDeload(d){var w=weekIdx(d);return w>0&&deloadEvery()>0&&w%deloadEvery()===0;}
 function nextDeload(){
   var w=weekIdx(today()),e=deloadEvery();if(w<1||!e)return null;
@@ -1322,6 +1361,41 @@ function bestE1(sets){
 }
 
 /* ============ HAFTALIK KAS GRUBU SETLERİ ============ */
+/* O haftada PLANLANMIŞ günlerden gelen kas hedefi.
+   Deload haftasında set sayısı yarıya iner, hedef de otomatik iner. */
+function musPlanned(mon){
+  var o={};MUSORD.forEach(function(k){o[k]=0;});
+  for(var i=0;i<7;i++){
+    var d=addD(mon,i),dt=effDt(d),t=dt?PROGRAM[dt]:null;
+    if(!t||!t.ex.length)continue;
+    t.ex.forEach(function(e){
+      var m=EXMUS[e.n];if(!m)return;
+      var need=tgtOn(e,d).s;
+      Object.keys(m).forEach(function(g){if(o[g]!=null)o[g]+=need*m[g];});
+    });
+  }
+  return o;
+}
+/* Bu ana kadar BEKLENEN set sayısı — kas başına.
+   Sadece geçmiş antrenman günleri sayılır; bugünü ancak seansa başladıysan sayar.
+   Böylece pazartesi çekiş gününde bacak/triceps "geride" görünmez. */
+function musExpected(mon){
+  var o={};MUSORD.forEach(function(k){o[k]=0;});
+  var td=today();
+  for(var i=0;i<7;i++){
+    var d=addD(mon,i);
+    if(d>td)continue;
+    var dt=effDt(d),t=dt?PROGRAM[dt]:null;
+    if(!t||!t.ex.length)continue;
+    if(d===td){var ev=sessionEval(d);if(!ev||ev.empty)continue;}
+    t.ex.forEach(function(e){
+      var m=EXMUS[e.n];if(!m)return;
+      var need=tgtOn(e,d).s;
+      Object.keys(m).forEach(function(g){if(o[g]!=null)o[g]+=need*m[g];});
+    });
+  }
+  return o;
+}
 function musWeek(mon){
   var o={};MUSORD.forEach(function(k){o[k]=0;});
   for(var i=0;i<7;i++){
@@ -1810,8 +1884,8 @@ function macroBar(r){
 }
 function exRow(e,r){
   var sets=(r.ex||{})[e.n]||[];
-  var count=Math.max(e.s,sets.length);
-  var ev=evalEx(sets,e),prev=prevSession(e.n,cur);
+  var te=tgtOn(e,cur),count=Math.max(te.s,sets.length);
+  var prev=prevSession(e.n,cur),ev=evalEx(sets,te,prev);
   var boxes='';
   for(var i=0;i<count;i++){
     var s=sets[i]||{kg:null,rep:null};
@@ -1826,7 +1900,7 @@ function exRow(e,r){
         RIRV.map(function(rv){return '<option value="'+rv[0]+'"'+(s.rir===rv[0]?' selected':'')+'>'+rv[1]+'</option>';}).join('')+
       '</select>'+
       '<button class="wipe" data-a="setwipe" data-i="'+i+'" aria-label="Seti temizle">✕</button>'+
-      (i>=e.s?'<button data-a="delset" aria-label="Seti sil">×</button>':'')+'</div>';
+      (i>=te.s?'<button data-a="delset" aria-label="Seti sil">×</button>':'')+'</div>';
   }
   var tr='';
   if(prev&&ev.vol>0){var p=(ev.vol-prev.vol)/prev.vol*100;
@@ -1964,8 +2038,12 @@ function calendar(){
   var WD=[1,2,3,4,5,6,0],WL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
   var cols='30px repeat('+nW+',1fr)';
   var g='<div class="calg" style="grid-template-columns:'+cols+'"><span></span>';
-  for(var w=wFrom;w<=S.weeks;w++)
-    g+='<span class="hl'+(w===wkNow?' now':'')+(w<1?' pre':'')+'">'+((w%5===0||w===1||w<1||w===wkNow)?wkLabel(w):'')+'</span>';
+  for(var w=wFrom;w<=S.weeks;w++){
+    var wdl=w>0&&deloadEvery()>0&&w%deloadEvery()===0;
+    g+='<span class="hl'+(w===wkNow?' now':'')+(w<1?' pre':'')+(wdl?' dl':'')+'"'+
+      (wdl?' title="Deload haftası — set sayısı yarıya iner"':'')+'>'+
+      ((w%5===0||w===1||w<1||w===wkNow||wdl)?wkLabel(w):'')+(wdl?'<i>D</i>':'')+'</span>';
+  }
   WD.forEach(function(wd,ri){
     g+='<span class="dl">'+WL[ri]+'</span>';
     for(var w=0;w<nW;w++){
@@ -1977,8 +2055,9 @@ function calendar(){
       if(rest){txcol='#8a7a5e';}
       else if(future){txcol=code?'#b0a189':'#b5a68c';}
       else if(typeof q==='number'){bgc=qColor(q);txcol=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
-      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'')+(preW?' pre':'');
-      var tip=fdate(d)+(preW?' · program öncesi':'')+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
+      var isdl=isDeload(d);
+      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'')+(preW?' pre':'')+(isdl?' dlc':'');
+      var tip=fdate(d)+(preW?' · program öncesi':'')+(isdl?' · DELOAD':'')+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
       g+='<div class="'+cls+'" data-a="cell" data-d="'+d+'" title="'+esc(tip)+'"'+
          ' style="'+(bgc?'background:'+bgc+';':'')+'color:'+txcol+'">'+code+'</div>';
     }
@@ -2219,7 +2298,7 @@ function gh(path,opts){
 function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
-    base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery};
+    base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -2243,7 +2322,7 @@ function mergeRemote(rm){
     }
   }
   if((rm._st||0)>(S._st||0)){
-    ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery'].forEach(function(k){
+    ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
     S._st=rm._st;ch++;
   }
@@ -2358,7 +2437,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v21 · 24 Ağu 2026';
+var APPVER='v22 · 24 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2509,12 +2588,15 @@ function gymWorkout(){
     return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
       'Bugün antrenman yok. Değiştirmek istersen yukarıdaki “değiştir”e dokun.</div>';
 
-  if(isDeload(cur))pick+='<div class="dlbanner" style="margin:0">Deload haftası — set sayısını yarıya indir, ağırlıkları koru.</div>';
+  if(isDeload(cur))pick+='<div class="dlbanner" style="margin:0">'+
+    '<b>Deload haftası.</b> Set sayıları otomatik yarıya indirildi. '+
+    'Ağırlıkları <u>aynı tut</u>, her seti RIR 3-4’te bırak — bu hafta yorulmak değil toparlanmak için.</div>';
   if(exIdx>=t.ex.length)exIdx=0;
   var e=t.ex[exIdx];
   var sets=(r.ex||{})[e.n]||[];
-  var cnt=Math.max(e.s,sets.length);
-  var prev=prevSession(e.n,cur),ev=evalEx(sets,e),pg=progression(e.n);
+  var te=tgtOn(e,cur);
+  var cnt=Math.max(te.s,sets.length);
+  var prev=prevSession(e.n,cur),ev=evalEx(sets,te,prev),pg=progression(e.n);
 
   var rows='',anyFilled=false;
   for(var i=0;i<cnt;i++){
@@ -2555,7 +2637,7 @@ function gymWorkout(){
 
   var dots='';
   for(var j=0;j<t.ex.length;j++){
-    var ev2=evalEx((r.ex||{})[t.ex[j].n],t.ex[j]);
+    var ev2=evalEx((r.ex||{})[t.ex[j].n],tgtOn(t.ex[j],cur),prevSession(t.ex[j].n,cur));
     var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state==='yakin'?'near':(ev2.state!=='bos'?'part':'')));
     dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
   }
@@ -2567,7 +2649,8 @@ function gymWorkout(){
       '<div style="flex:1;min-width:0">'+
         '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · HAREKET</div>'+
         '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+
-        '<div class="gtgt">'+e.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme</div>'+
+        '<div class="gtgt">'+te.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme'+
+          (te.dl?' <b style="color:'+C.amber+'">· DELOAD ('+e.s+'→'+te.s+' set)</b>':'')+'</div>'+
       '</div></div>'+
     '<div class="gdesc">'+esc(descOf(e.n))+'</div>'+
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
@@ -2749,6 +2832,58 @@ function miniLine(vals,col){
 
 /* --- özet sekmesi --- */
 /* --- gerçek bakım kalorisi kartı --- */
+/* ============ OTOMATİK HEDEFLER ============
+   Kilo düştükçe bakım kalorisi de düşer; sabit hedef zamanla yanlışlaşır.
+   Protein ve yağ vücut ağırlığına bağlanır, karbonhidrat kalan kaloriden çıkar. */
+var PROT_PER_KG=2.1, FAT_PER_KG=0.8;
+function autoTargets(){
+  var t=tdee();if(!t.ok)return null;
+  var w=trendNow();if(w==null)return null;
+  var kcal=Math.round((t.tdee+RATE_TGT*KCAL_PER_KG/7)/10)*10;
+  var prot=Math.round(w*PROT_PER_KG/5)*5;
+  var fat=Math.round(w*FAT_PER_KG/5)*5;
+  var rest=kcal-(prot*4+fat*9);
+  var carb=Math.max(60,Math.round(rest/4/5)*5);
+  return {kcal:kcal,protein:prot,fat:fat,carbs:carb,w:w,tdee:t.tdee,conf:t.conf};
+}
+function autoDiff(){
+  var a=autoTargets();if(!a)return null;
+  var T=S.targets;
+  var d={kcal:a.kcal-T.kcal,protein:a.protein-T.protein,carbs:a.carbs-T.carbs,fat:a.fat-T.fat};
+  d.any=Math.abs(d.kcal)>=60||Math.abs(d.protein)>=10||Math.abs(d.carbs)>=15||Math.abs(d.fat)>=8;
+  d.a=a;return d;
+}
+/* auto açıksa hedefleri sessizce güncel tut */
+function syncAutoTargets(){
+  if(!S.autoTargets)return false;
+  var d=autoDiff();if(!d||!d.any)return false;
+  S.targets.kcal=d.a.kcal;S.targets.protein=d.a.protein;
+  S.targets.carbs=d.a.carbs;S.targets.fat=d.a.fat;
+  S._st=Date.now();
+  return true;
+}
+function autoCard(){
+  var d=autoDiff();
+  var on=!!S.autoTargets;
+  var head='<div class="shead"><div><div class="stitle">Otomatik Hedef</div>'+
+    '<div class="ssub">'+(on?'açık · kilo düştükçe kendi ayarlanır':'kapalı · hedefler elle')+'</div></div>'+
+    '<button class="tgl'+(on?' on':'')+'" data-a="autotgt" aria-label="Otomatik hedefi aç/kapat"><i></i></button></div>';
+  if(!d)
+    return '<div class="scard static">'+head+
+      '<div class="sempty" style="padding:14px 6px">Yeterli veri yok — en az 8 gün kilo ve 7 gün kalori gerekiyor.</div></div>';
+  var a=d.a;
+  var rows=[['Kalori',a.kcal,'kcal',d.kcal],['Protein',a.protein,'g',d.protein],
+    ['Karbonhidrat',a.carbs,'g',d.carbs],['Yağ',a.fat,'g',d.fat]];
+  return '<div class="scard static">'+head+
+    '<div class="mstats" style="margin-bottom:10px">'+rows.map(function(x){
+      var dc=x[3]===0?'#a8987c':(x[3]>0?C.green:C.orange);
+      return '<div><div class="l">'+x[0]+'</div><div class="v">'+ti(x[1])+'<span>'+x[2]+'</span></div>'+
+        '<div class="s" style="color:'+dc+'">'+(x[3]>0?'+':'')+x[3]+' fark</div></div>';}).join('')+'</div>'+
+    '<div class="sfoot">'+fx(a.w,1)+' kg trend · bakım '+ti(a.tdee)+' kcal · protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg</div>'+
+    (on?'':(d.any?'<button class="mbtn dark" data-a="applyauto" style="margin-top:9px">Hedefleri şimdi güncelle</button>'
+                 :'<div class="sfoot" style="margin-top:6px">Mevcut hedeflerin zaten uygun.</div>'))+
+  '</div>';
+}
 function tdeeCard(a){
   if(!a){
     var t0=tdee();
@@ -2781,31 +2916,31 @@ function tdeeCard(a){
   '</div>';
 }
 /* --- haftalık kas grubu setleri --- */
-function musCard(mw,mt,wp){
-  var frac=wp.plan?Math.min(1,wp.done/wp.plan):0;
+function musCard(mw,mt,wp,mex){
   var rows=MUSORD.filter(function(k){return mt[k]>0;}).map(function(k){
-    var tgt=mt[k],exp=tgt*frac,have=mw[k];
+    var tgt=mt[k],exp=mex[k],have=mw[k];
     var pct=tgt?Math.min(100,have/tgt*100):0;
+    var epct=tgt?Math.min(100,exp/tgt*100):0;
     var behind=exp>0&&have<exp*0.85;
-    var col=behind?C.orange:(pct>=95?MUS[k].c:(pct>=60?MUS[k].c:'#cdbfa8'));
+    var col=behind?C.orange:(have>0?MUS[k].c:'#cdbfa8');
     return '<div class="musrow">'+
       '<span class="musn"'+(MUS[k].pri?' style="font-weight:800"':'')+'>'+MUS[k].s+
         (MUS[k].pri?'<i class="muspri">öncelik</i>':'')+'</span>'+
       '<span class="mustrack"><i style="width:'+pct.toFixed(0)+'%;background:'+col+'"></i>'+
-        (frac<1&&frac>0?'<u style="left:'+Math.min(100,frac*100).toFixed(0)+'%"></u>':'')+'</span>'+
+        (exp>0&&epct<99?'<u style="left:'+epct.toFixed(0)+'%"></u>':'')+'</span>'+
       '<span class="musv" style="color:'+(behind?C.orange:'#8a7f6f')+'">'+fx(have,1).replace(/\.0$/,'')+
         '<b>/'+fx(tgt,1).replace(/\.0$/,'')+'</b></span></div>';
   }).join('');
   var late=MUSORD.filter(function(k){
-    return mt[k]>0&&MUS[k].pri&&frac>0&&mw[k]<mt[k]*frac*0.85;});
+    return mt[k]>0&&MUS[k].pri&&mex[k]>0&&mw[k]<mex[k]*0.85;});
   return '<div class="scard static"><div class="shead"><div>'+
     '<div class="stitle">Haftalık Set Sayısı</div>'+
-    '<div class="ssub">'+wp.done+'/'+wp.plan+' antrenman yapıldı · hedef programdan hesaplanır</div></div></div>'+
+    '<div class="ssub">'+wp.done+'/'+wp.plan+' antrenman · çizgi = o kastan şu ana kadar beklenen</div></div></div>'+
     '<div class="muslist">'+rows+'</div>'+
     (late.length
       ?'<div class="tdmsg" style="background:'+hexa(C.orange,.12)+';color:'+C.orange+';margin-top:9px">'+
-        late.map(function(k){return MUS[k].s;}).join(', ')+' bu hafta geride — aksesuar düşürürken bunlara dokunma.</div>'
-      :'<div class="sfoot" style="margin-top:8px">Öncelikli kaslar planın gerisinde değil.</div>')+
+        late.map(function(k){return MUS[k].s;}).join(', ')+' yapılmış günlere göre geride — aksesuar düşürürken bunlara dokunma.</div>'
+      :'<div class="sfoot" style="margin-top:8px">Yapılan günlere göre hiçbir kas geride değil.</div>')+
   '</div>';
 }
 function gymSum(){
@@ -2822,7 +2957,8 @@ function gymSum(){
   var dv=(lastWk&&prevWk&&prevWk.total)?((lastWk.total-prevWk.total)/prevWk.total*100):null;
   var tn=trendNow(),tdA=tdeeAdvice();
   var remT=(tn!=null)?tn-S.goal.weight:(lw!=null?lw-S.goal.weight:null);
-  var mw=musWeek(monday(today())),mt=musTargets(),wp2=weekProgress(monday(today()));
+  var _mon=monday(today());
+  var mw=musWeek(_mon),mt=musPlanned(_mon),mex=musExpected(_mon),wp2=weekProgress(_mon);
   var dl=nextDeload(),sli=sleepInsight();
   var prToday=prsOn(today());
 
@@ -2848,7 +2984,8 @@ function gymSum(){
         '<div class="v">'+x[1]+'<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
 
     tdeeCard(tdA)+
-    musCard(mw,mt,wp2)+
+    autoCard()+
+    musCard(mw,mt,wp2,mex)+
     (dl&&dl.now?'<div class="dlbanner">Bu hafta <b>deload</b> — set sayısını yarıya indir, ağırlıkları koru.</div>'
       :(dl?'<div class="dlnote">Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)</div>':''))+
     (prToday.length?'<div class="prbanner">🏅 Bugün '+prToday.length+' rekor: '+
@@ -3018,7 +3155,7 @@ function detailLayer(){
         (ev3.trend!=null?' · geçen seansa göre <b style="color:'+(ev3.trend>1?C.green:ev3.trend<-1?C.orange:'#8a7f6f')+'">'+(ev3.trend>0?'+':'')+ev3.trend.toFixed(0)+'%</b>':'')+
         '</div></div>'+
         '<div class="exlist" style="margin-top:12px">'+t2.ex.map(function(x){
-          var v=evalEx((D(cur).ex||{})[x.n],x);
+          var v=evalEx((D(cur).ex||{})[x.n],tgtOn(x,cur),prevSession(x.n,cur));
           return '<div class="srow" style="pointer-events:none">'+
             '<span class="exthumb">'+figSVG(x.n)+'</span>'+
             '<span class="sname"><b>'+esc(x.n)+'</b><i>'+
@@ -3135,7 +3272,7 @@ function calendarM(){
   var g='<div class="mcal"><div class="mcalhd"><span></span>'+
     WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
   for(var w=0;w<nW;w++){
-    var cells='',wn=wFrom+w,preW=wn<1;
+    var cells='',wn=wFrom+w,preW=wn<1,wdl=wn>0&&deloadEvery()>0&&wn%deloadEvery()===0;
     for(var i=0;i<7;i++){
       var d=addD(m0,w*7+i),future=d>tod;
       var dt=effDt(d),t=dt?PROGRAM[dt]:null,code=(t&&t.code)||'';
@@ -3148,7 +3285,7 @@ function calendarM(){
         (d===cur?' sel':'')+(preW?' pre':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
         code+'</div>';
     }
-    g+='<div class="mcalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+'"><span class="mwk">'+wkLabel(wn)+'</span>'+cells+'</div>';
+    g+='<div class="mcalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+(wdl?' dl':'')+'"><span class="mwk">'+wkLabel(wn)+(wdl?'<i>D</i>':'')+'</span>'+cells+'</div>';
   }
   return g+'</div>';
 }
@@ -3434,7 +3571,7 @@ function report(){
         });
       }
       else if(t&&!t.ex.length)o+='  '+t.short+'\n';
-      if(r.note)o+='  not: '+r.note+'\n';
+      if(r.note)o+='  >> NOT: '+String(r.note).replace(/\s*\n\s*/g,' / ')+'\n';
     });
     o+='\n';
   });
@@ -3454,6 +3591,24 @@ function report(){
     if(stalls.length)o+='Takıldı:\n'+stalls.map(function(x){return '- '+x+'\n';}).join('');
     o+='\n';
   }
+  var notes=ks.filter(function(d){return D(d).note;});
+  if(notes.length){
+    o+='## GÜNLÜK NOTLAR ('+notes.length+' gün)\n';
+    notes.forEach(function(d){
+      var r2=D(d),bits=[];
+      if(r2.kcal!=null)bits.push(r2.kcal+' kcal');else bits.push('kalori girilmedi');
+      if(r2.p!=null)bits.push(r2.p+'g P');
+      var dt2=dtOf(d),t2=dt2?PROGRAM[dt2]:null;
+      if(t2&&t2.ex.length){var e2=sessionEval(d);bits.push(t2.short+(e2&&!e2.empty?' yapıldı':' YAPILMADI'));}
+      else if(t2)bits.push(t2.short);
+      o+='- '+d+' '+GUN[pd(d).getDay()]+' ['+bits.join(', ')+']\n  '+
+        String(r2.note).replace(/\s*\n\s*/g,'\n  ')+'\n';
+    });
+    o+='\n';
+  }
+  var gaps=ks.filter(function(d){return d<=today()&&D(d).kcal==null&&!D(d).note;});
+  if(gaps.length)o+='## KALORİ GİRİLMEMİŞ VE NOT DA YOK ('+gaps.length+' gün)\n'+
+    gaps.map(function(d){return d;}).join(', ')+'\n\n';
   var slI=sleepInsight();
   if(slI)o+='## UYKU ETKİSİ\n7 saat altı ('+slI.nLo+' seans) ort. kalite %'+Math.round(slI.lo*100)+
     ' | 7 saat üstü ('+slI.nHi+' seans) ort. kalite %'+Math.round(slI.hi*100)+'\n\n';
@@ -3510,11 +3665,38 @@ function tdeeCardD(){
       :'<div class="mhint" style="margin-top:8px">Mevcut hedefin '+ti(S.targets.kcal)+' kcal — uygun, değiştirmeye gerek yok.</div>')+
     '</div></div>';
 }
+function autoCardD(){
+  var d=autoDiff(),on=!!S.autoTargets;
+  var head='<div class="hd"><h2>Otomatik Hedef</h2>'+
+    '<span class="meta" style="display:flex;align-items:center;gap:10px">'+
+      (on?'açık · kilo düştükçe kendi ayarlanır':'kapalı · hedefler elle')+
+      '<button class="tgl'+(on?' on':'')+'" data-a="autotgt"><i></i></button></span></div>';
+  if(!d)return '<div class="card">'+head+
+    '<div style="padding:22px 18px;color:#8a7f6f;font-size:13.5px;line-height:1.6">'+
+    'Yeterli veri yok — en az 8 gün kilo, 7 gün kalori gerekiyor. Biriktiğinde burada '+
+    'trend kilona göre hesaplanmış kalori ve makro hedefleri çıkacak.</div></div>';
+  var a2=d.a;
+  var cells=[['Kalori',ti(a2.kcal),'kcal',d.kcal],['Protein',a2.protein,'g',d.protein],
+    ['Karbonhidrat',a2.carbs,'g',d.carbs],['Yağ',a2.fat,'g',d.fat]];
+  return '<div class="card">'+head+
+    '<div class="kpi" style="border:0;margin:0">'+cells.map(function(x){
+      var dc=x[3]===0?'#a8987c':(x[3]>0?C.green:C.orange);
+      return '<div style="border-top:3px solid '+dc+'"><div class="eyebrow">'+x[0]+'</div>'+
+        '<div class="v">'+x[1]+'<span style="font-size:14px;color:#a8987c"> '+x[2]+'</span></div>'+
+        '<div class="s" style="color:'+dc+'">'+(x[3]>0?'+':'')+x[3]+' fark</div></div>';}).join('')+'</div>'+
+    '<div style="padding:0 18px 16px">'+
+      '<div class="mhint">Trend kilo '+fx(a2.w,1)+' kg · ölçülen bakım '+ti(a2.tdee)+' kcal · '+
+      'protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg · karbonhidrat kalandan. '+
+      'Hedef kayıp hızı haftada '+Math.abs(RATE_TGT)+' kg.</div>'+
+      (on?'':(d.any?'<button class="ghostbtn" data-a="applyauto" style="margin-top:10px">Hedefleri şimdi güncelle</button>'
+                   :'<div class="mhint" style="margin-top:6px">Mevcut hedeflerin zaten uygun.</div>'))+
+    '</div></div>';
+}
 function musCardD(){
-  var mon=monday(today()),mw=musWeek(mon),mt=musTargets(),wp=weekProgress(mon);
-  var frac=wp.plan?Math.min(1,wp.done/wp.plan):0;
+  var mon=monday(today()),mw=musWeek(mon),mt=musPlanned(mon),mex=musExpected(mon),wp=weekProgress(mon);
   var rows=MUSORD.filter(function(k){return mt[k]>0;}).map(function(k){
-    var tgt=mt[k],exp=tgt*frac,have=mw[k],pct=tgt?Math.min(100,have/tgt*100):0;
+    var tgt=mt[k],exp=mex[k],have=mw[k],pct=tgt?Math.min(100,have/tgt*100):0;
+    var epct=tgt?Math.min(100,exp/tgt*100):0;
     var behind=exp>0&&have<exp*0.85;
     var col=behind?C.orange:MUS[k].c;
     return '<div style="display:flex;align-items:center;gap:12px">'+
@@ -3522,20 +3704,20 @@ function musCardD(){
         MUS[k].n+(MUS[k].pri?'<span style="display:block;font-size:9px;letter-spacing:.7px;text-transform:uppercase;color:#c0b193">öncelik</span>':'')+'</span>'+
       '<span style="flex:1;height:11px;border-radius:6px;background:#efe7d6;overflow:hidden;position:relative;display:block">'+
         '<i style="display:block;height:100%;border-radius:6px;width:'+pct.toFixed(0)+'%;background:'+col+'"></i>'+
-        (frac>0&&frac<1?'<u style="position:absolute;top:-2px;left:'+(frac*100).toFixed(0)+'%;width:2px;height:15px;background:#a8987c;opacity:.6"></u>':'')+
+        (exp>0&&epct<99?'<u style="position:absolute;top:-2px;left:'+epct.toFixed(0)+'%;width:2px;height:15px;background:#a8987c;opacity:.6"></u>':'')+
       '</span>'+
       '<span style="width:74px;flex:none;text-align:right;font-size:12.5px;font-weight:700;color:'+(behind?C.orange:'#8a7f6f')+'">'+
         fx(have,1).replace(/\.0$/,'')+'<span style="color:#c0b193"> / '+fx(tgt,1).replace(/\.0$/,'')+'</span></span></div>';
   }).join('');
-  var late=MUSORD.filter(function(k){return mt[k]>0&&MUS[k].pri&&frac>0&&mw[k]<mt[k]*frac*0.85;});
+  var late=MUSORD.filter(function(k){return mt[k]>0&&MUS[k].pri&&mex[k]>0&&mw[k]<mex[k]*0.85;});
   return '<div class="card"><div class="hd"><h2>Haftalık Set Sayısı</h2>'+
-    '<span class="meta">'+wp.done+' / '+wp.plan+' antrenman · gri çizgi = haftanın beklenen noktası</span></div>'+
+    '<span class="meta">'+wp.done+' / '+wp.plan+' antrenman · gri çizgi = o kastan şu ana kadar beklenen</span></div>'+
     '<div style="padding:16px 18px;display:flex;flex-direction:column;gap:11px">'+rows+'</div>'+
     '<div style="padding:0 18px 16px">'+
     (late.length
       ?'<div style="border-radius:11px;padding:11px 13px;font-size:12.5px;font-weight:700;background:'+hexa(C.orange,.12)+';color:'+C.orange+'">'+
-        late.map(function(k){return MUS[k].n;}).join(', ')+' bu hafta planın gerisinde. Yorgunsan aksesuar düş — ama bu kasları değil.</div>'
-      :'<div class="mhint">Hedefler programın kendisinden hesaplanıyor: birincil kas 1, yardımcı kas 0.5 efektif set. Program değişirse hedef de değişir.</div>')+
+        late.map(function(k){return MUS[k].n;}).join(', ')+' yapılmış günlere göre geride. Yorgunsan aksesuar düş — ama bu kasları değil.</div>'
+      :'<div class="mhint">Hedef, o haftada planlanmış günlerden hesaplanır (birincil kas 1, yardımcı kas 0.5 efektif set). Gri çizgi, sadece <b>yapılmış</b> antrenman günlerinden beklenen miktarı gösterir — henüz sırası gelmemiş kas geride sayılmaz.</div>')+
     '</div></div>';
 }
 function ratioCardD(){
@@ -3732,11 +3914,12 @@ function photoCard(){
     '<div style="padding:14px 18px 16px">'+phBody()+'</div></div>';
 }
 function render(){
+  if(S.autoTargets&&syncAutoTargets())save();
   if(phone()){renderGym();return;}
   document.body.className='';
   app.innerHTML=header()+deskNav()+
     '<div id="z-kpi">'+kpi()+'</div>'+
-    '<div id="z-tdee" class="anch">'+tdeeCardD()+'</div>'+
+    '<div id="z-tdee" class="anch">'+tdeeCardD()+autoCardD()+'</div>'+
     '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
     '<div id="z-day" class="anch">'+dayCard()+'</div>'+
     '<div id="z-mus" class="anch">'+musCardD()+'</div>'+
@@ -3800,7 +3983,7 @@ function refreshEx(name){
   var e=null;t.ex.forEach(function(x){if(x.n===name)e=x;});
   if(!e)return;
   var row=document.querySelector('[data-ex="'+cssq(name)+'"]');if(!row)return;
-  var ev=evalEx((D(cur).ex||{})[name],e);
+  var ev=evalEx((D(cur).ex||{})[name],tgtOn(e,cur),prevSession(name,cur));
   var b=row.querySelector('[data-badge]');
   if(b){b.textContent=ev.label;b.style.color=ev.color;b.style.background=ev.bg;}
   var vo=row.querySelector('[data-vol]');if(vo)vo.innerHTML='hacim <b>'+ti(ev.vol)+'</b> kg';
@@ -3852,7 +4035,9 @@ app.addEventListener('input',function(ev){
   if(g){
     var v=(g==='startDate')?t.value:n(t.value);
     if(g==='startDate'){if(!v)return;S.startDate=v;}
-    else{if(v==null||v<=0)return;
+    else{if(v==null)return;
+      if(g==='deloadEvery'){if(v<0)return;S.deloadEvery=Math.round(v);S._st=Date.now();save();refresh();return;}
+      if(v<=0)return;
       if(g.indexOf('.')>0){var a=g.split('.');S[a[0]][a[1]]=v;}else S[g]=Math.round(v);}
     S._st=Date.now();save();refresh();return;}
 });
@@ -3894,7 +4079,7 @@ app.addEventListener('change',function(ev){
     fr.onload=function(){try{var d=JSON.parse(fr.result);
       if(!d||!d.days)throw 0;
       S.days=d.days;if(d.targets)S.targets=Object.assign(S.targets,d.targets);
-      if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;
+      if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;
       save();render();toast('yedek yüklendi');}catch(e){toast('yedek okunamadı');}};
     fr.readAsText(file);ev.target.value='';}
 });
@@ -3946,6 +4131,16 @@ app.addEventListener('click',function(ev){
   else if(a==='phpose'){phPose=t.getAttribute('data-k');repaintPhoto();}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
   else if(a==='phopen'){openPhoto(t.getAttribute('data-d'),+t.getAttribute('data-i'));}
+  else if(a==='autotgt'){
+    S.autoTargets=!S.autoTargets;
+    if(S.autoTargets){var ch=syncAutoTargets();toast(ch?'otomatik hedef açık — hedefler güncellendi':'otomatik hedef açık');}
+    else toast('otomatik hedef kapalı');
+    S._st=Date.now();save();render();}
+  else if(a==='applyauto'){
+    var ad=autoDiff();
+    if(ad&&ad.a){S.targets.kcal=ad.a.kcal;S.targets.protein=ad.a.protein;
+      S.targets.carbs=ad.a.carbs;S.targets.fat=ad.a.fat;
+      S._st=Date.now();save();toast('hedefler güncellendi');render();}}
   else if(a==='usetdee'){
     var nv2=+t.getAttribute('data-v');
     if(nv2>0){S.targets.kcal=nv2;S._st=Date.now();save();
@@ -4067,7 +4262,7 @@ app.addEventListener('click',function(ev){
     var row=t.closest('[data-ex]'),name=row.getAttribute('data-ex');
     var r=touch(cur);r.ex=r.ex||{};r.ex[name]=r.ex[name]||[];
     var e=null;PROGRAM[planOf(cur)].ex.forEach(function(x){if(x.n===name)e=x;});
-    while(r.ex[name].length<Math.max(e.s,r.ex[name].length))r.ex[name].push({kg:null,rep:null});
+    while(r.ex[name].length<Math.max(tgtOn(e,cur).s,r.ex[name].length))r.ex[name].push({kg:null,rep:null});
     r.ex[name].push({kg:null,rep:null});save(cur);render();}
   else if(a==='delset'){
     var box=t.closest('[data-i]'),row2=t.closest('[data-ex]'),name2=row2.getAttribute('data-ex'),i=+box.getAttribute('data-i');
@@ -4101,6 +4296,7 @@ STORE.get(KEY).then(function(res){
     had=!!p.startDate;
     S.days=p.days||{};S.startDate=p.startDate||today();S.weeks=p.weeks||20;
     if(p.deloadEvery!=null)S.deloadEvery=p.deloadEvery;
+    if(p.autoTargets!=null)S.autoTargets=!!p.autoTargets;
     if(p.targets)S.targets=Object.assign(S.targets,p.targets);
     if(p.base)S.base=Object.assign(S.base,p.base);
     if(p.goal)S.goal=Object.assign(S.goal,p.goal);
