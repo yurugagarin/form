@@ -547,6 +547,46 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phcs{font-size:10.5px;font-weight:700;color:#b3a488;margin-top:5px}
 .phnote{margin-top:6px;font-size:11.5px;font-weight:700;color:#a8987c}
 .phempty{padding:16px 2px;font-size:12.5px;line-height:1.6;color:#8a7f6f}
+.phst{margin-top:14px;padding-top:11px;border-top:1px solid #f0e8d8;
+  font-size:11px;font-weight:700;color:#b3a488}
+.phst.warn{color:#a5541f}
+.mnone{padding:56px 24px;text-align:center}
+.mnonei{font-size:34px;color:#d9ccb5;line-height:1}
+.mnone b{display:block;font-family:'Fraunces';font-size:19px;font-weight:600;color:#3a342c;margin-top:12px}
+.mnone span{display:block;font-size:12.5px;font-weight:600;color:#a8987c;margin-top:5px}
+.msechd{display:flex;align-items:center;gap:10px;padding:14px 14px 12px;background:#fbf8f2;
+  border-bottom:1px solid #ece1cd;position:sticky;top:0;z-index:20}
+.msback{width:40px;height:40px;flex:none;border-radius:12px;border:1px solid #e4d9c2;background:#f7f1e4;
+  font-size:20px;color:#6b5f4d;line-height:1;-webkit-tap-highlight-color:transparent}
+.msechtx{flex:1;min-width:0}
+.msechtx b{display:block;font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.15}
+.msechtx i{display:block;font-style:normal;font-size:11px;font-weight:700;color:#b3a488;margin-top:1px}
+.msecbody{padding:14px}
+.mdrw{position:fixed;inset:0;z-index:120}
+.mdrwbg{position:absolute;inset:0;background:rgba(30,25,18,.42);
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);animation:fadein .18s ease}
+.mdrwp{position:absolute;top:0;right:0;bottom:0;width:min(80vw,320px);background:#fbf8f2;
+  border-left:1px solid #e4d9c2;box-shadow:-12px 0 34px rgba(50,42,30,.22);
+  padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
+  overflow-y:auto;animation:slidein .22s cubic-bezier(.2,.9,.3,1)}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes slidein{from{transform:translateX(100%)}to{transform:translateX(0)}}
+.mdrwhd{display:flex;align-items:center;gap:10px;padding:0 4px 12px}
+.mdrwhd b{flex:1;font-family:'Fraunces';font-size:21px;font-weight:600}
+.mdrwx{width:36px;height:36px;flex:none;border-radius:11px;border:1px solid #e4d9c2;background:#f3ecdd;
+  font-size:15px;color:#8a7f6f;-webkit-tap-highlight-color:transparent}
+.mdrwi{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:none;
+  padding:12px 8px;border-radius:12px;-webkit-tap-highlight-color:transparent;border-bottom:1px solid #f0e8d8}
+.mdrwi:last-child{border-bottom:0}
+.mdrwi.on{background:#3a342c}
+.mdrwi.on .mdrwtx b,.mdrwi.on .mdrwic,.mdrwi.on .mdrwa{color:#f6efe1}
+.mdrwi.on .mdrwtx i{color:#b3a488}
+.mdrwic{width:26px;flex:none;text-align:center;font-size:17px;color:#a8987c}
+.mdrwtx{flex:1;min-width:0}
+.mdrwtx b{display:block;font-size:14px;font-weight:700;color:#3a342c}
+.mdrwtx i{display:block;font-style:normal;font-size:10.5px;font-weight:600;color:#b3a488;margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mdrwa{flex:none;font-size:17px;color:#cdbfa8}
 .phbk{margin-top:16px;padding-top:14px;border-top:1px solid #ece1cd}
 .phbkhd{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
 .phbkhd b{font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c;flex:1}
@@ -2694,7 +2734,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v33 · 25 Ağu 2026';
+var APPVER='v34 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3563,89 +3603,137 @@ function paintBar(){
 }
 
 /* --- daha sekmesi: açılır kapanır bölümler --- */
-var mOpen={cal:true};
-function sect(k,icon,title,sub,body){
-  var on=!!mOpen[k];
-  return '<div class="msect'+(on?' on':'')+'">'+
-    '<button class="mshead" data-a="msect" data-k="'+k+'">'+
-      '<span class="msic">'+icon+'</span>'+
-      '<span class="mstx"><b>'+title+'</b><i>'+sub+'</i></span>'+
-      '<span class="msarrow">›</span></button>'+
-    (on?'<div class="msbody">'+body+'</div>':'')+
-  '</div>';
+/* ============ DAHA — yan menü ============
+   Her şeyi tek sayfaya yığmak yerine: yandan menü açılır, seçtiğin bölüm
+   tek başına görünür. Ekranda aynı anda yalnızca bir iş var. */
+var mSect=null, mDrawer=false;
+var MENU=[
+  ['cal','▦','Takvim & Plan'],
+  ['pho','◪','Fotoğraf'],
+  ['prog','☰','Program & Hareketler'],
+  ['rep','↗','Rapor'],
+  ['tgt','◎','Hedefler'],
+  ['sync','☁','Bulut Senkron'],
+  ['bak','⛨','Yedek & Depo'],
+  ['app','⚙','Uygulama']
+];
+function menuTitle(k){for(var i=0;i<MENU.length;i++)if(MENU[i][0]===k)return MENU[i][2];return '';}
+function menuSub(k){
+  var pdn=progDay(today());
+  if(k==='cal')return (pdn>0?pdn:0)+'. gün · '+Math.max(0,S.weeks*7-pdn)+' gün kaldı';
+  if(k==='pho')return photoCount()+' fotoğraf';
+  if(k==='prog')return PROGRAM[pTab].ex.length+' hareket · '+PROGRAM[pTab].short;
+  if(k==='rep')return keys().length+' gün kayıtlı';
+  if(k==='tgt')return S.targets.kcal+' kcal · '+S.targets.protein+'g P';
+  if(k==='sync')return (S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil';
+  if(k==='bak')return repoOK()?'depo bağlı':'depo bağlı değil';
+  if(k==='app')return APPVER;
+  return '';
+}
+function gymDrawer(){
+  if(!mDrawer)return '<div id="mdrw"></div>';
+  return '<div id="mdrw" class="mdrw on">'+
+    '<div class="mdrwbg" data-a="drwclose"></div>'+
+    '<div class="mdrwp">'+
+      '<div class="mdrwhd"><b>Daha</b>'+
+        '<button class="mdrwx" data-a="drwclose" aria-label="Kapat">✕</button></div>'+
+      MENU.map(function(x){
+        return '<button class="mdrwi'+(mSect===x[0]?' on':'')+'" data-a="msel" data-k="'+x[0]+'">'+
+          '<span class="mdrwic">'+x[1]+'</span>'+
+          '<span class="mdrwtx"><b>'+x[2]+'</b><i>'+esc(menuSub(x[0]))+'</i></span>'+
+          '<span class="mdrwa">›</span></button>';}).join('')+
+    '</div></div>';
+}
+/* --- tek tek bölümler --- */
+function secCal(){
+  return paintBar()+calendarM()+
+    '<div class="mlegend">'+ORDER.map(function(k){
+      return '<span><b style="color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</b> '+
+        esc(PROGRAM[k].name)+'</span>';}).join('')+
+      '<span><b style="color:#8a7a5e">DİN</b> Dinlenme</span>'+
+      '<span><b style="color:#2f8a7c">SYH</b> Seyahat / izin</span></div>';
+}
+function secProg(){
+  var t=PROGRAM[pTab];
+  return '<div class="mpt">'+ORDER.map(function(k){
+      return '<button class="gchip'+(pTab===k?' on':'')+'" data-a="ptab" data-k="'+k+'"'+
+        (pTab===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+PROGRAM[k].code+'</button>';}).join('')+'</div>'+
+    '<div class="mexlist">'+t.ex.map(function(e){
+      return '<button class="mexrow" data-a="fig" data-n="'+esc(e.n)+'">'+
+        '<span class="exthumb big">'+figSVG(e.n)+'</span>'+
+        '<span class="mextx"><b>'+esc(e.n)+'</b><i>'+e.s+' × '+e.r[0]+'-'+e.r[1]+' · '+mmss(restSec(e.n))+' dinlenme</i>'+
+        '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>';
+}
+function secRep(){
+  return '<div class="mfield"><label>Kapsam</label>'+
+    '<select class="ginp sel" data-a="reprange">'+REPOPTS.map(function(o){
+      return '<option value="'+o[0]+'"'+(repRange===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>'+
+    (repRange==='custom'
+      ?'<div class="mrow2"><div class="mfield"><label>Başlangıç</label><input type="date" class="ginp" data-a="repfrom" value="'+repFrom+'"></div>'+
+       '<div class="mfield"><label>Bitiş</label><input type="date" class="ginp" data-a="repto" value="'+repTo+'"></div></div>'
+      :'<div class="mhint2">'+repLabel()+'</div>')+
+    '<textarea class="mrep" id="rep" readonly>'+esc(report())+'</textarea>'+
+    '<button class="mbtn dark" data-a="copy">Raporu kopyala</button>';
+}
+function secSync(){
+  return (S.sync.token&&S.sync.gist
+    ?'<div class="mhint2">Gist: <b>'+esc(S.sync.gist)+'</b></div>'+
+     '<button class="mbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
+     '<div class="mfield" style="margin-top:12px"><label>Bağlantı kodu — yeni cihaza bunu yapıştır</label>'+
+       '<textarea class="mrep" style="height:74px;font-size:11px" readonly onclick="this.select()">'+esc(makeCode())+'</textarea></div>'+
+     '<button class="mbtn dark" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
+     '<div class="mhint2" style="margin-top:6px">Yeni telefonda uygulamayı aç, çıkan “Bağlantı kodu” alanına bunu yapıştır. Veriler ve fotoğraflar birlikte iner.</div>'+
+     '<div class="mfield" style="margin-top:16px"><label>Anahtarı değiştir (gist + repo yetkili)</label>'+
+       '<input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
+     '<button class="mbtn" data-a="tokupd">Anahtarı güncelle</button>'+
+     '<button class="mbtn" data-a="syncoff">Bağlantıyı kes</button>'
+    :'<div class="mfield"><label>Bağlantı kodu</label><input class="ginp" data-a="codeinp" placeholder="FORM2-…"></div>'+
+     '<button class="mbtn dark" data-a="usecode">Kodu kullan ve bağlan</button>'+
+     '<div class="mfield" style="margin-top:14px"><label>Ya da GitHub anahtarı</label><input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
+     '<button class="mbtn" data-a="connect">Bağlan (yeni gist)</button>');
+}
+function secTgt(){
+  return '<div class="mrow2">'+
+      mfld('targets.kcal','Kalori',S.targets.kcal)+mfld('targets.protein','Protein (g)',S.targets.protein)+
+      mfld('targets.carbs','Karbonhidrat (g)',S.targets.carbs)+mfld('targets.fat','Yağ (g)',S.targets.fat)+
+      mfld('targets.steps','Adım',S.targets.steps)+mfld('goal.weight','Hedef kilo',S.goal.weight)+
+      mfld('base.weight','Başlangıç kilo',S.base.weight)+mfld('weeks','Süre (hafta)',S.weeks)+
+      mfld('deloadEvery','Deload (kaç haftada bir)',S.deloadEvery)+
+    '</div>'+
+    '<div class="mfield" style="margin-top:12px"><label>Program başlangıcı</label>'+
+      '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'">'+
+      '<div class="mhint2" style="margin-top:5px">'+startHint()+'</div></div>';
+}
+function secApp(){
+  return '<button class="mbtn" data-a="dl">Veri yedeği indir</button>'+
+    '<label class="mbtn" style="display:block;text-align:center">Veri yedeği yükle<input type="file" accept="application/json" data-a="imp" style="display:none"></label>'+
+    '<button class="mbtn" data-a="desktop">Masaüstü görünüme geç</button>'+
+    '<div class="mhint2" style="margin-top:10px">Sürüm '+APPVER+'</div>';
+}
+function secBody(k){
+  if(k==='cal')return secCal();
+  if(k==='pho')return phBody();
+  if(k==='prog')return secProg();
+  if(k==='rep')return secRep();
+  if(k==='tgt')return secTgt();
+  if(k==='sync')return secSync();
+  if(k==='bak')return phBackupPanel()+migPanel();
+  if(k==='app')return secApp();
+  return '';
 }
 function gymMore(){
-  var pdn=progDay(today());
-  var t=PROGRAM[pTab];
-  var kd=keys().length;
-  return '<div class="mmore">'+
-    sect('cal','▦','Takvim & Plan',(pdn>0?pdn:0)+'. gün · '+Math.max(0,S.weeks*7-pdn)+' gün kaldı',
-      paintBar()+calendarM()+
-      '<div class="mlegend">'+ORDER.map(function(k){
-        return '<span><b style="color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</b> '+
-          esc(PROGRAM[k].name)+'</span>';}).join('')+
-        '<span><b style="color:#8a7a5e">DİN</b> Dinlenme</span>'+
-        '<span><b style="color:#2f8a7c">SYH</b> Seyahat / izin</span></div>')+
-
-    sect('prog','☰','Program & Hareketler',t.ex.length+' hareket · '+esc(t.short),
-      '<div class="mpt">'+ORDER.map(function(k){
-        return '<button class="gchip'+(pTab===k?' on':'')+'" data-a="ptab" data-k="'+k+'"'+
-          (pTab===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+PROGRAM[k].code+'</button>';}).join('')+'</div>'+
-      '<div class="mexlist">'+t.ex.map(function(e){
-        return '<button class="mexrow" data-a="fig" data-n="'+esc(e.n)+'">'+
-          '<span class="exthumb big">'+figSVG(e.n)+'</span>'+
-          '<span class="mextx"><b>'+esc(e.n)+'</b><i>'+e.s+' × '+e.r[0]+'-'+e.r[1]+' · '+mmss(restSec(e.n))+' dinlenme</i>'+
-          '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>')+
-
-    sect('pho','◪','Fotoğraf',photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB',
-      phBody()+phBackupPanel()+migPanel())+
-
-    sect('rep','↗','Rapor',kd+' gün kayıtlı · sohbete yapıştır',
-      '<div class="mfield"><label>Kapsam</label>'+
-        '<select class="ginp sel" data-a="reprange">'+REPOPTS.map(function(o){
-          return '<option value="'+o[0]+'"'+(repRange===o[0]?' selected':'')+'>'+o[1]+'</option>';}).join('')+'</select></div>'+
-      (repRange==='custom'
-        ?'<div class="mrow2"><div class="mfield"><label>Başlangıç</label><input type="date" class="ginp" data-a="repfrom" value="'+repFrom+'"></div>'+
-         '<div class="mfield"><label>Bitiş</label><input type="date" class="ginp" data-a="repto" value="'+repTo+'"></div></div>'
-        :'<div class="mhint2">'+repLabel()+'</div>')+
-      '<textarea class="mrep" id="rep" readonly>'+esc(report())+'</textarea>'+
-      '<button class="mbtn dark" data-a="copy">Raporu kopyala</button>')+
-
-    sect('sync','☁','Bulut Senkron',(S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil',
-      (S.sync.token&&S.sync.gist
-        ?'<div class="mhint2">Gist: <b>'+esc(S.sync.gist)+'</b></div>'+
-         '<button class="mbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
-         '<div class="mfield" style="margin-top:12px"><label>Bağlantı kodu — yeni cihaza bunu yapıştır</label>'+
-           '<textarea class="mrep" style="height:74px;font-size:11px" readonly onclick="this.select()">'+esc(makeCode())+'</textarea></div>'+
-         '<button class="mbtn dark" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
-         '<div class="mhint2" style="margin-top:6px">Yeni telefonda uygulamayı aç — orada “Bağlantı kodu” alanı çıkar, bunu oraya yapıştır.</div>'+
-         '<div class="mfield" style="margin-top:14px"><label>Anahtarı değiştir (gist + repo yetkili)</label>'+
-           '<input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
-         '<button class="mbtn" data-a="tokupd">Anahtarı güncelle</button>'+
-         '<button class="mbtn" data-a="syncoff">Bağlantıyı kes</button>'
-        :'<div class="mfield"><label>Bağlantı kodu</label><input class="ginp" data-a="codeinp" placeholder="FORM2-…"></div>'+
-         '<button class="mbtn dark" data-a="usecode">Kodu kullan ve bağlan</button>'+
-         '<div class="mfield" style="margin-top:14px"><label>Ya da GitHub anahtarı</label><input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
-         '<button class="mbtn" data-a="connect">Bağlan (yeni gist)</button>'))+
-
-    sect('tgt','◎','Hedefler',S.targets.kcal+' kcal · '+S.targets.protein+'g P · '+S.goal.weight+' kg',
-      '<div class="mrow2">'+
-        mfld('targets.kcal','Kalori',S.targets.kcal)+mfld('targets.protein','Protein (g)',S.targets.protein)+
-        mfld('targets.carbs','Karbonhidrat (g)',S.targets.carbs)+mfld('targets.fat','Yağ (g)',S.targets.fat)+
-        mfld('targets.steps','Adım',S.targets.steps)+mfld('goal.weight','Hedef kilo',S.goal.weight)+
-        mfld('base.weight','Başlangıç kilo',S.base.weight)+mfld('weeks','Süre (hafta)',S.weeks)+
-        mfld('deloadEvery','Deload (kaç haftada bir)',S.deloadEvery)+
-      '</div>'+
-      '<div class="mfield" style="margin-top:12px"><label>Program başlangıcı</label>'+
-        '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'">'+
-        '<div class="mhint2" style="margin-top:5px">'+startHint()+'</div></div>')+
-
-    sect('app','⚙','Uygulama',APPVER,
-      '<button class="mbtn" data-a="dl">Yedek indir</button>'+
-      '<label class="mbtn" style="display:block;text-align:center">Yedek yükle<input type="file" accept="application/json" data-a="imp" style="display:none"></label>'+
-      '<button class="mbtn" data-a="desktop">Masaüstü görünüme geç</button>'+
-      '<div class="mhint2" style="margin-top:10px">Sürüm '+APPVER+'</div>')+
-  '</div>';
+  if(!mSect)
+    return '<div class="mnone">'+
+      '<div class="mnonei">☰</div>'+
+      '<b>Menüden bir bölüm seç</b>'+
+      '<span>Takvim, fotoğraf, rapor, hedefler…</span>'+
+      '<button class="mbtn dark" data-a="drwopen" style="max-width:220px;margin:14px auto 0">Menüyü aç</button>'+
+    '</div>';
+  return '<div class="msechd">'+
+      '<button class="msback" data-a="drwopen" aria-label="Menü">‹</button>'+
+      '<div class="msechtx"><b>'+esc(menuTitle(mSect))+'</b><i>'+esc(menuSub(mSect))+'</i></div>'+
+    '</div>'+
+    '<div class="msecbody">'+secBody(mSect)+'</div>';
 }
 function mfld(g,lbl,v){
   return '<div class="mfield"><label>'+lbl+'</label><input class="ginp" data-g="'+g+'" inputmode="decimal" value="'+v+'"></div>';
@@ -3693,7 +3781,7 @@ function gymRefresh(){
 function gymTabsRefresh(){zi('g-tabs',gymTabsInner());}
 function renderGym(){
   document.body.className='gym';
-  app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+restBar()+gymTabs()+detailLayer();
+  app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
 }
 
 /* ============ AYARLAR / RAPOR ============ */
@@ -4199,23 +4287,27 @@ function phCompare(all){
 }
 function phUploader(){
   return '<label class="phaddbig">'+
-    '<span>＋ Fotoğraf ekle</span><i>'+flong(cur)+' gününe kaydedilir · birden fazla seçebilirsin</i>'+
+    '<span>＋ Fotoğraf yükle</span><i>'+flong(cur)+'</i>'+
     '<input type="file" accept="image/*" multiple data-a="photoadd" style="display:none">'+
   '</label>';
+}
+function phStatus(){
+  if(!repoOK())
+    return '<div class="phst warn">Bu cihazda yedeklenmiyor · <b>Daha → Yedek &amp; Depo</b>’dan bağla</div>';
+  return '<div class="phst">☁ '+(phMsg||phSyncLabel())+'</div>';
 }
 function phBody(){
   var all=phDefaults();
   if(!all.length)
-    return '<div class="phempty">Her seferinde aynı ışık, aynı mesafe, aynı duruş. '+
-      'Aynı açıyı tuttuğun sürece değişimi görürsün.'+
-      '<br><br>Fotoğraflar <b>senkronize edilmez</b> — sadece bu cihazda kalır.</div>'+
-      phUploader();
+    return phUploader()+
+      '<div class="phempty">Her seferinde aynı ışık, aynı mesafe, aynı duruş. '+
+      'Aynı açıyı tuttuğun sürece değişimi görürsün.</div>'+phStatus();
   return phUploader()+
     '<div class="phtabs">'+
       '<button class="phtab'+(phView==='all'?' on':'')+'" data-a="phview" data-k="all">Tümü<i>'+all.length+'</i></button>'+
       '<button class="phtab'+(phView==='cmp'?' on':'')+'" data-a="phview" data-k="cmp">Karşılaştır</button>'+
     '</div>'+
-    (phView==='all'?phGallery(all):phCompare(all));
+    (phView==='all'?phGallery(all):phCompare(all))+phStatus();
 }
 /* ============ FOTOĞRAF YEDEĞİ ============
    İki ayrı yol var, ikisi de bağımsız çalışır:
@@ -4330,6 +4422,8 @@ function phRemoteList(){
 function phSetMsg(m){
   phMsg=m;
   var e=document.getElementById('phsyncbadge');if(e)e.textContent=m||'';
+  var st2=document.querySelector('.phst');
+  if(st2&&repoOK())st2.innerHTML='☁ '+(m||phSyncLabel());
 }
 function phCreateRepo(name){
   name=(name||'').trim();
@@ -4564,13 +4658,17 @@ function phCleanRemote(){
 }
 function repaintPhoto(){
   if(phone())zi('g-body',gymBody());
-  else zi('z-photo',photoCard());
+  else{zi('z-photo',photoCard());
+    var zb=document.getElementById('z-bak');
+    if(zb)zb.innerHTML='<div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
+      '<span class="meta">fotoğraf deposu, yedekler, geçiş kontrolü</span></div>'+
+      '<div style="padding:6px 18px 16px">'+phBackupPanel()+migPanel()+'</div></div>';}
   if(pvIdx!=null)paintViewer();
 }
 function photoCard(){
   return '<div class="card dom dom-bod"><div class="hd"><h2>Fotoğraf</h2>'+
     '<span class="meta">'+photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB · senkron dışı</span></div>'+
-    '<div style="padding:14px 18px 16px">'+phBody()+phBackupPanel()+migPanel()+'</div></div>';
+    '<div style="padding:14px 18px 16px">'+phBody()+'</div></div>';
 }
 /* ============ BUGÜN — kahraman kartı ============
    Uygulamayı açtığında "şimdi ne yapmalıyım" sorusunun cevabı,
@@ -4751,6 +4849,9 @@ function render(){
     '<div id="z-week" class="anch">'+weekTable()+'</div>'+
     '<div id="z-cal" class="anch">'+calendar()+'</div>'+
     '<div id="z-photo" class="anch">'+photoCard()+'</div>'+
+    '<div id="z-bak" class="anch"><div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
+      '<span class="meta">fotoğraf deposu, yedekler, geçiş kontrolü</span></div>'+
+      '<div style="padding:6px 18px 16px">'+phBackupPanel()+migPanel()+'</div></div></div>'+
     '<div id="z-sync">'+syncCard()+'</div>'+
     '<div id="z-set" class="anch">'+settings()+'</div>'+
     '<div style="text-align:center;margin-top:18px;font-size:12.5px;color:#a8987c">'+
@@ -4758,7 +4859,7 @@ function render(){
     '</div>';
 }
 var DNAV=[['z-tdee','Kalori'],['z-day','Bugün'],['z-mus','Set sayısı'],['z-ratio','Oran'],
-  ['z-prg','İlerleme'],['z-week','Hafta'],['z-cal','Takvim'],['z-photo','Fotoğraf'],['z-set','Ayarlar']];
+  ['z-prg','İlerleme'],['z-week','Hafta'],['z-cal','Takvim'],['z-photo','Fotoğraf'],['z-bak','Yedek'],['z-set','Ayarlar']];
 function deskNav(){
   return '<div class="dnav">'+DNAV.map(function(x){
     return '<button data-a="goto" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
@@ -4993,9 +5094,13 @@ app.addEventListener('click',function(ev){
     dClosing=true;var dl2=document.getElementById('dlayer');if(dl2)dl2.outerHTML=detailLayer();
     setTimeout(function(){dOpen=null;dClosing=false;
       var d3=document.getElementById('dlayer');if(d3)d3.outerHTML=detailLayer();},260);}
-  else if(a==='msect'){
-    var mk2=t.getAttribute('data-k');mOpen[mk2]=!mOpen[mk2];zi('g-body',gymBody());}
-  else if(a==='gtab'){gTab=t.getAttribute('data-k');zi('g-body',gymBody());gymTabsRefresh();window.scrollTo(0,0);}
+  else if(a==='gtab'){
+    var gk2=t.getAttribute('data-k');
+    if(gk2==='m'){gTab='m';mDrawer=true;render();window.scrollTo(0,0);return;}
+    gTab=gk2;mDrawer=false;zi('g-body',gymBody());gymTabsRefresh();window.scrollTo(0,0);}
+  else if(a==='drwopen'){mDrawer=true;render();}
+  else if(a==='drwclose'){mDrawer=false;render();}
+  else if(a==='msel'){mSect=t.getAttribute('data-k');mDrawer=false;render();window.scrollTo(0,0);}
   else if(a==='gym'){setMode('gym');}
   else if(a==='desktop'){setMode('desk');}
   else if(a==='goto'){
