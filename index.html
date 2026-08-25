@@ -2692,7 +2692,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v30 · 25 Ağu 2026';
+var APPVER='v31 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4404,6 +4404,9 @@ function phBackupPanel(){
     (repoOK()
       ?'<div class="mhint2">Özel depo: <b>'+esc(S.sync.repo)+'</b></div>'+
        '<button class="mbtn dark" data-a="phsync">Fotoğrafları şimdi eşitle</button>'+
+       '<button class="mbtn" data-a="phclean">Buluttaki artık dosyaları temizle</button>'+
+       '<div class="mhint2" style="margin-top:6px">Bulut sayısı yereldekinden fazlaysa bunu kullan. '+
+         'Yerelde karşılığı olmayan dosyalar silinir; fotoğrafların etkilenmez.</div>'+
        '<button class="mbtn" data-a="phrepooff">Depo bağlantısını kes</button>'
       :'<div class="mhint2">GitHub’da <b>özel (private)</b> bir depo kullanılır — gist değil. '+
         'Özel depoyu senden başkası açamaz; gizli gist ise linki bilen herkese açıktır. '+
@@ -4460,13 +4463,15 @@ function migCheck(){
       ['Girilmiş set',lSets,out.rSets],
       ['Fotoğraf',lPh,out.rPh]
     ];
+    var phExact=(out.rPh!=null&&out.rPh===lPh);
     var bad=[];
     if(out.rDays<lDays)bad.push('veri');
     if(out.rSets<lSets)bad.push('set');
     if(out.rPh==null)bad.push('fotoğraf deposu bağlı değil');
     else if(out.rPh<lPh)bad.push((lPh-out.rPh)+' fotoğraf yüklenmemiş');
+    else if(out.rPh>lPh)bad.push('bulutta '+(out.rPh-lPh)+' artık dosya var');
     var tbl='<div class="migtbl">'+rows.map(function(r){
-      var ok=(r[2]!=null&&r[2]>=r[1]);
+      var ok=(r[0]==='Fotoğraf')?phExact:(r[2]!=null&&r[2]>=r[1]);
       return '<div class="migrow'+(ok?' ok':' bad')+'"><span>'+r[0]+'</span>'+
         '<b>'+r[1]+'</b><i>bu cihaz</i>'+
         '<b>'+(r[2]==null?'—':r[2])+'</b><i>bulut</i>'+
@@ -4477,6 +4482,7 @@ function migCheck(){
     else
       migPaint(tbl+'<div class="migbad"><b>Eksik var:</b> '+bad.join(', ')+'. '+
         (out.rPh!=null&&out.rPh<lPh?'“Fotoğrafları şimdi eşitle”ye bas, bitince tekrar kontrol et. ':'')+
+        (out.rPh!=null&&out.rPh>lPh?'“Buluttaki artık dosyaları temizle”ye bas, bitince tekrar kontrol et. ':'')+
         (out.rDays<lDays||out.rSets<lSets?'“Şimdi senkronize et”e bas, bitince tekrar kontrol et. ':'')+
         (out.rPh==null?'Önce özel fotoğraf deposunu bağla. ':'')+
         'Yeşil olmadan eski telefonu silme.</div>');
@@ -4493,6 +4499,41 @@ function migPanel(){
     '<button class="mbtn dark" data-a="migchk">Kontrol et</button>'+
     '<div id="migbox">'+(migMsg||'')+'</div>'+
   '</div>';
+}
+/* bulutta biriken artık dosyaları sil: yerelde karşılığı olmayan her .jpg gider.
+   Yerel her zaman doğru kabul edilir — silmeden önce yerelin sağlam olduğundan emin ol. */
+function phCleanRemote(){
+  if(phSyncing)return;
+  if(!repoOK()){toast('depo bağlı değil');return;}
+  phEnsureIds();phDedupe();
+  var mine={};
+  Object.keys(_ph||{}).forEach(function(d){(_ph[d]||[]).forEach(function(x){if(x.id)mine[x.id]=1;});});
+  var myN=photoCount();
+  if(!myN){toast('yerelde fotoğraf yok — güvenlik için iptal edildi');return;}
+  phSyncing=true;phSetMsg('bulut taranıyor…');
+  var base='/repos/'+S.sync.repo+'/contents/photos';
+  ghRepo(base).then(function(list){
+    if(!Array.isArray(list))throw new Error('depo okunamadı');
+    var junk=list.filter(function(f){
+      return f&&/\.jpg$/i.test(f.name||'')&&!mine[f.name.replace(/\.jpg$/i,'')];});
+    var i=0;
+    function del(){
+      if(i>=junk.length)return Promise.resolve(junk.length);
+      var f=junk[i++];
+      phSetMsg('siliniyor '+i+'/'+junk.length);
+      return ghRepo(base+'/'+f.name,{method:'DELETE',
+        body:{message:'artik foto sil',sha:f.sha}}).then(del);
+    }
+    return del();
+  }).then(function(n){
+    phSyncing=false;phSetMsg('');
+    S.sync.phLast=Date.now();save();
+    toast(n?n+' artık dosya silindi':'bulutta artık dosya yok');
+    migPaint('');render();
+  }).catch(function(e){
+    phSyncing=false;phSetMsg('');
+    toast('temizlik hatası: '+e.message);
+  });
 }
 function repaintPhoto(){
   if(phone())zi('g-body',gymBody());
@@ -4952,6 +4993,7 @@ app.addEventListener('click',function(ev){
     toast(rm2?rm2+' yinelenen silindi':'yinelenen yok');
     render();}
   else if(a==='phsync'){phSync();}
+  else if(a==='phclean'){phCleanRemote();}
   else if(a==='phrepooff'){S.sync.repo='';S._st=Date.now();save();toast('depo bağlantısı kesildi');render();}
   else if(a==='repouse'){
     var ri=document.querySelector('[data-a="repoinp"]');
