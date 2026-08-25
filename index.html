@@ -2643,7 +2643,14 @@ function syncNow(silent){
     return pre;
   }).then(function(txt){
     var n=0;
-    if(txt){try{n=mergeRemote(JSON.parse(txt));}catch(e){}}
+    if(txt){
+      var rm=null;
+      try{rm=JSON.parse(txt);}catch(e){}
+      /* Bulutta veri VAR ama okunamıyorsa asla üzerine yazma —
+         yoksa bozuk bir indirme tüm bulut yedeğini silebilir. */
+      if(rm==null)throw new Error('buluttaki veri okunamadı, üzerine yazılmadı — tekrar dene');
+      n=mergeRemote(rm);
+    }
     if(migrateNames())n++;
     var body={files:{}};body.files[GFILE]={content:JSON.stringify(payload())};
     return gh('/gists/'+S.sync.gist,{method:'PATCH',body:body}).then(function(){return n;});
@@ -2763,7 +2770,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v36 · 25 Ağu 2026';
+var APPVER='v38 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3642,8 +3649,7 @@ var MENU=[
   ['prog','☰','Program & Hareketler'],
   ['rep','↗','Rapor'],
   ['tgt','◎','Hedefler'],
-  ['sync','☁','Bulut Senkron'],
-  ['bak','⛨','Yedek & Depo'],
+  ['sync','☁','Senkron & Yedek'],
   ['app','⚙','Uygulama']
 ];
 function menuTitle(k){for(var i=0;i<MENU.length;i++)if(MENU[i][0]===k)return MENU[i][2];return '';}
@@ -3654,8 +3660,7 @@ function menuSub(k){
   if(k==='prog')return PROGRAM[pTab].ex.length+' hareket · '+PROGRAM[pTab].short;
   if(k==='rep')return keys().length+' gün kayıtlı';
   if(k==='tgt')return S.targets.kcal+' kcal · '+S.targets.protein+'g P';
-  if(k==='sync')return (S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil';
-  if(k==='bak')return repoOK()?'depo bağlı':'depo bağlı değil';
+  if(k==='sync')return ((S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil')+(repoOK()?'':' · depo yok');
   if(k==='app')return APPVER;
   return '';
 }
@@ -3745,8 +3750,7 @@ function secBody(k){
   if(k==='prog')return secProg();
   if(k==='rep')return secRep();
   if(k==='tgt')return secTgt();
-  if(k==='sync')return secSync();
-  if(k==='bak')return phBackupPanel()+migPanel();
+  if(k==='sync')return secSync()+'<div style="margin-top:18px;border-top:1px solid #ece1cd"></div>'+phBackupPanel()+migPanel();
   if(k==='app')return secApp();
   return '';
 }
@@ -4134,16 +4138,59 @@ function migratePhotos(o){
     var v=o[d];
     if(typeof v==='string')out[d]=[{u:v,t:null}];
     else if(Array.isArray(v))out[d]=v.map(function(x){
-      return (typeof x==='string')?{u:x,t:null}:{u:x.u,t:x.t||null};}).filter(function(x){return x.u;});
+      return (typeof x==='string')?{u:x,t:null,id:null}
+        :{u:x.u,t:x.t||null,id:x.id||null};}).filter(function(x){return x.u;});
   });
   return out;
 }
+/* Fotoğraflar localStorage'a SIĞMAZ: ~35 fotoğrafta 5MB sınırı dolar ve
+   dolduğunda antrenman verisinin kaydı da yazamaz olur. Bu yüzden fotoğraflar
+   IndexedDB'de (yüzlerce MB) durur; localStorage yalnızca acil yedek yoldur. */
+var PHDB=(function(){
+  var db=null;
+  function open(){
+    return new Promise(function(res,rej){
+      if(db)return res(db);
+      if(typeof indexedDB==='undefined')return rej(new Error('idb yok'));
+      var rq=indexedDB.open('form-photos',1);
+      rq.onupgradeneeded=function(){rq.result.createObjectStore('kv');};
+      rq.onsuccess=function(){db=rq.result;res(db);};
+      rq.onerror=function(){rej(rq.error||new Error('idb açılamadı'));};
+    });
+  }
+  return {
+    get:function(k){return open().then(function(d){
+      return new Promise(function(res,rej){
+        var g=d.transaction('kv','readonly').objectStore('kv').get(k);
+        g.onsuccess=function(){res(g.result);};
+        g.onerror=function(){rej(g.error);};
+      });});},
+    set:function(k,v){return open().then(function(d){
+      return new Promise(function(res,rej){
+        var t=d.transaction('kv','readwrite');
+        t.objectStore('kv').put(v,k);
+        t.oncomplete=function(){res();};
+        t.onerror=function(){rej(t.error);};
+      });});}
+  };
+})();
 function loadPhotos(){
-  try{
+  return PHDB.get(PKEY).then(function(v){
+    if(v){try{_ph=migratePhotos(JSON.parse(v));}catch(e){}return;}
+    /* IDB boş — eski localStorage kaydı varsa oradan taşı ve orayı boşalt */
     return STORE.get(PKEY).then(function(r){
-      try{var o=JSON.parse((r&&r.value)||'{}');if(o&&typeof o==='object')_ph=migratePhotos(o);}catch(e){}
+      try{_ph=migratePhotos(JSON.parse((r&&r.value)||'{}'));}catch(e){}
+      if(photoCount())
+        PHDB.set(PKEY,JSON.stringify(_ph)).then(function(){
+          try{localStorage.removeItem(PKEY);}catch(e){}
+        }).catch(function(){});
     }).catch(function(){});
-  }catch(e){return null;}
+  }).catch(function(){
+    /* IDB hiç yoksa (çok eski tarayıcı) eski yol */
+    return STORE.get(PKEY).then(function(r){
+      try{_ph=migratePhotos(JSON.parse((r&&r.value)||'{}'));}catch(e){}
+    }).catch(function(){});
+  });
 }
 /* aynı id veya aynı görüntü iki kez varsa birini at */
 function phDedupe(){
@@ -4164,7 +4211,12 @@ function phDedupe(){
 }
 function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
 function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
-function savePhotos(){try{STORE.set(PKEY,JSON.stringify(_ph||{}));}catch(e){toast('depolama dolu — eski fotoğrafları sil');}}
+function savePhotos(){
+  var j=JSON.stringify(_ph||{});
+  PHDB.set(PKEY,j).catch(function(){
+    try{STORE.set(PKEY,j);}catch(e){toast('fotoğraf kaydedilemedi — bulut yedeğin var, veri kaybı yok');}
+  });
+}
 function photoBytes(){
   var t=0;photoDates().forEach(function(d){_ph[d].forEach(function(x){t+=(x.u||'').length;});});
   return Math.round(t*0.75/1024);
@@ -4173,7 +4225,7 @@ function photoBytes(){
 function phAll(){
   var out=[];
   photoDates().forEach(function(d){
-    (_ph[d]||[]).forEach(function(x,i){out.push({d:d,i:i,u:x.u,t:x.t});});
+    (_ph[d]||[]).forEach(function(x,i){out.push({d:d,i:i,u:x.u,t:x.t,id:x.id});});
   });
   return out;
 }
@@ -4344,11 +4396,18 @@ function phBody(){
    2) Özel GitHub deposu — otomatik, her fotoğraf ayrı dosya olarak yüklenir.
    Gist KULLANILMAZ: gizli gist "erişilmez" değil, linki bilen herkes açar.
    Özel repo ise kimlik doğrulaması ister — vücut fotoğrafı için doğru yer orası. */
+function phHash(u){
+  /* FNV-1a — hızlı, deterministik; aynı görüntü = aynı kimlik, her cihazda */
+  var h=0x811c9dc5;
+  for(var i=0;i<u.length;i++){h^=u.charCodeAt(i);h=(h*0x01000193)>>>0;}
+  return ('0000000'+h.toString(36)).slice(-7)+u.length.toString(36);
+}
 function phEnsureIds(){
   var ch=false;
   Object.keys(_ph||{}).forEach(function(d){
     (_ph[d]||[]).forEach(function(x){
-      if(!x.id){x.id=d+'__'+(x.t||0)+'__'+Math.random().toString(36).slice(2,7);ch=true;}
+      var want=d+'__'+(x.t||0)+'__h'+phHash(x.u||'');
+      if(x.id!==want){x.id=want;ch=true;}
     });
   });
   if(ch)savePhotos();
@@ -4476,7 +4535,8 @@ function phSync(silent){
   if(phSyncing)return Promise.resolve();
   if(!repoOK()){if(!silent)toast('önce özel depoyu bağla');return Promise.resolve();}
   phEnsureIds();
-  phSyncing=true;phSetMsg('fotoğraflar senkronize ediliyor…');
+  phSyncing=true;
+  if(!silent)phSetMsg('fotoğraflar senkronize ediliyor…');
   var base='/repos/'+S.sync.repo+'/contents/photos';
   var remote={};
   return phRemoteList().then(function(list){
@@ -4487,20 +4547,34 @@ function phSync(silent){
     Object.keys(_ph||{}).forEach(function(d){
       (_ph[d]||[]).forEach(function(x){
         if(!remote[x.id])ups.push({d:d,x:x});});});
-    var i=0;
+    var i=0,upFail=0;
     function up(){
-      if(i>=ups.length)return Promise.resolve(ups.length);
+      if(i>=ups.length)return Promise.resolve({n:ups.length-upFail,f:upFail});
       var o=ups[i++];
       phSetMsg('yükleniyor '+i+'/'+ups.length);
       var b64=String(o.x.u||'').split(',')[1]||'';
       return ghRepo(base+'/'+o.x.id+'.jpg',{method:'PUT',
         body:{message:'foto '+o.d,content:b64}})
-        .then(function(){return ghWait(350);}).then(up);
+        .catch(function(e){
+          if(!/zaten|exists|422/i.test(e.message||''))upFail++;
+        })
+        .then(function(){return ghWait(400);}).then(up);
     }
     return up();
-  }).then(function(nUp){
-    /* uzakta olup yerelde olmayanları indir */
-    var miss=Object.keys(remote).filter(function(id){return !phHasId(id);});
+  }).then(function(upRes){
+    var nUp=upRes.n;
+    /* uzakta olup yerelde olmayanları indir.
+       İsim eşleşmese bile içerik özeti eşleşiyorsa o dosya bizde var demektir
+       (eski sürümlerin rastgele adla yüklediği kopyalar böyle ayıklanır). */
+    var myHashes={};
+    Object.keys(_ph||{}).forEach(function(d){(_ph[d]||[]).forEach(function(x){
+      myHashes['h'+phHash(x.u||'')]=1;});});
+    var miss=Object.keys(remote).filter(function(id){
+      if(phHasId(id))return false;
+      var hp=id.split('__')[2]||'';
+      if(hp.charAt(0)==='h'&&myHashes[hp])return false;
+      return true;
+    });
     var j=0,got=0;
     function dn(){
       if(j>=miss.length)return Promise.resolve();
@@ -4514,19 +4588,22 @@ function phSync(silent){
             t:phIdTime(id),id:id});
           got++;
         }
-        return dn();
-      });
+      }).catch(function(){}).then(function(){return ghWait(150);}).then(dn);
     }
     return dn().then(function(){return {up:nUp,down:got};});
   }).then(function(r){
     phSyncing=false;phSetMsg('');
-    S.sync.phLast=Date.now();
+    if(!r.err)S.sync.phLast=Date.now();
     phDedupe();savePhotos();save();
-    if(!silent)toast(r.up+' yüklendi · '+r.down+' indirildi');
-    if(r.down)render();else{var e2=document.getElementById('phsyncbadge');if(e2)e2.textContent=phSyncLabel();}
+    var upN=(r.up&&r.up.ok!=null)?r.up.ok:0;
+    if(!silent)toast(upN+' yüklendi · '+r.down+' indirildi'+(r.err?' · bir kısmı bekliyor':''));
+    if(r.err&&!silent)toast('eksikler sonraki eşitlemede tamamlanır ('+r.err.message+')');
+    if(r.down&&!typing())render();
+    else{var e2=document.getElementById('phsyncbadge');if(e2)e2.textContent=phSyncLabel();}
   }).catch(function(e){
     phSyncing=false;phSetMsg('');
-    toast('fotoğraf senkron hatası: '+e.message);
+    if(/sınır|rate/i.test(e.message||''))S.sync.phCool=Date.now();
+    if(!silent)toast('fotoğraf senkron hatası: '+e.message);
   });
 }
 function phSyncLabel(){
@@ -4673,6 +4750,13 @@ function migPanel(){
 function phCleanRemote(){
   if(phSyncing)return;
   if(!repoOK()){toast('depo bağlı değil');return;}
+  /* GÜVENLİK: önce tam eşitle. Böylece uzakta olup bizde olmayan meşru
+     fotoğraflar önce iner; silme adımına gelen her yabancı dosya kesin artıktır. */
+  toast('önce eşitleniyor…');
+  phSync(true).then(function(){_phCleanCore();});
+}
+function _phCleanCore(){
+  if(phSyncing)return;
   phEnsureIds();phDedupe();
   var mine={};
   Object.keys(_ph||{}).forEach(function(d){(_ph[d]||[]).forEach(function(x){if(x.id)mine[x.id]=1;});});
@@ -4680,8 +4764,17 @@ function phCleanRemote(){
   if(!myN){toast('yerelde fotoğraf yok — güvenlik için iptal edildi');return;}
   phSyncing=true;phSetMsg('bulut taranıyor…');
   var base='/repos/'+S.sync.repo+'/contents/photos';
+  var myH={};
+  Object.keys(_ph||{}).forEach(function(d){(_ph[d]||[]).forEach(function(x){
+    myH['h'+phHash(x.u||'')]=1;});});
   phRemoteList().then(function(list){
-    var junk=list.filter(function(f){return !mine[f.name.replace(/\.jpg$/i,'')];});
+    var junk=list.filter(function(f){
+      var id=f.name.replace(/\.jpg$/i,'');
+      if(mine[id])return false;              /* birebir bizde olan kalır */
+      var hp=id.split('__')[2]||'';
+      if(hp.charAt(0)==='h'&&myH[hp])return true;  /* içeriği bizde olan kopya silinir */
+      return true;                            /* hiçbir karşılığı olmayan artık silinir */
+    });
     var i=0,failed=0;
     function del(){
       if(i>=junk.length)return Promise.resolve({n:junk.length-failed,f:failed});
@@ -5052,14 +5145,15 @@ app.addEventListener('change',function(ev){
     arr.forEach(function(f){
       shrinkImage(f,function(u){
         done++;
-        if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];_ph[cur].push({u:u,t:now});ok++;}
+        if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];
+          _ph[cur].push({u:u,t:now,id:cur+'__'+now+'__h'+phHash(u)});ok++;}
         if(done===arr.length){
           if(!ok){toast('fotoğraf okunamadı');return;}
           phEnsureIds();
           var alln=phAll();cmpB=alln.length-1;if(cmpA>=cmpB)cmpA=0;
           phView='all';
           savePhotos();toast(ok+' fotoğraf eklendi');render();
-          if(repoOK())phSync(true);
+          if(repoOK())setTimeout(function(){phSync(true);},1200);
         }
       });
     });
@@ -5383,19 +5477,29 @@ STORE.get(KEY).then(function(res){
         .catch(function(){});
     }).then(function(){render();}).catch(function(){render();})
       .then(function(){restoreRest();});
-    document.addEventListener('visibilitychange',function(){if(!document.hidden)resumeRest();});
+    /* kayıt 450ms gecikmeli yazılıyor; o aralıkta uygulama kapanırsa son giriş uçmasın */
+    function flushSave(){
+      try{clearTimeout(st);}catch(e){}
+      try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+      try{STORE.set(KEY,JSON.stringify(S));}catch(e){}
+    }
+    window.addEventListener('pagehide',flushSave);
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden)flushSave();else resumeRest();});
     window.addEventListener('pageshow',function(){resumeRest();});
     window.addEventListener('focus',function(){resumeRest();});
     if(S.sync.token&&S.sync.gist){
       syncNow(true);
       /* fotoğraflar ayrı depoda — açılışta ve sekmeye dönüşte onları da çek,
          yoksa telefonda çekilen fotoğraf webde hiç görünmez */
-      if(repoOK())setTimeout(function(){phSync(true);},1500);
+      if(repoOK())setTimeout(function(){
+        if(Date.now()-(S.sync.phCool||0)>600000)phSync(true);},1500);
       document.addEventListener('visibilitychange',function(){
         if(document.hidden)return;
         resumeRest();
         if(S.sync.token&&S.sync.gist)syncNow(true);
-        if(repoOK()&&Date.now()-(S.sync.phLast||0)>120000)phSync(true);
+        if(repoOK()&&Date.now()-(S.sync.phLast||0)>300000&&
+           Date.now()-(S.sync.phCool||0)>600000)phSync(true);
       });
     }
   }
