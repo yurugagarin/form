@@ -553,6 +553,21 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phbkhd span{font-size:10.5px;font-weight:700;color:#b3a488}
 .phbkw{background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;padding:10px 12px;
   font-size:12px;font-weight:600;color:#a5541f;line-height:1.5;margin-bottom:10px}
+.migtbl{margin-top:10px;display:flex;flex-direction:column;gap:6px}
+.migrow{display:grid;grid-template-columns:1fr auto auto auto auto 22px;gap:6px;align-items:baseline;
+  background:#f7f1e4;border:1px solid #ece1cd;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:700}
+.migrow>span{color:#8a7f6f}
+.migrow b{font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c}
+.migrow i{font-style:normal;font-size:9px;color:#b3a488;margin-right:4px}
+.migrow u{text-decoration:none;text-align:right;font-size:14px}
+.migrow.ok u{color:#16a85a}
+.migrow.bad{background:#fff3e6;border-color:#f2d3b4}
+.migrow.bad u{color:#ef5a1e}
+.miggood{margin-top:10px;background:#eaf6ee;border:1px solid #b9e0c6;border-radius:11px;padding:10px 12px;
+  font-size:12px;font-weight:600;color:#1f6b3e;line-height:1.5}
+.migbad{margin-top:10px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;padding:10px 12px;
+  font-size:12px;font-weight:600;color:#a5541f;line-height:1.5}
+.migwait{margin-top:10px;font-size:12px;font-weight:700;color:#b3a488}
 .phbksep{text-align:center;font-size:10px;letter-spacing:1px;font-weight:700;color:#c0b193;
   margin:14px 0 10px;text-transform:uppercase}
 /* tam ekran görüntüleyici */
@@ -2676,7 +2691,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v27 · 25 Ağu 2026';
+var APPVER='v28 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3580,7 +3595,7 @@ function gymMore(){
           '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>')+
 
     sect('pho','◪','Fotoğraf',photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB',
-      phBody()+phBackupPanel())+
+      phBody()+phBackupPanel()+migPanel())+
 
     sect('rep','↗','Rapor',kd+' gün kayıtlı · sohbete yapıştır',
       '<div class="mfield"><label>Kapsam</label>'+
@@ -4383,6 +4398,84 @@ function phBackupPanel(){
        '<button class="mbtn" data-a="repocreate">Özel depo oluştur</button>')+
   '</div>';
 }
+/* ============ GEÇİŞ KONTROLÜ ============
+   Elle saymak yerine: yereldeki her şeyi buluttakiyle karşılaştırır ve
+   net bir karar verir. Yeşil değilse telefon silinmez. */
+var migMsg='', migBusy=false;
+function migPaint(html){
+  migMsg=html;
+  var e=document.getElementById('migbox');if(e)e.innerHTML=html;
+}
+function migCheck(){
+  if(migBusy)return;
+  if(!S.sync.token||!S.sync.gist){migPaint('<div class="migbad">Bulut senkron bağlı değil — kontrol yapılamıyor.</div>');return;}
+  migBusy=true;phEnsureIds();
+  migPaint('<div class="migwait">kontrol ediliyor…</div>');
+  var lDays=Object.keys(S.days||{}).length;
+  var lSets=0;Object.keys(S.days||{}).forEach(function(d){
+    var ex=S.days[d].ex||{};Object.keys(ex).forEach(function(k){
+      (ex[k]||[]).forEach(function(x){if(x.kg!=null&&x.rep!=null)lSets++;});});});
+  var lPh=photoCount();
+  var out={};
+  gh('/gists/'+S.sync.gist).then(function(g){
+    var f=g.files&&g.files[GFILE];
+    if(!f)return null;
+    return (!f.truncated&&f.content)?f.content:fetch(f.raw_url).then(function(r){return r.text();});
+  }).then(function(txt){
+    if(!txt)throw new Error('bulutta veri dosyası yok');
+    var rm=JSON.parse(txt);
+    out.rDays=Object.keys(rm.days||{}).length;
+    out.rSets=0;
+    Object.keys(rm.days||{}).forEach(function(d){
+      var ex=rm.days[d].ex||{};Object.keys(ex).forEach(function(k){
+        (ex[k]||[]).forEach(function(x){if(x.kg!=null&&x.rep!=null)out.rSets++;});});});
+  }).then(function(){
+    if(!repoOK()){out.rPh=null;return;}
+    return ghRepo('/repos/'+S.sync.repo+'/contents/photos').then(function(list){
+      if(list&&list.__missing){out.rPh=0;return;}
+      out.rPh=Array.isArray(list)?list.filter(function(f){return f&&/\.jpg$/i.test(f.name||'');}).length:0;
+    });
+  }).then(function(){
+    migBusy=false;
+    var rows=[
+      ['Kayıtlı gün',lDays,out.rDays],
+      ['Girilmiş set',lSets,out.rSets],
+      ['Fotoğraf',lPh,out.rPh]
+    ];
+    var bad=[];
+    if(out.rDays<lDays)bad.push('veri');
+    if(out.rSets<lSets)bad.push('set');
+    if(out.rPh==null)bad.push('fotoğraf deposu bağlı değil');
+    else if(out.rPh<lPh)bad.push((lPh-out.rPh)+' fotoğraf yüklenmemiş');
+    var tbl='<div class="migtbl">'+rows.map(function(r){
+      var ok=(r[2]!=null&&r[2]>=r[1]);
+      return '<div class="migrow'+(ok?' ok':' bad')+'"><span>'+r[0]+'</span>'+
+        '<b>'+r[1]+'</b><i>bu cihaz</i>'+
+        '<b>'+(r[2]==null?'—':r[2])+'</b><i>bulut</i>'+
+        '<u>'+(ok?'✓':'✕')+'</u></div>';}).join('')+'</div>';
+    if(!bad.length)
+      migPaint(tbl+'<div class="miggood"><b>Her şey bulutta.</b> Yeni telefonda bağlantı kodunu '+
+        'yapıştırman yeterli — eski telefonu güvenle silebilirsin.</div>');
+    else
+      migPaint(tbl+'<div class="migbad"><b>Eksik var:</b> '+bad.join(', ')+'. '+
+        (out.rPh!=null&&out.rPh<lPh?'“Fotoğrafları şimdi eşitle”ye bas, bitince tekrar kontrol et. ':'')+
+        (out.rDays<lDays||out.rSets<lSets?'“Şimdi senkronize et”e bas, bitince tekrar kontrol et. ':'')+
+        (out.rPh==null?'Önce özel fotoğraf deposunu bağla. ':'')+
+        'Yeşil olmadan eski telefonu silme.</div>');
+  }).catch(function(e){
+    migBusy=false;
+    migPaint('<div class="migbad">Kontrol yapılamadı: '+esc(e.message)+'</div>');
+  });
+}
+function migPanel(){
+  return '<div class="phbk">'+
+    '<div class="phbkhd"><b>Telefon değişimi kontrolü</b></div>'+
+    '<div class="mhint2">Elle saymana gerek yok. Bu düğme yerelde ne varsa buluttakiyle sayı sayı '+
+      'karşılaştırır ve tek bir cevap verir.</div>'+
+    '<button class="mbtn dark" data-a="migchk">Kontrol et</button>'+
+    '<div id="migbox">'+(migMsg||'')+'</div>'+
+  '</div>';
+}
 function repaintPhoto(){
   if(phone())zi('g-body',gymBody());
   else zi('z-photo',photoCard());
@@ -4391,7 +4484,7 @@ function repaintPhoto(){
 function photoCard(){
   return '<div class="card dom dom-bod"><div class="hd"><h2>Fotoğraf</h2>'+
     '<span class="meta">'+photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB · senkron dışı</span></div>'+
-    '<div style="padding:14px 18px 16px">'+phBody()+phBackupPanel()+'</div></div>';
+    '<div style="padding:14px 18px 16px">'+phBody()+phBackupPanel()+migPanel()+'</div></div>';
 }
 /* ============ BUGÜN — kahraman kartı ============
    Uygulamayı açtığında "şimdi ne yapmalıyım" sorusunun cevabı,
@@ -4834,6 +4927,7 @@ app.addEventListener('click',function(ev){
     setPlan(cur,dk||'clear');
     toast(dk==='trav'?'seyahat günü işaretlendi':(dk==='rest'?'dinlenme günü':'normal güne alındı'));
     render();}
+  else if(a==='migchk'){migCheck();}
   else if(a==='phexp'){phExport();}
   else if(a==='phsync'){phSync();}
   else if(a==='phrepooff'){S.sync.repo='';S._st=Date.now();save();toast('depo bağlantısı kesildi');render();}
