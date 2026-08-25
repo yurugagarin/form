@@ -2691,7 +2691,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v28 · 25 Ağu 2026';
+var APPVER='v29 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5138,10 +5138,14 @@ STORE.get(KEY).then(function(res){
     window.addEventListener('focus',function(){resumeRest();});
     if(S.sync.token&&S.sync.gist){
       syncNow(true);
+      /* fotoğraflar ayrı depoda — açılışta ve sekmeye dönüşte onları da çek,
+         yoksa telefonda çekilen fotoğraf webde hiç görünmez */
+      if(repoOK())setTimeout(function(){phSync(true);},1500);
       document.addEventListener('visibilitychange',function(){
         if(document.hidden)return;
         resumeRest();
         if(S.sync.token&&S.sync.gist)syncNow(true);
+        if(repoOK()&&Date.now()-(S.sync.phLast||0)>120000)phSync(true);
       });
     }
   }
