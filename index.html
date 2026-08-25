@@ -547,6 +547,14 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phcs{font-size:10.5px;font-weight:700;color:#b3a488;margin-top:5px}
 .phnote{margin-top:6px;font-size:11.5px;font-weight:700;color:#a8987c}
 .phempty{padding:16px 2px;font-size:12.5px;line-height:1.6;color:#8a7f6f}
+.phbk{margin-top:16px;padding-top:14px;border-top:1px solid #ece1cd}
+.phbkhd{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
+.phbkhd b{font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c;flex:1}
+.phbkhd span{font-size:10.5px;font-weight:700;color:#b3a488}
+.phbkw{background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;padding:10px 12px;
+  font-size:12px;font-weight:600;color:#a5541f;line-height:1.5;margin-bottom:10px}
+.phbksep{text-align:center;font-size:10px;letter-spacing:1px;font-weight:700;color:#c0b193;
+  margin:14px 0 10px;text-transform:uppercase}
 /* tam ekran görüntüleyici */
 body.pvlock{overflow:hidden}
 .pv{position:fixed;inset:0;z-index:200;background:#17140f;
@@ -579,8 +587,13 @@ body.pvlock{overflow:hidden}
 .calg .hl.dl{color:#b8860b}
 .calg .hl.dl i,.mcalrow.dl .mwk i{font-style:normal;display:block;font-size:8px;letter-spacing:.5px;
   font-weight:800;color:#f4ad15;line-height:1}
+.calg .cell.lwc{background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(31,75,70,.16) 4px,rgba(31,75,70,.16) 8px)}
+.mcal .mc.lwc{background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(31,75,70,.16) 4px,rgba(31,75,70,.16) 8px)}
 .calg .cell.dlc{background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,rgba(244,173,21,.16) 4px,rgba(244,173,21,.16) 8px)}
 .mcalrow.dl .mwk{color:#b8860b}
+.mcalrow.lw .mwk{color:#1f4b46}
+.mcalrow.lw .mwk i{font-style:normal;display:block;font-size:8px;letter-spacing:.5px;
+  font-weight:800;color:#2f8a7c;line-height:1}
 .calg .cell.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
 .mcal .mc.pre{box-shadow:inset 0 0 0 1px rgba(201,139,46,.28)}
 .dnav{position:sticky;top:0;z-index:25;display:flex;gap:5px;overflow-x:auto;padding:9px 2px;margin-bottom:4px;
@@ -633,6 +646,16 @@ body.pvlock{overflow:hidden}
 .tgl.on{background:#16a85a;border-color:#16a85a}
 .tgl.on i{left:22px}
 .tdmsg{font-size:12px;font-weight:700;line-height:1.5;border-radius:11px;padding:10px 12px}
+.lwbanner{margin:0;background:#1f4b46;color:#e6f4f1;font-size:12.5px;font-weight:700;
+  padding:12px 14px;line-height:1.45}
+.lwbanner b{color:#7fd6c6}
+.lwchip{flex:none;border:1px solid #ddd0b8;background:#fbf8f2;border-radius:10px;padding:9px 12px;
+  font-size:12px;font-weight:700;color:#8a7f6f;-webkit-tap-highlight-color:transparent;text-align:left}
+.lwchip.on{background:#1f4b46;border-color:#1f4b46;color:#e6f4f1}
+.lwchip i{display:block;font-style:normal;font-size:9.5px;font-weight:700;opacity:.7;margin-top:2px}
+.lwx{border:1px solid #1f4b46;background:#1f4b46;color:#e6f4f1;border-radius:8px;padding:4px 9px;
+  font-size:11px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.lwrow{display:flex;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
 .dlbanner{margin:10px 0 0;background:#3a342c;color:#f6efe1;font-size:12.5px;font-weight:700;
   padding:12px 14px;line-height:1.45}
 .dlnote,.sleepnote{margin:10px 0 0;background:#f7f1e4;border-top:1px solid #ece1cd;border-bottom:1px solid #ece1cd;
@@ -860,6 +883,7 @@ var C={green:'#16a85a',amber:'#f4ad15',orange:'#ef5a1e',red:'#dc2626',blue:'#3b8
 var PROGRAM={
   rest:{label:'Dinlenme',name:'Dinlenme',short:'Dinlenme',code:'',color:'#c0b193',ex:[]},
   cardio:{label:'Kardiyo / yürüyüş',name:'Kardiyo',short:'Kardiyo',code:'KAR',color:C.teal,ex:[]},
+  trav:{label:'Seyahat / izin',name:'Seyahat',short:'Seyahat',code:'SYH',color:'#2f8a7c',ex:[]},
   gun1:{label:'İtiş · Göğüs / Omuz / Triceps',name:'İtiş',short:'İtiş',code:'İTİ',color:C.orange,ex:[
     {n:'Eğik dambıl press',s:3,r:[6,10]},
     {n:'Düz dambıl press',s:3,r:[8,12]},
@@ -1177,7 +1201,7 @@ function enName(name){var m=EXMETA[name];return m?m[1]:name;}
 
 /* ============ DURUM ============ */
 var S={ startDate:null, weeks:20, restDays:[3,0], restWeeks:{}, plan:{}, _pt:0, _st:0, deloadEvery:7, autoTargets:false,
-  sync:{token:'',gist:'',auto:true,last:0},
+  sync:{token:'',gist:'',auto:true,last:0,repo:''},
   base:{weight:84.6,waist:null}, goal:{weight:75},
   targets:{steps:10000,kcal:2150,protein:175,carbs:215,fat:65},
   days:{} };
@@ -1215,6 +1239,7 @@ function autoFill(){
   for(var k=0;k<S.weeks*7;k++){
     var d=addD(m0,k);
     if(d<S.startDate)continue;
+    if(S.plan[d]==='trav'||dtOf(d)==='trav')continue;
     if(restOf(d).indexOf(pd(d).getDay())>=0)S.plan[d]='rest';
     else{S.plan[d]=ORDER[i%5];i++;}
   }
@@ -1337,9 +1362,17 @@ var EXW={tam:1,yakin:0.85,kismi:0.5,dusuk:0.3,bos:0};
 /* Deload haftasında hedef set sayısı yarıya iner, ağırlık aynı kalır. */
 function tgtOn(e,d){
   if(!e)return e;
-  if(!isDeload(d||cur))return e;
+  var dd=d||cur;
+  if(!isDeload(dd))return e;
   return {n:e.n,s:Math.max(1,Math.round(e.s/2)),r:e.r,dl:true};
 }
+/* ---- seyahat / izin günü ----
+   Gün bazında işaretlenir, hafta bazında değil: seyahat bazen 2 gün, bazen 5 gün.
+   İşaretli günde hiçbir antrenman beklenmez — takvim, set sayacı ve gün puanı
+   o günü eksik saymaz. Beslenme ve kilo yine girilebilir. */
+function isTrav(d){return effDt(d||cur)==='trav';}
+function travDays(){return keys().concat(Object.keys(S.plan||{}))
+  .filter(function(d,i,a){return a.indexOf(d)===i&&effDt(d)==='trav';}).sort();}
 /* Bir set "etkili" sayılır:
    - tekrar hedef aralığın içindeyse, VEYA
    - ağırlık geçen seansa göre arttıysa ve tahmini 1RM,
@@ -1897,7 +1930,7 @@ function trendChart(){
   /* gym şeridi */
   var dots=ds.map(function(d){
     var dt=effDt(d),bg='#eae0cc',br='';
-    if(dt==='rest'||dt==='cardio'){bg='#fbf8f2';br='border:1.6px solid #cdbfa8;';}
+    if(dt==='rest'||dt==='cardio'||dt==='trav'){bg='#fbf8f2';br='border:1.6px solid #cdbfa8;';}
     else if(dt){var e=sessionEval(d);
       if(e&&!e.empty&&e.tam/e.total>=.6)bg=C.green;
       else if(e&&!e.empty)bg=C.amber;
@@ -2215,7 +2248,7 @@ function weekTable(){
 
 /* ============ 20 HAFTALIK TAKVİM ============ */
 var paintMode=null, fillArm=false;
-var PAINT=[['gun1','İTİ'],['gun2','ÇEK'],['gun3','BAC'],['gun4','OMZ'],['gun5','ÜST'],['cardio','KAR'],['rest','DİN'],['clear','Sil']];
+var PAINT=[['gun1','İTİ'],['gun2','ÇEK'],['gun3','BAC'],['gun4','OMZ'],['gun5','ÜST'],['cardio','KAR'],['rest','DİN'],['trav','SYH'],['clear','Sil']];
 function calendar(){
   var wFrom=firstWeek(),tod=today(),wkNow=weekIdx(tod);
   var m0=addD(monday(S.startDate),(wFrom-1)*7),nW=S.weeks-wFrom+1;
@@ -2239,9 +2272,9 @@ function calendar(){
       if(rest){txcol='#8a7a5e';}
       else if(future){txcol=code?'#b0a189':'#b5a68c';}
       else if(typeof q==='number'){bgc=qColor(q);txcol=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
-      var isdl=isDeload(d);
-      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'')+(preW?' pre':'')+(isdl?' dlc':'');
-      var tip=fdate(d)+(preW?' · program öncesi':'')+(isdl?' · DELOAD':'')+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
+      var isdl=isDeload(d),istr=(dt==='trav');
+      var cls='cell'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+(d===cur?' sel':'')+(paintMode?' paint':'')+(preW?' pre':'')+(isdl&&!istr?' dlc':'')+(istr?' lwc':'');
+      var tip=fdate(d)+(preW?' · program öncesi':'')+(istr?' · SEYAHAT':(isdl?' · DELOAD':''))+(t?' · '+t.label:' · planlanmadı')+(typeof q==='number'?' · %'+Math.round(q*100)+' tamam':'');
       g+='<div class="'+cls+'" data-a="cell" data-d="'+d+'" title="'+esc(tip)+'"'+
          ' style="'+(bgc?'background:'+bgc+';':'')+'color:'+txcol+'">'+code+'</div>';
     }
@@ -2283,7 +2316,8 @@ function calendar(){
       ORDER.map(function(k){return '<span style="font-weight:700;color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</span>'+
         '<span style="color:#a8987c;margin-right:10px">'+PROGRAM[k].name+'</span>';}).join('')+
       '<span style="font-weight:700;color:'+C.teal+'">KAR</span><span style="color:#a8987c;margin-right:10px">Kardiyo</span>'+
-      '<span style="font-weight:700;color:#8a7a5e">DİN</span><span style="color:#a8987c">Dinlenme</span>'+
+      '<span style="font-weight:700;color:#8a7a5e">DİN</span><span style="color:#a8987c;margin-right:10px">Dinlenme</span>'+
+      '<span style="font-weight:700;color:#2f8a7c">SYH</span><span style="color:#a8987c">Seyahat / izin</span>'+
     '</div></div>';
 }
 
@@ -2566,16 +2600,25 @@ function connectSync(tok){
   }).catch(function(e){setSyncMsg('');toast('bağlanamadı: '+e.message);});
 }
 function makeCode(){
-  try{return 'FORM1-'+btoa(unescape(encodeURIComponent(S.sync.token+'|'+S.sync.gist)));}
+  /* FORM2: anahtar | gist | fotoğraf deposu — yeni telefonda tek kod her şeyi taşır */
+  try{return 'FORM2-'+btoa(unescape(encodeURIComponent(
+    S.sync.token+'|'+S.sync.gist+'|'+(S.sync.repo||''))));}
   catch(e){return '';}
 }
 function readCode(c){
   c=(c||'').trim();
+  if(c.indexOf('FORM2-')===0){
+    try{
+      var r2=decodeURIComponent(escape(atob(c.slice(6)))),a=r2.split('|');
+      if(a.length<2)return null;
+      return {token:a[0],gist:a[1],repo:a[2]||''};
+    }catch(e){return null;}
+  }
   if(c.indexOf('FORM1-')!==0)return null;
   try{
     var raw=decodeURIComponent(escape(atob(c.slice(6)))),i=raw.lastIndexOf('|');
     if(i<1)return null;
-    return {token:raw.slice(0,i),gist:raw.slice(i+1)};
+    return {token:raw.slice(0,i),gist:raw.slice(i+1),repo:''};
   }catch(e){return null;}
 }
 function syncCard(){
@@ -2594,6 +2637,14 @@ function syncCard(){
          '<button class="ghostbtn" data-a="syncoff">Bağlantıyı kes</button>'+
        '</div>'+
        '<div class="mhint" style="margin-top:9px">Yeni bir cihaz (ya da “Ana Ekrana Ekle” ile açılan uygulama) eklerken bu kodu kopyalayıp oraya yapıştır — anahtar ve gist ID’si tek seferde geçer.</div>'+
+       '<div style="margin-top:16px;padding-top:14px;border-top:1px dashed #d9ccb5">'+
+         '<div class="settings" style="grid-template-columns:1fr">'+
+           '<div><label>Anahtarı değiştir (gist + repo yetkili yeni anahtar)</label>'+
+             '<input class="inp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
+         '</div>'+
+         '<button class="ghostbtn" data-a="tokupd" style="margin-top:10px">Anahtarı güncelle</button>'+
+         '<div class="mhint" style="margin-top:8px">Gist ve fotoğraf deposu bağlantısı korunur, sadece anahtar değişir.</div>'+
+       '</div>'+
        '<div class="mhint" style="margin-top:10px">Değişiklikler birkaç saniye içinde otomatik gönderiliyor. Diğer cihazda sayfayı açtığında ya da sekmeye geri döndüğünde otomatik çekiliyor.</div>'
       :'<div class="settings" style="grid-template-columns:1fr">'+
          '<div><label>GitHub erişim anahtarı (classic, sadece “gist” yetkisi)</label>'+
@@ -2605,7 +2656,7 @@ function syncCard(){
        '<div style="margin-top:16px;padding-top:14px;border-top:1px dashed #d9ccb5">'+
          '<div class="settings" style="grid-template-columns:1fr">'+
            '<div><label>Bağlantı kodu — diğer cihazdan kopyaladığın kod</label>'+
-             '<input class="inp" data-a="codeinp" placeholder="FORM1-…"></div>'+
+             '<input class="inp" data-a="codeinp" placeholder="FORM2-…"></div>'+
          '</div>'+
          '<button class="ghostbtn dark" data-a="usecode" style="margin-top:10px">Kodu kullan ve bağlan</button>'+
        '</div>'+
@@ -2621,7 +2672,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v24 · 25 Ağu 2026';
+var APPVER='v26 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2760,7 +2811,10 @@ function gymWorkout(){
     return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
       'Bugün antrenman yok — yemek, uyku ve adım öne çıkıyor. Gün sekmesinden verilerini gir.</div>';
 
-  if(isDeload(cur))pick+='<div class="dlbanner" style="margin:0">'+
+  if(isTrav(cur))pick+='<div class="lwbanner">'+
+    '<b>Seyahat günü.</b> Bugün antrenman beklenmiyor — takvim, set sayacı ve gün puanı '+
+    'bu günü eksik saymaz. Yapabilirsen protein ve adımı tuttur, o kadar yeter.</div>';
+  if(isDeload(cur)&&!isTrav(cur))pick+='<div class="dlbanner" style="margin:0">'+
     '<b>Deload haftası.</b> Set sayıları otomatik yarıya indirildi. '+
     'Ağırlıkları <u>aynı tut</u>, her seti RIR 3-4’te bırak — bu hafta yorulmak değil toparlanmak için.</div>';
   if(exIdx>=t.ex.length)exIdx=0;
@@ -2905,6 +2959,13 @@ function gymDay(){
       return '<button class="gsup'+(on?' on':'')+'" data-a="sup" data-k="'+x[0]+'"'+
         (on?' style="background:'+hexa(x[3],.16)+';border-color:'+hexa(x[3],.45)+';color:'+x[3]+'"':'')+'>'+
         (on?'✓ ':'○ ')+x[1]+'<span>'+x[2]+'</span></button>';}).join('')+'</div>'+
+    '<div class="gsec">Gün tipi</div>'+
+    '<div class="lwrow" style="padding:0 14px">'+
+      [['','Normal'],['trav','Seyahat / izin'],['rest','Dinlenme']].map(function(x){
+        var on=x[0]?(effDt(cur)===x[0]):(effDt(cur)!=='trav'&&effDt(cur)!=='rest');
+        return '<button class="lwchip'+(on?' on':'')+'" data-a="daytype" data-k="'+x[0]+'">'+x[1]+'</button>';
+      }).join('')+'</div>'+
+    '<div class="gduenote" style="margin-top:8px">Seyahat işaretlediğin gün antrenman beklenmez; takvim, haftalık set sayacı ve gün puanı o günü eksik saymaz. Gün gün işaretlenir — seyahat 2 gün de sürse 5 gün de.</div>'+
     '<div class="gsec">Not</div>'+
     '<div style="padding:0 14px"><textarea class="note" data-f="note" placeholder="Enerji, ağrı, iştah…">'+esc(r.note)+'</textarea></div>';
 }
@@ -3458,7 +3519,7 @@ function calendarM(){
       else if(future)tx=code?'#b0a189':'#b5a68c';
       else if(typeof q==='number'){bgc=qColor(q);tx=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));}
       cells+='<div class="mc'+(future?' future':'')+(rest?' rest':'')+(d===tod?' today':'')+
-        (d===cur?' sel':'')+(preW?' pre':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
+        (d===cur?' sel':'')+(preW?' pre':'')+(dt==='trav'?' lwc':'')+'" data-a="cell" data-d="'+d+'" style="'+(bgc?'background:'+bgc+';':'')+'color:'+tx+'">'+
         code+'</div>';
     }
     g+='<div class="mcalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+(wdl?' dl':'')+'"><span class="mwk">'+wkLabel(wn)+(wdl?'<i>D</i>':'')+'</span>'+cells+'</div>';
@@ -3501,7 +3562,8 @@ function gymMore(){
       '<div class="mlegend">'+ORDER.map(function(k){
         return '<span><b style="color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</b> '+
           esc(PROGRAM[k].name)+'</span>';}).join('')+
-        '<span><b style="color:#8a7a5e">DİN</b> Dinlenme</span></div>')+
+        '<span><b style="color:#8a7a5e">DİN</b> Dinlenme</span>'+
+        '<span><b style="color:#2f8a7c">SYH</b> Seyahat / izin</span></div>')+
 
     sect('prog','☰','Program & Hareketler',t.ex.length+' hareket · '+esc(t.short),
       '<div class="mpt">'+ORDER.map(function(k){
@@ -3514,7 +3576,7 @@ function gymMore(){
           '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>')+
 
     sect('pho','◪','Fotoğraf',photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB',
-      phBody())+
+      phBody()+phBackupPanel())+
 
     sect('rep','↗','Rapor',kd+' gün kayıtlı · sohbete yapıştır',
       '<div class="mfield"><label>Kapsam</label>'+
@@ -3532,8 +3594,11 @@ function gymMore(){
         ?'<div class="mhint2">Gist: <b>'+esc(S.sync.gist)+'</b></div>'+
          '<button class="mbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
          '<button class="mbtn" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
+         '<div class="mfield" style="margin-top:14px"><label>Anahtarı değiştir (gist + repo yetkili)</label>'+
+           '<input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
+         '<button class="mbtn" data-a="tokupd">Anahtarı güncelle</button>'+
          '<button class="mbtn" data-a="syncoff">Bağlantıyı kes</button>'
-        :'<div class="mfield"><label>Bağlantı kodu</label><input class="ginp" data-a="codeinp" placeholder="FORM1-…"></div>'+
+        :'<div class="mfield"><label>Bağlantı kodu</label><input class="ginp" data-a="codeinp" placeholder="FORM2-…"></div>'+
          '<button class="mbtn dark" data-a="usecode">Kodu kullan ve bağlan</button>'+
          '<div class="mfield" style="margin-top:14px"><label>Ya da GitHub anahtarı</label><input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
          '<button class="mbtn" data-a="connect">Bağlan (yeni gist)</button>'))+
@@ -4110,6 +4175,207 @@ function phBody(){
     '</div>'+
     (phView==='all'?phGallery(all):phCompare(all));
 }
+/* ============ FOTOĞRAF YEDEĞİ ============
+   İki ayrı yol var, ikisi de bağımsız çalışır:
+   1) Dosya yedeği  — tek JSON, internet gerekmez, her zaman işe yarar.
+   2) Özel GitHub deposu — otomatik, her fotoğraf ayrı dosya olarak yüklenir.
+   Gist KULLANILMAZ: gizli gist "erişilmez" değil, linki bilen herkes açar.
+   Özel repo ise kimlik doğrulaması ister — vücut fotoğrafı için doğru yer orası. */
+function phEnsureIds(){
+  var ch=false;
+  Object.keys(_ph||{}).forEach(function(d){
+    (_ph[d]||[]).forEach(function(x){
+      if(!x.id){x.id=d+'__'+(x.t||0)+'__'+Math.random().toString(36).slice(2,7);ch=true;}
+    });
+  });
+  if(ch)savePhotos();
+  return ch;
+}
+function phIdDate(id){
+  var m=String(id||'').slice(0,10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(m)?m:null;
+}
+function phIdTime(id){
+  var p=String(id||'').split('__');
+  return p.length>1?(+p[1]||null):null;
+}
+function phHasId(id){
+  var found=false;
+  Object.keys(_ph||{}).forEach(function(d){
+    (_ph[d]||[]).forEach(function(x){if(x.id===id)found=true;});});
+  return found;
+}
+/* ---- 1) dosya yedeği ---- */
+function phExport(){
+  phEnsureIds();
+  var n=photoCount();
+  if(!n){toast('yedeklenecek fotoğraf yok');return;}
+  var blob=new Blob([JSON.stringify({v:1,at:Date.now(),photos:_ph})],{type:'application/json'});
+  var u=URL.createObjectURL(blob),el=document.createElement('a');
+  el.href=u;el.download='form-fotograflar-'+today()+'.json';el.click();
+  setTimeout(function(){URL.revokeObjectURL(u);},1200);
+  toast(n+' fotoğraf indiriliyor');
+}
+function phImportFile(file){
+  var fr=new FileReader();
+  fr.onload=function(){
+    try{
+      var d=JSON.parse(fr.result);
+      var src=d&&d.photos?d.photos:d;
+      if(!src||typeof src!=='object')throw 0;
+      var add=0;
+      Object.keys(src).forEach(function(dd){
+        var arr=src[dd];if(!Array.isArray(arr))return;
+        arr.forEach(function(x){
+          var o=(typeof x==='string')?{u:x}:x;
+          if(!o||!o.u)return;
+          if(o.id&&phHasId(o.id))return;
+          var dup=(_ph[dd]||[]).some(function(y){return y.u===o.u;});
+          if(dup)return;
+          _ph[dd]=_ph[dd]||[];
+          _ph[dd].push({u:o.u,t:o.t||null,id:o.id||null});
+          add++;
+        });
+      });
+      phEnsureIds();savePhotos();
+      toast(add?add+' fotoğraf geri yüklendi':'yeni fotoğraf yoktu');
+      render();
+    }catch(e){toast('fotoğraf yedeği okunamadı');}
+  };
+  fr.readAsText(file);
+}
+/* ---- 2) özel GitHub deposu ---- */
+var phSyncing=false, phMsg='';
+function repoOK(){return !!(S.sync.token&&S.sync.repo);}
+function ghRepo(path,opts){
+  opts=opts||{};
+  return fetch('https://api.github.com'+path,{
+    method:opts.method||'GET',
+    headers:{'Authorization':'Bearer '+S.sync.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+    body:opts.body?JSON.stringify(opts.body):undefined
+  }).then(function(r){
+    if(r.status===404)return {__missing:true};
+    if(r.status===401)throw new Error('Anahtar geçersiz');
+    if(r.status===403)throw new Error('Anahtarda "repo" yetkisi yok — yeni bir anahtar üret');
+    if(!r.ok)return r.text().then(function(tx){throw new Error('GitHub '+r.status+' '+tx.slice(0,80));});
+    return r.json();
+  });
+}
+function phSetMsg(m){
+  phMsg=m;
+  var e=document.getElementById('phsyncbadge');if(e)e.textContent=m||'';
+}
+function phCreateRepo(name){
+  name=(name||'').trim();
+  if(!name){toast('depo adı gerekli');return;}
+  if(!S.sync.token){toast('önce GitHub anahtarını bağla');return;}
+  phSetMsg('depo oluşturuluyor…');
+  fetch('https://api.github.com/user/repos',{
+    method:'POST',
+    headers:{'Authorization':'Bearer '+S.sync.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
+    body:JSON.stringify({name:name,private:true,auto_init:true,
+      description:'FORM — özel fotoğraf yedeği'})
+  }).then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j};});})
+  .then(function(o){
+    phSetMsg('');
+    if(!o.ok)throw new Error((o.j&&o.j.message)||'oluşturulamadı');
+    S.sync.repo=o.j.full_name;S._st=Date.now();save();
+    toast('özel depo hazır: '+o.j.full_name);render();
+  }).catch(function(e){phSetMsg('');toast('depo hatası: '+e.message);});
+}
+function phSync(silent){
+  if(phSyncing)return Promise.resolve();
+  if(!repoOK()){if(!silent)toast('önce özel depoyu bağla');return Promise.resolve();}
+  phEnsureIds();
+  phSyncing=true;phSetMsg('fotoğraflar senkronize ediliyor…');
+  var base='/repos/'+S.sync.repo+'/contents/photos';
+  var remote={};
+  return ghRepo(base).then(function(list){
+    if(list&&list.__missing)return;
+    if(Array.isArray(list))list.forEach(function(f){
+      if(f&&f.name&&/\.jpg$/i.test(f.name))remote[f.name.replace(/\.jpg$/i,'')]=f;});
+  }).then(function(){
+    /* yerelde olup uzakta olmayanları yükle */
+    var ups=[];
+    Object.keys(_ph||{}).forEach(function(d){
+      (_ph[d]||[]).forEach(function(x){
+        if(!remote[x.id])ups.push({d:d,x:x});});});
+    var i=0;
+    function up(){
+      if(i>=ups.length)return Promise.resolve(ups.length);
+      var o=ups[i++];
+      phSetMsg('yükleniyor '+i+'/'+ups.length);
+      var b64=String(o.x.u||'').split(',')[1]||'';
+      return ghRepo(base+'/'+o.x.id+'.jpg',{method:'PUT',
+        body:{message:'foto '+o.d,content:b64}}).then(up);
+    }
+    return up();
+  }).then(function(nUp){
+    /* uzakta olup yerelde olmayanları indir */
+    var miss=Object.keys(remote).filter(function(id){return !phHasId(id);});
+    var j=0,got=0;
+    function dn(){
+      if(j>=miss.length)return Promise.resolve();
+      var id=miss[j++];
+      phSetMsg('indiriliyor '+j+'/'+miss.length);
+      return ghRepo(base+'/'+id+'.jpg').then(function(f){
+        if(f&&f.content){
+          var d=phIdDate(id)||today();
+          _ph[d]=_ph[d]||[];
+          _ph[d].push({u:'data:image/jpeg;base64,'+String(f.content).replace(/\s/g,''),
+            t:phIdTime(id),id:id});
+          got++;
+        }
+        return dn();
+      });
+    }
+    return dn().then(function(){return {up:nUp,down:got};});
+  }).then(function(r){
+    phSyncing=false;phSetMsg('');
+    S.sync.phLast=Date.now();
+    if(r.down)savePhotos();
+    savePhotos();save();
+    if(!silent)toast(r.up+' yüklendi · '+r.down+' indirildi');
+    if(r.down)render();else{var e2=document.getElementById('phsyncbadge');if(e2)e2.textContent=phSyncLabel();}
+  }).catch(function(e){
+    phSyncing=false;phSetMsg('');
+    toast('fotoğraf senkron hatası: '+e.message);
+  });
+}
+function phSyncLabel(){
+  if(!repoOK())return 'bağlı değil';
+  var t=S.sync.phLast;
+  if(!t)return 'hiç senkronlanmadı';
+  var m=Math.round((Date.now()-t)/60000);
+  return m<1?'az önce eşitlendi':(m<60?m+' dk önce':Math.round(m/60)+' sa önce');
+}
+/* iki arayüzde ortak yedek paneli */
+function phBackupPanel(){
+  var n=photoCount();
+  return '<div class="phbk">'+
+    '<div class="phbkhd"><b>Fotoğraf yedeği</b>'+
+      '<span id="phsyncbadge">'+(phMsg||phSyncLabel())+'</span></div>'+
+    '<div class="phbkw">Fotoğraflar normal senkrona <b>dahil değil</b>. Telefon değiştirmeden önce '+
+      'aşağıdakilerden en az birini yap, yoksa '+n+' fotoğraf bu cihazla birlikte gider.</div>'+
+    '<button class="mbtn dark" data-a="phexp">Fotoğrafları dosyaya indir ('+n+')</button>'+
+    '<label class="mbtn" style="display:block;text-align:center">Fotoğraf yedeği yükle'+
+      '<input type="file" accept="application/json" data-a="phimp" style="display:none"></label>'+
+    '<div class="phbksep">veya otomatik</div>'+
+    (repoOK()
+      ?'<div class="mhint2">Özel depo: <b>'+esc(S.sync.repo)+'</b></div>'+
+       '<button class="mbtn dark" data-a="phsync">Fotoğrafları şimdi eşitle</button>'+
+       '<button class="mbtn" data-a="phrepooff">Depo bağlantısını kes</button>'
+      :'<div class="mhint2">GitHub’da <b>özel (private)</b> bir depo kullanılır — gist değil. '+
+        'Özel depoyu senden başkası açamaz; gizli gist ise linki bilen herkese açıktır. '+
+        'Anahtarın <b>repo</b> yetkisi olmalı.</div>'+
+       '<div class="mfield"><label>Depo (kullanıcı/depo)</label>'+
+         '<input class="ginp" data-a="repoinp" placeholder="emre/form-fotograf" value="'+esc(S.sync.repo||'')+'"></div>'+
+       '<button class="mbtn dark" data-a="repouse">Bu depoyu kullan</button>'+
+       '<div class="mfield" style="margin-top:12px"><label>Ya da yeni özel depo aç</label>'+
+         '<input class="ginp" data-a="reponew" placeholder="form-fotograf"></div>'+
+       '<button class="mbtn" data-a="repocreate">Özel depo oluştur</button>')+
+  '</div>';
+}
 function repaintPhoto(){
   if(phone())zi('g-body',gymBody());
   else zi('z-photo',photoCard());
@@ -4118,7 +4384,7 @@ function repaintPhoto(){
 function photoCard(){
   return '<div class="card dom dom-bod"><div class="hd"><h2>Fotoğraf</h2>'+
     '<span class="meta">'+photoCount()+' fotoğraf · '+photoDates().length+' gün · ~'+photoBytes()+' KB · senkron dışı</span></div>'+
-    '<div style="padding:14px 18px 16px">'+phBody()+'</div></div>';
+    '<div style="padding:14px 18px 16px">'+phBody()+phBackupPanel()+'</div></div>';
 }
 /* ============ BUGÜN — kahraman kartı ============
    Uygulamayı açtığında "şimdi ne yapmalıyım" sorusunun cevabı,
@@ -4454,12 +4720,18 @@ app.addEventListener('change',function(ev){
         if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];_ph[cur].push({u:u,t:now});ok++;}
         if(done===arr.length){
           if(!ok){toast('fotoğraf okunamadı');return;}
+          phEnsureIds();
           var alln=phAll();cmpB=alln.length-1;if(cmpA>=cmpB)cmpA=0;
           phView='all';
           savePhotos();toast(ok+' fotoğraf eklendi');render();
+          if(repoOK())phSync(true);
         }
       });
     });
+    return;}
+  if(a==='phimp'){
+    var pf=ev.target.files&&ev.target.files[0];ev.target.value='';
+    if(pf)phImportFile(pf);
     return;}
   if(a==='imp'){
     var file=ev.target.files&&ev.target.files[0];if(!file)return;
@@ -4543,6 +4815,30 @@ app.addEventListener('click',function(ev){
   else if(a==='goto'){
     var tg=document.getElementById(t.getAttribute('data-t'));
     if(tg&&tg.scrollIntoView)tg.scrollIntoView({behavior:'smooth',block:'start'});}
+  else if(a==='tokupd'){
+    var tu=document.querySelector('[data-a="tokinp"]'),tv=(tu?tu.value:'').trim();
+    if(!tv){toast('anahtar boş');return;}
+    S.sync.token=tv;STORE.set(KEY,JSON.stringify(S));
+    toast('anahtar güncellendi');
+    syncNow().then(function(){if(repoOK())phSync(true);});
+    render();}
+  else if(a==='daytype'){
+    var dk=t.getAttribute('data-k');
+    setPlan(cur,dk||'clear');
+    toast(dk==='trav'?'seyahat günü işaretlendi':(dk==='rest'?'dinlenme günü':'normal güne alındı'));
+    render();}
+  else if(a==='phexp'){phExport();}
+  else if(a==='phsync'){phSync();}
+  else if(a==='phrepooff'){S.sync.repo='';S._st=Date.now();save();toast('depo bağlantısı kesildi');render();}
+  else if(a==='repouse'){
+    var ri=document.querySelector('[data-a="repoinp"]');
+    var rv=(ri?ri.value:'').trim().replace(/^https?:\/\/github\.com\//,'').replace(/\.git$/,'');
+    if(!/^[^\/\s]+\/[^\/\s]+$/.test(rv)){toast('kullanıcı/depo biçiminde yaz');return;}
+    if(!S.sync.token){toast('önce GitHub anahtarını bağla');return;}
+    S.sync.repo=rv;S._st=Date.now();save();toast('depo bağlandı');render();phSync();}
+  else if(a==='repocreate'){
+    var rn=document.querySelector('[data-a="reponew"]');
+    phCreateRepo(rn?rn.value:'');}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
   else if(a==='phopen'){phOpenViewer(+t.getAttribute('data-x'));}
   else if(a==='autotgt'){
@@ -4635,11 +4931,13 @@ app.addEventListener('click',function(ev){
       t.textContent='Kopyalandı';setTimeout(function(){t.textContent='Bağlantı kodunu kopyala';},1600);}}
   else if(a==='usecode'){
     var ci=document.querySelector('[data-a="codeinp"]'),parsed=readCode(ci?ci.value:'');
-    if(!parsed){toast('kod okunamadı — FORM1- ile başlamalı');}
+    if(!parsed){toast('kod okunamadı — FORM2- ile başlamalı');}
     else{S.sync.token=parsed.token;S.sync.gist=parsed.gist;
-      STORE.set(KEY,JSON.stringify(S));syncNow();}}
+      if(parsed.repo)S.sync.repo=parsed.repo;
+      STORE.set(KEY,JSON.stringify(S));
+      syncNow().then(function(){if(repoOK())phSync();});}}
   else if(a==='syncoff'){
-    S.sync={token:'',gist:'',auto:true,last:0};
+    S.sync={token:'',gist:'',auto:true,last:0,repo:''};
     STORE.set(KEY,JSON.stringify(S));toast('bulut bağlantısı kesildi');render();}
   else if(a==='copygist'){
     try{navigator.clipboard.writeText(S.sync.gist);}catch(e){}
@@ -4728,6 +5026,7 @@ STORE.get(KEY).then(function(res){
   cur=today();
   try{
     var pl=loadPhotos();
+    if(pl&&pl.then)pl.then(function(){try{phEnsureIds();}catch(e){}});
     (pl&&pl.then?pl:Promise.resolve()).then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
