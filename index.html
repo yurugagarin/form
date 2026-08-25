@@ -568,6 +568,8 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .migbad{margin-top:10px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;padding:10px 12px;
   font-size:12px;font-weight:600;color:#a5541f;line-height:1.5}
 .migwait{margin-top:10px;font-size:12px;font-weight:700;color:#b3a488}
+.phbkok{background:#eaf6ee;border:1px solid #b9e0c6;border-radius:11px;padding:10px 12px;
+  font-size:12px;font-weight:600;color:#1f6b3e;line-height:1.5;margin-bottom:10px}
 .phbksep{text-align:center;font-size:10px;letter-spacing:1px;font-weight:700;color:#c0b193;
   margin:14px 0 10px;text-transform:uppercase}
 /* tam ekran görüntüleyici */
@@ -2692,7 +2694,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v31 · 25 Ağu 2026';
+var APPVER='v32 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4394,8 +4396,12 @@ function phBackupPanel(){
   return '<div class="phbk">'+
     '<div class="phbkhd"><b>Fotoğraf yedeği</b>'+
       '<span id="phsyncbadge">'+(phMsg||phSyncLabel())+'</span></div>'+
-    '<div class="phbkw">Fotoğraflar normal senkrona <b>dahil değil</b>. Telefon değiştirmeden önce '+
-      'aşağıdakilerden en az birini yap, yoksa '+n+' fotoğraf bu cihazla birlikte gider.</div>'+
+    (repoOK()
+      ?'<div class="phbkok">Fotoğraflar özel depona yedekleniyor. Yeni fotoğraf çektiğinde otomatik '+
+        'gidiyor, diğer cihazda uygulamayı açtığında iniyor. Telefon değişiminde bağlantı kodu yeterli — '+
+        'aşağıdaki dosya yedeği sadece ek sigorta.</div>'
+      :'<div class="phbkw">Fotoğraflar normal senkrona <b>dahil değil</b> ve şu an hiçbir yere '+
+        'yedeklenmiyor. Aşağıdan özel depoyu bağla, yoksa '+n+' fotoğraf bu cihazla birlikte gider.</div>')+
     '<button class="mbtn dark" data-a="phexp">Fotoğrafları dosyaya indir ('+n+')</button>'+
     '<button class="mbtn" data-a="phdedupe">Yinelenen fotoğrafları temizle</button>'+
     '<label class="mbtn" style="display:block;text-align:center">Fotoğraf yedeği yükle'+
