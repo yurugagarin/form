@@ -2694,7 +2694,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v32 · 25 Ağu 2026';
+var APPVER='v33 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4289,18 +4289,42 @@ function phImportFile(file){
 /* ---- 2) özel GitHub deposu ---- */
 var phSyncing=false, phMsg='';
 function repoOK(){return !!(S.sync.token&&S.sync.repo);}
-function ghRepo(path,opts){
-  opts=opts||{};
-  return fetch('https://api.github.com'+path,{
+function ghWait(ms){return new Promise(function(r){setTimeout(r,ms);});}
+/* GitHub, aynı depoya arka arkaya yazınca 409 (Conflict) veriyor.
+   Bu yüzden her yazma sırayla, aralıklı ve gerekirse tekrar denenerek yapılır. */
+function ghRepo(path,opts,tryN){
+  opts=opts||{};tryN=tryN||0;
+  var url='https://api.github.com'+path;
+  if((opts.method||'GET')==='GET')url+=(url.indexOf('?')<0?'?':'&')+'_='+Date.now();
+  return fetch(url,{
     method:opts.method||'GET',
+    cache:'no-store',
     headers:{'Authorization':'Bearer '+S.sync.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
     body:opts.body?JSON.stringify(opts.body):undefined
   }).then(function(r){
     if(r.status===404)return {__missing:true};
-    if(r.status===401)throw new Error('Anahtar geçersiz');
-    if(r.status===403)throw new Error('Anahtarda "repo" yetkisi yok — yeni bir anahtar üret');
-    if(!r.ok)return r.text().then(function(tx){throw new Error('GitHub '+r.status+' '+tx.slice(0,80));});
+    if(r.status===401)throw new Error('Anahtar geçersiz — yeni anahtar üret');
+    if(r.status===403)
+      return r.text().then(function(tx){
+        if(/rate limit|secondary/i.test(tx)&&tryN<4)
+          return ghWait(2000*(tryN+1)).then(function(){return ghRepo(path,opts,tryN+1);});
+        throw new Error('Anahtarda "repo" yetkisi yok ya da istek sınırı doldu');
+      });
+    if((r.status===409||r.status===422||r.status>=500)&&tryN<4)
+      return ghWait(700*Math.pow(2,tryN)).then(function(){return ghRepo(path,opts,tryN+1);});
+    if(!r.ok)return r.text().then(function(tx){
+      var msg='';try{msg=(JSON.parse(tx).message)||'';}catch(e){msg=tx.slice(0,90);}
+      throw new Error('GitHub '+r.status+(msg?' — '+msg:''));
+    });
     return r.json();
+  });
+}
+/* depodaki fotoğraf dosyalarının güncel listesi */
+function phRemoteList(){
+  return ghRepo('/repos/'+S.sync.repo+'/contents/photos').then(function(list){
+    if(list&&list.__missing)return [];
+    if(!Array.isArray(list))throw new Error('depo okunamadı');
+    return list.filter(function(f){return f&&/\.jpg$/i.test(f.name||'');});
   });
 }
 function phSetMsg(m){
@@ -4332,10 +4356,8 @@ function phSync(silent){
   phSyncing=true;phSetMsg('fotoğraflar senkronize ediliyor…');
   var base='/repos/'+S.sync.repo+'/contents/photos';
   var remote={};
-  return ghRepo(base).then(function(list){
-    if(list&&list.__missing)return;
-    if(Array.isArray(list))list.forEach(function(f){
-      if(f&&f.name&&/\.jpg$/i.test(f.name))remote[f.name.replace(/\.jpg$/i,'')]=f;});
+  return phRemoteList().then(function(list){
+    list.forEach(function(f){remote[f.name.replace(/\.jpg$/i,'')]=f;});
   }).then(function(){
     /* yerelde olup uzakta olmayanları yükle */
     var ups=[];
@@ -4349,7 +4371,8 @@ function phSync(silent){
       phSetMsg('yükleniyor '+i+'/'+ups.length);
       var b64=String(o.x.u||'').split(',')[1]||'';
       return ghRepo(base+'/'+o.x.id+'.jpg',{method:'PUT',
-        body:{message:'foto '+o.d,content:b64}}).then(up);
+        body:{message:'foto '+o.d,content:b64}})
+        .then(function(){return ghWait(350);}).then(up);
     }
     return up();
   }).then(function(nUp){
@@ -4458,10 +4481,7 @@ function migCheck(){
         (ex[k]||[]).forEach(function(x){if(x.kg!=null&&x.rep!=null)out.rSets++;});});});
   }).then(function(){
     if(!repoOK()){out.rPh=null;return;}
-    return ghRepo('/repos/'+S.sync.repo+'/contents/photos').then(function(list){
-      if(list&&list.__missing){out.rPh=0;return;}
-      out.rPh=Array.isArray(list)?list.filter(function(f){return f&&/\.jpg$/i.test(f.name||'');}).length:0;
-    });
+    return phRemoteList().then(function(list){out.rPh=list.length;});
   }).then(function(){
     migBusy=false;
     var rows=[
@@ -4518,24 +4538,25 @@ function phCleanRemote(){
   if(!myN){toast('yerelde fotoğraf yok — güvenlik için iptal edildi');return;}
   phSyncing=true;phSetMsg('bulut taranıyor…');
   var base='/repos/'+S.sync.repo+'/contents/photos';
-  ghRepo(base).then(function(list){
-    if(!Array.isArray(list))throw new Error('depo okunamadı');
-    var junk=list.filter(function(f){
-      return f&&/\.jpg$/i.test(f.name||'')&&!mine[f.name.replace(/\.jpg$/i,'')];});
-    var i=0;
+  phRemoteList().then(function(list){
+    var junk=list.filter(function(f){return !mine[f.name.replace(/\.jpg$/i,'')];});
+    var i=0,failed=0;
     function del(){
-      if(i>=junk.length)return Promise.resolve(junk.length);
+      if(i>=junk.length)return Promise.resolve({n:junk.length-failed,f:failed});
       var f=junk[i++];
       phSetMsg('siliniyor '+i+'/'+junk.length);
       return ghRepo(base+'/'+f.name,{method:'DELETE',
-        body:{message:'artik foto sil',sha:f.sha}}).then(del);
+        body:{message:'artik foto sil',sha:f.sha}})
+        .catch(function(){failed++;})
+        .then(function(){return ghWait(350);}).then(del);
     }
     return del();
-  }).then(function(n){
+  }).then(function(res){
+    var n=res.n;
     phSyncing=false;phSetMsg('');
     S.sync.phLast=Date.now();save();
-    toast(n?n+' artık dosya silindi':'bulutta artık dosya yok');
-    migPaint('');render();
+    toast(n?n+' artık dosya silindi'+(res.f?' · '+res.f+' silinemedi':''):'bulutta artık dosya yok');
+    render();setTimeout(migCheck,600);
   }).catch(function(e){
     phSyncing=false;phSetMsg('');
     toast('temizlik hatası: '+e.message);
