@@ -2556,16 +2556,45 @@ function progressCard(){
 
 /* ============ BULUT SENKRON (GitHub Gist) ============ */
 var GFILE='form-takip.json', syncing=false, pushT=null, syncMsg='';
-function gh(path,opts){
-  opts=opts||{};
-  return fetch('https://api.github.com'+path,{
+function ghWait0(ms){return new Promise(function(r){setTimeout(r,ms);});}
+function gh(path,opts,tryN){
+  opts=opts||{};tryN=tryN||0;
+  var url='https://api.github.com'+path;
+  if((opts.method||'GET')==='GET')url+=(url.indexOf('?')<0?'?':'&')+'_='+Date.now();
+  return fetch(url,{
     method:opts.method||'GET',
+    cache:'no-store',
     headers:{'Authorization':'Bearer '+S.sync.token,'Accept':'application/vnd.github+json','Content-Type':'application/json'},
     body:opts.body?JSON.stringify(opts.body):undefined
   }).then(function(r){
-    if(r.status===401)throw new Error('Anahtar geçersiz veya süresi dolmuş');
+    if(r.status===401)throw new Error('Anahtar geçersiz veya süresi dolmuş — yeni anahtar üret');
     if(r.status===404)throw new Error('Gist bulunamadı — ID’yi kontrol et');
-    if(!r.ok)throw new Error('GitHub hatası '+r.status);
+    if(r.status===403||r.status===429){
+      var rem=r.headers.get('x-ratelimit-remaining');
+      var rst=r.headers.get('x-ratelimit-reset');
+      var ra=r.headers.get('retry-after');
+      return r.text().then(function(tx){
+        var msg='';try{msg=(JSON.parse(tx).message)||'';}catch(e){}
+        /* istek sınırı: bekle ve tekrar dene */
+        if(ra||rem==='0'||/rate limit|secondary|abuse/i.test(msg)){
+          if(tryN<3)return ghWait0((ra?Math.min(+ra,20)*1000:3000*(tryN+1))).then(function(){
+            return gh(path,opts,tryN+1);});
+          var wait='';
+          if(rst){var sec=Math.max(0,Math.round(+rst-Date.now()/1000));
+            wait=' — '+(sec<90?sec+' sn':Math.ceil(sec/60)+' dk')+' sonra tekrar dene';}
+          else if(ra)wait=' — '+ra+' sn sonra tekrar dene';
+          throw new Error('GitHub istek sınırı doldu'+wait);
+        }
+        /* yetki sorunu */
+        throw new Error('Anahtarın yetkisi yetmiyor. Classic token olmalı ve “gist” + “repo” '+
+          'kutuları işaretli olmalı (fine-grained token gist’i desteklemez).');
+      });
+    }
+    if(r.status>=500&&tryN<3)return ghWait0(1200*(tryN+1)).then(function(){return gh(path,opts,tryN+1);});
+    if(!r.ok)return r.text().then(function(tx){
+      var m2='';try{m2=(JSON.parse(tx).message)||'';}catch(e){m2=tx.slice(0,90);}
+      throw new Error('GitHub '+r.status+(m2?' — '+m2:''));
+    });
     return r.json();
   });
 }
@@ -2734,7 +2763,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v34 · 25 Ağu 2026';
+var APPVER='v36 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4508,10 +4537,29 @@ function phSyncLabel(){
   return m<1?'az önce eşitlendi':(m<60?m+' dk önce':Math.round(m/60)+' sa önce');
 }
 /* iki arayüzde ortak yedek paneli */
+/* bu cihazın gerçek durumu — tahmin yok, ne varsa o yazar */
+function phState(){
+  var rows=[
+    ['GitHub anahtarı',S.sync.token?'var':'yok',!!S.sync.token],
+    ['Veri senkronu',S.sync.gist?('bağlı · '+syncLabel()):'bağlı değil',!!S.sync.gist],
+    ['Fotoğraf deposu',S.sync.repo?S.sync.repo:'bağlı değil',!!S.sync.repo],
+    ['Bu cihazdaki fotoğraf',String(photoCount()),true]
+  ];
+  return '<div class="migtbl">'+rows.map(function(r){
+    return '<div class="migrow'+(r[2]?' ok':' bad')+'"><span>'+r[0]+'</span>'+
+      '<b style="font-family:Karla;font-size:12px">'+esc(r[1])+'</b><i></i><b></b><i></i>'+
+      '<u>'+(r[2]?'✓':'✕')+'</u></div>';}).join('')+'</div>';
+}
 function phBackupPanel(){
   var n=photoCount();
   return '<div class="phbk">'+
-    '<div class="phbkhd"><b>Fotoğraf yedeği</b>'+
+    '<div class="phbkhd"><b>Bu cihazın durumu</b></div>'+phState()+
+    ((!repoOK()&&S.sync.token&&S.sync.gist)
+      ?'<button class="mbtn dark" data-a="repopull" style="margin-top:10px">Depo adını buluttan al</button>'+
+       '<div class="mhint2" style="margin-top:6px">Depoyu başka bir cihazda kurduysan adı buluttan iner; '+
+         'elle yazman gerekmez.</div>'
+      :'')+
+    '<div class="phbkhd" style="margin-top:16px"><b>Fotoğraf yedeği</b>'+
       '<span id="phsyncbadge">'+(phMsg||phSyncLabel())+'</span></div>'+
     (repoOK()
       ?'<div class="phbkok">Fotoğraflar özel depona yedekleniyor. Yeni fotoğraf çektiğinde otomatik '+
@@ -5119,6 +5167,12 @@ app.addEventListener('click',function(ev){
     toast(dk==='trav'?'seyahat günü işaretlendi':(dk==='rest'?'dinlenme günü':'normal güne alındı'));
     render();}
   else if(a==='migchk'){migCheck();}
+  else if(a==='repopull'){
+    toast('buluttan alınıyor…');
+    syncNow(true).then(function(){
+      if(repoOK()){toast('depo bulundu: '+S.sync.repo);phSync();}
+      else toast('bulutta depo adı yok — depoyu kurduğun cihazda “Şimdi senkronize et”e bas');
+      render();});}
   else if(a==='phexp'){phExport();}
   else if(a==='phdedupe'){
     var rm2=phDedupe();
