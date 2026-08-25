@@ -2770,7 +2770,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v38 · 25 Ağu 2026';
+var APPVER='v39 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4209,6 +4209,15 @@ function phDedupe(){
   if(removed)savePhotos();
   return removed;
 }
+/* kopya olduğu anlaşılan bulut dosyaları: bir daha indirilmez, sırayla buluttan silinir */
+var _phSkip={};
+function loadPhSkip(){
+  return PHDB.get('phskip').then(function(v){
+    try{_phSkip=JSON.parse(v||'{}')||{};}catch(e){_phSkip={};}
+  }).catch(function(){});
+}
+function savePhSkip(){PHDB.set('phskip',JSON.stringify(_phSkip)).catch(function(){});}
+function phContentKey(u){return String(u||'').length+':'+String(u||'').slice(-64);}
 function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
 function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
 function savePhotos(){
@@ -4596,7 +4605,7 @@ function phSync(silent){
     if(!r.err)S.sync.phLast=Date.now();
     phDedupe();savePhotos();save();
     var upN=(r.up&&r.up.ok!=null)?r.up.ok:0;
-    if(!silent)toast(upN+' yüklendi · '+r.down+' indirildi'+(r.err?' · bir kısmı bekliyor':''));
+    if(!silent)toast(upN+' yüklendi · '+r.down+' indirildi'+(r.cleaned?' · '+r.cleaned+' kopya buluttan silindi':'')+(r.err?' · bir kısmı bekliyor':''));
     if(r.err&&!silent)toast('eksikler sonraki eşitlemede tamamlanır ('+r.err.message+')');
     if(r.down&&!typing())render();
     else{var e2=document.getElementById('phsyncbadge');if(e2)e2.textContent=phSyncLabel();}
@@ -4782,11 +4791,13 @@ function _phCleanCore(){
       phSetMsg('siliniyor '+i+'/'+junk.length);
       return ghRepo(base+'/'+f.name,{method:'DELETE',
         body:{message:'artik foto sil',sha:f.sha}})
+        .then(function(){delete _phSkip[f.name.replace(/\.jpg$/i,'')];})
         .catch(function(){failed++;})
         .then(function(){return ghWait(350);}).then(del);
     }
     return del();
   }).then(function(res){
+    savePhSkip();
     var n=res.n;
     phSyncing=false;phSetMsg('');
     S.sync.phLast=Date.now();save();
@@ -5471,7 +5482,7 @@ STORE.get(KEY).then(function(res){
   cur=today();
   try{
     var pl=loadPhotos();
-    if(pl&&pl.then)pl.then(function(){try{phDedupe();phEnsureIds();}catch(e){}});
+    if(pl&&pl.then)pl.then(function(){return loadPhSkip();}).then(function(){try{phDedupe();phEnsureIds();}catch(e){}});
     (pl&&pl.then?pl:Promise.resolve()).then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
