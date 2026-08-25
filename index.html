@@ -341,6 +341,25 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   box-shadow:0 4px 12px rgba(58,52,44,.28)}
 .gtabs button.on .lb{opacity:.95}
 
+.gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
+.gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.gsync2{font-size:10.5px;color:#b3a488;font-weight:700}
+.gprevbox{margin-top:12px;padding-top:11px;border-top:1px dashed #e4d9c2}
+.gprevhd{display:flex;align-items:center;gap:10px;font-size:9.5px;letter-spacing:1px;
+  font-weight:700;color:#b3a488}
+.gprevhd span{flex:1;min-width:0}
+.gprevhd .gcopy{margin:0;padding:7px 12px;font-size:12px}
+.gprevst{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:9px}
+.gprevst>div{background:#f7f1e4;border:1px solid #ece1cd;border-radius:10px;padding:7px 4px;text-align:center}
+.gprevst b{display:block;font-family:'Fraunces';font-size:17px;font-weight:600;line-height:1.05;
+  color:#3a342c;font-variant-numeric:tabular-nums}
+.gprevst i{display:block;font-style:normal;font-size:9px;font-weight:700;color:#b3a488;margin-top:3px}
+.gprevv{margin-top:8px;font-size:12px;font-weight:700;line-height:1.4}
+.gprevv u{text-decoration:none;color:#b3a488}
+.gdue{background:#ef5a1e;color:#fff;border-radius:999px;padding:2px 8px;font-size:9px;letter-spacing:.8px}
+.gduebanner{margin:0 14px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;
+  padding:10px 12px;font-size:12px;font-weight:700;color:#a5541f;line-height:1.45}
+.gduenote{margin:0 14px 2px;font-size:11px;font-weight:600;color:#b3a488;line-height:1.45}
 .gdayhead{display:flex;align-items:center;gap:11px;padding:13px 14px 11px;background:#fbf8f2;
   border-bottom:1px solid #ece1cd}
 .gdaybar{width:5px;align-self:stretch;border-radius:3px;flex:none;min-height:34px}
@@ -373,13 +392,15 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gset{display:flex;gap:5px;align-items:center;margin-bottom:2px}
 .gset .num{width:16px;flex:none;font-size:12px;font-weight:700;color:#c0b193;text-align:center}
 .gset input{flex:1;min-width:0;height:46px;border-radius:11px;border:1.5px solid #ddd0b8;background:#fff;
-  text-align:center;font-size:19px;font-weight:700;outline:none;-webkit-appearance:none}
+  text-align:center;font-size:16px;font-weight:700;outline:none;-webkit-appearance:none}
 .gset input:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
 .gset .mul{font-size:13px;color:#c0b193;font-weight:700;flex:none}
 .grepwrap{flex:1;min-width:0;position:relative}
 .grep{width:100%;height:46px;border-radius:11px;border:1.5px solid #ddd0b8;background:#fff;
-  text-align:center;font-size:20px;font-weight:700;color:#3a342c;outline:none;
-  -webkit-appearance:none;appearance:none;padding:0 18px 0 6px;font-family:inherit}
+  text-align:center;font-size:16px;font-weight:700;color:#3a342c;outline:none;
+  -webkit-appearance:none;appearance:none;padding:0 15px 0 4px;font-family:inherit;
+  text-overflow:ellipsis}
+.grep.ph{font-size:14px}
 .grep.ph{color:#c0b193}
 .grep:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
 .grepwrap .chev{position:absolute;right:9px;top:50%;transform:translateY(-50%);
@@ -490,52 +511,70 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   font-weight:700;background:#f4ad15;color:#fff;border-radius:6px;padding:2px 6px}
 .dtsets span u{text-decoration:none;font-size:9px;color:#b3a488;margin-left:3px;font-weight:700}
 /* ---------- fotoğraf ---------- */
-.phtabs{display:flex;align-items:center;gap:5px;overflow-x:auto;padding-bottom:10px;-webkit-overflow-scrolling:touch}
-.phtab{flex:none;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;padding:7px 11px;
-  font-size:12px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent;
+.phaddbig{display:block;width:100%;border:1.5px dashed #d9ccb5;background:#fbf8f2;border-radius:13px;
+  padding:13px 14px;text-align:center;cursor:pointer;-webkit-tap-highlight-color:transparent;margin-bottom:13px}
+.phaddbig:active{background:#f3ecdd;transform:scale(.99)}
+.phaddbig span{display:block;font-size:14px;font-weight:700;color:#6b5f4d}
+.phaddbig i{display:block;font-style:normal;font-size:11px;font-weight:600;color:#b3a488;margin-top:3px}
+.phtabs{display:flex;align-items:center;gap:5px;overflow-x:auto;padding-bottom:12px;-webkit-overflow-scrolling:touch}
+.phtab{flex:none;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;padding:8px 13px;
+  font-size:12.5px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent;
   display:flex;align-items:center;gap:5px}
 .phtab.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
 .phtab i{font-style:normal;font-size:9.5px;font-weight:700;background:#efe7d6;color:#a8987c;
   border-radius:5px;padding:1px 5px}
 .phtab.on i{background:rgba(255,255,255,.2);color:#f3ecdf}
-.phsep{width:1px;height:20px;background:#e4d9c2;flex:none;margin:0 3px}
-.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:9px}
+.phgroup{margin-bottom:16px}
+.phghd{margin-bottom:7px}
+.phghd b{display:block;font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c;line-height:1.2}
+.phghd span{display:block;font-size:10.5px;font-weight:700;color:#b3a488;margin-top:2px}
+.phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .phcell{border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
   border-radius:11px;overflow:hidden;position:relative;display:block}
 .phcell img{width:100%;aspect-ratio:3/4;object-fit:cover;display:block;border-radius:11px;border:1px solid #e8dcc4}
 .phcell:active{transform:scale(.97)}
-.phcap{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;align-items:center;
-  padding:14px 7px 5px;border-radius:0 0 11px 11px;color:#fff;font-size:10.5px;font-weight:700;
-  background:linear-gradient(to top,rgba(30,25,18,.78),rgba(30,25,18,0))}
-.phcap i{font-style:normal;opacity:.75}
+.phcap{position:absolute;right:5px;bottom:5px;min-width:19px;height:19px;border-radius:6px;
+  background:rgba(30,25,18,.62);color:#fff;font-size:10px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;padding:0 5px}
 .phcmpsel{display:flex;align-items:center;gap:8px;margin-bottom:11px}
-.phcmpsel select{flex:1;min-width:0}
+.phcmpsel select{flex:1;min-width:0;font-size:12.5px}
 .phar{color:#c0b193;font-weight:700;flex:none}
 .phcmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .phcl{font-size:9.5px;letter-spacing:.9px;font-weight:700;color:#a8987c;margin-bottom:5px}
-.phbig{border:0;background:none;padding:0;width:100%;display:block;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.phbig img{width:100%;border-radius:11px;display:block;border:1px solid #e8dcc4}
-.phmiss{aspect-ratio:3/4;border-radius:11px;background:#f3ecdd;display:flex;align-items:center;
-  justify-content:center;text-align:center;font-size:11px;font-weight:700;color:#c0b193;padding:10px}
-.phnote{margin-top:9px;font-size:11.5px;font-weight:700;color:#a8987c}
+.phbig{border:0;background:none;padding:0;width:100%;display:block;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;background:#f3ecdd;border-radius:11px;overflow:hidden}
+.phbig img{width:100%;aspect-ratio:3/4;object-fit:contain;display:block;background:#f3ecdd}
+.phcs{font-size:10.5px;font-weight:700;color:#b3a488;margin-top:5px}
+.phnote{margin-top:6px;font-size:11.5px;font-weight:700;color:#a8987c}
 .phempty{padding:16px 2px;font-size:12.5px;line-height:1.6;color:#8a7f6f}
-.phday{margin-top:14px;padding-top:12px;border-top:1px solid #f0e8d8}
-.phdayl{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;color:#a8987c;margin-bottom:7px}
-.phthumbs{display:flex;gap:8px;overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px}
-.phth{position:relative;flex:none;width:70px}
-.phth>button:first-child{border:0;background:none;padding:0;display:block;width:100%;cursor:pointer}
-.phth img{width:70px;height:93px;object-fit:cover;border-radius:9px;display:block;border:1px solid #e8dcc4}
-.phth>span{display:block;text-align:center;font-size:9.5px;font-weight:700;color:#a8987c;margin-top:3px}
-.phdel{position:absolute;top:-5px;right:-5px;width:22px;height:22px;border-radius:50%;
-  border:1.5px solid #fbf8f2;background:#3a342c;color:#fff;font-size:11px;line-height:1;padding:0;cursor:pointer}
-.phup{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:14px;padding-top:12px;
-  border-top:1px solid #f0e8d8}
-.phupl{font-size:11.5px;font-weight:700;color:#a8987c;flex:1;min-width:120px}
-.phupr{display:flex;gap:6px}
-.phadd{flex:none;border:1px dashed #ddd0b8;background:#fbf8f2;border-radius:9px;padding:8px 13px;
-  font-size:12px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.phadd:active{background:#f3ecdd}
-.phadd span::before{content:'+ ';color:#c0b193}
+/* tam ekran görüntüleyici */
+body.pvlock{overflow:hidden}
+.pv{position:fixed;inset:0;z-index:200;background:#17140f;
+  display:flex;flex-direction:column;
+  padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+.pvbar{display:flex;align-items:flex-start;gap:10px;padding:12px 14px 8px;flex:none}
+.pvmeta{flex:1;min-width:0}
+.pvmeta b{display:block;font-family:'Fraunces';font-size:17px;font-weight:600;color:#f6efe1;line-height:1.2}
+.pvmeta span{display:block;font-size:11px;font-weight:700;color:#a1917a;margin-top:3px;line-height:1.4}
+.pvx{flex:none;width:38px;height:38px;border-radius:12px;border:1px solid #3a352c;
+  background:#231f18;color:#e8dcc4;font-size:17px;line-height:1;-webkit-tap-highlight-color:transparent}
+.pvstage{flex:1;min-height:0;overflow:auto;display:flex;align-items:center;justify-content:center;
+  padding:4px 8px;-webkit-overflow-scrolling:touch}
+.pvstage img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;
+  display:block;border-radius:10px}
+.pvstage.z{align-items:flex-start;justify-content:flex-start}
+.pvstage.z img{max-width:none;max-height:none;width:230%;height:auto;border-radius:0}
+.pvfoot{display:flex;align-items:center;gap:10px;padding:8px 14px 4px;flex:none}
+.pvnav{width:52px;height:44px;flex:none;border-radius:12px;border:1px solid #3a352c;background:#231f18;
+  color:#e8dcc4;font-size:22px;line-height:1;-webkit-tap-highlight-color:transparent}
+.pvnav[disabled]{opacity:.32}
+.pvcount{flex:1;text-align:center;min-width:0}
+.pvcount b{display:block;font-size:13px;font-weight:700;color:#e8dcc4;font-variant-numeric:tabular-nums}
+.pvcount i{display:block;font-style:normal;font-size:10px;font-weight:700;color:#8a7f6f;margin-top:2px}
+.pvacts{display:flex;gap:8px;padding:6px 14px 12px;flex:none}
+.pvbtn{flex:1;height:44px;border-radius:12px;border:1px solid #3a352c;background:#231f18;
+  color:#e8dcc4;font-size:12.5px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.pvbtn.del{flex:none;padding:0 20px;color:#e88a63;border-color:#4a3226}
 .calg .hl.pre,.mcalrow.pre .mwk{color:#c98b2e}
 .calg .hl.dl{color:#b8860b}
 .calg .hl.dl i,.mcalrow.dl .mwk i{font-style:normal;display:block;font-size:8px;letter-spacing:.5px;
@@ -736,7 +775,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gmbtn{border:1px solid #ddd0b8;background:#fbf8f2;border-radius:10px;padding:10px 12px;
   font-size:12px;font-weight:700;color:#6b5f4d;flex:none}
 .gmnote{font-size:11px;color:#b3a488;line-height:1.45;margin-top:10px}
-.gsups{display:grid;grid-template-columns:1fr 1fr;gap:9px;padding:0 14px}
+.gsups{display:grid;grid-template-columns:1fr;gap:9px;padding:0 14px}
 .gsup{border:1px solid #ddd0b8;background:#fbf8f2;border-radius:12px;padding:13px 12px;font-size:13.5px;
   font-weight:700;color:#8a7f6f;text-align:left}
 .gsup span{display:block;font-size:11px;font-weight:600;color:#c0b193;margin-top:2px}
@@ -864,7 +903,7 @@ var PROGRAM={
 /* Program günleri sırayla ilerler: Gün 1 → 2 → 3 → 4 → 5 → 1 …
    Hangi takvim gününde yaptığın önemli değil, sıra bozulmaz. */
 var ORDER=['gun1','gun2','gun3','gun4','gun5'];
-var SUPS=[['kreatin','Kreatin','5 g','#8b5cf6'],['whey','Whey','1-2 ölçek','#0d9488'],['dvit','D vitamini','2000-4000 IU','#f4ad15'],['kafein','Kafein','200 mg','#ef5a1e']];
+var SUPS=[['kreatin','Kreatin','5 g','#8b5cf6']];
 var EXTGT={};Object.keys(PROGRAM).forEach(function(k){PROGRAM[k].ex.forEach(function(e){EXTGT[e.n]=e;});});
 
 /* ============ KAS GRUBU HARİTASI ============
@@ -2582,7 +2621,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v23 · 25 Ağu 2026';
+var APPVER='v24 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2715,23 +2754,11 @@ function gymWorkout(){
   var col=(t&&t.color)||'#a8987c';
   var isTr=ORDER.indexOf(dt)>=0;
   var ord=isTr?weekOrder(cur):null;
-  var pick='<div class="gdayhead">'+
-      '<span class="gdaybar" style="background:'+col+'"></span>'+
-      '<div class="gdaytx">'+
-        '<div class="gdaykick">'+(cur===today()?'BUGÜN':fdate(cur).toUpperCase())+
-          (ord?' · '+ord+'. GÜN':'')+'</div>'+
-        '<div class="gdayname">'+esc(t?typeName(dt)||t.name:'Planlanmadı')+'</div>'+
-      '</div>'+
-      '<button class="gdaybtn'+(dtPick?' on':'')+'" data-a="dtpick" aria-label="Program gününü değiştir">'+
-        (dtPick?'✕':'değiştir')+'</button>'+
-    '</div>'+
-    (dtPick?'<div class="gpick">'+Object.keys(PROGRAM).map(function(k){
-      return '<button class="gchip'+(dt===k?' on':'')+'" data-a="gdt" data-k="'+k+'"'+
-        (dt===k?'':' style="color:'+PROGRAM[k].color+'"')+'>'+esc(PROGRAM[k].code||PROGRAM[k].short)+'</button>';}).join('')+'</div>':'');
+  var pick=workHero();
 
   if(!t||!t.ex.length)
     return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
-      'Bugün antrenman yok. Değiştirmek istersen yukarıdaki “değiştir”e dokun.</div>';
+      'Bugün antrenman yok — yemek, uyku ve adım öne çıkıyor. Gün sekmesinden verilerini gir.</div>';
 
   if(isDeload(cur))pick+='<div class="dlbanner" style="margin:0">'+
     '<b>Deload haftası.</b> Set sayıları otomatik yarıya indirildi. '+
@@ -2801,11 +2828,7 @@ function gymWorkout(){
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
-    '<div class="gprev">'+
-      (prev?'<span>'+fdate(prev.date)+' · <b>'+esc(prev.txt)+'</b></span>'+
-            '<button class="gcopy" data-a="samelast">Aynısını doldur</button>'
-           :'<span>İlk kez yapıyorsun — rahat bir ağırlıkla başla.</span>')+
-    '</div>'+
+    prevSummary(prev,e)+
     '<div class="gsets">'+rows+'</div>'+
     '<div class="ghint">'+hint+'</div>'+
     '<button class="gaddset" data-a="addset">+ set ekle</button>'+
@@ -2846,11 +2869,10 @@ function gymDay(){
   var mk=Math.round((r.p||0)*4+(r.c||0)*4+(r.f||0)*9);
   var kr=supStreak('kreatin');
   var rt=(r.sh!=null&&r.b)?r.sh/r.b:null;
-  return heroM()+'<div class="gsec">Ölçüm</div>'+
-    '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+fld('b','Bel','cm',null,C.teal)+'</div>'+
-    '<div class="gsec">Çevre ölçüleri <span style="text-transform:none;letter-spacing:0;color:#c0b193">· 2 haftada bir</span></div>'+
-    '<div class="ggrid">'+fld('sh','Omuz','cm',null,C.green)+fld('arm','Kol','cm',null,C.orange)+
-      fld('ch','Göğüs','cm',null,C.pink)+fld('sl','Uyku','saat',null,C.violet)+'</div>'+
+  var md=measDue();
+  return heroM()+'<div class="gsec">Her gün</div>'+
+    '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+fld('b','Bel','cm',null,C.teal)+
+      fld('sl','Uyku','saat',null,C.violet)+'</div>'+
     (rt!=null?'<div style="padding:10px 14px 0"><div class="gratio">'+
       '<div><div class="gmlbl">Omuz / bel oranı</div>'+
         '<div class="gratv" style="color:'+C.green+'">'+fx(rt,2)+'</div></div>'+
@@ -2868,6 +2890,15 @@ function gymDay(){
       '</div>'+
       '<div class="gmnote">Lifesum ile %3-8 fark normaldir. Kalori alanına uygulamanın sayısını yaz, buradaki hesap kontrol içindir.</div>'+
     '</div></div>'+
+    '<div class="gsec">Çevre ölçüleri '+
+      (md.due?'<span class="gdue">SIRA GELDİ</span>'
+             :'<span style="text-transform:none;letter-spacing:0;color:#c0b193">· '+md.left+' gün sonra</span>')+'</div>'+
+    (md.due
+      ?'<div class="gduebanner">'+(md.last?'Son ölçüm <b>'+fdate(md.last)+'</b> — üzerinden '+md.days+' gün geçti. ':'Henüz çevre ölçüsü girmedin. ')+
+        'Omuz, kol ve göğsü ölç, aşağıya yaz.</div>'
+      :'<div class="gduenote">2 haftada bir ölçülür'+(md.last?' · son ölçüm '+fdate(md.last):'')+'. Bugün girmen gerekmiyor, günlük sayıma da katılmaz.</div>')+
+    '<div class="ggrid">'+fld('sh','Omuz','cm',null,C.green)+fld('arm','Kol','cm',null,C.orange)+
+      fld('ch','Göğüs','cm',null,C.pink)+'</div>'+
     '<div class="gsec">Takviye'+(kr.n?' <span style="color:'+C.violet+'">· seri '+kr.n+' gün</span>':'')+'</div>'+
     '<div class="gsups">'+SUPS.map(function(x){
       var on=!!(r.sup&&r.sup[x[0]]);
@@ -3531,18 +3562,12 @@ function mfld(g,lbl,v){
 }
 
 function gymTop(){
-  var dt=planOf(cur),t=PROGRAM[dt],isT=cur===today();
-  return '<div class="gtop">'+
-    '<div class="gtoprow">'+
-      '<button class="gnavbtn" data-a="prev">‹</button>'+
-      '<div style="flex:1;text-align:center;min-width:0">'+
-        '<div class="gdate">'+(isT?'BUGÜN':GUNU[pd(cur).getDay()].toUpperCase())+' · '+fdate(cur)+'</div>'+
-        '<div class="gday" style="color:'+(t?t.color:'#a8987c')+'">'+esc(dayTitle(cur))+'</div>'+
-      '</div>'+
-      '<button class="gnavbtn" data-a="next">›</button>'+
+  return '<div class="gtop slim">'+
+    '<div class="gtoprow2">'+
+      '<span class="gdate">'+GUNU[pd(cur).getDay()].toUpperCase()+' · '+fdate(cur)+'</span>'+
+      '<span class="gsync2"'+(S.sync.token&&S.sync.gist?' data-a="syncnow"':'')+'>'+
+        (S.sync.token&&S.sync.gist?'☁ '+syncLabel()+' · ':'')+APPVER+'</span>'+
     '</div>'+
-    '<div class="gsync"'+(S.sync.token&&S.sync.gist?' data-a="syncnow"':'')+'>'+
-      (S.sync.token&&S.sync.gist?'☁ '+syncLabel()+' · ':'')+APPVER+'</div>'+
   '</div>';
 }
 var TABICON={
@@ -3892,19 +3917,17 @@ function ratioCardD(){
    Gist senkronuna dahil DEĞİL — base64 fotoğraf JSON'u şişirir ve senkronu bozar.
    Sadece bu cihazda, ayrı bir anahtarda durur. */
 var PKEY='emre:form:photos';
-/* Veri yapısı: _ph[tarih] = [{u:dataUrl, p:'on'|'yan'|'arka'}, ...]
-   Bir güne istediğin kadar fotoğraf girebilirsin; poz etiketi karşılaştırmayı anlamlı kılar. */
-var POSES=[['on','Ön'],['yan','Yan'],['arka','Arka']];
-function poseName(k){for(var i=0;i<POSES.length;i++)if(POSES[i][0]===k)return POSES[i][1];return 'Ön';}
+/* Veri yapısı: _ph[tarih] = [{u:dataUrl, t:eklenmeZamanıMs}, ...]
+   Poz ayrımı kaldırıldı — bir güne kaç fotoğraf istersen o kadar. */
 var _ph={};
 function photos(){return _ph;}
 function migratePhotos(o){
   var out={};
   Object.keys(o||{}).forEach(function(d){
     var v=o[d];
-    if(typeof v==='string')out[d]=[{u:v,p:'on'}];
+    if(typeof v==='string')out[d]=[{u:v,t:null}];
     else if(Array.isArray(v))out[d]=v.map(function(x){
-      return (typeof x==='string')?{u:x,p:'on'}:{u:x.u,p:x.p||'on'};}).filter(function(x){return x.u;});
+      return (typeof x==='string')?{u:x,t:null}:{u:x.u,t:x.t||null};}).filter(function(x){return x.u;});
   });
   return out;
 }
@@ -3922,26 +3945,33 @@ function photoBytes(){
   var t=0;photoDates().forEach(function(d){_ph[d].forEach(function(x){t+=(x.u||'').length;});});
   return Math.round(t*0.75/1024);
 }
-/* aynı pozun tarih tarih dizisi — asıl değişimi bu gösterir */
-function poseTrack(pose){
+/* tüm fotoğraflar tek dizi, eskiden yeniye — büyütme ve karşılaştırma bunun üzerinden yürür */
+function phAll(){
   var out=[];
   photoDates().forEach(function(d){
-    (_ph[d]||[]).forEach(function(x){if(x.p===pose)out.push({d:d,u:x.u});});
+    (_ph[d]||[]).forEach(function(x,i){out.push({d:d,i:i,u:x.u,t:x.t});});
   });
   return out;
 }
-/* uzun kenarı 760px'e indir, jpeg 0.6 — ~60-90 KB */
+function phTime(x){
+  if(!x.t)return '';
+  var dd=new Date(x.t);
+  return String(dd.getHours()).padStart(2,'0')+':'+String(dd.getMinutes()).padStart(2,'0');
+}
+/* uzun kenarı 1000px'e indir, jpeg 0.7 — büyütünce net, depolamayı da şişirmez */
 function shrinkImage(file,cb){
   var fr=new FileReader();
   fr.onload=function(){
     var img=new Image();
     img.onload=function(){
-      var mx=760,w=img.width,h=img.height;
+      var mx=1000,w=img.width,h=img.height;
       if(w>h&&w>mx){h=Math.round(h*mx/w);w=mx;}
       else if(h>=w&&h>mx){w=Math.round(w*mx/h);h=mx;}
       var cv=document.createElement('canvas');cv.width=w;cv.height=h;
-      cv.getContext('2d').drawImage(img,0,0,w,h);
-      try{cb(cv.toDataURL('image/jpeg',0.6));}catch(e){cb(null);}
+      var cx=cv.getContext('2d');
+      cx.fillStyle='#fff';cx.fillRect(0,0,w,h);
+      cx.drawImage(img,0,0,w,h);
+      try{cb(cv.toDataURL('image/jpeg',0.7));}catch(e){cb(null);}
     };
     img.onerror=function(){cb(null);};
     img.src=fr.result;
@@ -3950,108 +3980,140 @@ function shrinkImage(file,cb){
   fr.readAsDataURL(file);
 }
 /* --- görünüm durumu --- */
-var phPose='on', phView='track', cmpA=null, cmpB=null, phUp='on';
+var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false;
 function phDefaults(){
-  var ds=photoDates();
-  if(!ds.length){cmpA=null;cmpB=null;return ds;}
-  if(!cmpA||ds.indexOf(cmpA)<0)cmpA=ds[0];
-  if(!cmpB||ds.indexOf(cmpB)<0)cmpB=ds[ds.length-1];
-  return ds;
+  var all=phAll();
+  if(all.length){
+    if(cmpA<0||cmpA>=all.length)cmpA=0;
+    if(cmpB<=0||cmpB>=all.length)cmpB=all.length-1;
+  } else {cmpA=0;cmpB=0;}
+  return all;
 }
-function openPhoto(d,ix){
-  var a=_ph[d]||[],x=a[ix];if(!x)return;
-  document.getElementById('mfg').innerHTML='<img src="'+x.u+'" style="width:100%;border-radius:12px;display:block">';
-  document.getElementById('mtitle').textContent=flong(d);
-  var w=weekIdx(d);
-  document.getElementById('msub').innerHTML='<b>'+poseName(x.p)+'</b> · hafta '+wkLabel(w)+
-    ' · '+(ix+1)+'/'+a.length+' fotoğraf';
-  var ml=document.getElementById('mlink');ml.style.display='none';
-  document.getElementById('modal').classList.add('on');
+function phLabel(x){
+  var s=fdate(x.d)+' · H'+wkLabel(weekIdx(x.d));
+  var w=D(x.d).w; if(w!=null)s+=' · '+fx(w,1)+' kg';
+  return s;
 }
-/* poz seçici + yükleme şeridi (iki arayüzde ortak) */
-function phPoseTabs(){
-  return POSES.map(function(x){
-    return '<button class="phtab'+(phPose===x[0]?' on':'')+'" data-a="phpose" data-k="'+x[0]+'">'+x[1]+
-      '<i>'+poseTrack(x[0]).length+'</i></button>';}).join('');
+/* --- tam ekran görüntüleyici (kırpmadan, tamamı görünür) --- */
+function pvNode(){
+  var n=document.getElementById('phviewer');
+  if(!n){n=document.createElement('div');n.id='phviewer';document.body.appendChild(n);}
+  return n;
 }
-function phUploader(){
-  return '<div class="phup">'+
-    '<div class="phupl">'+flong(cur)+' için ekle</div>'+
-    '<div class="phupr">'+
-      POSES.map(function(x){
-        return '<label class="phadd"><span>'+x[1]+'</span>'+
-          '<input type="file" accept="image/*" multiple data-a="photoadd" data-p="'+x[0]+'" style="display:none"></label>';
-      }).join('')+
-    '</div></div>';
+function phOpenViewer(ix){
+  var all=phAll();if(!all.length)return;
+  pvIdx=Math.max(0,Math.min(all.length-1,ix));pvZoom=false;
+  document.body.classList.add('pvlock');
+  paintViewer();
 }
-/* --- galeri: bir pozun tüm tarihleri, kronolojik --- */
-function phTrack(){
-  var tr=poseTrack(phPose);
-  if(!tr.length)return '<div class="phempty">Bu poz için henüz fotoğraf yok.</div>';
-  return '<div class="phgrid">'+tr.map(function(x){
-    var ix=(_ph[x.d]||[]).findIndex(function(y){return y.u===x.u;});
-    return '<button class="phcell" data-a="phopen" data-d="'+x.d+'" data-i="'+ix+'">'+
-      '<img src="'+x.u+'" loading="lazy">'+
-      '<span class="phcap"><b>'+fdate(x.d)+'</b><i>H'+wkLabel(weekIdx(x.d))+'</i></span></button>';
-  }).join('')+'</div>'+
-  (tr.length>1?'<div class="phnote">'+tr.length+' fotoğraf · ilkinden sonuncusuna '+
-    Math.abs(dayDiff(tr[0].d,tr[tr.length-1].d))+' gün</div>':'');
+function phCloseViewer(){
+  pvIdx=null;pvZoom=false;
+  document.body.classList.remove('pvlock');
+  var n=document.getElementById('phviewer');if(n)n.parentNode.removeChild(n);
 }
-/* --- karşılaştırma: iki tarih, seçili poz --- */
-function phCompare(ds){
-  if(ds.length<2)
-    return '<div class="phempty">Karşılaştırma için en az iki farklı <b>gün</b> gerekiyor. '+
-      'Şu an sadece '+fdate(ds[0])+' var — bir hafta sonra tekrar çekip buraya dön.</div>';
-  function pick(d){
-    var a=(_ph[d]||[]).filter(function(x){return x.p===phPose;});
-    return a.length?a[a.length-1]:null;
-  }
+function paintViewer(){
+  var n=pvNode(),all=phAll();
+  if(pvIdx==null||!all.length){phCloseViewer();return;}
+  if(pvIdx>=all.length)pvIdx=all.length-1;
+  var x=all[pvIdx],r=D(x.d),tm=phTime(x);
+  var facts=[];
+  if(r.w!=null)facts.push(fx(r.w,1)+' kg');
+  if(r.b!=null)facts.push('bel '+fx(r.b,1));
+  if(r.sh!=null)facts.push('omuz '+fx(r.sh,1));
+  n.className='pv on';
+  n.innerHTML=
+    '<div class="pvbar">'+
+      '<div class="pvmeta"><b>'+flong(x.d)+'</b>'+
+        '<span>'+GUNU[pd(x.d).getDay()]+' · hafta '+wkLabel(weekIdx(x.d))+
+        (tm?' · '+tm+' yüklendi':'')+(facts.length?' · '+facts.join(' · '):'')+'</span></div>'+
+      '<button class="pvx" data-a="pvclose" aria-label="Kapat">✕</button>'+
+    '</div>'+
+    '<div class="pvstage'+(pvZoom?' z':'')+'" data-a="pvzoom"><img src="'+x.u+'" alt=""></div>'+
+    '<div class="pvfoot">'+
+      '<button class="pvnav" data-a="pvprev"'+(pvIdx===0?' disabled':'')+'>‹</button>'+
+      '<div class="pvcount"><b>'+(pvIdx+1)+' / '+all.length+'</b><i>'+(pvZoom?'küçültmek için dokun':'büyütmek için fotoğrafa dokun')+'</i></div>'+
+      '<button class="pvnav" data-a="pvnext"'+(pvIdx>=all.length-1?' disabled':'')+'>›</button>'+
+    '</div>'+
+    '<div class="pvacts">'+
+      '<button class="pvbtn" data-a="pvcmp">Bununla karşılaştır</button>'+
+      '<button class="pvbtn del" data-a="pvdel">Sil</button>'+
+    '</div>';
+}
+/* --- galeri: gün gün, en yeni üstte --- */
+function phGallery(all){
+  if(!all.length)return '<div class="phempty">Henüz fotoğraf yok.</div>';
+  var byDate={},order=[];
+  all.forEach(function(x,ix){
+    if(!byDate[x.d]){byDate[x.d]=[];order.push(x.d);}
+    byDate[x.d].push({x:x,ix:ix});
+  });
+  order.reverse();
+  return order.map(function(d){
+    var g=byDate[d],r=D(d),bits=[];
+    if(r.w!=null)bits.push(fx(r.w,1)+' kg');
+    if(r.b!=null)bits.push('bel '+fx(r.b,1));
+    var tms=g.map(function(o){return phTime(o.x);}).filter(Boolean);
+    return '<div class="phgroup">'+
+      '<div class="phghd"><b>'+flong(d)+'</b>'+
+        '<span>hafta '+wkLabel(weekIdx(d))+' · '+g.length+' fotoğraf'+
+        (tms.length?' · '+tms[0]:'')+(bits.length?' · '+bits.join(' · '):'')+'</span></div>'+
+      '<div class="phgrid">'+g.map(function(o){
+        return '<button class="phcell" data-a="phopen" data-x="'+o.ix+'">'+
+          '<img src="'+o.x.u+'" loading="lazy" alt="">'+
+          '<span class="phcap">'+(o.ix+1)+'</span></button>';}).join('')+'</div>'+
+    '</div>';
+  }).join('')+
+  '<div class="phnote">'+all.length+' fotoğraf · '+order.length+' gün'+
+    (order.length>1?' · ilkinden sonuncusuna '+Math.abs(dayDiff(all[0].d,all[all.length-1].d))+' gün':'')+'</div>';
+}
+/* --- karşılaştırma: iki fotoğraf, ikisi de tam görünür --- */
+function phCompare(all){
+  if(all.length<2)
+    return '<div class="phempty">Karşılaştırmak için en az iki fotoğraf gerekiyor. '+
+      'Şu an '+all.length+' tane var — bir-iki hafta sonra tekrar çek.</div>';
   function sel(w,val){
     return '<select class="ginp sel" data-a="cmp" data-w="'+w+'">'+
-      ds.map(function(d){return '<option value="'+d+'"'+(val===d?' selected':'')+'>'+fdate(d)+' · H'+wkLabel(weekIdx(d))+'</option>';}).join('')+
+      all.map(function(x,ix){
+        return '<option value="'+ix+'"'+(val===ix?' selected':'')+'>'+phLabel(x)+'</option>';}).join('')+
     '</select>';
   }
-  var A=pick(cmpA),B=pick(cmpB);
+  var A=all[cmpA],B=all[cmpB];
+  var wa=D(A.d).w,wb=D(B.d).w;
   return '<div class="phcmpsel">'+sel('a',cmpA)+'<span class="phar">→</span>'+sel('b',cmpB)+'</div>'+
-    '<div class="phcmp">'+[[cmpA,A,'ÖNCE'],[cmpB,B,'SONRA']].map(function(x){
-      var ix=x[1]?(_ph[x[0]]||[]).indexOf(x[1]):-1;
-      return '<div><div class="phcl">'+x[2]+' · '+fdate(x[0])+'</div>'+
-        (x[1]?'<button class="phbig" data-a="phopen" data-d="'+x[0]+'" data-i="'+ix+'"><img src="'+x[1].u+'"></button>'
-             :'<div class="phmiss">'+poseName(phPose)+' fotoğrafı yok</div>')+'</div>';
+    '<div class="phcmp">'+[[A,cmpA,'ÖNCE'],[B,cmpB,'SONRA']].map(function(o){
+      return '<div><div class="phcl">'+o[2]+' · '+fdate(o[0].d)+'</div>'+
+        '<button class="phbig" data-a="phopen" data-x="'+o[1]+'"><img src="'+o[0].u+'" alt=""></button>'+
+        '<div class="phcs">hafta '+wkLabel(weekIdx(o[0].d))+
+          (D(o[0].d).w!=null?' · '+fx(D(o[0].d).w,1)+' kg':'')+'</div></div>';
     }).join('')+'</div>'+
-    (cmpA&&cmpB?'<div class="phnote">'+Math.abs(dayDiff(cmpA,cmpB))+' gün arayla'+
-      (function(){var wa=D(cmpA).w,wb=D(cmpB).w;
-        return (wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'';})()+
-      '</div>':'');
+    '<div class="phnote">'+Math.abs(dayDiff(A.d,B.d))+' gün arayla'+
+      ((wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'')+
+      '</div>';
 }
-/* --- o günün fotoğrafları + silme --- */
-function phToday(){
-  var a=_ph[cur]||[];
-  if(!a.length)return '';
-  return '<div class="phday"><div class="phdayl">'+fdate(cur)+' · '+a.length+' fotoğraf</div>'+
-    '<div class="phthumbs">'+a.map(function(x,i){
-      return '<div class="phth"><button data-a="phopen" data-d="'+cur+'" data-i="'+i+'"><img src="'+x.u+'"></button>'+
-        '<span>'+poseName(x.p)+'</span>'+
-        '<button class="phdel" data-a="photodel" data-d="'+cur+'" data-i="'+i+'" aria-label="Sil">✕</button></div>';
-    }).join('')+'</div></div>';
+function phUploader(){
+  return '<label class="phaddbig">'+
+    '<span>＋ Fotoğraf ekle</span><i>'+flong(cur)+' gününe kaydedilir · birden fazla seçebilirsin</i>'+
+    '<input type="file" accept="image/*" multiple data-a="photoadd" style="display:none">'+
+  '</label>';
 }
 function phBody(){
-  var ds=phDefaults();
-  if(!ds.length)
-    return '<div class="phempty">Her hafta aynı ışık, aynı mesafe, aynı poz. Üç açıdan çek: ön, yan, arka.'+
-      '<br><br>Fotoğraflar <b>senkronize edilmez</b> — JSON senkronunu şişirmemesi için sadece bu cihazda kalır.</div>'+
+  var all=phDefaults();
+  if(!all.length)
+    return '<div class="phempty">Her seferinde aynı ışık, aynı mesafe, aynı duruş. '+
+      'Aynı açıyı tuttuğun sürece değişimi görürsün.'+
+      '<br><br>Fotoğraflar <b>senkronize edilmez</b> — sadece bu cihazda kalır.</div>'+
       phUploader();
-  return '<div class="phtabs">'+phPoseTabs()+
-      '<span class="phsep"></span>'+
-      '<button class="phtab'+(phView==='track'?' on':'')+'" data-a="phview" data-k="track">Galeri</button>'+
+  return phUploader()+
+    '<div class="phtabs">'+
+      '<button class="phtab'+(phView==='all'?' on':'')+'" data-a="phview" data-k="all">Tümü<i>'+all.length+'</i></button>'+
       '<button class="phtab'+(phView==='cmp'?' on':'')+'" data-a="phview" data-k="cmp">Karşılaştır</button>'+
     '</div>'+
-    (phView==='track'?phTrack():phCompare(ds))+
-    phToday()+phUploader();
+    (phView==='all'?phGallery(all):phCompare(all));
 }
 function repaintPhoto(){
   if(phone())zi('g-body',gymBody());
   else zi('z-photo',photoCard());
+  if(pvIdx!=null)paintViewer();
 }
 function photoCard(){
   return '<div class="card dom dom-bod"><div class="hd"><h2>Fotoğraf</h2>'+
@@ -4061,11 +4123,26 @@ function photoCard(){
 /* ============ BUGÜN — kahraman kartı ============
    Uygulamayı açtığında "şimdi ne yapmalıyım" sorusunun cevabı,
    kaydırmadan, ilk ekranda. */
-var FILLF=[['w','Kilo'],['st','Adım'],['kcal','Kalori'],['p','Protein'],['c','Karb'],['f','Yağ'],['sl','Uyku']];
+var FILLF=[['w','Kilo'],['b','Bel'],['sl','Uyku'],
+  ['st','Adım'],['kcal','Kalori'],['p','Protein'],['c','Karb'],['f','Yağ'],
+  ['sup:kreatin','Kreatin']];
 function fillState(d){
   var r=D(d),done=0,miss=[];
-  FILLF.forEach(function(x){ if(r[x[0]]!=null)done++; else miss.push(x[1]); });
+  FILLF.forEach(function(x){
+    var k=x[0],ok;
+    if(k.indexOf('sup:')===0)ok=!!(r.sup&&r.sup[k.slice(4)]);
+    else ok=r[k]!=null;
+    if(ok)done++; else miss.push(x[1]);
+  });
   return {done:done,total:FILLF.length,miss:miss};
+}
+/* çevre ölçüleri 2 haftada bir — sırası geldi mi? */
+function measDue(){
+  var ks=keys().filter(function(d){
+    return d<=today()&&(D(d).sh!=null||D(d).arm!=null||D(d).ch!=null);});
+  if(!ks.length)return {due:true,last:null,days:null,left:0};
+  var last=ks[ks.length-1],dd=dayDiff(last,today());
+  return {due:dd>=14,last:last,days:dd,left:Math.max(0,14-dd)};
 }
 function ringSVG(pct,col,size,txt,sub){
   var R=(size/2)-5,CC=2*Math.PI*R,off=CC*(1-Math.min(1,pct));
@@ -4141,6 +4218,68 @@ function heroM(){
     '</div>'+
     '<div class="mheroPills">'+h.pills.map(function(p){
       return '<div class="hpill"><b style="color:'+p[2]+'">'+p[0]+'</b><i>'+p[1]+'</i></div>';}).join('')+'</div>'+
+  '</div>';
+}
+/* geçen seansın ÖZETİ — setlerin tek tek listesi zaten her setin altında var.
+   Burada ortalama tekrar ve "ağırlık mı tekrar mı" kararı duruyor. */
+function prevSummary(prev,e){
+  if(!prev)
+    return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
+      e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
+  var reps=prev.sets.map(function(s){return s.rep;});
+  var avg=reps.reduce(function(a,b){return a+b;},0)/reps.length;
+  var kgs=prev.sets.map(function(s){return s.kg;});
+  var kgMax=Math.max.apply(null,kgs),kgMin=Math.min.apply(null,kgs);
+  var rr=prev.sets.filter(function(s){return s.rir!=null;}).map(function(s){return s.rir;});
+  var rAvg=rr.length?rr.reduce(function(a,b){return a+b;},0)/rr.length:null;
+  var lo=e.r[0],hi=e.r[1],verdict,vc;
+  if(avg>=hi){verdict='Üst sınırdaydın — bugün ağırlığı artır';vc=C.green;}
+  else if(avg>=lo){verdict='Aralık içindeydin — aynı ağırlıkta tekrarı artır';vc=C.teal;}
+  else{verdict='Alt sınırın altındaydın — ağırlığı koru, tekrarı topla';vc=C.amber;}
+  return '<div class="gprevbox">'+
+    '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+'</span>'+
+      '<button class="gcopy" data-a="samelast">Aynısını doldur</button></div>'+
+    '<div class="gprevst">'+
+      '<div><b>'+fx(avg,1)+'</b><i>ort. tekrar</i></div>'+
+      '<div><b>'+(kgMin===kgMax?fx(kgMax,kgMax%1?1:0):fx(kgMin,0)+'–'+fx(kgMax,0))+'</b><i>kg</i></div>'+
+      '<div><b>'+prev.sets.length+'</b><i>set</i></div>'+
+      '<div><b>'+(rAvg==null?'—':fx(rAvg,1))+'</b><i>ort. RIR</i></div>'+
+    '</div>'+
+    '<div class="gprevv" style="color:'+vc+'">'+verdict+' <u>(hedef '+lo+'-'+hi+')</u></div>'+
+  '</div>';
+}
+/* antrenman sekmesi başlığı — gün sekmesindeki kart ile aynı dil */
+function workHero(){
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
+  var isTr=!!(t&&t.ex.length),ord=isTr?weekOrder(cur):null;
+  var doneEx=0,totEx=isTr?t.ex.length:0,vol=0,setsDone=0,rirs=[];
+  if(isTr)t.ex.forEach(function(e){
+    var f=((r.ex||{})[e.n]||[]).filter(function(x){return x.kg!=null&&x.rep!=null;});
+    setsDone+=f.length;
+    f.forEach(function(x){vol+=x.kg*x.rep;if(x.rir!=null)rirs.push(x.rir);});
+    if(f.length>=tgtOn(e,cur).s)doneEx++;
+  });
+  var pct=totEx?doneEx/totEx:0;
+  var head=isTr?(typeName(dt)||t.name):(t?t.label:'Planlanmadı');
+  var line=isTr?(doneEx?doneEx+' / '+totEx+' hareket tamam':'henüz başlamadın')
+               :'Bugün antrenman yok — toparlanma günü';
+  var pills=[];
+  if(isTr){
+    pills.push([doneEx+'/'+totEx,'hareket',pct>=1?C.green:'#e0a272']);
+    pills.push([String(setsDone),'set girildi','#7c9ec4']);
+    pills.push([vol?ti(vol):'—','kg hacim','#7fa88b']);
+    pills.push([rirs.length?fx(rirs.reduce(function(a,b){return a+b;},0)/rirs.length,1):'—','ort. RIR','#9b8fc0']);
+  }
+  return '<div class="mhero'+(isTr?' tr':'')+'">'+
+    '<div class="mheroTop">'+
+      '<div style="flex:1;min-width:0"><div class="mheroKick">'+
+        (ord?ord+'. GÜN · ':'')+'HAFTA '+wkLabel(weekIdx(cur))+(isDeload(cur)?' · DELOAD':'')+'</div>'+
+        '<div class="mheroH">'+esc(head)+'</div>'+
+        '<div class="mheroS">'+esc(line)+'</div></div>'+
+      (isTr?ringSVG(pct,pct>=1?C.green:'#e0a272',62,doneEx+'/'+totEx):'')+
+    '</div>'+
+    (pills.length?'<div class="mheroPills">'+pills.map(function(p){
+      return '<div class="hpill"><b style="color:'+p[2]+'">'+p[0]+'</b><i>'+p[1]+'</i></div>';}).join('')+'</div>':'')+
   '</div>';
 }
 function render(){
@@ -4301,22 +4440,22 @@ app.addEventListener('change',function(ev){
   if(a==='repto'){repTo=ev.target.value;document.getElementById('rep').value=report();}
   if(a==='cmp'){
     var wch=ev.target.getAttribute('data-w');
-    if(wch==='a')cmpA=ev.target.value;else cmpB=ev.target.value;
+    if(wch==='a')cmpA=+ev.target.value;else cmpB=+ev.target.value;
     repaintPhoto();return;}
   if(a==='photoadd'){
-    var fl=ev.target.files;var pose=ev.target.getAttribute('data-p')||'on';
+    var fl=ev.target.files;
     var arr=fl?Array.prototype.slice.call(fl):[];ev.target.value='';
     if(!arr.length)return;
     toast(arr.length>1?arr.length+' fotoğraf işleniyor…':'fotoğraf işleniyor…');
-    var done=0,ok=0;
+    var done=0,ok=0,now=Date.now();
     arr.forEach(function(f){
       shrinkImage(f,function(u){
         done++;
-        if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];_ph[cur].push({u:u,p:pose});ok++;}
+        if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];_ph[cur].push({u:u,t:now});ok++;}
         if(done===arr.length){
           if(!ok){toast('fotoğraf okunamadı');return;}
-          phPose=pose;cmpB=cur;
-          var pds=photoDates();if(!cmpA||pds.indexOf(cmpA)<0)cmpA=pds[0];
+          var alln=phAll();cmpB=alln.length-1;if(cmpA>=cmpB)cmpA=0;
+          phView='all';
           savePhotos();toast(ok+' fotoğraf eklendi');render();
         }
       });
@@ -4331,6 +4470,42 @@ app.addEventListener('change',function(ev){
       if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;
       save();render();toast('yedek yüklendi');}catch(e){toast('yedek okunamadı');}};
     fr.readAsText(file);ev.target.value='';}
+});
+/* tam ekran fotoğraf görüntüleyici — #app dışında durduğu için kendi dinleyicisi var */
+document.addEventListener('click',function(ev){
+  var n=document.getElementById('phviewer');if(!n||pvIdx==null)return;
+  if(!n.contains(ev.target))return;
+  var t=ev.target.closest?ev.target.closest('[data-a]'):null;if(!t)return;
+  var a=t.getAttribute('data-a');
+  if(a==='pvclose'){phCloseViewer();}
+  else if(a==='pvprev'){if(pvIdx>0){pvIdx--;pvZoom=false;paintViewer();}}
+  else if(a==='pvnext'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;paintViewer();}}
+  else if(a==='pvzoom'){pvZoom=!pvZoom;paintViewer();}
+  else if(a==='pvcmp'){
+    cmpB=pvIdx;if(cmpA===cmpB)cmpA=0;
+    phView='cmp';phCloseViewer();
+    if(phone())zi('g-body',gymBody());else{zi('z-photo',photoCard());
+      var zp=document.getElementById('z-photo');if(zp&&zp.scrollIntoView)zp.scrollIntoView({behavior:'smooth',block:'start'});}
+    toast('karşılaştırmaya eklendi');}
+  else if(a==='pvdel'){
+    var al2=phAll(),x=al2[pvIdx];if(!x)return;
+    _ph[x.d].splice(x.i,1);
+    if(!_ph[x.d].length)delete _ph[x.d];
+    savePhotos();
+    var al3=phAll();
+    if(cmpA>=al3.length)cmpA=0;
+    if(cmpB>=al3.length)cmpB=Math.max(0,al3.length-1);
+    if(!al3.length){phCloseViewer();render();toast('fotoğraf silindi');return;}
+    if(pvIdx>=al3.length)pvIdx=al3.length-1;
+    paintViewer();
+    if(phone())zi('g-body',gymBody());else zi('z-photo',photoCard());
+    toast('fotoğraf silindi');}
+},true);
+document.addEventListener('keydown',function(ev){
+  if(pvIdx==null)return;
+  if(ev.key==='Escape')phCloseViewer();
+  else if(ev.key==='ArrowLeft'&&pvIdx>0){pvIdx--;pvZoom=false;paintViewer();}
+  else if(ev.key==='ArrowRight'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;paintViewer();}}
 });
 app.addEventListener('click',function(ev){
   var t=ev.target;
@@ -4368,18 +4543,8 @@ app.addEventListener('click',function(ev){
   else if(a==='goto'){
     var tg=document.getElementById(t.getAttribute('data-t'));
     if(tg&&tg.scrollIntoView)tg.scrollIntoView({behavior:'smooth',block:'start'});}
-  else if(a==='photodel'){
-    var pd2=t.getAttribute('data-d'),pi2=+t.getAttribute('data-i');
-    if(_ph&&_ph[pd2]&&_ph[pd2][pi2]!=null){
-      _ph[pd2].splice(pi2,1);
-      if(!_ph[pd2].length)delete _ph[pd2];
-      var pds2=photoDates();
-      if(pds2.indexOf(cmpA)<0)cmpA=pds2.length?pds2[0]:null;
-      if(pds2.indexOf(cmpB)<0)cmpB=pds2.length?pds2[pds2.length-1]:null;
-      savePhotos();toast('fotoğraf silindi');render();}}
-  else if(a==='phpose'){phPose=t.getAttribute('data-k');repaintPhoto();}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
-  else if(a==='phopen'){openPhoto(t.getAttribute('data-d'),+t.getAttribute('data-i'));}
+  else if(a==='phopen'){phOpenViewer(+t.getAttribute('data-x'));}
   else if(a==='autotgt'){
     S.autoTargets=!S.autoTargets;
     if(S.autoTargets){var ch=syncAutoTargets();toast(ch?'otomatik hedef açık — hedefler güncellendi':'otomatik hedef açık');}
