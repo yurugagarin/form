@@ -2634,6 +2634,10 @@ function syncCard(){
        '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
          '<button class="ghostbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
          '<button class="ghostbtn" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
+         '<div class="settings" style="grid-template-columns:1fr;margin-top:12px">'+
+           '<div><label>Bağlantı kodu — yeni cihaza bunu yapıştır</label>'+
+             '<textarea class="inp" style="height:70px;font-size:11px;font-family:monospace" readonly onclick="this.select()">'+esc(makeCode())+'</textarea></div>'+
+         '</div>'+
          '<button class="ghostbtn" data-a="syncoff">Bağlantıyı kes</button>'+
        '</div>'+
        '<div class="mhint" style="margin-top:9px">Yeni bir cihaz (ya da “Ana Ekrana Ekle” ile açılan uygulama) eklerken bu kodu kopyalayıp oraya yapıştır — anahtar ve gist ID’si tek seferde geçer.</div>'+
@@ -2672,7 +2676,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v26 · 25 Ağu 2026';
+var APPVER='v27 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3593,7 +3597,10 @@ function gymMore(){
       (S.sync.token&&S.sync.gist
         ?'<div class="mhint2">Gist: <b>'+esc(S.sync.gist)+'</b></div>'+
          '<button class="mbtn dark" data-a="syncnow">Şimdi senkronize et</button>'+
-         '<button class="mbtn" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
+         '<div class="mfield" style="margin-top:12px"><label>Bağlantı kodu — yeni cihaza bunu yapıştır</label>'+
+           '<textarea class="mrep" style="height:74px;font-size:11px" readonly onclick="this.select()">'+esc(makeCode())+'</textarea></div>'+
+         '<button class="mbtn dark" data-a="linkcode">Bağlantı kodunu kopyala</button>'+
+         '<div class="mhint2" style="margin-top:6px">Yeni telefonda uygulamayı aç — orada “Bağlantı kodu” alanı çıkar, bunu oraya yapıştır.</div>'+
          '<div class="mfield" style="margin-top:14px"><label>Anahtarı değiştir (gist + repo yetkili)</label>'+
            '<input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
          '<button class="mbtn" data-a="tokupd">Anahtarı güncelle</button>'+
