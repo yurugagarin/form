@@ -2530,7 +2530,7 @@ function gh(path,opts){
 /* buluta gidecek gövde — anahtar asla gönderilmez */
 function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
-    startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
+    startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,photoRepo:(S.sync&&S.sync.repo)||'',
     base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
@@ -2554,6 +2554,7 @@ function mergeRemote(rm){
       S._pt=rm._pt;
     }
   }
+  if(rm.photoRepo&&!S.sync.repo){S.sync.repo=rm.photoRepo;ch++;}
   if((rm._st||0)>(S._st||0)){
     ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
@@ -2691,7 +2692,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v29 · 25 Ağu 2026';
+var APPVER='v30 · 25 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4025,6 +4026,23 @@ function loadPhotos(){
     }).catch(function(){});
   }catch(e){return null;}
 }
+/* aynı id veya aynı görüntü iki kez varsa birini at */
+function phDedupe(){
+  var seenId={},seenU={},removed=0;
+  Object.keys(_ph||{}).forEach(function(d){
+    var keep=[];
+    (_ph[d]||[]).forEach(function(x){
+      if(!x||!x.u){removed++;return;}
+      var uk=x.u.length+':'+x.u.slice(-64);
+      if((x.id&&seenId[x.id])||seenU[uk]){removed++;return;}
+      if(x.id)seenId[x.id]=1;
+      seenU[uk]=1;keep.push(x);
+    });
+    if(keep.length)_ph[d]=keep;else delete _ph[d];
+  });
+  if(removed)savePhotos();
+  return removed;
+}
 function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
 function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
 function savePhotos(){try{STORE.set(PKEY,JSON.stringify(_ph||{}));}catch(e){toast('depolama dolu — eski fotoğrafları sil');}}
@@ -4355,8 +4373,7 @@ function phSync(silent){
   }).then(function(r){
     phSyncing=false;phSetMsg('');
     S.sync.phLast=Date.now();
-    if(r.down)savePhotos();
-    savePhotos();save();
+    phDedupe();savePhotos();save();
     if(!silent)toast(r.up+' yüklendi · '+r.down+' indirildi');
     if(r.down)render();else{var e2=document.getElementById('phsyncbadge');if(e2)e2.textContent=phSyncLabel();}
   }).catch(function(e){
@@ -4380,6 +4397,7 @@ function phBackupPanel(){
     '<div class="phbkw">Fotoğraflar normal senkrona <b>dahil değil</b>. Telefon değiştirmeden önce '+
       'aşağıdakilerden en az birini yap, yoksa '+n+' fotoğraf bu cihazla birlikte gider.</div>'+
     '<button class="mbtn dark" data-a="phexp">Fotoğrafları dosyaya indir ('+n+')</button>'+
+    '<button class="mbtn" data-a="phdedupe">Yinelenen fotoğrafları temizle</button>'+
     '<label class="mbtn" style="display:block;text-align:center">Fotoğraf yedeği yükle'+
       '<input type="file" accept="application/json" data-a="phimp" style="display:none"></label>'+
     '<div class="phbksep">veya otomatik</div>'+
@@ -4929,6 +4947,10 @@ app.addEventListener('click',function(ev){
     render();}
   else if(a==='migchk'){migCheck();}
   else if(a==='phexp'){phExport();}
+  else if(a==='phdedupe'){
+    var rm2=phDedupe();
+    toast(rm2?rm2+' yinelenen silindi':'yinelenen yok');
+    render();}
   else if(a==='phsync'){phSync();}
   else if(a==='phrepooff'){S.sync.repo='';S._st=Date.now();save();toast('depo bağlantısı kesildi');render();}
   else if(a==='repouse'){
@@ -5127,7 +5149,7 @@ STORE.get(KEY).then(function(res){
   cur=today();
   try{
     var pl=loadPhotos();
-    if(pl&&pl.then)pl.then(function(){try{phEnsureIds();}catch(e){}});
+    if(pl&&pl.then)pl.then(function(){try{phDedupe();phEnsureIds();}catch(e){}});
     (pl&&pl.then?pl:Promise.resolve()).then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
