@@ -168,6 +168,13 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .metrics > div{background:#fbf8f2;padding:13px 14px}
 .metrics label{display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:#a8987c;font-weight:700;margin-bottom:6px}
 .metrics .u{font-size:11px;color:#c0b193;font-weight:600;margin-left:3px}
+.advg{display:grid;grid-template-columns:1fr 1fr;gap:12px 14px}
+.advr{min-width:0}
+.advt{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12.5px;font-weight:700}
+.advt span{color:#6b5f4d;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.advt b{font-family:'Fraunces';font-size:14px;font-weight:600;white-space:nowrap}
+.advr .mbar{height:6px;margin-top:5px}
+.advs{font-size:10.5px;font-weight:600;color:#b3a488;margin-top:3px}
 .mbar{height:4px;background:#efe7d6;border-radius:3px;margin-top:8px;overflow:hidden}
 .mbar i{display:block;height:100%;border-radius:3px;transition:width .3s}
 .mhint{font-size:11.5px;font-weight:600;margin-top:5px;color:#a8987c}
@@ -640,6 +647,12 @@ body.pvlock{overflow:hidden}
 .pvbtn{flex:1;height:44px;border-radius:12px;border:1px solid #3a352c;background:#231f18;
   color:#e8dcc4;font-size:12.5px;font-weight:700;-webkit-tap-highlight-color:transparent}
 .pvbtn.del{flex:none;padding:0 20px;color:#e88a63;border-color:#4a3226}
+.pvconf{flex:1;background:#2a1d17;border:1px solid #5a3626;border-radius:14px;padding:12px 14px}
+.pvconf b{display:block;font-size:14px;font-weight:700;color:#f3ecdf;margin-bottom:3px}
+.pvconf i{display:block;font-style:normal;font-size:12px;line-height:1.45;color:#b6a48f;margin-bottom:11px}
+.pvconfb{display:flex;gap:8px}
+.pvconfb .pvbtn{height:42px}
+.pvconfb .pvbtn.del{flex:1;background:#8d3b1e;border-color:#8d3b1e;color:#fff;font-weight:800}
 .calg .hl.pre,.mcalrow.pre .mwk{color:#c98b2e}
 .calg .hl.dl{color:#b8860b}
 .calg .hl.dl i,.mcalrow.dl .mwk i{font-style:normal;display:block;font-size:8px;letter-spacing:.5px;
@@ -658,7 +671,10 @@ body.pvlock{overflow:hidden}
   backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid #ece1cd;-webkit-overflow-scrolling:touch}
 .dnav button{flex:none;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;padding:7px 13px;
   font-size:12.5px;font-weight:700;color:#8a7f6f;cursor:pointer;white-space:nowrap}
-.dnav button:hover{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+.dnav button:hover{background:#f0e7d5;border-color:#d9ccb5;color:#3a342c}
+.dnav button.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+.dnav button.on:hover{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+#z-body{animation:tabIn .28s var(--ease) both}
 .anch{scroll-margin-top:58px}
 .hero{display:flex;gap:22px;align-items:center;background:var(--card);border-radius:16px;
   border:1px solid rgba(255,255,255,.7);border-top:3px solid var(--rec);
@@ -972,12 +988,12 @@ var PROGRAM={
     {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
     {n:'Preacher curl',s:3,r:[10,12]}]},
   gun5:{label:'Üst Vücut + Karın',name:'Üst Vücut + Karın',short:'Üst/Karın',code:'ÜST',color:C.pink,ex:[
-    {n:'Geniş tutuş lat pulldown',s:3,r:[10,12]},
-    {n:'Eğik press',s:3,r:[8,12]},
-    {n:'Tek kol dambıl row',s:3,r:[10,12]},
-    {n:'Yan kaldırış',s:3,r:[15,20]},
+    {n:'Lat pulldown / Barfiks',s:3,r:[10,12]},
+    {n:'Makine row',s:3,r:[10,12]},
+    {n:'Eğik dambıl press',s:3,r:[8,12]},
+    {n:'Oturarak dambıl yan kaldırış',s:3,r:[15,20]},
     {n:'Kablo fly',s:3,r:[12,15]},
-    {n:'Triceps pushdown',s:3,r:[12,15]},
+    {n:'Halat pushdown',s:3,r:[12,15]},
     {n:'Kablo curl',s:3,r:[12,15]},
     {n:'Cable crunch',s:3,r:[10,15]}]}
 };
@@ -985,7 +1001,11 @@ var PROGRAM={
    Hangi takvim gününde yaptığın önemli değil, sıra bozulmaz. */
 var ORDER=['gun1','gun2','gun3','gun4','gun5'];
 var SUPS=[['kreatin','Kreatin','5 g','#8b5cf6']];
-var EXTGT={};Object.keys(PROGRAM).forEach(function(k){PROGRAM[k].ex.forEach(function(e){EXTGT[e.n]=e;});});
+/* Bir hareket birden fazla günde geçebilir (ör. lat pulldown hem Çekiş hem
+   Üst günde). İlk geçtiği gün "asıl" gündür; hedef set/tekrar aralığı oradan
+   alınır, sonraki günler üstüne yazmaz. */
+var EXTGT={};Object.keys(PROGRAM).forEach(function(k){PROGRAM[k].ex.forEach(function(e){
+  if(!EXTGT[e.n])EXTGT[e.n]=e;});});
 
 /* ============ KAS GRUBU HARİTASI ============
    Her hareket birincil kasa 1, yardımcı kasa 0.5 "efektif set" yazar.
@@ -1029,11 +1049,6 @@ var EXMUS={
   'Makine omuz press'            :{front:1,lat:.5,tri:.5},
   'Dar tutuş bench / Dips'       :{tri:1,chest:.5,front:.5},
   'Preacher curl'                :{bi:1},
-  'Geniş tutuş lat pulldown'     :{back:1,bi:.5},
-  'Eğik press'                   :{chest:1,front:.5,tri:.5},
-  'Tek kol dambıl row'           :{back:1,bi:.5},
-  'Yan kaldırış'                 :{lat:1},
-  'Triceps pushdown'             :{tri:1},
   'Kablo fly'                    :{chest:1},
   'Cable crunch'                 :{abs:1}
 };
@@ -1236,12 +1251,7 @@ var EXMETA={
  'Skullcrusher':['skull','ez bar skullcrusher','Sırtüstü yat. Sadece dirsekten bükerek barı alnına indir; üst kolun sabit ve dik kalır.',90],
  'Preacher curl':['preacher','preacher curl','Kolları eğik pede yasla. Gövdeyle hile yapmanı fiziksel olarak engeller.',90],
  'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.',60],
- 'Eğik press':['incline','incline machine chest press','Eğik açıda göğüs itişi. Üst göğüs ve ön omuz.',120],
- 'Geniş tutuş lat pulldown':['pulldown','wide grip lat pulldown','Geniş tutuş, sırt genişliği için. Yine dirsekle çekiyormuş gibi düşün.',105],
  'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.',90],
- 'Tek kol dambıl row':['rowOne','one arm dumbbell row','Bir diz ve el sedyede. Dambılı kalçana doğru çek, omuz aşağıda kalsın.',90],
- 'Yan kaldırış':['latRaise','dumbbell lateral raise','Dirsek hafif bükülü, kolları yana aç. Omzunu yukarı kaldırma — trapez devralır.',60],
- 'Triceps pushdown':['pushdown','triceps pushdown','Dirsekler sabit, halatı veya barı aşağı it. Gövdeyle bastırma.',60],
  'Cable crunch':['crunch','cable crunch abs','Diz üstü, halat başının arkasında. Karnını kıvırarak yere yaklaş, kalçadan bükülme.',60]
 };
 function descOf(name){var m=EXMETA[name];return m&&m[2]?m[2]:'';}
@@ -1396,7 +1406,16 @@ function save(d){
 function touch(d){if(!S.days[d])S.days[d]=blank();return S.days[d];}
 
 /* eski hareket adlarını yeni adlara taşı — girilmiş veriler kaybolmaz */
-var RENAMES={'Düz bench press':'Düz dambıl press','Göğüs destekli row':'Makine row'};
+/* Aynı hareketin günden güne farklı yazılması geçmişi böler: uygulama
+   "Eğik press" ile "Eğik dambıl press"i iki ayrı hareket sanıp önceki seansı
+   getiremez. Üst Vücut günündeki adlar İtiş/Çekiş günündekilerle
+   birleştirildi; eski kayıtlar da buradan yeni ada taşınıyor. */
+var RENAMES={'Düz bench press':'Düz dambıl press','Göğüs destekli row':'Makine row',
+  'Geniş tutuş lat pulldown':'Lat pulldown / Barfiks',
+  'Eğik press':'Eğik dambıl press',
+  'Yan kaldırış':'Oturarak dambıl yan kaldırış',
+  'Triceps pushdown':'Halat pushdown',
+  'Tek kol dambıl row':'Makine row'};
 function migrateNames(){
   var n=0;
   Object.keys(S.days||{}).forEach(function(d){
@@ -2602,7 +2621,8 @@ function gh(path,opts,tryN){
 function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,photoRepo:(S.sync&&S.sync.repo)||'',
-    base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets};
+    base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
+    phDel:_phDel};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -2626,6 +2646,12 @@ function mergeRemote(rm){
     }
   }
   if(rm.photoRepo&&!S.sync.repo){S.sync.repo=rm.photoRepo;ch++;}
+  /* silme listesi birleşir (hiç geri alınmaz): bir cihazda silinen her yerde silinir */
+  if(rm.phDel&&typeof rm.phDel==='object'){
+    var pdn=0;
+    Object.keys(rm.phDel).forEach(function(k){if(!_phDel[k]){_phDel[k]=rm.phDel[k];pdn++;}});
+    if(pdn){savePhDel();phApplyDeletes();ch++;}
+  }
   if((rm._st||0)>(S._st||0)){
     ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
@@ -2770,7 +2796,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v39 · 25 Ağu 2026';
+var APPVER='v42 · 26 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -2959,13 +2985,6 @@ function gymWorkout(){
     ? 'Boş bir sete <b>○</b> basarsan üstteki setin aynısını doldurur ve kronometreyi başlatır.'
     : 'Kilo ve tekrarı gir, sonra <b>○</b> ile seti bitir — <b>'+mmss(restSec(e.n))+'</b> kronometre otomatik başlar.';
 
-  var dots='';
-  for(var j=0;j<t.ex.length;j++){
-    var ev2=evalEx((r.ex||{})[t.ex[j].n],tgtOn(t.ex[j],cur),prevSession(t.ex[j].n,cur));
-    var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state==='yakin'?'near':(ev2.state!=='bos'?'part':'')));
-    dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
-  }
-
   return pick+
   '<div class="gcard" data-ex="'+esc(e.n)+'">'+
     '<div class="ghead">'+
@@ -2986,11 +3005,6 @@ function gymWorkout(){
     '<button class="gaddset" data-a="addset">+ set ekle</button>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
       '<span style="color:'+ev.color+'">'+ev.label+'</span></div>'+
-  '</div>'+
-  '<div class="gnav">'+
-    '<button class="garrow" data-a="exprev"'+(exIdx===0?' disabled':'')+'>‹</button>'+
-    '<div class="gdots">'+dots+'</div>'+
-    '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
   '</div>'+
   '<div class="gnavpad"></div>'+
   (exIdx>=t.ex.length-1
@@ -3278,6 +3292,44 @@ function musCard(mw,mt,wp,mex){
       :'<div class="sfoot" style="margin-top:8px">Yapılan günlere göre hiçbir kas geride değil.</div>')+
   '</div>';
 }
+/* Web'deki "Son 7 Gün Ortalaması" kartının telefon sürümü.
+   Aynı hesap, salon moduna uygun tek sütun düzeni. */
+function adherenceM(){
+  var T=S.targets,ks=keys().filter(function(d){return d<=today();}).slice(-7);
+  if(!ks.length)return '';
+  function avg(k){var a=ks.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});
+    return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  var gymPlan=0,gymDone=0;
+  ks.forEach(function(d){var t=PROGRAM[dtOf(d)];
+    if(t&&t.ex.length){gymPlan++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gymDone++;}});
+  var rows=[
+    {l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
+    {l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
+    {l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
+    {l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
+    {l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
+    {l:'Uyku',v:avg('sl'),t:7.5,c:C.cyan,u:'sa',dec:1},
+    {l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
+    {l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
+  ];
+  var hit=0,tot=0;
+  rows.forEach(function(r){if(r.v==null)return;tot++;
+    var ok=r.inv?(r.v<=r.t*1.08):(r.v/r.t>=.95);if(ok)hit++;});
+  return '<div class="scard static">'+
+    '<div class="shead"><div><div class="stitle">Son 7 Gün Ortalaması</div>'+
+      '<div class="ssub">'+ks.length+' gün kayıt'+(tot?' · '+hit+'/'+tot+' hedef tutmuş':'')+'</div></div></div>'+
+    '<div class="advg">'+rows.map(function(r){
+      var p=r.v==null?0:clamp(r.v/r.t*100);
+      var col=r.v==null?'#dfd4bd':(r.inv?(r.v<=r.t*1.08?r.c:C.red):(p>=95?r.c:p>=75?C.amber:C.orange));
+      var txt=r.v==null?'—':(r.raw?r.v+' / '+r.t
+        :(r.dec?fx(r.v,r.dec):ti(r.v))+(r.u?' '+r.u:''));
+      var sub=r.raw?'':('hedef '+(r.dec?fx(r.t,r.dec):ti(r.t))+(r.u?' '+r.u:''));
+      return '<div class="advr"><div class="advt"><span>'+r.l+'</span>'+
+        '<b style="color:'+col+'">'+txt+'</b></div>'+
+        '<div class="mbar"><i style="width:'+p.toFixed(0)+'%;background:'+col+'"></i></div>'+
+        (sub?'<div class="advs">'+sub+'</div>':'')+'</div>';}).join('')+'</div>'+
+  '</div>';
+}
 function gymSum(){
   var lw=lastW(),rem=lw!=null?lw-S.goal.weight:null;
   var m=monday(today()),tam=0,plan=0;
@@ -3318,6 +3370,7 @@ function gymSum(){
       return '<div><div class="l" style="color:'+x[3]+'">'+x[0]+'</div>'+
         '<div class="v">'+x[1]+'<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
 
+    adherenceM()+
     tdeeCard(tdA)+
     autoCard()+
     musCard(mw,mt,wp2,mex)+
@@ -3801,6 +3854,31 @@ function gymTabs(){return '<div class="gtabs" id="g-tabs">'+gymTabsInner()+'</di
 function gymBody(){
   return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():gymMore();
 }
+/* Hareket değiştirme çubuğu artık #g-body'nin DIŞINDA.
+   İçerideyken sorun şuydu: #g-body'nin giriş animasyonu (tabIn) transform
+   kullanıyor; transform'lu bir ata, içindeki position:fixed elemanı kendine
+   sabitler. Yani çubuk her yeniden çizimde viewport'tan kopup gövdeye
+   yapışıyor, sonra geri dönüyordu — gözle görülen aşağı-yukarı kayma buydu.
+   Dışarıda, hiç yeniden yaratılmayan kendi kabında duruyor: gerçekten sabit. */
+function gymNav(){
+  if(gTab!=='w')return '';
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
+  if(!t||!t.ex.length)return '';
+  if(exIdx>=t.ex.length)exIdx=0;
+  var dots='';
+  for(var j=0;j<t.ex.length;j++){
+    var ev2=evalEx((r.ex||{})[t.ex[j].n],tgtOn(t.ex[j],cur),prevSession(t.ex[j].n,cur));
+    var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state==='yakin'?'near':(ev2.state!=='bos'?'part':'')));
+    dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
+  }
+  return '<div class="gnav">'+
+    '<button class="garrow" data-a="exprev"'+(exIdx===0?' disabled':'')+'>‹</button>'+
+    '<div class="gdots">'+dots+'</div>'+
+    '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
+  '</div>';
+}
+/* gövde + çubuk birlikte tazelenir */
+function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());}
 var pendingRefresh=false;
 function typing(){
   var ae=document.activeElement;
@@ -3809,12 +3887,13 @@ function typing(){
 function gymRefresh(){
   if(typing()){pendingRefresh=true;return;}   /* yazarken DOM'a dokunma */
   pendingRefresh=false;
-  if(phone())zi('g-body',gymBody());else render();
+  if(phone())gymPaint();else render();
 }
 function gymTabsRefresh(){zi('g-tabs',gymTabsInner());}
 function renderGym(){
   document.body.className='gym';
-  app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
+  app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+
+    '<div id="g-nav">'+gymNav()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
 }
 
 /* ============ AYARLAR / RAPOR ============ */
@@ -4011,7 +4090,7 @@ function header(){
       (S.sync.token&&S.sync.gist
         ?'<button class="ghostbtn" data-a="syncnow" title="Şimdi senkronize et">☁ '+syncLabel()+'</button>':'')+
       '<button class="ghostbtn" data-a="gym">Salon modu</button>'+
-      '<button class="ghostbtn" data-a="scroll">Ayarlar &amp; rapor ↓</button></div></div>';
+      '<button class="ghostbtn" data-a="scroll">Ayarlar &amp; rapor</button></div></div>';
 }
 /* ============ MASAÜSTÜ: BAKIM KALORİSİ + KAS SETLERİ ============ */
 function tdeeCardD(){
@@ -4217,6 +4296,75 @@ function loadPhSkip(){
   }).catch(function(){});
 }
 function savePhSkip(){PHDB.set('phskip',JSON.stringify(_phSkip)).catch(function(){});}
+/* ---- SİLİNENLER (mezar taşı) ----
+   Fotoğrafı yerelden silmek yetmiyordu: dosya bulutta durduğu için bir sonraki
+   eşitlemede geri iniyordu. Silinen her fotoğrafın kimliği VE içerik özeti
+   burada tutulur. Bu liste hem yerelde (IndexedDB) hem gist'te durur, yani
+   bir cihazda silinen fotoğraf diğer cihazlarda da silinir.
+   Kural: bu listedeki bir fotoğraf asla indirilmez, asla yüklenmez ve
+   buluttaki kopyası ilk fırsatta silinir. */
+var _phDel={};
+function loadPhDel(){
+  return PHDB.get('phdel').then(function(v){
+    try{_phDel=JSON.parse(v||'{}')||{};}catch(e){_phDel={};}
+  }).catch(function(){});
+}
+function savePhDel(){PHDB.set('phdel',JSON.stringify(_phDel)).catch(function(){});}
+function phMarkDeleted(x){
+  if(!x)return;
+  if(x.id)_phDel['i:'+x.id]=Date.now();
+  if(x.u)_phDel['h:'+phHash(x.u)]=Date.now();
+  savePhDel();
+}
+function phDelHasHashes(){
+  var ks=Object.keys(_phDel||{});
+  for(var i=0;i<ks.length;i++)if(ks[i].charAt(0)==='h')return true;
+  return false;
+}
+function phIsDeleted(id,u){
+  if(id&&_phDel['i:'+id])return true;
+  /* hash hesabı büyük data URL'lerde pahalı — listede hiç hash yoksa hiç girme */
+  if(u&&phDelHasHashes()&&_phDel['h:'+phHash(u)])return true;
+  return false;
+}
+/* uzaktaki dosya adından karar ver — elimizde sadece kimlik var */
+function phDelHasId(id){
+  if(_phDel['i:'+id])return true;
+  var hp=String(id||'').split('__')[2]||'';
+  return !!(hp.charAt(0)==='h'&&_phDel['h:'+hp.slice(1)]);
+}
+/* mezar taşına düşmüş ama bu cihazda hâlâ duran fotoğrafları kaldır */
+function phApplyDeletes(){
+  var n=0;
+  Object.keys(_ph||{}).forEach(function(d){
+    var keep=(_ph[d]||[]).filter(function(x){
+      if(phIsDeleted(x.id,x.u)){n++;return false;}
+      return true;});
+    if(keep.length)_ph[d]=keep;else delete _ph[d];
+  });
+  if(n)savePhotos();
+  return n;
+}
+/* tek fotoğrafı kalıcı sil: yerelden çıkar, mezar taşı bırak, buluttan da sil */
+function phDeleteOne(x){
+  if(!x)return false;
+  var arr=_ph[x.d]||[],item=arr[x.i];
+  if(!item)return false;
+  phMarkDeleted(item);
+  arr.splice(x.i,1);
+  if(arr.length)_ph[x.d]=arr;else delete _ph[x.d];
+  savePhotos();
+  S._st=Date.now();save();
+  if(item.id&&repoOK())phRemoteDelete(item.id);
+  return true;
+}
+function phRemoteDelete(id){
+  var pth='/repos/'+S.sync.repo+'/contents/photos/'+id+'.jpg';
+  return ghRepo(pth).then(function(f){
+    if(!f||f.__missing||!f.sha)return;
+    return ghRepo(pth,{method:'DELETE',body:{message:'foto sil',sha:f.sha}});
+  }).catch(function(){});
+}
 function phContentKey(u){return String(u||'').length+':'+String(u||'').slice(-64);}
 function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
 function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
@@ -4265,7 +4413,7 @@ function shrinkImage(file,cb){
   fr.readAsDataURL(file);
 }
 /* --- görünüm durumu --- */
-var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false;
+var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false, pvDelArm=false;
 function phDefaults(){
   var all=phAll();
   if(all.length){
@@ -4287,12 +4435,12 @@ function pvNode(){
 }
 function phOpenViewer(ix){
   var all=phAll();if(!all.length)return;
-  pvIdx=Math.max(0,Math.min(all.length-1,ix));pvZoom=false;
+  pvIdx=Math.max(0,Math.min(all.length-1,ix));pvZoom=false;pvDelArm=false;
   document.body.classList.add('pvlock');
   paintViewer();
 }
 function phCloseViewer(){
-  pvIdx=null;pvZoom=false;
+  pvIdx=null;pvZoom=false;pvDelArm=false;
   document.body.classList.remove('pvlock');
   var n=document.getElementById('phviewer');if(n)n.parentNode.removeChild(n);
 }
@@ -4320,8 +4468,16 @@ function paintViewer(){
       '<button class="pvnav" data-a="pvnext"'+(pvIdx>=all.length-1?' disabled':'')+'>›</button>'+
     '</div>'+
     '<div class="pvacts">'+
-      '<button class="pvbtn" data-a="pvcmp">Bununla karşılaştır</button>'+
-      '<button class="pvbtn del" data-a="pvdel">Sil</button>'+
+      (pvDelArm
+        ?'<div class="pvconf"><b>Bu fotoğraf silinsin mi?</b>'+
+          '<i>'+flong(x.d)+(tm?' · '+tm:'')+' — bu cihazdan ve bulut yedeğinden '+
+          'kalıcı olarak gider. Geri alınamaz.</i>'+
+          '<div class="pvconfb">'+
+            '<button class="pvbtn" data-a="pvdelno">Vazgeç</button>'+
+            '<button class="pvbtn del" data-a="pvdelyes">Evet, sil</button>'+
+          '</div></div>'
+        :'<button class="pvbtn" data-a="pvcmp">Bununla karşılaştır</button>'+
+         '<button class="pvbtn del" data-a="pvdel">Sil</button>')+
     '</div>';
 }
 /* --- galeri: gün gün, en yeni üstte --- */
@@ -4383,7 +4539,8 @@ function phUploader(){
 }
 function phStatus(){
   if(!repoOK())
-    return '<div class="phst warn">Bu cihazda yedeklenmiyor · <b>Daha → Yedek &amp; Depo</b>’dan bağla</div>';
+    return '<div class="phst warn">Bu cihazda yedeklenmiyor · <b>'+
+      (phone()?'Daha → Yedek &amp; Depo':'Ayarlar → Yedek &amp; Depo')+'</b>’dan bağla</div>';
   return '<div class="phst">☁ '+(phMsg||phSyncLabel())+'</div>';
 }
 function phBody(){
@@ -4555,6 +4712,7 @@ function phSync(silent){
     var ups=[];
     Object.keys(_ph||{}).forEach(function(d){
       (_ph[d]||[]).forEach(function(x){
+        if(phIsDeleted(x.id,x.u))return;
         if(!remote[x.id])ups.push({d:d,x:x});});});
     var i=0,upFail=0;
     function up(){
@@ -4572,6 +4730,21 @@ function phSync(silent){
     return up();
   }).then(function(upRes){
     var nUp=upRes.n;
+    /* önce mezar taşındakileri buluttan sil — yoksa aşağıdaki indirme onları
+       tekrar getirir ve fotoğraf "silinmiyor" gibi görünür */
+    var dels=Object.keys(remote).filter(function(id){return phDelHasId(id);});
+    var k=0,cleaned=0;
+    function del(){
+      if(k>=dels.length)return Promise.resolve();
+      var id=dels[k++],f=remote[id];
+      phSetMsg('buluttan siliniyor '+k+'/'+dels.length);
+      return ghRepo(base+'/'+id+'.jpg',{method:'DELETE',
+        body:{message:'foto sil',sha:f.sha}})
+        .then(function(){cleaned++;}).catch(function(){})
+        .then(function(){delete remote[id];return ghWait(250);}).then(del);
+    }
+    return del().then(function(){return {nUp:nUp,cleaned:cleaned};});
+  }).then(function(st){
     /* uzakta olup yerelde olmayanları indir.
        İsim eşleşmese bile içerik özeti eşleşiyorsa o dosya bizde var demektir
        (eski sürümlerin rastgele adla yüklediği kopyalar böyle ayıklanır). */
@@ -4579,6 +4752,7 @@ function phSync(silent){
     Object.keys(_ph||{}).forEach(function(d){(_ph[d]||[]).forEach(function(x){
       myHashes['h'+phHash(x.u||'')]=1;});});
     var miss=Object.keys(remote).filter(function(id){
+      if(phDelHasId(id))return false;
       if(phHasId(id))return false;
       var hp=id.split('__')[2]||'';
       if(hp.charAt(0)==='h'&&myHashes[hp])return false;
@@ -4599,12 +4773,12 @@ function phSync(silent){
         }
       }).catch(function(){}).then(function(){return ghWait(150);}).then(dn);
     }
-    return dn().then(function(){return {up:nUp,down:got};});
+    return dn().then(function(){return {up:st.nUp,down:got,cleaned:st.cleaned};});
   }).then(function(r){
     phSyncing=false;phSetMsg('');
     if(!r.err)S.sync.phLast=Date.now();
-    phDedupe();savePhotos();save();
-    var upN=(r.up&&r.up.ok!=null)?r.up.ok:0;
+    phApplyDeletes();phDedupe();savePhotos();save();
+    var upN=r.up||0;
     if(!silent)toast(upN+' yüklendi · '+r.down+' indirildi'+(r.cleaned?' · '+r.cleaned+' kopya buluttan silindi':'')+(r.err?' · bir kısmı bekliyor':''));
     if(r.err&&!silent)toast('eksikler sonraki eşitlemede tamamlanır ('+r.err.message+')');
     if(r.down&&!typing())render();
@@ -4809,7 +4983,7 @@ function _phCleanCore(){
   });
 }
 function repaintPhoto(){
-  if(phone())zi('g-body',gymBody());
+  if(phone())gymPaint();
   else{zi('z-photo',photoCard());
     var zb=document.getElementById('z-bak');
     if(zb)zb.innerHTML='<div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
@@ -4988,39 +5162,59 @@ function render(){
   if(S.autoTargets&&syncAutoTargets())save();
   if(phone()){renderGym();return;}
   document.body.className='';
-  app.innerHTML=header()+deskNav()+
-    '<div id="z-hero">'+heroD()+'</div>'+
-    '<div id="z-kpi">'+kpi()+'</div>'+
-    '<div id="z-tdee" class="anch">'+tdeeCardD()+autoCardD()+'</div>'+
-    '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
-    '<div id="z-day" class="anch">'+dayCard()+'</div>'+
-    '<div id="z-mus" class="anch">'+musCardD()+'</div>'+
-    '<div id="z-ratio" class="anch">'+ratioCardD()+'</div>'+
-    '<div id="z-prg" class="anch">'+progressCard()+'</div>'+
-    '<div id="z-prog">'+programCard()+'</div>'+
-    '<div id="z-week" class="anch">'+weekTable()+'</div>'+
-    '<div id="z-cal" class="anch">'+calendar()+'</div>'+
-    '<div id="z-photo" class="anch">'+photoCard()+'</div>'+
-    '<div id="z-bak" class="anch"><div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
-      '<span class="meta">fotoğraf deposu, yedekler, geçiş kontrolü</span></div>'+
-      '<div style="padding:6px 18px 16px">'+phBackupPanel()+migPanel()+'</div></div></div>'+
-    '<div id="z-sync">'+syncCard()+'</div>'+
-    '<div id="z-set" class="anch">'+settings()+'</div>'+
+  app.innerHTML=header()+deskNav()+'<div id="z-body">'+deskBody()+'</div>'+
     '<div style="text-align:center;margin-top:18px;font-size:12.5px;color:#a8987c">'+
       'Kiloyu her sabah aç karnına gir · trend çizgisine bak, tek güne değil · kayıtlar otomatik saklanır'+
     '</div>';
 }
-var DNAV=[['z-tdee','Kalori'],['z-day','Bugün'],['z-mus','Set sayısı'],['z-ratio','Oran'],
-  ['z-prg','İlerleme'],['z-week','Hafta'],['z-cal','Takvim'],['z-photo','Fotoğraf'],['z-bak','Yedek'],['z-set','Ayarlar']];
+/* ============ MASAÜSTÜ SEKMELERİ ============
+   Her şey tek sayfada alt alta duruyordu; ayar niteliğindeki bölümler
+   (yedek, bulut senkronu, program & hareket listesi) günlük görünümü
+   kirletiyordu. Artık her sekme kendi işini gösteriyor, ayarlar ayrı. */
+var dTab='today';
+var DTABS=[['today','Bugün'],['prog','İlerleme'],['cal','Takvim'],
+           ['photo','Fotoğraf'],['set','Ayarlar']];
+function deskBody(){
+  if(dTab==='prog')
+    return '<div id="z-mus">'+musCardD()+'</div>'+
+      '<div id="z-ratio">'+ratioCardD()+'</div>'+
+      '<div id="z-prg">'+progressCard()+'</div>'+
+      '<div id="z-week">'+weekTable()+'</div>';
+  if(dTab==='cal')
+    return '<div id="z-cal">'+calendar()+'</div>';
+  if(dTab==='photo')
+    return '<div id="z-photo">'+photoCard()+'</div>';
+  if(dTab==='set')
+    return '<div id="z-set">'+settings()+'</div>'+
+      '<div id="z-prog">'+programCard()+'</div>'+
+      '<div id="z-bak"><div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
+        '<span class="meta">fotoğraf deposu, yedekler, geçiş kontrolü</span></div>'+
+        '<div style="padding:6px 18px 16px">'+phBackupPanel()+migPanel()+'</div></div></div>'+
+      '<div id="z-sync">'+syncCard()+'</div>';
+  return '<div id="z-hero">'+heroD()+'</div>'+
+    '<div id="z-kpi">'+kpi()+'</div>'+
+    '<div id="z-tdee">'+tdeeCardD()+autoCardD()+'</div>'+
+    '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
+    '<div id="z-day">'+dayCard()+'</div>';
+}
 function deskNav(){
-  return '<div class="dnav">'+DNAV.map(function(x){
-    return '<button data-a="goto" data-t="'+x[0]+'">'+x[1]+'</button>';}).join('')+'</div>';
+  return '<div class="dnav">'+DTABS.map(function(x){
+    return '<button class="'+(dTab===x[0]?'on':'')+'" data-a="dtab" data-k="'+x[0]+'"'+
+      ' aria-current="'+(dTab===x[0])+'">'+x[1]+'</button>';}).join('')+'</div>';
+}
+/* sekmeyi değiştir; istenirse önce sekmeyi açıp sonra o bölüme kaydır */
+function goTab(k,scrollTo){
+  dTab=k;render();
+  if(scrollTo){var e2=document.getElementById(scrollTo);
+    if(e2&&e2.scrollIntoView)e2.scrollIntoView({behavior:'smooth',block:'start'});
+    else window.scrollTo(0,0);}
+  else window.scrollTo(0,0);
 }
 /* boyama sonrası: sayfayı yeniden kurmadan ilgili bölümleri tazele */
 function repaint(){
   if(phone()){render();return;}
   zi('z-cal',calendar());
-  var dz=document.getElementById('z-day');if(dz){dz.innerHTML=dayCard();bindToday();}
+  zi('z-day',dayCard());
   zi('z-week',weekTable());zi('z-kpi',kpi());zi('z-prg',progressCard());
   zi('z-ch',trendChart()+adherence());
 }
@@ -5033,11 +5227,11 @@ function ziPulse(id,html){
 }
 function refresh(){
   if(phone()){gymRefresh();return;}
-  document.getElementById('z-kpi').innerHTML=kpi();
-  document.getElementById('z-ch').innerHTML=trendChart()+adherence();
-  document.getElementById('z-prg').innerHTML=progressCard();
-  document.getElementById('z-week').innerHTML=weekTable();
-  document.getElementById('z-cal').innerHTML=calendar();
+  zi('z-kpi',kpi());
+  zi('z-ch',trendChart()+adherence());
+  zi('z-prg',progressCard());
+  zi('z-week',weekTable());
+  zi('z-cal',calendar());
   var rep=document.getElementById('rep'); if(rep)rep.value=report();
 }
 function pulseEl(el){
@@ -5140,7 +5334,7 @@ app.addEventListener('change',function(ev){
   if(a==='dt'){var v0=ev.target.value;touch(cur).dt=v0;S.plan=S.plan||{};S.plan[cur]=v0;S._pt=Date.now();save(cur);render();}
   if(a==='reprange'){repRange=ev.target.value;
     if(repRange==='custom'){if(!repTo)repTo=today();if(!repFrom)repFrom=addD(today(),-6);}
-    if(phone())zi('g-body',gymBody());else zi('z-set',settings());}
+    if(phone())gymPaint();else zi('z-set',settings());}
   if(a==='repfrom'){repFrom=ev.target.value;document.getElementById('rep').value=report();}
   if(a==='repto'){repTo=ev.target.value;document.getElementById('rep').value=report();}
   if(a==='cmp'){
@@ -5157,7 +5351,12 @@ app.addEventListener('change',function(ev){
       shrinkImage(f,function(u){
         done++;
         if(u){_ph=_ph||{};_ph[cur]=_ph[cur]||[];
-          _ph[cur].push({u:u,t:now,id:cur+'__'+now+'__h'+phHash(u)});ok++;}
+          var nid=cur+'__'+now+'__h'+phHash(u);
+          /* daha önce silinmiş bir görüntüyü bilerek tekrar yüklüyorsa
+             mezar taşını kaldır, yoksa yeni yükleme anında silinir */
+          if(_phDel['h:'+phHash(u)]||_phDel['i:'+nid]){
+            delete _phDel['h:'+phHash(u)];delete _phDel['i:'+nid];savePhDel();}
+          _ph[cur].push({u:u,t:now,id:nid});ok++;}
         if(done===arr.length){
           if(!ok){toast('fotoğraf okunamadı');return;}
           phEnsureIds();
@@ -5190,27 +5389,27 @@ document.addEventListener('click',function(ev){
   var t=ev.target.closest?ev.target.closest('[data-a]'):null;if(!t)return;
   var a=t.getAttribute('data-a');
   if(a==='pvclose'){phCloseViewer();}
-  else if(a==='pvprev'){if(pvIdx>0){pvIdx--;pvZoom=false;paintViewer();}}
-  else if(a==='pvnext'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;paintViewer();}}
-  else if(a==='pvzoom'){pvZoom=!pvZoom;paintViewer();}
+  else if(a==='pvprev'){if(pvIdx>0){pvIdx--;pvZoom=false;pvDelArm=false;paintViewer();}}
+  else if(a==='pvnext'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;pvDelArm=false;paintViewer();}}
+  else if(a==='pvzoom'){if(pvDelArm)return;pvZoom=!pvZoom;paintViewer();}
   else if(a==='pvcmp'){
     cmpB=pvIdx;if(cmpA===cmpB)cmpA=0;
     phView='cmp';phCloseViewer();
-    if(phone())zi('g-body',gymBody());else{zi('z-photo',photoCard());
-      var zp=document.getElementById('z-photo');if(zp&&zp.scrollIntoView)zp.scrollIntoView({behavior:'smooth',block:'start'});}
+    if(phone())gymPaint();else goTab('photo','z-photo');
     toast('karşılaştırmaya eklendi');}
-  else if(a==='pvdel'){
+  else if(a==='pvdel'){pvDelArm=true;paintViewer();}
+  else if(a==='pvdelno'){pvDelArm=false;paintViewer();}
+  else if(a==='pvdelyes'){
     var al2=phAll(),x=al2[pvIdx];if(!x)return;
-    _ph[x.d].splice(x.i,1);
-    if(!_ph[x.d].length)delete _ph[x.d];
-    savePhotos();
+    pvDelArm=false;
+    if(!phDeleteOne(x)){paintViewer();return;}
     var al3=phAll();
     if(cmpA>=al3.length)cmpA=0;
     if(cmpB>=al3.length)cmpB=Math.max(0,al3.length-1);
     if(!al3.length){phCloseViewer();render();toast('fotoğraf silindi');return;}
     if(pvIdx>=al3.length)pvIdx=al3.length-1;
     paintViewer();
-    if(phone())zi('g-body',gymBody());else zi('z-photo',photoCard());
+    if(phone())gymPaint();else zi('z-photo',photoCard());
     toast('fotoğraf silindi');}
 },true);
 document.addEventListener('keydown',function(ev){
@@ -5250,12 +5449,13 @@ app.addEventListener('click',function(ev){
   else if(a==='gtab'){
     var gk2=t.getAttribute('data-k');
     if(gk2==='m'){gTab='m';mDrawer=true;render();window.scrollTo(0,0);return;}
-    gTab=gk2;mDrawer=false;zi('g-body',gymBody());gymTabsRefresh();window.scrollTo(0,0);}
+    gTab=gk2;mDrawer=false;gymPaint();gymTabsRefresh();window.scrollTo(0,0);}
   else if(a==='drwopen'){mDrawer=true;render();}
   else if(a==='drwclose'){mDrawer=false;render();}
   else if(a==='msel'){mSect=t.getAttribute('data-k');mDrawer=false;render();window.scrollTo(0,0);}
   else if(a==='gym'){setMode('gym');}
   else if(a==='desktop'){setMode('desk');}
+  else if(a==='dtab'){goTab(t.getAttribute('data-k'));}
   else if(a==='goto'){
     var tg=document.getElementById(t.getAttribute('data-t'));
     if(tg&&tg.scrollIntoView)tg.scrollIntoView({behavior:'smooth',block:'start'});}
@@ -5317,7 +5517,7 @@ app.addEventListener('click',function(ev){
     var ar=rr5.ex[exr.n]=rr5.ex[exr.n]||[];
     while(ar.length<=ixr)ar.push({kg:null,rep:null});
     ar[ixr].rir=(ar[ixr].rir===vr)?null:vr;
-    save(cur);zi('g-body',gymBody());}
+    save(cur);gymPaint();}
   else if(a==='kgstep'){
     var tks=PROGRAM[planOf(cur)],exk=tks.ex[exIdx],ixk=+t.getAttribute('data-i'),dir=+t.getAttribute('data-dir');
     var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};
@@ -5333,12 +5533,12 @@ app.addEventListener('click',function(ev){
       var nv=base+dir*kgStep(base);
       ak[ixk].kg=Math.max(0,Math.round(nv*4)/4);
     }
-    save(cur);zi('g-body',gymBody());}
-  else if(a==='dtpick'){dtPick=!dtPick;zi('g-body',gymBody());}
+    save(cur);gymPaint();}
+  else if(a==='dtpick'){dtPick=!dtPick;gymPaint();}
   else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;dtPick=false;save(cur);render();}
-  else if(a==='goex'){exIdx=+t.getAttribute('data-i');zi('g-body',gymBody());window.scrollTo(0,0);}
-  else if(a==='exprev'){if(exIdx>0){exIdx--;zi('g-body',gymBody());window.scrollTo(0,0);}}
-  else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;zi('g-body',gymBody());window.scrollTo(0,0);}}
+  else if(a==='goex'){exIdx=+t.getAttribute('data-i');gymPaint();window.scrollTo(0,0);}
+  else if(a==='exprev'){if(exIdx>0){exIdx--;gymPaint();window.scrollTo(0,0);}}
+  else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;gymPaint();window.scrollTo(0,0);}}
   else if(a==='rest30'){
     if(timer.done){timer.done=false;timer.total=30;timer.endAt=Date.now()+30000;
       try{if(titleSaved){document.title=titleSaved;titleSaved='';}}catch(e){}
@@ -5352,7 +5552,7 @@ app.addEventListener('click',function(ev){
     var tp=PROGRAM[planOf(cur)],ex=tp.ex[exIdx],pv=prevSession(ex.n,cur);
     if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};
       rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep,rir:null};});
-      save(cur);zi('g-body',gymBody());}}
+      save(cur);gymPaint();}}
   else if(a==='setwipe'){
     var rw=t.closest('[data-ex]'),nw=rw.getAttribute('data-ex'),iw=+t.getAttribute('data-i');
     var rr4=D(cur);
@@ -5363,7 +5563,7 @@ app.addEventListener('click',function(ev){
     if(rc.ex&&rc.ex[exc.n]&&rc.ex[exc.n][ixc]){
       if(rc.ex[exc.n].length>exc.s&&ixc>=exc.s)rc.ex[exc.n].splice(ixc,1);
       else rc.ex[exc.n][ixc]={kg:null,rep:null,rir:null};
-      save(cur);zi('g-body',gymBody());
+      save(cur);gymPaint();
     }}
   else if(a==='setdone'){
     var tp2=PROGRAM[planOf(cur)],ex2=tp2.ex[exIdx],ix3=+t.getAttribute('data-i');
@@ -5377,7 +5577,7 @@ app.addEventListener('click',function(ev){
     }
     if(arr[ix3].kg==null||arr[ix3].rep==null){toast('önce kg ve tekrar gir');return;}
     arr[ix3].d=!arr[ix3].d;
-    save(cur);zi('g-body',gymBody());
+    save(cur);gymPaint();
     if(arr[ix3].d)startRest(ex2.n);
   }
   else if(a==='linkcode'){
@@ -5412,20 +5612,20 @@ app.addEventListener('click',function(ev){
     if(ix>=0)S.restDays.splice(ix,1);else S.restDays.push(wd);
     S._st=Date.now();save();render();}
   else if(a==='ptab'){pTab=t.getAttribute('data-k');
-    if(phone())zi('g-body',gymBody());else zi('z-prog',programCard());}
+    if(phone())gymPaint();else zi('z-prog',programCard());}
   else if(a==='today'){cur=today();render();}
   else if(a==='cell'){
     var cd=t.getAttribute('data-d');
-    if(paintMode){setPlan(cd,paintMode);if(phone())zi('g-body',gymBody());else repaint();}
-    else{cur=cd;render();document.getElementById('z-day').scrollIntoView({behavior:'smooth',block:'start'});}}
+    if(paintMode){setPlan(cd,paintMode);if(phone())gymPaint();else repaint();}
+    else{cur=cd;goTab('today','z-day');}}
   else if(a==='paint'){paintMode=t.getAttribute('data-k')||null;fillArm=false;
-    if(phone())zi('g-body',gymBody());else zi('z-cal',calendar());}
+    if(phone())gymPaint();else zi('z-cal',calendar());}
   else if(a==='autofill'){
-    if(!fillArm){fillArm=true;if(phone())zi('g-body',gymBody());else zi('z-cal',calendar());}
+    if(!fillArm){fillArm=true;if(phone())gymPaint();else zi('z-cal',calendar());}
     else{fillArm=false;autoFill();render();}}
-  else if(a==='wprev'){wkOffset--;document.getElementById('z-week').innerHTML=weekTable();}
-  else if(a==='wnext'){if(wkOffset<0){wkOffset++;document.getElementById('z-week').innerHTML=weekTable();}}
-  else if(a==='wnow'){wkOffset=0;document.getElementById('z-week').innerHTML=weekTable();}
+  else if(a==='wprev'){wkOffset--;zi('z-week',weekTable());}
+  else if(a==='wnext'){if(wkOffset<0){wkOffset++;zi('z-week',weekTable());}}
+  else if(a==='wnow'){wkOffset=0;zi('z-week',weekTable());}
   else if(a==='addset'){
     var row=t.closest('[data-ex]'),name=row.getAttribute('data-ex');
     var r=touch(cur);r.ex=r.ex||{};r.ex[name]=r.ex[name]||[];
@@ -5437,8 +5637,8 @@ app.addEventListener('click',function(ev){
     var r3=touch(cur);if(r3.ex&&r3.ex[name2]){r3.ex[name2].splice(i,1);save(cur);render();}}
   else if(a==='usemacro'){
     var r4=touch(cur),kc=Math.round((r4.p||0)*4+(r4.c||0)*4+(r4.f||0)*9);
-    if(kc){r4.kcal=kc;save(cur);if(phone())zi('g-body',gymBody());else render();}}
-  else if(a==='scroll'){document.getElementById('z-set').scrollIntoView({behavior:'smooth',block:'start'});}
+    if(kc){r4.kcal=kc;save(cur);if(phone())gymPaint();else render();}}
+  else if(a==='scroll'){goTab('set');}
   else if(a==='copy'){
     var ta=document.getElementById('rep');
     try{navigator.clipboard.writeText(ta.value);}catch(e){ta.removeAttribute('readonly');ta.select();document.execCommand('copy');ta.setAttribute('readonly','');}
@@ -5482,7 +5682,8 @@ STORE.get(KEY).then(function(res){
   cur=today();
   try{
     var pl=loadPhotos();
-    if(pl&&pl.then)pl.then(function(){return loadPhSkip();}).then(function(){try{phDedupe();phEnsureIds();}catch(e){}});
+    if(pl&&pl.then)pl.then(function(){return loadPhSkip();}).then(function(){return loadPhDel();})
+      .then(function(){try{phApplyDeletes();phDedupe();phEnsureIds();}catch(e){}});
     (pl&&pl.then?pl:Promise.resolve()).then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
