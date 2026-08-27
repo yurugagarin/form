@@ -1083,6 +1083,12 @@ var GUNU=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi
 var KEY='emre:form:v2';
 var C={green:'#16a85a',amber:'#f4ad15',orange:'#ef5a1e',red:'#dc2626',blue:'#3b82f6',
        cyan:'#07a7c4',violet:'#8b5cf6',pink:'#ec4899',teal:'#0d9488'};
+/* Rozet ve yazı için C doğru: küçük alan, canlı renk okunurluğu artırır.
+   Ama aynı yeşil 96px'lik bir halkaya ya da 7 küçük halkaya dolgu olarak
+   basılınca alan büyüdüğü için parlıyor ve gözü alıyor. Büyük dolgularda
+   aynı tonun düşük doygunluklu hali kullanılır — CH bunun için. */
+var CH={green:'#5f9e78',amber:'#cf9a3c',orange:'#d1794e',red:'#c2695a',blue:'#7c9ec4',
+        violet:'#9b8fc0',teal:'#5f9e96',pink:'#c48098',track:'#eee5d3'};
 
 var PROGRAM={
   rest:{label:'Dinlenme',name:'Dinlenme',short:'Dinlenme',code:'',color:'#c0b193',ex:[]},
@@ -1138,6 +1144,24 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-27',
+  t:'Günlük Puan, halka grafikler, düzen düzeltmeleri (v45)',
+  y:['GÜN PUANI: antrenman 30, kalori 18, protein 18, adım 12, tartı 10, kreatin 7, '+
+     'çevre ölçüsü 5. Takvimin altında ikinci takvim; kareye dokun, görev dökümü açılsın, '+
+     'antrenman satırına dokun, hangi harekette kaç set eksik kaldığı çıksın. Dinlenme ve '+
+     'seyahat gününde antrenman puanı otomatik veriliyor; ölçümün sırası gelmediyse ceza yok.',
+     'KPI HATASI: \u201cBu hafta antrenman\u201d sayacı planı dtOf() ile okuyordu — o fonksiyon '+
+     'yalnızca kaydı girilmiş günü döndürür, bu yüzden payda tamamlanan gün kadar oluyor ve '+
+     '2 antrenman yapınca \u201c2/2\u201d görünüyordu. effDt() ile düzeltildi.',
+     'KALORİ VE MAKRO: dikey çubuklar halkaya çevrildi. Kalori için 7 günlük ortalamanın '+
+     'hedefe oranı ve haftanın yedi küçük günlük halkası; makro için kalorinin P/K/Y dağılımı.',
+     'GRAFİK RENKLERİ: büyük dolgular artık düşük doygunluklu CH setini kullanıyor. Canlı '+
+     'yeşil (#16a85a) 96px\u2019lik halkada alan büyüdüğü için parlıyordu; rozet ve yazıda '+
+     'kalmaya devam ediyor, sadece dolgularda yumuşatıldı. Halka kalınlığı da 10\u2019dan 8\u2019e indi.',
+     'KİLO VE BEL TIKLANABİLİR: detayda trend eğimi, 7 günlük ortalamalar ve hafta hafta '+
+     'net değişim tablosu. GYM ŞERİDİ: nokta yerine 14 günlük etiketli kutular. '+
+     'BUGÜN KARTI: Her gün / Beslenme / Çevre ölçüleri diye üç bölüm; yağ artık dördüncü '+
+     'sütunda, kol ölçümü masaüstünde de var, ölçüm sayacı üstte.']},
  {d:'2026-08-26',
   t:'Üst Vücut günü: Halat pushdown, Kablo curl ve Cable crunch çıkarıldı',
   y:['Haftalık efektif set hedefi biceps 23, triceps 22.5 idi. Kalori açığındayken '+
@@ -2196,7 +2220,7 @@ function kpi(){
       s:db==null?'ilk ölçüm bekleniyor':(db>0?'+':'')+fx(db)+' cm · ilk ölçüme göre',
       top:db==null?'#cdbfa8':(db<0?C.green:C.orange),vc:db==null?'#3a342c':(db<0?C.green:'#3a342c')},
     {l:'Bu hafta antrenman',v:tam+'<span style="font-size:16px;color:#a8987c"> / '+(plan||0)+'</span>',
-      s:(plan?(kacti?kacti+' gün kaçtı · ':'')+(kaldi?kaldi+' gün kaldı':(kacti?'hafta bitti':'hepsi tamam')):'bu haftaya antrenman planlanmamış'),
+      s:(plan?(kacti?kacti+' gün kaçtı · ':'')+(kaldi?kaldi+' gün kaldı':(kacti?'planlı gün kalmadı':'hepsi tamam')):'bu haftaya antrenman planlanmamış'),
       top:!plan?'#cdbfa8':(kacti?C.orange:(tam>=gecti?C.green:C.amber)),
       vc:!plan?'#3a342c':(kacti?'#3a342c':C.green)},
     {l:'Program günü',v:(pdn>0?pdn:0)+'<span style="font-size:16px;color:#a8987c"> / '+(S.weeks*7)+'</span>',
@@ -2300,15 +2324,15 @@ function weekRings(ds,mode){
     if(mode==='kcal'){
       if(r.kcal!=null){has=true;
         var f=r.kcal/T.kcal;
-        segs=[[Math.min(1,f),f<=1.08?C.green:C.red]];
-        if(f>1.08)segs=[[1,C.red]];}
+        segs=[[Math.min(1,f),f<=1.08?CH.green:CH.red]];
+        if(f>1.08)segs=[[1,CH.red]];}
     }else{
       if(r.p!=null||r.c!=null||r.f!=null){has=true;
         var pk=(r.p||0)*4,ck=(r.c||0)*4,fk=(r.f||0)*9,tt=pk+ck+fk;
-        if(tt>0)segs=[[pk/tt,C.green],[ck/tt,C.amber],[fk/tt,C.violet]];}
+        if(tt>0)segs=[[pk/tt,CH.green],[ck/tt,CH.amber],[fk/tt,CH.violet]];}
     }
     g+='<div class="wrg'+(d===today()?' now':'')+'" title="'+esc(fdate(d))+'">'+
-       ring(30,4.5,has?segs:[],'',null,has?'#eee5d3':'#f5eee0')+
+       ring(30,4,has?segs:[],'',null,has?'#eee5d3':'#f5eee0')+
        '<span>'+lbl+'</span></div>';
   });
   return '<div class="wrgrow">'+g+'</div>';
@@ -2353,11 +2377,11 @@ function trendChart(){
   var k7=ds.slice(-7).filter(function(d){return D(d).kcal!=null;});
   var kAvg=k7.length?Math.round(k7.reduce(function(a,d){return a+D(d).kcal;},0)/k7.length):null;
   var kf=kAvg==null?0:kAvg/T.kcal;
-  var kCol=kAvg==null?'#dfd4bd':(kf<=1.08?(kf>=.8?C.green:C.amber):C.red);
+  var kCol=kAvg==null?'#dfd4bd':(kf<=1.08?(kf>=.8?CH.green:CH.amber):CH.red);
   var kCh=kAvg==null?chip('kayıt yok','#a8987c','#f1e8d7')
     :chip((kAvg-T.kcal>0?'+':'')+ti(kAvg-T.kcal)+' kcal',kCol,hexa(kCol,.14));
   var kRing='<div class="ringwrap">'+
-    ring(96,10,kAvg==null?[]:[[Math.min(1,kf),kCol]],kAvg==null?'—':ti(kAvg),'ort. kcal')+
+    ring(96,8,kAvg==null?[]:[[Math.min(1,kf),kCol]],kAvg==null?'—':ti(kAvg),'ort. kcal')+
     '<div class="ringside">'+
       '<div class="rsl">hedef</div><div class="rsv">'+ti(T.kcal)+'</div>'+
       '<div class="rsl" style="margin-top:7px">doluluk</div>'+
@@ -2372,7 +2396,7 @@ function trendChart(){
   function mAvg(k){return m7.length?m7.reduce(function(a,d){return a+(D(d)[k]||0);},0)/m7.length:null;}
   var ap=mAvg('p'),ac=mAvg('c'),af=mAvg('f');
   var pk=(ap||0)*4,ck=(ac||0)*4,fk=(af||0)*9,tot=pk+ck+fk;
-  var mSeg=tot?[[pk/tot,C.green],[ck/tot,C.amber],[fk/tot,C.violet]]:[];
+  var mSeg=tot?[[pk/tot,CH.green],[ck/tot,CH.amber],[fk/tot,CH.violet]]:[];
   var mVal=m7.length?('<span style="color:'+C.green+'">'+Math.round(ap)+'</span>'+
     '<span style="color:#d5c9b1;font-weight:400">/</span><span style="color:'+C.amber+'">'+Math.round(ac)+'</span>'+
     '<span style="color:#d5c9b1;font-weight:400">/</span><span style="color:'+C.violet+'">'+Math.round(af)+'</span>'+
@@ -2381,9 +2405,9 @@ function trendChart(){
   var mCh=!m7.length?chip('kayıt yok','#a8987c','#f1e8d7')
     :chip(pOk?'protein tamam':ti(T.protein-(ap||0))+' g protein eksik',
       pOk?C.green:C.orange,pOk?hexa(C.green,.14):hexa(C.orange,.14));
-  var mrows=[['Protein',ap,T.protein,C.green],['Karbonhidrat',ac,T.carbs,C.amber],['Yağ',af,T.fat,C.violet]];
+  var mrows=[['Protein',ap,T.protein,CH.green],['Karbonhidrat',ac,T.carbs,CH.amber],['Yağ',af,T.fat,CH.violet]];
   var mRing='<div class="ringwrap">'+
-    ring(96,10,mSeg,tot?ti(tot):'—',tot?'kcal':null)+
+    ring(96,8,mSeg,tot?ti(tot):'—',tot?'kcal':null)+
     '<div class="ringside">'+mrows.map(function(x){
       var pc=x[1]==null?0:clamp(x[1]/x[2]*100);
       return '<div class="mmini"><span class="d" style="background:'+x[3]+'"></span>'+
@@ -2834,7 +2858,7 @@ function scoreHead(){
   var a7=scoreAvg(7),a30=scoreAvg(30),str=scoreStreak();
   var td=dayScore(today());
   var cells=[
-    ['Bugün',td?td.t:'—',td?sWord(td.t):'gün sürüyor',td?sColor(td.t):'#cdbfa8'],
+    ['Bugün',td?td.t:'—',td?'gün sürüyor · şu ana kadar':'kayıt bekleniyor',td?sColor(td.t):'#cdbfa8'],
     ['Son 7 gün',a7?a7.avg:'—','ortalama puan','#7c9ec4'],
     ['Son 30 gün',a30?a30.avg:'—',(a30?a30.n+' gün kayıtlı':'—'),'#9b8fc0'],
     ['Seri',str,str?'gün üst üste 75+':'75+ gün yok','#e0a272']
@@ -2904,11 +2928,11 @@ function scoreCalendarM(){
 }
 function scoreHeadM(){
   var a7=scoreAvg(7),str=scoreStreak(),td=dayScore(today());
-  var col=td?(td.t>=90?C.green:(td.t>=75?'#5aa832':(td.t>=55?C.amber:C.orange))):'#dfd4bd';
+  var col=td?(td.t>=90?CH.green:(td.t>=75?'#7ba35e':(td.t>=55?CH.amber:CH.orange))):'#dfd4bd';
   return '<div class="schm">'+
     ring(64,7,[[td?td.t/100:0,col]],td?String(td.t):'—',null)+
-    '<div class="schmt"><b>'+(td?sWord(td.t):'Gün sürüyor')+'</b>'+
-      '<i>bugün '+(td?td.t:0)+' / 100'+(td&&td.eksik?' · '+td.eksik+' görev eksik':'')+'</i>'+
+    '<div class="schmt"><b>'+(td?(td.t>=90?'Tam gün':'Gün sürüyor'):'Gün sürüyor')+'</b>'+
+      '<i>şu ana kadar '+(td?td.t:0)+' / 100'+(td&&td.eksik?' · '+td.eksik+' görev eksik':'')+'</i>'+
       '<u>son 7 gün ort. '+(a7?a7.avg:'—')+' · seri '+str+' gün</u></div></div>';
 }
 
@@ -3318,7 +3342,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v43 · 26 Ağu 2026';
+var APPVER='v45 · 27 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4083,7 +4107,7 @@ function detailLayer(){
     title='Gün Puanı';sub=flong(sd)+' · '+GUNU[pd(sd).getDay()];
     if(!sc)body='<div class="sempty">Bu gün için puan yok</div>';
     else{
-      var scol=sc.t>=90?C.green:(sc.t>=75?'#5aa832':(sc.t>=55?C.amber:C.orange));
+      var scol=sc.t>=90?CH.green:(sc.t>=75?'#7ba35e':(sc.t>=55?CH.amber:CH.orange));
       body='<div class="sctop" style="background:'+hexa(scol,.1)+'">'+
         ring(92,9,[[sc.t/100,scol]],String(sc.t),'/ 100')+
         '<div class="sctopt"><b style="color:'+scol+'">'+sWord(sc.t)+'</b>'+
@@ -4110,7 +4134,7 @@ function detailLayer(){
     title='Antrenman dökümü';sub=flong(td3)+' · '+dayTitle(td3);
     if(!t4||!t4.ex.length)body='<div class="sempty">Bu güne antrenman planlanmamış</div>';
     else{
-      var q4=(ev4&&!ev4.empty)?ev4.q:0,c4=q4>=.85?C.green:(q4>=.6?'#5aa832':(q4>0?C.amber:C.orange));
+      var q4=(ev4&&!ev4.empty)?ev4.q:0,c4=q4>=.85?CH.green:(q4>=.6?'#7ba35e':(q4>0?CH.amber:CH.orange));
       body='<div class="sctop" style="background:'+hexa(c4,.1)+'">'+
         ring(92,9,[[q4,c4]],'%'+Math.round(q4*100),'tamam')+
         '<div class="sctopt"><b style="color:'+c4+'">'+((ev4&&!ev4.empty)?ev4.verdict:'Seans girilmedi')+'</b>'+
