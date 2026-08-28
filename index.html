@@ -199,8 +199,6 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .setbox .wipe{color:#e4dac6;font-size:11px}
 .setbox.filled .wipe{color:#bdac8e}
 .setbox .wipe:hover{color:#ef5a1e}
-.addset{background:#fff;border:1px dashed #d9ccb5;border-radius:9px;color:#a8987c;font-size:12px;
-  font-weight:700;padding:0 12px;cursor:pointer}
 .exft{display:flex;gap:14px;flex-wrap:wrap;margin-top:9px;font-size:11.5px;color:#a8987c;font-weight:600}
 .exft b{font-weight:700}
 
@@ -555,8 +553,6 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gset.done .clr{color:#a8b8a8}
 .gset.done input{background:#f2f8f4;border-color:rgba(22,168,90,.4);color:#3a342c}
 .gset.done .ok{background:#16a85a;border-color:#16a85a;color:#fff}
-.gaddset{width:100%;margin-top:2px;border:1px dashed #d9ccb5;background:#fff;border-radius:11px;
-  padding:12px;font-size:12.5px;font-weight:700;color:#a8987c}
 .gfoot{display:flex;justify-content:space-between;font-size:12px;font-weight:700;color:#a8987c;margin-top:12px}
 
 .gnav{position:fixed;left:12px;right:12px;bottom:calc(84px + env(safe-area-inset-bottom));z-index:38;
@@ -2764,7 +2760,7 @@ function exRow(e,r){
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
           var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
           return '<div style="margin-top:6px;display:inline-block;font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 9px;background:'+hexa(col,.13)+';color:'+col+'">'+tx+'</div>';})()+
-        '<div class="sets">'+boxes+'<button class="addset" data-a="addset">+ set</button></div>'+
+        '<div class="sets">'+boxes+'</div>'+
         '<div class="exft"><span data-vol>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
           (prev?'<span>önceki '+fdate(prev.date)+': <b>'+esc(prev.txt)+'</b></span>':'<span>ilk kez yapılıyor</span>')+
           '<span data-trend>'+tr+'</span></div>'+
@@ -3755,7 +3751,6 @@ function gymWorkout(){
     prevSummary(prev,e)+
     '<div class="gsets">'+rows+'</div>'+
     '<div class="ghint">'+hint+'</div>'+
-    '<button class="gaddset" data-a="addset">+ set ekle</button>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
       '<span style="color:'+ev.color+'">'+ev.label+'</span></div>'+
   '</div>'+
@@ -6664,12 +6659,6 @@ app.addEventListener('click',function(ev){
   else if(a==='wprev'){wkOffset--;zi('z-week',weekTable());}
   else if(a==='wnext'){if(wkOffset<0){wkOffset++;zi('z-week',weekTable());}}
   else if(a==='wnow'){wkOffset=0;zi('z-week',weekTable());}
-  else if(a==='addset'){
-    var row=t.closest('[data-ex]'),name=row.getAttribute('data-ex');
-    var r=touch(cur);r.ex=r.ex||{};r.ex[name]=r.ex[name]||[];
-    var e=null;PROGRAM[planOf(cur)].ex.forEach(function(x){if(x.n===name)e=x;});
-    while(r.ex[name].length<Math.max(tgtOn(e,cur).s,r.ex[name].length))r.ex[name].push({kg:null,rep:null});
-    r.ex[name].push({kg:null,rep:null});save(cur);render();}
   else if(a==='delset'){
     var box=t.closest('[data-i]'),row2=t.closest('[data-ex]'),name2=row2.getAttribute('data-ex'),i=+box.getAttribute('data-i');
     var r3=touch(cur);if(r3.ex&&r3.ex[name2]){r3.ex[name2].splice(i,1);save(cur);render();}}
