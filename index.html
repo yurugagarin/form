@@ -637,6 +637,18 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   font-size:12.5px;font-weight:700;flex:none;-webkit-tap-highlight-color:transparent}
 .grirb.on{color:#fff}
 .grirb:active{transform:scale(.94)}
+/* hedef RIR — işaretlemeden önce hangisi olması gerektiğini gösterir */
+.grirb{position:relative}
+.grirb.tgt{border-style:dashed;border-width:1.5px}
+.grirb.tgt:not(.on){background:#fff}
+.tgtdot{position:absolute;top:-3px;right:-3px;width:7px;height:7px;border-radius:50%}
+.rirsch{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;
+  border-radius:7px;padding:3px 8px;margin-top:5px;letter-spacing:.2px}
+.rirsch i{font-style:normal;opacity:.72;font-weight:700}
+.rirwhy{font-size:11px;color:#a8987c;line-height:1.45;padding:2px 4px 0 34px}
+.jumpb{margin-top:8px;border-radius:11px;padding:9px 11px;font-size:11.5px;line-height:1.5;font-weight:600}
+.jumpb b{font-weight:800}
+.rirsel.tgt{border-color:#c9b894;background:#fffdf7}
 .grirh{font-size:10.5px;font-weight:700;color:#c0b193;margin-left:2px;overflow:hidden;
   text-overflow:ellipsis;white-space:nowrap}
 .rirsel{height:34px;border-radius:8px;border:1px solid #ddd0b8;background:#fbf8f2;
@@ -1172,6 +1184,35 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-28',
+  t:'Hedef RIR şeması ve ağırlık artışı sonrası tekrar uyarısı (v47)',
+  y:['SORUN 1: RIR kutucuğu boşken hangi değeri işaretlemem gerektiğine dair hiçbir şey '+
+     'söylemiyordu — sadece “kaç tekrarın kalmıştı?” yazıyordu. Hareketin bileşik mi izolasyon '+
+     'mu olduğunu ve setin kaçıncı sırada olduğunu akıldan hesaplamak gerekiyordu. Loglarda '+
+     'sonuç görünüyor: 24 Ağu Makine row ort. RIR 0.7 (bileşik, seansın 2. hareketi), '+
+     '26 Ağu Lat pulldown 0.7 (seansın İLK hareketi). Erken tükenince arkadan gelen hareketler '+
+     'yarım kalıyor.',
+     'HEDEF RIR: her hareket üç sınıftan birine ayrıldı. BİLEŞİK (squat, RDL, leg press, '+
+     'pulldown, row, presler) → son set hariç RIR 2, son set ≤1. İZOLASYON (curl, pushdown, '+
+     'leg curl/extension, calf, fly, face pull) → ilk set 2, kalanlar ≤1. KORUMALI '+
+     '(üç yan kaldırış varyasyonu) → bütün setler 2, hiç sıfıra inilmiyor.',
+     'NEDEN KORUMALI SINIF: yan kaldırış küçük bir kas ve rotator manşete yakın. 26 Ağu’da '+
+     '12 kg × 14 / 10 / 5 @RIR0 girilmiş — ilk set yetersizliğe götürülünce kalan iki set '+
+     'çökmüş. 22 Ağu’daki 12 × 12/12/12/12 (48 tekrar) her ölçüde daha iyi bir seans. '+
+     'Omuz ağrısının büyük ihtimalle çıktığı yer burası.',
+     'GÖRÜNÜM: antrenman modunda hedef RIR düğmesi kesik çerçeve + köşe noktasıyla '+
+     'işaretli, yanında “hedef 2” yazıyor. İşaretledikten sonra sapma varsa uyarı çıkıyor '+
+     '(“hedef 2 idi — sınıra fazla yaklaştın”). Hareket başlığının altında sınıf rozeti ve '+
+     'şemanın tamamı var: BİLEŞİK · hedef RIR 2 / 2 / ≤1. Masaüstünde açılır listede hedef '+
+     '◂ ile işaretli, kutu boşken “→2” görünüyor. Deload haftasında şema otomatik RIR 3’e '+
+     'geçiyor.',
+     'SORUN 2: “Ağırlığı 20 kg yap” uyarısı geliyordu ama artıştan sonra tekrarın düşeceği '+
+     'hiçbir yerde yazmıyordu. 12-15 hedefinde 11 tekrar yapınca gerileme sanılıyordu.',
+     'ARTIŞ UYARISI: bir harekette o günkü ağırlık geçen seansın üstündeyse kartın başına '+
+     'bilgi kutusu geliyor: “Ağırlık arttı: 18 → 20 kg. Tekrarların düşecek, normal.” '+
+     'ALARM ÇİZGİSİ hedefin 2 tekrar altı — 6-10 hedefinde 4, 12-15 hedefinde 10. '+
+     'Bu çizginin altına inersen kutu turuncuya dönüp “yük fazla, bir kademe geri in” diyor. '+
+     'Ağırlık Artırma kartının altına da aynı kural kalıcı not olarak eklendi.']},
  {d:'2026-08-28',
   t:'Fotoğraflara poz etiketi: ön / sağ / sol / arka (v46)',
   y:['SORUN: bir güne dört kare yüklendiğinde hepsi aynı etiketi taşıyordu (tarih + kilo). '+
@@ -2685,10 +2726,14 @@ function exRow(e,r){
       '<input data-s="kg" inputmode="decimal" placeholder="'+(ph&&ph.kg!=null?ph.kg:'kg')+'" value="'+(s.kg==null?'':s.kg)+'">'+
       '<span class="x">×</span>'+
       '<input data-s="rep" inputmode="numeric" placeholder="'+(ph&&ph.rep!=null?ph.rep:(e.r[0]+'-'+e.r[1]))+'" value="'+(s.rep==null?'':s.rep)+'">'+
-      '<select class="rirsel" data-s="rir" title="Yetersizliğe kalan tekrar">'+
-        '<option value="">RIR</option>'+
-        RIRV.map(function(rv){return '<option value="'+rv[0]+'"'+(s.rir===rv[0]?' selected':'')+'>'+rv[1]+'</option>';}).join('')+
-      '</select>'+
+      (function(){var tv=rirTgt(e.n,i,count),dv=rirDev(e.n,s.rir,i,count);
+        return '<select class="rirsel'+(s.rir==null?' tgt':'')+'" data-s="rir" title="'+
+          (dv?esc(dv.m):'Hedef RIR '+RIRL(tv)+' — '+esc(rirWhy(e.n)))+'"'+
+          (dv?' style="color:'+dv.c+';border-color:'+dv.c+'"':'')+'>'+
+          '<option value="">→'+RIRL(tv)+'</option>'+
+          RIRV.map(function(rv){return '<option value="'+rv[0]+'"'+(s.rir===rv[0]?' selected':'')+'>'+
+            rv[1]+(rv[0]===tv?' ◂':'')+'</option>';}).join('')+
+        '</select>';})()+
       '<button class="wipe" data-a="setwipe" data-i="'+i+'" aria-label="Seti temizle">✕</button>'+
       (i>=te.s?'<button data-a="delset" aria-label="Seti sil">×</button>':'')+'</div>';
   }
@@ -2703,6 +2748,18 @@ function exRow(e,r){
           '<span class="extgt">'+e.s+' × '+e.r[0]+'-'+e.r[1]+(e.off?' · PLAN DIŞI':'')+'</span>'+
           '<span class="badge" data-badge style="color:'+ev.color+';background:'+ev.bg+'">'+ev.label+'</span></div>'+
         '<div class="exdesc">'+esc(descOf(e.n))+'</div>'+
+        (function(){var kk=exKind(e.n),kc=kk==='p'?C.violet:(kk==='c'?C.teal:C.green);
+          return '<div class="rirsch" style="background:'+hexa(kc,.13)+';color:'+kc+'" title="'+esc(rirWhy(e.n))+'">'+
+            KINDN[kk].toUpperCase()+' <i>· hedef RIR '+rirScheme(e.n,count)+'</i></div>';})()+
+        (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
+          var jc=ju.bad?C.orange:C.teal;
+          return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
+            '<b>Ağırlık arttı: '+ju.from+' → '+ju.to+' kg.</b> '+
+            (ju.bad
+              ?'Ama '+ju.low+' tekrarda kaldın — hedefin ('+ju.lo+'-'+ju.hi+') 2 altı olan <b>'+ju.floor+
+               '</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
+              :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
+               'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.')+'</div>';})()+
         (function(){var pg=progression(e.n);if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
           var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
@@ -3040,6 +3097,77 @@ function nextWeight(kg){var inc=kg<20?1:(kg<40?2:2.5);return Math.round((kg+inc)
 var RIRV=[[0,'≤1',C.orange],[2,'2',C.green],[3,'3+',C.amber]];
 var RIRT={0:'sınıra çok yakın',2:'ideal aralık',3:'efor düşük — ağırlığı artır'};
 function RIRL(v){return v===0?'≤1':(v===3?'3+':String(v));}
+
+/* ============ HEDEF RIR ŞEMASI ============
+   Her set aynı efora çalışılmaz. Bileşik hareketler seansın toparlanma
+   bütçesini yer: ilk hareketi yetersizliğe götürürsen arkadan gelen 4-5
+   hareket yarım kalır. İzolasyonda ise maliyet düşük, sona doğru sıfıra
+   inebilirsin. Yan kaldırışlar ayrı bir sınıf: küçük kas + rotator manşete
+   yakın; orada sürekli sıfıra inmek omuz ağrısının doğrudan sebebi.
+
+   c = bileşik   → son set hariç RIR 2, son set ≤1
+   i = izolasyon → ilk set RIR 2, kalanlar ≤1
+   p = korumalı  → bütün setler RIR 2 (sıfıra inme) */
+var EXKIND={
+  'Eğik dambıl press':'c','Düz dambıl press':'c','Oturarak dambıl omuz press':'c',
+  'Lat pulldown / Barfiks':'c','Makine row':'c','Oturarak kablo row':'c',
+  'Squat / Hack squat':'c','Romanian deadlift':'c','Leg press':'c',
+  'Makine omuz press':'c','Dar tutuş bench / Dips':'c',
+  'Kablo yan kaldırış':'p','Oturarak dambıl yan kaldırış':'p','Tek kol kablo yan kaldırış':'p',
+  'Kafa üstü triceps ekstansiyon':'i','Halat pushdown':'i','Face pull':'i',
+  'Kablo curl':'i','Eğik dambıl curl':'i','Hammer curl':'i','Preacher curl':'i',
+  'Skullcrusher':'i','Kablo fly':'i','Leg curl':'i','Leg extension':'i',
+  'Ayakta calf raise':'i','Cable crunch':'i'
+};
+var KINDN={c:'bileşik',i:'izolasyon',p:'korumalı'};
+function exKind(n){return EXKIND[n]||'i';}
+/* i. setin hedef RIR'ı (tot = o gün planlanan set sayısı) */
+function rirTgt(name,i,tot){
+  var k=exKind(name),last=(i>=(tot||1)-1);
+  if(isDeload(cur))return 3;              /* deload haftası: her set RIR 3-4 */
+  if(k==='p')return 2;
+  if(k==='c')return last?0:2;
+  return i===0?2:0;
+}
+/* kartın üstünde gösterilen şema özeti: "2 / 2 / ≤1" */
+function rirScheme(name,tot){
+  var a=[];for(var i=0;i<(tot||3);i++)a.push(RIRL(rirTgt(name,i,tot)));
+  return a.join(' / ');
+}
+function rirWhy(name){
+  var k=exKind(name);
+  if(isDeload(cur))return 'Deload — her seti RIR 3-4’te bırak, bu hafta yorulmak yok.';
+  if(k==='p')return 'Yan kaldırış: hiçbir seti sıfıra götürme. Omuz ağrısı buradan çıkar.';
+  if(k==='c')return 'Bileşik: erken setleri 2’de bırak, toparlanmayı seansın geri kalanına sakla.';
+  return 'İzolasyon: ilk set 2, sonrakiler sınıra kadar. Maliyeti düşük.';
+}
+/* girilen RIR hedeften sapıyor mu — uyarı metni */
+function rirDev(name,v,i,tot){
+  if(v==null)return null;
+  var t=rirTgt(name,i,tot);
+  if(v===t)return null;
+  if(v===3)return {c:C.amber,m:'hedef '+RIRL(t)+' — bu set fazla hafif kaldı'};
+  if(t===2&&v===0)return {c:C.orange,m:'hedef 2 idi — sınıra fazla yaklaştın'};
+  if(t===0&&v===2)return {c:'#a8987c',m:'hedef ≤1 — biraz daha zorlayabilirdin'};
+  return null;
+}
+
+/* ============ AĞIRLIK YENİ ARTTI MI ============
+   Ağırlık artınca tekrar düşer, bu beklenen şey. Alarm çizgisi hedefin
+   2 tekrar altı: 12-15 hedefinde 10-11 normal, 9 ve altı yük fazla demek. */
+function justUp(name,d,e){
+  var f=((D(d).ex||{})[name]||[]).filter(function(s){return s.kg!=null;});
+  if(!f.length)return null;
+  var mx=Math.max.apply(null,f.map(function(s){return s.kg;}));
+  var pv=prevSession(name,d);if(!pv||!pv.sets.length)return null;
+  var pk=Math.max.apply(null,pv.sets.map(function(s){return s.kg;}));
+  if(!(mx>pk))return null;
+  var lo=e&&e.r?e.r[0]:8,floor=Math.max(1,lo-2);
+  var reps=f.filter(function(s){return s.kg===mx&&s.rep!=null;}).map(function(s){return s.rep;});
+  var low=reps.length?Math.min.apply(null,reps):null;
+  return {from:pk,to:mx,lo:lo,hi:e&&e.r?e.r[1]:12,floor:floor,low:low,
+          bad:(low!=null&&low<floor)};
+}
 function kgStep(kg){
   if(kg==null)return 2.5;
   if(kg<10)return .5;
@@ -3101,7 +3229,10 @@ function _progression(name){
     if(dl)return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
       msg:'Bu hafta deload — ağırlığı koru, artırmayı gelecek haftaya bırak.'};
     return {type:'up',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      msg:'Tüm setlerde '+e.r[1]+' tekrara ulaştın. <b>'+nx+' kg</b>’a çık, '+e.r[0]+'-'+e.r[1]+' aralığına geri dön.'};
+      msg:'Tüm setlerde '+e.r[1]+' tekrara ulaştın. <b>'+nx+' kg</b>’a çık. '+
+          'İlk seansta '+e.r[0]+' tekrarın altında kalman normal — '+
+          Math.max(1,e.r[0]-2)+' tekrarın altına düşmediğin sürece devam et, '+
+          'birkaç hafta içinde '+e.r[0]+'-'+e.r[1]+' aralığına tırmanırsın.'};
   }
 
   /* RIR düşüyorsa aynı kiloda kalmak takılmak değil — gerçek ilerleme */
@@ -3160,6 +3291,10 @@ function progressCard(){
     (stalls.length?stalls.length+' takıldı':'')+'</span></div>'+
     ups.map(function(x){return row(x[0],x[1]);}).join('')+
     stalls.map(function(x){return row(x[0],x[1]);}).join('')+
+    (ups.length?'<div style="padding:11px 18px;border-top:1px solid #f0e8d8;font-size:12px;'+
+      'color:#a8987c;line-height:1.5"><b style="color:#8a7f6f">Ağırlık artınca tekrarın düşer — bu gerileme değil.</b> '+
+      'Yeni yükte hedef aralığın altında başlamak normal; birkaç hafta içinde tabanı yakalarsın. '+
+      'Yalnızca aralığın <b>2 tekrar</b> altına inersen yük fazladır, bir kademe geri in.</div>':'')+
   '</div>';
 }
 
@@ -3396,7 +3531,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v46 · 28 Ağu 2026';
+var APPVER='v47 · 28 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3569,13 +3704,18 @@ function gymWorkout(){
       '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':'○')+'</button>'+
       '<button class="clr'+((st2.kg!=null||st2.rep!=null)?' live':'')+'" data-a="setclear" data-i="'+i+'" aria-label="Seti temizle">✕</button>'+
     '</div>'+
-    '<div class="grir"><span class="grirl">RIR</span>'+
+    (function(){
+      var tv=rirTgt(e.n,i,cnt),dv=rirDev(e.n,st2.rir,i,cnt);
+      return '<div class="grir"><span class="grirl">RIR</span>'+
       RIRV.map(function(rv){
-        return '<button class="grirb'+(st2.rir===rv[0]?' on':'')+'" data-a="rir" data-i="'+i+'" data-v="'+rv[0]+'"'+
-          (st2.rir===rv[0]?' style="background:'+rv[2]+';border-color:'+rv[2]+'"':' style="color:'+rv[2]+'"')+
-          '>'+rv[1]+'</button>';}).join('')+
-      '<span class="grirh">'+(st2.rir==null?'kaç tekrarın kalmıştı?':RIRT[st2.rir])+'</span>'+
-    '</div>'+
+        var on=st2.rir===rv[0],ist=(rv[0]===tv);
+        return '<button class="grirb'+(on?' on':'')+(ist?' tgt':'')+'" data-a="rir" data-i="'+i+'" data-v="'+rv[0]+'"'+
+          (on?' style="background:'+rv[2]+';border-color:'+rv[2]+'"'
+             :' style="color:'+rv[2]+(ist?';border-color:'+rv[2]:'')+'"')+
+          '>'+rv[1]+(ist&&!on?'<span class="tgtdot" style="background:'+rv[2]+'"></span>':'')+'</button>';}).join('')+
+      '<span class="grirh"'+(dv?' style="color:'+dv.c+'"':'')+'>'+
+        (st2.rir==null?'hedef '+RIRL(tv):(dv?dv.m:'✓ '+RIRT[st2.rir]))+'</span>'+
+    '</div>';})()+
     (prev&&prev.sets[i]
       ?'<div class="gpset">geçen sefer <b>'+prev.sets[i].kg+' kg × '+prev.sets[i].rep+'</b>'+
         (prev.sets[i].rir!=null?' · RIR '+RIRL(prev.sets[i].rir):'')+'</div>'
@@ -3594,8 +3734,21 @@ function gymWorkout(){
         '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+
         '<div class="gtgt">'+te.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme'+
           (te.dl?' <b style="color:'+C.amber+'">· DELOAD ('+e.s+'→'+te.s+' set)</b>':'')+'</div>'+
+        (function(){var kk=exKind(e.n),kc=kk==='p'?C.violet:(kk==='c'?C.teal:C.green);
+          return '<div class="rirsch" style="background:'+hexa(kc,.13)+';color:'+kc+'">'+
+            KINDN[kk].toUpperCase()+' <i>· hedef RIR '+rirScheme(e.n,cnt)+'</i></div>';})()+
       '</div></div>'+
     '<div class="gdesc">'+esc(descOf(e.n))+'</div>'+
+    '<div class="rirwhy" style="padding-left:14px">'+rirWhy(e.n)+'</div>'+
+    (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
+      var jc=ju.bad?C.orange:C.teal;
+      return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
+        '<b>Ağırlık arttı: '+ju.from+' → '+ju.to+' kg.</b> '+
+        (ju.bad
+          ?'Ama '+ju.low+' tekrarda kaldın — hedefin ('+ju.lo+'-'+ju.hi+') 2 altı olan '+
+           '<b>'+ju.floor+'</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
+          :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
+           'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.')+'</div>';})()+
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
