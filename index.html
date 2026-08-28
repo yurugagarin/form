@@ -490,10 +490,13 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gprevst b{display:block;font-family:'Fraunces';font-size:17px;font-weight:600;line-height:1.05;
   color:#3a342c;font-variant-numeric:tabular-nums}
 .gprevst i{display:block;font-style:normal;font-size:9px;font-weight:700;color:#b3a488;margin-top:3px}
-.gprevv{margin-top:10px;font-size:12px;font-weight:700;line-height:1.45;
-  background:#fbf7ee;border:1px solid #e8ddc6;border-left:3px solid currentColor;
-  border-radius:9px;padding:9px 11px}
-.gprevv u{text-decoration:none;color:#b3a488}
+.gprevv{margin-top:12px;border:1.5px solid currentColor;border-radius:13px;
+  background:#fdfaf4;padding:10px 12px 12px;box-shadow:0 1px 0 rgba(58,52,44,.04)}
+.gpk{display:inline-block;background:currentColor;border-radius:6px;padding:3px 8px 4px;
+  font-size:8.5px;letter-spacing:1.3px;font-weight:800;margin-bottom:8px}
+.gpk i{font-style:normal;color:#fdfaf4}
+.gpt{font-size:12.5px;font-weight:700;line-height:1.5}
+.gprevv u{text-decoration:none;color:#b3a488;font-weight:600}
 .gdue{background:#ef5a1e;color:#fff;border-radius:999px;padding:2px 8px;font-size:9px;letter-spacing:.8px}
 .gduebanner{margin:0 14px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;
   padding:10px 12px;font-size:12px;font-weight:700;color:#a5541f;line-height:1.45}
@@ -791,7 +794,10 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phbksep{text-align:center;font-size:10px;letter-spacing:1px;font-weight:700;color:#c0b193;
   margin:14px 0 10px;text-transform:uppercase}
 /* tam ekran görüntüleyici */
-body.pvlock{overflow:hidden}
+body.pvlock,body.ovlock{overflow:hidden;overscroll-behavior:none}
+/* Kat açıkken arka sayfanın kaymasını kes. overscroll-behavior kaydırıcı
+   sona dayandığında zincirlemeyi durdurur; kilit de sayfayı sabitler. */
+.dsheet,.mdrwp,.mbox,.pvstage,.dwrap,.mdrw,.modal{overscroll-behavior:contain}
 .pv{position:fixed;inset:0;z-index:200;background:#17140f;
   display:flex;flex-direction:column;
   padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
@@ -1185,6 +1191,26 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
  {d:'2026-08-29',
+  t:'Fotoğraf titremesi, karşılaştırma okları, kat kaydırma kilidi (v49)',
+  y:['ETİKET TİTREMESİ: tam ekranda poza dokununca bütün görüntüleyici innerHTML ile '+
+     'yeniden kuruluyordu. <img src="data:..."> her seferinde yeniden yaratılınca tarayıcı '+
+     'büyük veri URLsini baştan çözüyor, telefonda ekran gidip geliyordu. Üstelik arkadaki '+
+     'galeri de aynı anda yeniden çiziliyordu. Artık sadece poz düğmeleri, üst bilgi ve '+
+     'sayaç güncelleniyor; fotoğraf DOMda yerinde kalıyor. Arka plan görüntüleyici '+
+     'kapanınca bir kez tazeleniyor.',
+     'KARŞILAŞTIRMA OKLARI: karşılaştırma ekranından bir kareye dokununca oklar bütün '+
+     'galeriyi geziyordu — ikinci kareye ulaşmak için onlarca fotoğraf geçmek gerekiyordu. '+
+     'Görüntüleyiciye kapsam eklendi: karşılaştırmadan açıldıysa oklar sadece o iki '+
+     'fotoğrafın arasında dolaşıyor. Galeriden açılınca davranış eskisi gibi.',
+     'KAT KAYDIRMA KİLİDİ: alt sayfa, çekmece veya hareket kipi açıkken parmakla aşağı '+
+     'yukarı yapınca arkadaki sayfa kayıyordu. Kat kısa olduğunda ya da kendi sonuna '+
+     'dayandığında dokunuş gövdeye geçiyordu. İki katman eklendi: CSSte '+
+     'overscroll-behavior:contain, JSte gövde kilidi ve eski iOS için touchmove engeli. '+
+     'İki parmak hareketi serbest bırakıldı, yakınlaştırma bozulmuyor.',
+     'ÇERÇEVE: geçen seans kararı artık renkli kenarlıklı bir kutuda, üstünde '+
+     '“NE YAPMALI” etiketiyle duruyor. Kenarlık ve etiket rengi durumu taşıyor: '+
+     'yeşil artır, mavi devam, sarı topla, turuncu geri in.']},
+ {d:'2026-08-28',
   t:'Geçen seans kartı yanlış "ağırlığı artır" diyordu (v48)',
   y:['SORUN: 29 Ağu İtiş günü açılınca Eğik dambıl press kartı "Üst sınırdaydın — bugün '+
      'ağırlığı artır (hedef 6-10)" dedi. Geçen seans 26 Ağu Üst Vücut günüydü ve o gün '+
@@ -3106,9 +3132,11 @@ function openFig(name){
   document.getElementById('msub').innerHTML=(e?'<b>'+e.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar</b><br>':'')+esc(descOf(name));
   document.getElementById('mlink').href='https://www.youtube.com/results?search_query='+encodeURIComponent(enName(name)+' form');
   document.getElementById('modal').classList.add('on');
+  syncLock();
 }
 function closeFig(){
   document.getElementById('modal').classList.remove('on');
+  syncLock();
   var ml=document.getElementById('mlink');if(ml)ml.style.display='';
 }
 
@@ -3584,7 +3612,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v48 · 29 Ağu 2026';
+var APPVER='v49 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4772,7 +4800,7 @@ function gymNav(){
   '</div>';
 }
 /* gövde + çubuk birlikte tazelenir */
-function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());}
+function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());syncLock();}
 var pendingRefresh=false;
 function typing(){
   var ae=document.activeElement;
@@ -4785,9 +4813,10 @@ function gymRefresh(){
 }
 function gymTabsRefresh(){zi('g-tabs',gymTabsInner());}
 function renderGym(){
-  document.body.className='gym';
+  document.body.className='gym'+(document.body.classList.contains('pvlock')?' pvlock':'');
   app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+
     '<div id="g-nav">'+gymNav()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
+  syncLock();
 }
 
 /* ============ AYARLAR / RAPOR ============ */
@@ -5405,19 +5434,39 @@ function pvNode(){
   if(!n){n=document.createElement('div');n.id='phviewer';document.body.appendChild(n);}
   return n;
 }
-function phOpenViewer(ix){
-  var all=phAll();if(!all.length)return;
+/* --- görüntüleyici kapsamı ---
+   Karşılaştırma ekranından bir fotoğrafa dokununca oklar bütün galeriyi
+   geziyordu; karşılaştırdığın ikinci kareye ulaşmak için onlarca fotoğraf
+   geçmek gerekiyordu. pvScope doluysa oklar sadece o kimliklerin arasında
+   dolaşır. Galeriden açılınca boş kalır, davranış eskisi gibi. */
+var pvScope=null;
+function pvList(){
+  var all=phAll();
+  if(!pvScope||!pvScope.length)return all;
+  var out=[];
+  pvScope.forEach(function(id){
+    for(var i=0;i<all.length;i++)if(all[i].id===id){out.push(all[i]);break;}
+  });
+  return out.length?out:all;
+}
+function phOpenViewer(ix,scope){
+  pvScope=(scope&&scope.length>1)?scope.slice():null;
+  var all=pvList();if(!all.length){pvScope=null;all=phAll();if(!all.length)return;}
   pvIdx=Math.max(0,Math.min(all.length-1,ix));pvZoom=false;pvDelArm=false;
   document.body.classList.add('pvlock');
   paintViewer();
 }
 function phCloseViewer(){
-  pvIdx=null;pvZoom=false;pvDelArm=false;
+  pvIdx=null;pvZoom=false;pvDelArm=false;pvScope=null;
   document.body.classList.remove('pvlock');
   var n=document.getElementById('phviewer');if(n)n.parentNode.removeChild(n);
+  /* etiketleme sırasında arka plan tazelenmiyordu — kapanışta bir kez yapılır */
+  if(pvDirty){pvDirty=false;repaintPhoto();}
+  syncLock();
 }
+var pvDirty=false;
 function paintViewer(){
-  var n=pvNode(),all=phAll();
+  var n=pvNode(),all=pvList();
   if(pvIdx==null||!all.length){phCloseViewer();return;}
   if(pvIdx>=all.length)pvIdx=all.length-1;
   var x=all[pvIdx],r=D(x.d),tm=phTime(x);
@@ -5461,6 +5510,67 @@ function paintViewer(){
          '<button class="pvbtn del" data-a="pvdel">Sil</button>')+
     '</div>';
 }
+/* Etiket değişince BÜTÜN görüntüleyici innerHTML ile yeniden kuruluyordu.
+   <img src="data:..."> yeniden yaratılınca tarayıcı büyük veri URL'sini
+   baştan çözüyor — telefonda her dokunuşta ekran gidip geliyordu. Üstelik
+   arkadaki galeri de aynı anda yeniden çiziliyordu. Artık sadece poz
+   düğmeleri, üst bilgi ve sayaç güncelleniyor; fotoğraf DOM'da yerinde
+   kalıyor, arka plan kapanışta bir kez tazeleniyor. */
+function paintViewerPose(){
+  var n=document.getElementById('phviewer');
+  if(!n||pvIdx==null){paintViewer();return;}
+  var all=pvList();
+  if(!all.length){phCloseViewer();return;}
+  if(pvIdx>=all.length)pvIdx=all.length-1;
+  var x=all[pvIdx],r=D(x.d),xp=phPoseOf(x);
+  var box=n.querySelector('.pvpose');
+  if(!box){paintViewer();return;}
+  box.innerHTML=POSES.map(function(p){
+      return '<button class="pvpchip'+(xp===p[0]?' on':'')+'" data-a="pvpose" data-p="'+p[0]+'">'+
+        p[1]+'</button>';}).join('')+
+    (xp?'<button class="pvpchip clr" data-a="pvpose" data-p="">✕</button>':'');
+  var facts=[];
+  if(xp)facts.push(poseName(xp).toUpperCase());
+  if(r.w!=null)facts.push(fx(r.w,1)+' kg');
+  if(r.b!=null)facts.push('bel '+fx(r.b,1));
+  if(r.sh!=null)facts.push('omuz '+fx(r.sh,1));
+  var tm=phTime(x),ms=n.querySelector('.pvmeta span');
+  if(ms)ms.textContent=GUNU[pd(x.d).getDay()]+' · hafta '+wkLabel(weekIdx(x.d))+
+    (tm?' · '+tm+' yüklendi':'')+(facts.length?' · '+facts.join(' · '):'');
+  var cb=n.querySelector('.pvcount b');
+  if(cb)cb.textContent=(pvIdx+1)+' / '+all.length;
+  var pb=n.querySelector('[data-a="pvprev"]'),nb=n.querySelector('[data-a="pvnext"]');
+  if(pb)pb.disabled=(pvIdx===0);
+  if(nb)nb.disabled=(pvIdx>=all.length-1);
+  pvDirty=true;
+}
+/* ============ KAYDIRMA KİLİDİ ============
+   Alt sayfa, çekmece veya kip açıkken parmakla aşağı-yukarı yapınca arkadaki
+   sayfa kayıyordu: kat kısa olduğunda ya da kendi sonuna dayandığında dokunuş
+   gövdeye geçiyordu. İki katmanlı çözüm — CSS'te overscroll-behavior:contain,
+   burada da gövde kilidi + eski iOS için touchmove engeli. */
+var SCROLLERS='.dsheet,.mdrwp,.mbox,.pvstage,.ovscroll';
+function overlayOpen(){
+  if(pvIdx!=null)return true;
+  if(typeof mDrawer!=='undefined'&&mDrawer)return true;
+  if(typeof dOpen!=='undefined'&&dOpen&&!dClosing)return true;
+  var m=document.getElementById('modal');
+  return !!(m&&m.classList.contains('on'));
+}
+function syncLock(){
+  var on=overlayOpen();
+  if(on)document.body.classList.add('ovlock');
+  else document.body.classList.remove('ovlock');
+}
+document.addEventListener('touchmove',function(ev){
+  var b=document.body;
+  if(!b.classList.contains('ovlock')&&!b.classList.contains('pvlock'))return;
+  if(ev.touches&&ev.touches.length>1)return;           /* iki parmak: yakınlaştırma */
+  var t=ev.target,sc=(t&&t.closest)?t.closest(SCROLLERS):null;
+  if(!sc){if(ev.cancelable)ev.preventDefault();return;}
+  /* kaydırılacak yeri yoksa dokunuş yine gövdeye kaçar — orada da kes */
+  if(sc.scrollHeight<=sc.clientHeight+1&&ev.cancelable)ev.preventDefault();
+},{passive:false});
 /* --- galeri: gün gün, en yeni üstte --- */
 function phGallery(all){
   if(!all.length)return '<div class="phempty">Henüz fotoğraf yok.</div>';
@@ -5556,7 +5666,8 @@ function phCompare(all){
     '<div class="phcmp">'+[[A,cmpA,'ÖNCE'],[B,cmpB,'SONRA']].map(function(o){
       var pp=phPoseOf(o[0]);
       return '<div><div class="phcl">'+o[2]+(pp?' · '+poseName(pp).toUpperCase():'')+' · '+fdate(o[0].d)+'</div>'+
-        '<button class="phbig" data-a="phopen" data-x="'+phIxOf(o[0])+'"><img src="'+o[0].u+'" alt=""></button>'+
+        '<button class="phbig" data-a="phopen" data-x="'+phIxOf(o[0])+'" '+
+          'data-scope="'+esc(A.id+'|'+B.id)+'"><img src="'+o[0].u+'" alt=""></button>'+
         '<div class="phcs">hafta '+wkLabel(weekIdx(o[0].d))+
           (D(o[0].d).w!=null?' · '+fx(D(o[0].d).w,1)+' kg':'')+'</div></div>';
     }).join('')+'</div>'+
@@ -6202,10 +6313,13 @@ function prevSummary(prev,e){
       '<div><b>'+prev.sets.length+'</b><i>set</i></div>'+
       '<div><b>'+(rAvg==null?'—':fx(rAvg,1))+'</b><i>ort. RIR</i></div>'+
     '</div>'+
-    '<div class="gprevv" style="color:'+vc+'">'+verdict+' <u>(o gün hedef '+lo+'-'+hi+')</u>'+
-      ((e.r[0]!==lo||e.r[1]!==hi)
-        ?'<span style="color:#a8987c;font-weight:400"> · bugün bu hareketin hedefi '+
-          e.r[0]+'-'+e.r[1]+', ayrı gün ayrı hat</span>':'')+
+    '<div class="gprevv" style="color:'+vc+'">'+
+      '<div class="gpk"><i>NE YAPMALI</i></div>'+
+      '<div class="gpt">'+verdict+' <u>(o gün hedef '+lo+'-'+hi+')</u>'+
+        ((e.r[0]!==lo||e.r[1]!==hi)
+          ?'<span style="color:#a8987c;font-weight:400"> · bugün bu hareketin hedefi '+
+            e.r[0]+'-'+e.r[1]+', ayrı gün ayrı hat</span>':'')+
+      '</div>'+
     '</div>'+
   '</div>';
 }
@@ -6246,11 +6360,12 @@ function workHero(){
 function render(){
   if(S.autoTargets&&syncAutoTargets())save();
   if(phone()){renderGym();return;}
-  document.body.className='';
+  document.body.className=(document.body.classList.contains('pvlock')?'pvlock':'');
   app.innerHTML=header()+deskNav()+'<div id="z-body">'+deskBody()+'</div>'+
     '<div style="text-align:center;margin-top:18px;font-size:12.5px;color:#a8987c">'+
       'Kiloyu her sabah aç karnına gir · trend çizgisine bak, tek güne değil · kayıtlar otomatik saklanır'+
     '</div>'+detailLayer();
+  syncLock();
 }
 /* ============ MASAÜSTÜ SEKMELERİ ============
    Her şey tek sayfada alt alta duruyordu; ayar niteliğindeki bölümler
@@ -6481,17 +6596,17 @@ document.addEventListener('click',function(ev){
   var a=t.getAttribute('data-a');
   if(a==='pvclose'){phCloseViewer();}
   else if(a==='pvprev'){if(pvIdx>0){pvIdx--;pvZoom=false;pvDelArm=false;paintViewer();}}
-  else if(a==='pvnext'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;pvDelArm=false;paintViewer();}}
+  else if(a==='pvnext'){var al=pvList();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;pvDelArm=false;paintViewer();}}
   else if(a==='pvzoom'){if(pvDelArm)return;pvZoom=!pvZoom;paintViewer();}
   else if(a==='pvpose'){
-    var alp=phAll(),xp2=alp[pvIdx];if(!xp2)return;
+    var alp=pvList(),xp2=alp[pvIdx];if(!xp2)return;
     phSetPose(xp2.id,t.getAttribute('data-p')||'');
     /* etiket sırayı değiştirir — imleç aynı fotoğrafın üstünde kalsın */
-    var alp2=phAll();
+    var alp2=pvList();
     for(var q=0;q<alp2.length;q++)if(alp2[q].id===xp2.id){pvIdx=q;break;}
-    repaintPhoto();}
+    paintViewerPose();}
   else if(a==='pvcmp'){
-    var alc=phAll(),xc=alc[pvIdx];
+    var alc=pvList(),xc=alc[pvIdx];
     /* bu fotoğrafın pozu varsa karşılaştırmayı doğrudan o poza kilitle */
     cmpPose=xc?(phPoseOf(xc)||'all'):'all';
     var lst=phCmpList(),ixc=lst.length-1;
@@ -6503,10 +6618,12 @@ document.addEventListener('click',function(ev){
   else if(a==='pvdel'){pvDelArm=true;paintViewer();}
   else if(a==='pvdelno'){pvDelArm=false;paintViewer();}
   else if(a==='pvdelyes'){
-    var al2=phAll(),x=al2[pvIdx];if(!x)return;
+    var al2=pvList(),x=al2[pvIdx];if(!x)return;
     pvDelArm=false;
     if(!phDeleteOne(x)){paintViewer();return;}
-    var al3=phAll();
+    if(pvScope)pvScope=pvScope.filter(function(id){return id!==x.id;});
+    if(pvScope&&pvScope.length<2)pvScope=null;
+    var al3=pvList();
     if(cmpA>=al3.length)cmpA=0;
     if(cmpB>=al3.length)cmpB=Math.max(0,al3.length-1);
     if(!al3.length){phCloseViewer();render();toast('fotoğraf silindi');return;}
@@ -6519,7 +6636,7 @@ document.addEventListener('keydown',function(ev){
   if(pvIdx==null)return;
   if(ev.key==='Escape')phCloseViewer();
   else if(ev.key==='ArrowLeft'&&pvIdx>0){pvIdx--;pvZoom=false;paintViewer();}
-  else if(ev.key==='ArrowRight'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;paintViewer();}}
+  else if(ev.key==='ArrowRight'){var al=pvList();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;paintViewer();}}
 });
 app.addEventListener('click',function(ev){
   var t=ev.target;
@@ -6603,7 +6720,16 @@ app.addEventListener('click',function(ev){
     var rn=document.querySelector('[data-a="reponew"]');
     phCreateRepo(rn?rn.value:'');}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
-  else if(a==='phopen'){phOpenViewer(+t.getAttribute('data-x'));}
+  else if(a==='phopen'){
+    /* karşılaştırmadan açılıyorsa kapsam iki kareyle sınırlı — ok tuşu
+       galeriyi değil, karşılaştırdığın diğer fotoğrafı getirir */
+    var sc=t.getAttribute('data-scope');
+    if(sc){var ids=sc.split('|'),al=phAll(),ix=0;
+      for(var q3=0;q3<al.length;q3++)if(al[q3].id===ids[0]){ix=0;break;}
+      var me=+t.getAttribute('data-x'),cu=phAll()[me];
+      ix=(cu&&cu.id===ids[1])?1:0;
+      phOpenViewer(ix,ids);}
+    else phOpenViewer(+t.getAttribute('data-x'));}
   else if(a==='phtag'){
     var tid=t.getAttribute('data-id');
     phPick=(phPick===tid)?null:tid;
