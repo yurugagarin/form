@@ -663,9 +663,37 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   border-radius:5px;padding:1px 5px}
 .phtab.on i{background:rgba(255,255,255,.2);color:#f3ecdf}
 .phgroup{margin-bottom:16px}
-.phghd{margin-bottom:7px}
+.phghd{margin-bottom:7px;display:flex;align-items:flex-end;gap:8px}
+.phghdt{flex:1;min-width:0}
 .phghd b{display:block;font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c;line-height:1.2}
 .phghd span{display:block;font-size:10.5px;font-weight:700;color:#b3a488;margin-top:2px}
+.phgtag{flex:none;border:1px solid #f2d3b4;background:#fff3e6;border-radius:8px;padding:6px 10px;
+  font-size:11px;font-weight:700;color:#a5541f;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phcw{position:relative}
+.phcw.sel .phcell img{border-color:#3a342c;box-shadow:0 0 0 2px #3a342c}
+.phtagb{position:absolute;left:5px;right:5px;bottom:5px;height:22px;border:0;border-radius:7px;padding:0;
+  background:rgba(30,25,18,.66);color:#fff;font-size:10px;font-weight:800;letter-spacing:.5px;
+  cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phtagb.no{background:rgba(165,84,31,.85);letter-spacing:.2px}
+.phtagbar{margin-top:8px;display:flex;align-items:center;gap:7px;background:#f7f1e4;
+  border:1px solid #e4d9c2;border-radius:12px;padding:8px}
+.phtagbar>img{width:36px;height:46px;object-fit:cover;border-radius:8px;flex:none;border:1px solid #e8dcc4}
+.phtagg{flex:1;min-width:0;display:flex;gap:5px;flex-wrap:wrap}
+.phchip{flex:1;min-width:50px;height:36px;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;
+  font-size:12px;font-weight:700;color:#6b5f4d;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phchip.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+.phchip.clr{flex:none;min-width:0;padding:0 11px;color:#a5541f;font-size:15px}
+.phposebar{display:flex;gap:5px;overflow-x:auto;margin-bottom:10px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.phpb{flex:none;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:9px;padding:7px 12px;
+  font-size:12px;font-weight:700;color:#8a7f6f;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phpb.on{background:#3a342c;border-color:#3a342c;color:#f3ecdf}
+.phpb i{font-style:normal;font-size:9.5px;font-weight:700;margin-left:5px;color:#b3a488}
+.phpb.on i{color:#cdbfa8}
+.pvpose{display:flex;gap:6px;padding:0 14px 6px;flex:none}
+.pvpchip{flex:1;height:38px;border-radius:11px;border:1px solid #3a352c;background:#231f18;
+  color:#a1917a;font-size:12px;font-weight:700;-webkit-tap-highlight-color:transparent}
+.pvpchip.on{background:#f3ecdf;border-color:#f3ecdf;color:#231f18}
+.pvpchip.clr{flex:none;padding:0 13px;color:#8a7f6f;font-size:15px}
 .phgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
 .phcell{border:0;background:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent;
   border-radius:11px;overflow:hidden;position:relative;display:block}
@@ -1144,6 +1172,22 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-28',
+  t:'Fotoğraflara poz etiketi: ön / sağ / sol / arka (v46)',
+  y:['SORUN: bir güne dört kare yüklendiğinde hepsi aynı etiketi taşıyordu (tarih + kilo). '+
+     'Karşılaştırma ekranında hangisinin ön, hangisinin arka olduğu ayırt edilemiyor, '+
+     'yanlışlıkla ön ile sol profil yan yana geliyordu.',
+     'ETİKETLEME: yükleme biter bitmez etiket çubuğu açılıyor; dört fotoğraf dört dokunuşla '+
+     'işaretleniyor, biri bittiğinde sıra kendiliğinden sonrakine geçiyor. Sonradan değiştirmek '+
+     'için galeride fotoğrafın altındaki rozete ya da tam ekranda poz düğmelerine dokunmak yeterli.',
+     'SIRALAMA: galeride gün içi sıra artık ön → sağ → sol → arka; etiketsizler sona düşüyor. '+
+     'Aynı sıra tam ekran gezinmede ve karşılaştırma listesinde de geçerli.',
+     'KARŞILAŞTIRMA: üstte poz süzgeci var. “Ön”ü seçince listede yalnız ön kareler kalıyor, '+
+     'yani hafta 1 ön ile hafta 8 ön doğrudan yan yana geliyor. Yanlışlıkla iki farklı poz '+
+     'seçilirse altta uyarı çıkıyor.',
+     'SENKRON: etiket fotoğrafın kimliğine bağlı (tarih + saat + içerik özeti), o kimlik her '+
+     'cihazda aynı üretiliyor. Etiketler normal senkronla taşınıyor; telefonda etiketlenen '+
+     'fotoğraf webde de etiketli görünüyor. Dosya yedeğine de yazılıyor.']},
  {d:'2026-08-27',
   t:'Günlük Puan, halka grafikler, düzen düzeltmeleri (v45)',
   y:['GÜN PUANI: antrenman 30, kalori 18, protein 18, adım 12, tartı 10, kreatin 7, '+
@@ -3168,7 +3212,7 @@ function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,photoRepo:(S.sync&&S.sync.repo)||'',
     base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
-    phDel:_phDel};
+    phDel:_phDel,phPose:_phPose};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -3197,6 +3241,16 @@ function mergeRemote(rm){
     var pdn=0;
     Object.keys(rm.phDel).forEach(function(k){if(!_phDel[k]){_phDel[k]=rm.phDel[k];pdn++;}});
     if(pdn){savePhDel();phApplyDeletes();ch++;}
+  }
+  /* poz etiketleri: fotoğraf başına en son yapılan etiketleme kazanır */
+  if(rm.phPose&&typeof rm.phPose==='object'){
+    var ppn=0;
+    Object.keys(rm.phPose).forEach(function(k){
+      var rp=rm.phPose[k];if(!rp||typeof rp!=='object')return;
+      var lp=_phPose[k];
+      if(!lp||(rp.t||0)>(lp.t||0)){_phPose[k]=rp;ppn++;}
+    });
+    if(ppn){savePhPose();ch++;}
   }
   if((rm._st||0)>(S._st||0)){
     ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
@@ -3342,7 +3396,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v45 · 27 Ağu 2026';
+var APPVER='v46 · 28 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4998,6 +5052,8 @@ function phDeleteOne(x){
   var arr=_ph[x.d]||[],item=arr[x.i];
   if(!item)return false;
   phMarkDeleted(item);
+  if(item.id&&_phPose[item.id]){delete _phPose[item.id];savePhPose();}
+  if(phPick===item.id)phPick=null;
   arr.splice(x.i,1);
   if(arr.length)_ph[x.d]=arr;else delete _ph[x.d];
   savePhotos();
@@ -5013,6 +5069,51 @@ function phRemoteDelete(id){
   }).catch(function(){});
 }
 function phContentKey(u){return String(u||'').length+':'+String(u||'').slice(-64);}
+/* ---- POZ ETİKETİ ----
+   Fotoğrafın kendisi ayrı depoda (repo), etiketi ise gist'te duruyor.
+   Anahtar fotoğrafın kimliği: kimlik tarih+saat+içerik özetinden üretiliyor,
+   yani aynı fotoğraf her cihazda aynı kimliği alıyor — etiket de onunla
+   birlikte her cihaza geçiyor. Değer {p:poz, t:zaman}; iki cihaz aynı
+   fotoğrafı farklı etiketlemişse en son yapılan kazanır. */
+var POSES=[['f','Ön'],['r','Sağ'],['l','Sol'],['b','Arka']];
+var _phPose={};
+function loadPhPose(){
+  return PHDB.get('phpose').then(function(v){
+    try{_phPose=JSON.parse(v||'{}')||{};}catch(e){_phPose={};}
+  }).catch(function(){});
+}
+function savePhPose(){PHDB.set('phpose',JSON.stringify(_phPose)).catch(function(){});}
+function phPoseOf(x){
+  var e=(x&&x.id)?_phPose[x.id]:null;
+  return (e&&e.p)?e.p:'';
+}
+function phSetPose(id,p){
+  if(!id)return;
+  if(p)_phPose[id]={p:p,t:Date.now()};
+  else if(_phPose[id])_phPose[id]={p:'',t:Date.now()};
+  savePhPose();save();
+}
+function poseName(p){
+  for(var i=0;i<POSES.length;i++)if(POSES[i][0]===p)return POSES[i][1];
+  return '';
+}
+/* sıralama: ön → sağ → sol → arka, etiketsizler en sonda */
+function poseRank(p){
+  for(var i=0;i<POSES.length;i++)if(POSES[i][0]===p)return i;
+  return 9;
+}
+function phPoseCounts(all){
+  var c={f:0,r:0,l:0,b:0,none:0};
+  (all||[]).forEach(function(x){var p=phPoseOf(x);if(c[p]!=null)c[p]++;else c.none++;});
+  return c;
+}
+/* o günün ilk etiketsiz fotoğrafı — yükledikten sonra doğrudan oraya düşsün */
+function phFirstUntagged(d,skipId){
+  var arr=phAll().filter(function(x){return x.d===d;});
+  for(var i=0;i<arr.length;i++)
+    if(!phPoseOf(arr[i])&&arr[i].id!==skipId)return arr[i].id;
+  return null;
+}
 function photoDates(){return Object.keys(_ph).filter(function(d){return (_ph[d]||[]).length;}).sort();}
 function photoCount(){var n=0;photoDates().forEach(function(d){n+=_ph[d].length;});return n;}
 function savePhotos(){
@@ -5029,7 +5130,16 @@ function photoBytes(){
 function phAll(){
   var out=[];
   photoDates().forEach(function(d){
-    (_ph[d]||[]).forEach(function(x,i){out.push({d:d,i:i,u:x.u,t:x.t,id:x.id});});
+    var day=(_ph[d]||[]).map(function(x,i){return {d:d,i:i,u:x.u,t:x.t,id:x.id};});
+    /* gün içi sıra etikete göre: ön, sağ, sol, arka — etiketsizler sona.
+       Aynı sırada olanlar yükleme zamanına göre. i alanı _ph[d] içindeki
+       gerçek konum olarak kalır, silme onun üzerinden yürüyor. */
+    day.sort(function(a,b){
+      var ra=poseRank(phPoseOf(a)),rb=poseRank(phPoseOf(b));
+      if(ra!==rb)return ra-rb;
+      return (a.t||0)-(b.t||0);
+    });
+    day.forEach(function(o){out.push(o);});
   });
   return out;
 }
@@ -5061,16 +5171,26 @@ function shrinkImage(file,cb){
 }
 /* --- görünüm durumu --- */
 var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false, pvDelArm=false;
-function phDefaults(){
+var cmpPose='all';   /* karşılaştırmada hangi poz süzülüyor */
+var phPick=null;     /* şu an etiketlenen fotoğrafın kimliği */
+/* karşılaştırma listesi: süzgeç açıksa sadece o pozdaki fotoğraflar */
+function phCmpList(){
   var all=phAll();
-  if(all.length){
-    if(cmpA<0||cmpA>=all.length)cmpA=0;
-    if(cmpB<=0||cmpB>=all.length)cmpB=all.length-1;
+  if(cmpPose==='all')return all;
+  return all.filter(function(x){return phPoseOf(x)===cmpPose;});
+}
+function phDefaults(){
+  var lst=phCmpList();
+  if(lst.length){
+    if(cmpA<0||cmpA>=lst.length)cmpA=0;
+    if(cmpB<=0||cmpB>=lst.length)cmpB=lst.length-1;
   } else {cmpA=0;cmpB=0;}
-  return all;
+  return lst;
 }
 function phLabel(x){
-  var s=fdate(x.d)+' · H'+wkLabel(weekIdx(x.d));
+  var p=phPoseOf(x),s='';
+  if(p&&cmpPose==='all')s+=poseName(p).toUpperCase()+' · ';
+  s+=fdate(x.d)+' · H'+wkLabel(weekIdx(x.d));
   var w=D(x.d).w; if(w!=null)s+=' · '+fx(w,1)+' kg';
   return s;
 }
@@ -5096,7 +5216,9 @@ function paintViewer(){
   if(pvIdx==null||!all.length){phCloseViewer();return;}
   if(pvIdx>=all.length)pvIdx=all.length-1;
   var x=all[pvIdx],r=D(x.d),tm=phTime(x);
+  var xp=phPoseOf(x);
   var facts=[];
+  if(xp)facts.push(poseName(xp).toUpperCase());
   if(r.w!=null)facts.push(fx(r.w,1)+' kg');
   if(r.b!=null)facts.push('bel '+fx(r.b,1));
   if(r.sh!=null)facts.push('omuz '+fx(r.sh,1));
@@ -5114,6 +5236,13 @@ function paintViewer(){
       '<div class="pvcount"><b>'+(pvIdx+1)+' / '+all.length+'</b><i>'+(pvZoom?'küçültmek için dokun':'büyütmek için fotoğrafa dokun')+'</i></div>'+
       '<button class="pvnav" data-a="pvnext"'+(pvIdx>=all.length-1?' disabled':'')+'>›</button>'+
     '</div>'+
+    (pvDelArm?'':
+      '<div class="pvpose">'+
+        POSES.map(function(p){
+          return '<button class="pvpchip'+(xp===p[0]?' on':'')+'" data-a="pvpose" data-p="'+p[0]+'">'+
+            p[1]+'</button>';}).join('')+
+        (xp?'<button class="pvpchip clr" data-a="pvpose" data-p="">✕</button>':'')+
+      '</div>')+
     '<div class="pvacts">'+
       (pvDelArm
         ?'<div class="pvconf"><b>Bu fotoğraf silinsin mi?</b>'+
@@ -5136,29 +5265,78 @@ function phGallery(all){
     byDate[x.d].push({x:x,ix:ix});
   });
   order.reverse();
+  var untag=all.filter(function(x){return !phPoseOf(x);}).length;
   return order.map(function(d){
     var g=byDate[d],r=D(d),bits=[];
     if(r.w!=null)bits.push(fx(r.w,1)+' kg');
     if(r.b!=null)bits.push('bel '+fx(r.b,1));
     var tms=g.map(function(o){return phTime(o.x);}).filter(Boolean);
+    var nUn=g.filter(function(o){return !phPoseOf(o.x);}).length;
+    /* etiket çubuğu bu güne aitse gridin altında açılır */
+    var pick=null;
+    g.forEach(function(o){if(phPick&&o.x.id===phPick)pick=o;});
     return '<div class="phgroup">'+
-      '<div class="phghd"><b>'+flong(d)+'</b>'+
+      '<div class="phghd"><div class="phghdt"><b>'+flong(d)+'</b>'+
         '<span>hafta '+wkLabel(weekIdx(d))+' · '+g.length+' fotoğraf'+
+        (nUn?' · '+nUn+' etiketsiz':'')+
         (tms.length?' · '+tms[0]:'')+(bits.length?' · '+bits.join(' · '):'')+'</span></div>'+
+        (nUn?'<button class="phgtag" data-a="phtagday" data-d="'+d+'">Etiketle</button>':'')+
+      '</div>'+
       '<div class="phgrid">'+g.map(function(o){
-        return '<button class="phcell" data-a="phopen" data-x="'+o.ix+'">'+
-          '<img src="'+o.x.u+'" loading="lazy" alt="">'+
-          '<span class="phcap">'+(o.ix+1)+'</span></button>';}).join('')+'</div>'+
+        var p=phPoseOf(o.x),on=(phPick&&o.x.id===phPick);
+        return '<div class="phcw'+(on?' sel':'')+'">'+
+          '<button class="phcell" data-a="phopen" data-x="'+o.ix+'">'+
+            '<img src="'+o.x.u+'" loading="lazy" alt=""></button>'+
+          '<button class="phtagb'+(p?'':' no')+'" data-a="phtag" data-id="'+esc(o.x.id||'')+'">'+
+            (p?poseName(p).toUpperCase():'＋ etiket')+'</button>'+
+        '</div>';}).join('')+'</div>'+
+      (pick?phTagBar(pick.x):'')+
     '</div>';
   }).join('')+
   '<div class="phnote">'+all.length+' fotoğraf · '+order.length+' gün'+
-    (order.length>1?' · ilkinden sonuncusuna '+Math.abs(dayDiff(all[0].d,all[all.length-1].d))+' gün':'')+'</div>';
+    (order.length>1?' · ilkinden sonuncusuna '+Math.abs(dayDiff(all[0].d,all[all.length-1].d))+' gün':'')+
+    (untag?' · '+untag+' etiketsiz':'')+'</div>';
+}
+/* seçili fotoğrafın poz seçici çubuğu — gridin altında, tam genişlikte */
+function phTagBar(x){
+  var cp=phPoseOf(x),id=esc(x.id||'');
+  return '<div class="phtagbar"><img src="'+x.u+'" alt="">'+
+    '<div class="phtagg">'+
+      POSES.map(function(p){
+        return '<button class="phchip'+(cp===p[0]?' on':'')+'" data-a="phset" '+
+          'data-id="'+id+'" data-p="'+p[0]+'">'+p[1]+'</button>';}).join('')+
+      (cp?'<button class="phchip clr" data-a="phset" data-id="'+id+'" data-p="">✕</button>':'')+
+    '</div></div>';
 }
 /* --- karşılaştırma: iki fotoğraf, ikisi de tam görünür --- */
+/* poz süzgeci: aynı açıdan çekilmiş fotoğrafları yan yana koymak için */
+function phPoseBar(){
+  var c=phPoseCounts(phAll()),tot=phAll().length;
+  var bits='<button class="phpb'+(cmpPose==='all'?' on':'')+'" data-a="cmppose" data-p="all">'+
+    'Tümü<i>'+tot+'</i></button>';
+  POSES.forEach(function(p){
+    if(!c[p[0]])return;
+    bits+='<button class="phpb'+(cmpPose===p[0]?' on':'')+'" data-a="cmppose" data-p="'+p[0]+'">'+
+      p[1]+'<i>'+c[p[0]]+'</i></button>';
+  });
+  return '<div class="phposebar">'+bits+'</div>';
+}
+/* süzgeç açıkken karşılaştırmadaki sıra numarası tam listedekiyle aynı değil —
+   büyütmeye giderken kimlikten gerçek sıraya çevir, yoksa başka kare açılır */
+function phIxOf(x){
+  var a=phAll();
+  for(var i=0;i<a.length;i++)if(a[i].id===x.id&&a[i].d===x.d&&a[i].i===x.i)return i;
+  return 0;
+}
 function phCompare(all){
   if(all.length<2)
-    return '<div class="phempty">Karşılaştırmak için en az iki fotoğraf gerekiyor. '+
-      'Şu an '+all.length+' tane var — bir-iki hafta sonra tekrar çek.</div>';
+    return phPoseBar()+
+      '<div class="phempty">'+
+      (cmpPose!=='all'
+        ? '“'+poseName(cmpPose)+'” pozunda '+all.length+' fotoğraf var. '+
+          'Aynı açıdan ikinci bir kare çekince buradan karşılaştırabilirsin.'
+        : 'Karşılaştırmak için en az iki fotoğraf gerekiyor. '+
+          'Şu an '+all.length+' tane var — bir-iki hafta sonra tekrar çek.')+'</div>';
   function sel(w,val){
     return '<select class="ginp sel" data-a="cmp" data-w="'+w+'">'+
       all.map(function(x,ix){
@@ -5167,15 +5345,19 @@ function phCompare(all){
   }
   var A=all[cmpA],B=all[cmpB];
   var wa=D(A.d).w,wb=D(B.d).w;
-  return '<div class="phcmpsel">'+sel('a',cmpA)+'<span class="phar">→</span>'+sel('b',cmpB)+'</div>'+
+  var pa=phPoseOf(A),pb=phPoseOf(B);
+  return phPoseBar()+
+    '<div class="phcmpsel">'+sel('a',cmpA)+'<span class="phar">→</span>'+sel('b',cmpB)+'</div>'+
     '<div class="phcmp">'+[[A,cmpA,'ÖNCE'],[B,cmpB,'SONRA']].map(function(o){
-      return '<div><div class="phcl">'+o[2]+' · '+fdate(o[0].d)+'</div>'+
-        '<button class="phbig" data-a="phopen" data-x="'+o[1]+'"><img src="'+o[0].u+'" alt=""></button>'+
+      var pp=phPoseOf(o[0]);
+      return '<div><div class="phcl">'+o[2]+(pp?' · '+poseName(pp).toUpperCase():'')+' · '+fdate(o[0].d)+'</div>'+
+        '<button class="phbig" data-a="phopen" data-x="'+phIxOf(o[0])+'"><img src="'+o[0].u+'" alt=""></button>'+
         '<div class="phcs">hafta '+wkLabel(weekIdx(o[0].d))+
           (D(o[0].d).w!=null?' · '+fx(D(o[0].d).w,1)+' kg':'')+'</div></div>';
     }).join('')+'</div>'+
     '<div class="phnote">'+Math.abs(dayDiff(A.d,B.d))+' gün arayla'+
       ((wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'')+
+      ((pa&&pb&&pa!==pb)?' · <b>farklı poz</b> — üstten aynı açıyı seç':'')+
       '</div>';
 }
 function phUploader(){
@@ -5191,7 +5373,7 @@ function phStatus(){
   return '<div class="phst">☁ '+(phMsg||phSyncLabel())+'</div>';
 }
 function phBody(){
-  var all=phDefaults();
+  var cl=phDefaults(),all=phAll();
   if(!all.length)
     return phUploader()+
       '<div class="phempty">Her seferinde aynı ışık, aynı mesafe, aynı duruş. '+
@@ -5201,7 +5383,7 @@ function phBody(){
       '<button class="phtab'+(phView==='all'?' on':'')+'" data-a="phview" data-k="all">Tümü<i>'+all.length+'</i></button>'+
       '<button class="phtab'+(phView==='cmp'?' on':'')+'" data-a="phview" data-k="cmp">Karşılaştır</button>'+
     '</div>'+
-    (phView==='all'?phGallery(all):phCompare(all))+phStatus();
+    (phView==='all'?phGallery(all):phCompare(cl))+phStatus();
 }
 /* ============ FOTOĞRAF YEDEĞİ ============
    İki ayrı yol var, ikisi de bağımsız çalışır:
@@ -5245,7 +5427,7 @@ function phExport(){
   phEnsureIds();
   var n=photoCount();
   if(!n){toast('yedeklenecek fotoğraf yok');return;}
-  var blob=new Blob([JSON.stringify({v:1,at:Date.now(),photos:_ph})],{type:'application/json'});
+  var blob=new Blob([JSON.stringify({v:2,at:Date.now(),photos:_ph,poses:_phPose})],{type:'application/json'});
   var u=URL.createObjectURL(blob),el=document.createElement('a');
   el.href=u;el.download='form-fotograflar-'+today()+'.json';el.click();
   setTimeout(function(){URL.revokeObjectURL(u);},1200);
@@ -5273,6 +5455,15 @@ function phImportFile(file){
         });
       });
       phEnsureIds();savePhotos();
+      if(d&&d.poses&&typeof d.poses==='object'){
+        var pn=0;
+        Object.keys(d.poses).forEach(function(k){
+          var rp=d.poses[k];if(!rp||typeof rp!=='object'||!rp.p)return;
+          var lp=_phPose[k];
+          if(!lp||(rp.t||0)>(lp.t||0)){_phPose[k]=rp;pn++;}
+        });
+        if(pn)savePhPose();
+      }
       toast(add?add+' fotoğraf geri yüklendi':'yeni fotoğraf yoktu');
       render();
     }catch(e){toast('fotoğraf yedeği okunamadı');}
@@ -6012,9 +6203,14 @@ app.addEventListener('change',function(ev){
         if(done===arr.length){
           if(!ok){toast('fotoğraf okunamadı');return;}
           phEnsureIds();
+          cmpPose='all';
           var alln=phAll();cmpB=alln.length-1;if(cmpA>=cmpB)cmpA=0;
           phView='all';
-          savePhotos();toast(ok+' fotoğraf eklendi');render();
+          /* yükledikten hemen sonra etiket çubuğu açılsın: ön/sağ/sol/arka
+             sonradan hatırlanmıyor, sıcağı sıcağına işaretlenmeli */
+          phPick=phFirstUntagged(cur);
+          savePhotos();
+          toast(ok+' fotoğraf eklendi — pozları etiketle');render();
           if(repoOK())setTimeout(function(){phSync(true);},1200);
         }
       });
@@ -6044,8 +6240,20 @@ document.addEventListener('click',function(ev){
   else if(a==='pvprev'){if(pvIdx>0){pvIdx--;pvZoom=false;pvDelArm=false;paintViewer();}}
   else if(a==='pvnext'){var al=phAll();if(pvIdx<al.length-1){pvIdx++;pvZoom=false;pvDelArm=false;paintViewer();}}
   else if(a==='pvzoom'){if(pvDelArm)return;pvZoom=!pvZoom;paintViewer();}
+  else if(a==='pvpose'){
+    var alp=phAll(),xp2=alp[pvIdx];if(!xp2)return;
+    phSetPose(xp2.id,t.getAttribute('data-p')||'');
+    /* etiket sırayı değiştirir — imleç aynı fotoğrafın üstünde kalsın */
+    var alp2=phAll();
+    for(var q=0;q<alp2.length;q++)if(alp2[q].id===xp2.id){pvIdx=q;break;}
+    repaintPhoto();}
   else if(a==='pvcmp'){
-    cmpB=pvIdx;if(cmpA===cmpB)cmpA=0;
+    var alc=phAll(),xc=alc[pvIdx];
+    /* bu fotoğrafın pozu varsa karşılaştırmayı doğrudan o poza kilitle */
+    cmpPose=xc?(phPoseOf(xc)||'all'):'all';
+    var lst=phCmpList(),ixc=lst.length-1;
+    for(var q2=0;q2<lst.length;q2++)if(xc&&lst[q2].id===xc.id){ixc=q2;break;}
+    cmpB=ixc;cmpA=(ixc===0&&lst.length>1)?lst.length-1:0;
     phView='cmp';phCloseViewer();
     if(phone())gymPaint();else goTab('photo','z-photo');
     toast('karşılaştırmaya eklendi');}
@@ -6153,6 +6361,27 @@ app.addEventListener('click',function(ev){
     phCreateRepo(rn?rn.value:'');}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
   else if(a==='phopen'){phOpenViewer(+t.getAttribute('data-x'));}
+  else if(a==='phtag'){
+    var tid=t.getAttribute('data-id');
+    phPick=(phPick===tid)?null:tid;
+    repaintPhoto();}
+  else if(a==='phtagday'){
+    phPick=phFirstUntagged(t.getAttribute('data-d'));
+    repaintPhoto();}
+  else if(a==='phset'){
+    var sid=t.getAttribute('data-id'),sp=t.getAttribute('data-p')||'';
+    phSetPose(sid,sp);
+    /* aynı günde etiketsiz kalan varsa sıradakine geç — dört kareyi
+       arka arkaya, tek dokunuşla etiketleyebilmek için */
+    var sd=phIdDate(sid);
+    phPick=(sp&&sd)?phFirstUntagged(sd,sid):null;
+    repaintPhoto();
+    if(sp&&!phPick)toast('bu günün etiketleri tamam');}
+  else if(a==='cmppose'){
+    cmpPose=t.getAttribute('data-p')||'all';
+    var cl2=phCmpList();
+    cmpA=0;cmpB=Math.max(0,cl2.length-1);
+    repaintPhoto();}
   else if(a==='autotgt'){
     S.autoTargets=!S.autoTargets;
     if(S.autoTargets){var ch=syncAutoTargets();toast(ch?'otomatik hedef açık — hedefler güncellendi':'otomatik hedef açık');}
@@ -6338,9 +6567,15 @@ STORE.get(KEY).then(function(res){
   cur=today();
   try{
     var pl=loadPhotos();
-    if(pl&&pl.then)pl.then(function(){return loadPhSkip();}).then(function(){return loadPhDel();})
-      .then(function(){try{phApplyDeletes();phDedupe();phEnsureIds();}catch(e){}});
-    (pl&&pl.then?pl:Promise.resolve()).then(function(){
+    /* poz etiketleri de bu zincirde iniyor; ilk çizim onları bekler,
+       yoksa galeri bir an etiketsiz görünüp sonra yerine oturuyor */
+    var pchain=(pl&&pl.then)
+      ? pl.then(function(){return loadPhSkip();}).then(function(){return loadPhDel();})
+          .then(function(){return loadPhPose();})
+          .then(function(){try{phApplyDeletes();phDedupe();phEnsureIds();}catch(e){}})
+          .catch(function(){})
+      : Promise.resolve();
+    pchain.then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
     }).then(function(){render();}).catch(function(){render();})
