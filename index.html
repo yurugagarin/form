@@ -490,7 +490,9 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gprevst b{display:block;font-family:'Fraunces';font-size:17px;font-weight:600;line-height:1.05;
   color:#3a342c;font-variant-numeric:tabular-nums}
 .gprevst i{display:block;font-style:normal;font-size:9px;font-weight:700;color:#b3a488;margin-top:3px}
-.gprevv{margin-top:8px;font-size:12px;font-weight:700;line-height:1.4}
+.gprevv{margin-top:10px;font-size:12px;font-weight:700;line-height:1.45;
+  background:#fbf7ee;border:1px solid #e8ddc6;border-left:3px solid currentColor;
+  border-radius:9px;padding:9px 11px}
 .gprevv u{text-decoration:none;color:#b3a488}
 .gdue{background:#ef5a1e;color:#fff;border-radius:999px;padding:2px 8px;font-size:9px;letter-spacing:.8px}
 .gduebanner{margin:0 14px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;
@@ -518,7 +520,8 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gname{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.15;margin-top:2px}
 .gtgt{font-size:11.5px;color:#a8987c;font-weight:700;margin-top:3px}
 .gdesc{font-size:13px;color:#8a7f6f;line-height:1.45;margin-top:10px}
-.gprog{margin-top:10px;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:700}
+.gprog{margin-top:10px;border-radius:9px;padding:9px 12px;font-size:12.5px;font-weight:700;
+  border:1px solid currentColor}
 .gprev{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:11px;
   border-top:1px dashed #e4d9c2;font-size:12.5px;color:#8a7f6f}
 .gprev b{color:#3a342c}
@@ -642,7 +645,8 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   border-radius:7px;padding:3px 8px;margin-top:5px;letter-spacing:.2px}
 .rirsch i{font-style:normal;opacity:.72;font-weight:700}
 .rirwhy{font-size:11px;color:#a8987c;line-height:1.45;padding:2px 4px 0 34px}
-.jumpb{margin-top:8px;border-radius:11px;padding:9px 11px;font-size:11.5px;line-height:1.5;font-weight:600}
+.jumpb{margin-top:8px;border-radius:11px;padding:9px 11px;font-size:11.5px;line-height:1.5;font-weight:600;
+  border:1px solid currentColor}
 .jumpb b{font-weight:800}
 .rirsel.tgt{border-color:#c9b894;background:#fffdf7}
 .grirh{font-size:10.5px;font-weight:700;color:#c0b193;margin-left:2px;overflow:hidden;
@@ -1180,6 +1184,45 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-29',
+  t:'Geçen seans kartı yanlış "ağırlığı artır" diyordu (v48)',
+  y:['SORUN: 29 Ağu İtiş günü açılınca Eğik dambıl press kartı "Üst sınırdaydın — bugün '+
+     'ağırlığı artır (hedef 6-10)" dedi. Geçen seans 26 Ağu Üst Vücut günüydü ve o gün '+
+     'hedef 8-12 idi; girilen setler 36 kg × 11 / 11 / 8. Yani 12’ye hiç ulaşılmamıştı. '+
+     'Doğru mesaj "36 kg’da kal, 12 tekrarı yakala" olmalıydı.',
+     'KÖK NEDEN 1 — İKİ GÜNÜN HEDEFİ KARIŞIYORDU: Eğik dambıl press programda iki günde '+
+     'geçiyor; Üst Vücut’ta 8-12, İtiş’te 6-10. prevSummary() karşılaştırmayı BUGÜNKÜ '+
+     'hareketin aralığıyla (e.r) yapıyordu. 26 Ağu seansı, 29 Ağu’nun 6-10 aralığına göre '+
+     'notlandı. Artık hedef tgtFor(hareket, seans tarihi) ile o seansın KENDİ gününden '+
+     'okunuyor. _progression() bu düzeltmeyi zaten içeriyordu, kart dışarıda kalmıştı.',
+     'KÖK NEDEN 2 — ORTALAMA TEKRAR: kart avg>=hi şartına bakıyordu. 11+11+8 = ortalama '+
+     '10.0, bugünkü üst sınır da 10 olunca "artır" çıktı. Motor ise "tüm setler aynı kiloda '+
+     'VE hepsi üst sınırda" arıyor. İki sistem çelişiyordu; kart artık motorla aynı şartı '+
+     'kullanıyor. Ortalama tekrar hâlâ üstteki kutuda bilgi olarak duruyor ama karara girmiyor.',
+     'ARALIK KAYMASI YOK: ağırlık artınca hedef aralığı aşağı kaymaz. 8-12’de 12’yi '+
+     'yakalayınca kilo artar, tekrar 8’e düşer, hedef yine 8-12’dir. Kayıyor olsaydı '+
+     '8-12 → 6-10 → 4-8 diye sonsuza inerdi. Ekrandaki 6-10 yeni hedef değil, İtiş '+
+     'gününün kendi hedefiydi.',
+     'RIR KISAYOLU DARALTILDI: ortalama RIR 2.6+ ise motor tekrar sayısına bakmadan '+
+     '"kg’a çık" diyordu. 8-12 hedefinde 6 tekrar + RIR 3, seti erken bırakmak demek; '+
+     'çözüm daha ağır kilo değil. Bu kısayol artık sadece bütün setler en az alt sınırdayken '+
+     'çalışıyor.',
+     'YENİ MESAJ DİLİ: üç durum var. Tüm setler üst sınırda → "ağırlığı artır". Tüm setler '+
+     'aralık içinde ama üstte değil → "X kg’da kal, her sette üst sınırı yakala". Aralığın '+
+     'altında set varsa → "X kg’da kal, önce alt sınırı tuttur". Hedef etiketi de artık '+
+     '"o gün hedef 8-12" yazıyor, farklıysa yanına bugünkü hedefi ayrı hat olarak not düşüyor.',
+     'ARTIŞ SONRASI DÜŞÜŞ ARTIK HATA SAYILMIYOR: 36→38 çıkıp 7 tekrar yapmak başarısızlık '+
+     'değil, beklenen şey. justUp() bunu bugünkü seans için zaten biliyordu ama geçen seans '+
+     'kartı bilmiyordu ve sarı "aralığın altındasın" uyarısı basıyordu. Kart artık bir '+
+     'önceki seansın kilosuna bakıp artışı tanıyor. Eşik her yerde aynı: alt sınır − 2. '+
+     'Üstündeysen mavi "normal, tırmandır"; altındaysan turuncu "sıçrama fazla, geri in".',
+     'TABANIN ALTINDA TAKILMA: motor 3 seans aynı kiloda kalınca "üst sınırı yakala" '+
+     'diyordu. En düşük set tabanın altındaysa bu çıkmaz sokak — o durumda artık '+
+     '"bir kademe geri in" diyor.',
+     'ÇERÇEVE: antrenman ekranındaki üç ilerleme notu (ağırlık artışı, motor uyarısı, '+
+     'geçen seans kararı) ince çerçeveye alındı. Geçen seans kararı ayrıca açık zeminli '+
+     'kutuya girdi ve sol kenarında durumun rengini taşıyan şerit var — set satırlarıyla '+
+     'istatistik kutuları arasında kaybolmuyor.']},
  {d:'2026-08-28',
   t:'Hedef RIR şeması ve ağırlık artışı sonrası tekrar uyarısı (v47)',
   y:['SORUN 1: RIR kutucuğu boşken hangi değeri işaretlemem gerektiğine dair hiçbir şey '+
@@ -3212,8 +3255,12 @@ function _progression(name){
   var days=dayDiff(firstAt,last),nx=nextWeight(mx);
   var dl=isDeload(today());
 
-  /* RIR 3+ ise setler yeterince zorlamıyor — tekrar aralığından bağımsız uyar */
-  if(rir!=null&&rir>=2.6&&!dl)
+  /* RIR 3+ ise setler yeterince zorlamıyor. AMA tekrar aralığın altındaysa ağırlık
+     artırmak yanlış: 8-12 hedefinde 6 tekrar + RIR 3 demek, seti erken bırakmışsın
+     demek — çözüm daha ağır kilo değil, önce aralığa girmek. O yüzden bu kısayol
+     artık sadece bütün setler en az alt sınırdayken çalışıyor. */
+  var loHit=atMax.filter(function(s){return s.rep>=e.r[0];}).length;
+  if(rir!=null&&rir>=2.6&&!dl&&atMax.length>=e.s&&loHit>=e.s)
     return {type:'up',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
       msg:'Ortalama RIR '+fx(rir,1)+' — setler yetersizliğe uzak, uyarım düşük. <b>'+nx+' kg</b>’a çık.'};
 
@@ -3238,6 +3285,16 @@ function _progression(name){
       return {type:'ok',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
         msg:streak+' seanstır '+mx+' kg ama RIR düşüyor ('+fx(tr,1)+') — takılmadın, aynı yükte güçleniyorsun.'};
     if(dl)return null;
+    /* Tabanın altında takılmak ile aralık içinde takılmak aynı şey değil.
+       38 kg'da 3 seanstır 6 tekrar yapan birine "12 tekrarı yakala" demek
+       çıkmaz sokak — sıçrama fazla, bir kademe geri inmesi gerekiyor. */
+    var lowMx=Math.min.apply(null,atMax.map(function(s){return s.rep;}));
+    var flr=Math.max(1,e.r[0]-2);
+    if(lowMx<flr)
+      return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+        msg:streak+' seanstır '+mx+' kg ama en düşük set '+lowMx+' tekrar — '+
+            e.r[0]+'-'+e.r[1]+' hedefinin '+flr+' tekrarlık tabanının da altı. '+
+            'Bir kademe geri in, orada '+e.r[1]+' tekrarı sağlamlaştır.'};
     return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
       msg:streak+' seanstır '+mx+' kg'+(days>=7?' ('+days+' gündür)':'')+'. Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'};
   }
@@ -3527,7 +3584,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v47 · 28 Ağu 2026';
+var APPVER='v48 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6094,10 +6151,48 @@ function prevSummary(prev,e){
   var kgMax=Math.max.apply(null,kgs),kgMin=Math.min.apply(null,kgs);
   var rr=prev.sets.filter(function(s){return s.rir!=null;}).map(function(s){return s.rir;});
   var rAvg=rr.length?rr.reduce(function(a,b){return a+b;},0)/rr.length:null;
-  var lo=e.r[0],hi=e.r[1],verdict,vc;
-  if(avg>=hi){verdict='Üst sınırdaydın — bugün ağırlığı artır';vc=C.green;}
-  else if(avg>=lo){verdict='Aralık içindeydin — aynı ağırlıkta tekrarı artır';vc=C.teal;}
-  else{verdict='Alt sınırın altındaydın — ağırlığı koru, tekrarı topla';vc=C.amber;}
+  /* KARAR O SEANSIN KENDİ GÜNÜNÜN HEDEFİNE göre verilir — bugünün hedefine göre DEĞİL.
+     ESKİ HATA: lo/hi bugünkü hareketin aralığından (e.r) okunuyordu. Eğik dambıl press
+     Üst gününde 8-12, İtiş gününde 6-10. 26 Ağu (Üst) seansındaki 11/11/8 kaydı,
+     29 Ağu (İtiş) açılınca 6-10 aralığıyla kıyaslandı; ortalama 10.0 ≥ 10 çıkınca
+     "üst sınırdaydın, ağırlığı artır" dedi. Halbuki o gün hedef 8-12'ydi ve 12'ye
+     ulaşılmamıştı. İki farklı günün hedefi birbirine karışıyordu.
+     İKİNCİ HATA: karar ORTALAMA tekrara bakıyordu. _progression() ise "tüm setler aynı
+     kiloda VE hepsi üst sınırda" şartını arıyor. Kart motora "artır" derken motor
+     susuyordu. Artık ikisi aynı kuralı kullanıyor. */
+  var pt=tgtFor(e.n,prev.date)||e;
+  var lo=pt.r[0],hi=pt.r[1],needSets=pt.s||prev.sets.length;
+  var atMax=prev.sets.filter(function(s){return s.kg===kgMax;});
+  var topHit=atMax.filter(function(s){return s.rep>=hi;}).length;
+  var loHit=atMax.filter(function(s){return s.rep>=lo;}).length;
+  var kgTxt=fx(kgMax,kgMax%1?1:0);
+  /* eksik set: 3 setlik hedefte 2 set girilmişse hepsi üst sınırda olsa bile
+     "artır" denmez, ama "aralığın altındasın" da denmez — eksik olduğu yazılır. */
+  var miss=atMax.length<needSets?' ('+atMax.length+'/'+needSets+' set girilmiş)':'';
+  /* O seansta ağırlık YENİ mi artmıştı? Artmışsa aralığın altına düşmek beklenen
+     durumdur, hata değil. justUp() bunu bugünkü seans için zaten yapıyordu ama
+     kart geçmiş seansa bakarken bilmiyordu ve "aralığın altında set var" diye
+     sarı uyarı basıyordu — 36→38 çıkıp 7 tekrar yapmak başarısızlık değil.
+     Eşik justUp() ile aynı: alt sınır - 2. Altına inilirse sıçrama fazladır. */
+  var pp=prevSession(e.n,prev.date);
+  var pk=(pp&&pp.sets.length)?Math.max.apply(null,pp.sets.map(function(s){return s.kg;})):null;
+  var fresh=(pk!=null&&kgMax>pk),floor=Math.max(1,lo-2);
+  var lowRep=atMax.length?Math.min.apply(null,atMax.map(function(s){return s.rep;})):null;
+  var verdict,vc;
+  if(atMax.length>=needSets&&topHit>=needSets){
+    verdict='Tüm setlerde '+hi+' tekrara ulaştın — bugün ağırlığı artır';vc=C.green;}
+  else if(atMax.length&&loHit>=atMax.length){
+    verdict='Aralık içindeydin — '+kgTxt+' kg’da kal, her sette '+hi+' tekrarı yakala'+miss;vc=C.teal;}
+  else if(fresh&&lowRep!=null&&lowRep>=floor){
+    verdict='Ağırlığı yeni artırmıştın ('+fx(pk,pk%1?1:0)+' → '+kgTxt+' kg) — '+lo+
+      ' tekrarın altında olman normal. '+kgTxt+' kg’da kal, tekrarları '+lo+'-'+hi+
+      ' aralığına tırmandır';vc=C.teal;}
+  else if(fresh){
+    verdict='Sıçrama fazla gelmiş — '+kgTxt+' kg’da '+lowRep+' tekrar, '+floor+
+      ' tekrar tabanının da altı. '+fx(pk,pk%1?1:0)+' kg’a geri dön, orada '+hi+
+      ' tekrarı sağlamlaştır';vc=C.orange;}
+  else{
+    verdict='Aralığın altında set var — '+kgTxt+' kg’da kal, önce her sette '+lo+' tekrarı tuttur';vc=C.amber;}
   return '<div class="gprevbox">'+
     '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+'</span>'+
       '<button class="gcopy" data-a="samelast">Aynısını doldur</button></div>'+
@@ -6107,10 +6202,10 @@ function prevSummary(prev,e){
       '<div><b>'+prev.sets.length+'</b><i>set</i></div>'+
       '<div><b>'+(rAvg==null?'—':fx(rAvg,1))+'</b><i>ort. RIR</i></div>'+
     '</div>'+
-    '<div class="gprevv" style="color:'+vc+'">'+verdict+' <u>(hedef '+lo+'-'+hi+')</u>'+
-      (function(){var pt=tgtFor(e.n,prev.date);
-        return (pt&&(pt.r[0]!==lo||pt.r[1]!==hi))
-          ?'<span style="color:#a8987c;font-weight:400"> · o gün hedef '+pt.r[0]+'-'+pt.r[1]+' idi</span>':'';})()+
+    '<div class="gprevv" style="color:'+vc+'">'+verdict+' <u>(o gün hedef '+lo+'-'+hi+')</u>'+
+      ((e.r[0]!==lo||e.r[1]!==hi)
+        ?'<span style="color:#a8987c;font-weight:400"> · bugün bu hareketin hedefi '+
+          e.r[0]+'-'+e.r[1]+', ayrı gün ayrı hat</span>':'')+
     '</div>'+
   '</div>';
 }
