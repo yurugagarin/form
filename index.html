@@ -1217,6 +1217,19 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
  {d:'2026-08-29',
+  t:'Kademeli geçiş uyarısı detay penceresinde kayboluyordu (v58)',
+  y:['SORUN: v55te bu uyarıyı “motor mesajında zaten var, tekrar etmesin” diye '+
+     'kaldırmıştım. Yanlış yerden kaldırmışım. Motor sadece “ağırlığı artır” derken '+
+     'konuşuyor; aralık içindeyken (36×10/10/8 gibi) susuyor. O durumda uyarı hiçbir '+
+     'yerde görünmüyordu — oysa “Bir sonraki kademe: 40 kg” satırı her zaman yazılı ve '+
+     'sıçramanın büyük olduğu tam o an belli oluyor.',
+     'ÇÖZÜM: kademeli geçişin artık kendi bölümü var — “BÜYÜK SIÇRAMA”. Kilo farkı '+
+     '%8i geçtiğinde motor ne derse desin görünüyor. Motor mesajında da geçiyorsa '+
+     'oradan ayıklanıyor, aynı cümleyi iki kez okumuyorsun.',
+     'Bölüm yüzdeyi de yazıyor (36 → 40 kg, %11) ve uygulamanın bu girişi tanıdığını '+
+     'söylüyor: karışık kilo girildiğinde “yarım kaldı” demiyor, kaçıncı aşamada '+
+     'olduğunu yazıyor.']},
+ {d:'2026-08-29',
   t:'Logo + baştan sona tutarlılık taraması (v56)',
   y:['LOGO: F harfi ve yükselen üç çubuk. Çubuklar progresif yüklenmeyi anlatıyor, '+
      'uygulamanın tek işi o. Favicon, iOS ana ekran simgesi, masaüstü başlığı ve salon '+
@@ -3859,7 +3872,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v57 · 29 Ağu 2026';
+var APPVER='v58 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6626,6 +6639,16 @@ function nyPanel(name){
   var prev=prevSession(name,cur,dt),xd=false;
   if(!prev){prev=prevSession(name,cur);xd=!!prev;}
   var lo=e.r[0],hi=e.r[1],floor=Math.max(1,lo-2),inc=incFor(name);
+  /* Kademeli geçiş uyarısı v55'te "tekrar etmesin" diye kaldırılmıştı, ama yanlış
+     yerden: motor sadece "artır" derken konuşuyor. Aralık içindeyken (36×10/10/8
+     gibi) motor susuyor, o zaman uyarı hiçbir yerde görünmüyordu — oysa bir sonraki
+     kademe her durumda yazılı ve büyük sıçrama olduğu o an belli. Artık kendi
+     bölümü var ve her zaman çıkıyor; motor mesajında da geçiyorsa oradan
+     ayıklanıyor, iki kez okumuyorsun. */
+  var baseKg=(pg&&pg.kg!=null)?pg.kg
+    :((prev&&prev.sets.length)?Math.max.apply(null,prev.sets.map(function(s){return s.kg;})):null);
+  var nxKg=(baseKg!=null)?nextWeight(baseKg,name):null;
+  var sNote=(baseKg!=null)?stagedNote(baseKg,nxKg):'';
   var o='<div class="nybox" id="nybox">'+
     '<button class="mx" data-a="nyclose" aria-label="Kapat">×</button>'+
     '<div class="nyhd"><h3>'+esc(name)+'</h3>'+
@@ -6633,9 +6656,19 @@ function nyPanel(name){
 
   if(pg&&pg.msg){
     var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
+    var pmsg=sNote?pg.msg.split(sNote).join(''):pg.msg;
     o+='<div class="nysec"><div class="nyk" style="color:'+pc+'">'+
       (pg.type==='up'?'AĞIRLIĞI ARTIR':(pg.type==='ok'?'İLERLİYORSUN':'TAKILDIN'))+'</div>'+
-      '<div class="nyt">'+pg.msg+'</div></div>';
+      '<div class="nyt">'+pmsg+'</div></div>';
+  }
+  if(sNote){
+    o+='<div class="nysec"><div class="nyk" style="color:'+C.amber+'">BÜYÜK SIÇRAMA</div>'+
+      '<div class="nyt">'+baseKg+' → <b>'+nxKg+' kg</b> '+
+      '(%'+Math.round((nxKg-baseKg)/baseKg*100)+'). Tek seansta yutulmayabilir. '+
+      '<b>İlk sette '+nxKg+' kg, kalan setlerde '+baseKg+' kg</b> ile başla. '+
+      'Sonraki seans iki set '+nxKg+', sonra üçü de. '+
+      'Uygulama bu girişi tanıyor — karışık kilo girdiğinde “yarım kaldı” demez, '+
+      'kaçıncı aşamada olduğunu yazar.</div></div>';
   }
 
   o+='<div class="nysec"><div class="nyk">KURAL</div><div class="nyt">'+
@@ -6655,7 +6688,8 @@ function nyPanel(name){
         ' kg</b> × '+s.rep+(s.rir!=null?' <i>· RIR '+s.rir+'</i>':'')+'</span></div>';
     });
     o+='<div class="nyt" style="margin-top:8px;color:#a8987c;font-size:12px">'+
-      'Bir sonraki kademe: <b>'+nextWeight(pmax,name)+' kg</b></div></div>';
+      'Bir sonraki kademe: <b>'+nextWeight(pmax,name)+' kg</b>'+
+      (sNote?' · yukarıdaki kademeli geçişe bak':'')+'</div></div>';
   }
   return o+'</div>';
 }
