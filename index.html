@@ -491,7 +491,27 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   color:#3a342c;font-variant-numeric:tabular-nums}
 .gprevst i{display:block;font-style:normal;font-size:9px;font-weight:700;color:#b3a488;margin-top:3px}
 .gprevv{margin-top:10px;border:1.5px solid currentColor;border-radius:13px;
-  background:#fdfaf4;padding:10px 12px 12px;box-shadow:0 1px 0 rgba(58,52,44,.04)}
+  background:#fdfaf4;padding:10px 12px 12px;box-shadow:0 1px 0 rgba(58,52,44,.04);
+  width:100%;text-align:left;display:block;font:inherit;cursor:pointer;
+  -webkit-tap-highlight-color:transparent}
+.gprevv:active{transform:scale(.994)}
+.gpmore{float:right;font-size:16px;line-height:1;opacity:.55;margin:1px 0 0 8px}
+/* --- ne yapmalı detay penceresi --- */
+.nybox{background:#fbf8f2;border-radius:16px;max-width:460px;width:100%;
+  box-shadow:0 18px 50px rgba(45,38,28,.3);position:relative;
+  max-height:82vh;overflow-y:auto;overscroll-behavior:contain}
+.nyhd{padding:16px 44px 12px 18px;border-bottom:1px solid #efe6d4}
+.nyhd h3{font-family:'Fraunces';font-size:19px;font-weight:600;line-height:1.2}
+.nyhd .s{font-size:11.5px;color:#a8987c;font-weight:700;letter-spacing:.4px;margin-top:3px}
+.nysec{padding:13px 18px;border-bottom:1px solid #f2ead9}
+.nysec:last-child{border-bottom:0}
+.nyk{font-size:9px;letter-spacing:1.2px;font-weight:800;color:#b3a488;margin-bottom:6px}
+.nyt{font-size:13px;line-height:1.55;color:#5f5648}
+.nyt b{color:#3a342c}
+.nyrow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;
+  padding:5px 0;border-bottom:1px dashed #efe6d4}
+.nyrow:last-child{border-bottom:0}
+.nyrow i{font-style:normal;color:#a8987c}
 .gpk{display:inline-block;background:currentColor;border-radius:6px;padding:3px 8px 4px;
   font-size:8.5px;letter-spacing:1.3px;font-weight:800;margin-bottom:8px}
 .gpk i{font-style:normal;color:#fdfaf4}
@@ -1190,6 +1210,22 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-29',
+  t:'“Ne yapmalı” kutusu tıklanabilir oldu (v55)',
+  y:['Özet sekmesindeki ağırlık artırma notları ayırt edici ve doğru ama orada gömülü '+
+     'kalıyordu. Oysa o metnin görülmesi gereken an, salonda hareketin başındayken. '+
+     'Antrenman ekranındaki karar kutusu artık tıklanabilir: açılan pencerede motorun '+
+     'tam gerekçesi, kuralın kendisi ve geçen seansın set dökümü var.',
+     'PENCERE İÇERİĞİ: (1) kararın gerekçesi — özet sekmesindeki metnin aynısı, '+
+     'kademeli geçiş önerisi dahil; (2) kural — ağırlık ne zaman artar, taban nedir, '+
+     'kademe kaç kg; (3) geçen seansın set set dökümü, kg × tekrar · RIR ve bir sonraki '+
+     'kademe. Yeni metin üretilmedi, mevcut açıklamalar hareketin bağlamında toplandı.',
+     'ÖZET SEKMESİ DE GÜN GÜN AYRILDI: v52 ilerlemeyi gün başına ayırmıştı ama özet '+
+     'kartı hâlâ bütün günleri birleştiriyordu. Antrenman ekranı “İtiş gününde 40 kg '+
+     'dene” derken özet başka sayı gösterebilirdi. Artık aynı hareket iki günde '+
+     'geçiyorsa iki satır çıkıyor ve hangi gün olduğu yazıyor.',
+     'Pencere arka plana dokununca, × ile ve Esc ile kapanıyor; kaydırma kilidi bu '+
+     'pencereyi de kapsıyor.']},
  {d:'2026-08-29',
   t:'Kademeli geçiş artık tanınıyor (v54)',
   y:['SORUN: v53 büyük sıçramada “ilk sette yeni kilo, kalan setlerde eski” diyordu ama '+
@@ -3502,11 +3538,22 @@ function rirTrend(name,ss){
   return a-b;
 }
 function progressCard(){
-  var ups=[],stalls=[];
+  /* v52'den beri ilerleme gün gün ayrı takip ediliyor. Özet burada bütün günleri
+     birleştirseydi antrenman ekranıyla çelişirdi: ekran "İtiş gününde 40 kg dene"
+     derken özet başka bir sayı gösterirdi. Aynı hareket iki günde geçiyorsa iki
+     satır çıkar ve hangi gün olduğu yazılır. */
+  var ups=[],stalls=[],dmap={};
+  ORDER.forEach(function(dt){
+    (PROGRAM[dt]?PROGRAM[dt].ex:[]).forEach(function(x){(dmap[x.n]=dmap[x.n]||[]).push(dt);});
+  });
   Object.keys(EXTGT).forEach(function(n){
-    var p=progression(n);if(!p)return;
-    if(p.type==='ok')return;
-    (p.type==='up'?ups:stalls).push([n,p]);
+    var days=dmap[n]||[null];
+    days.forEach(function(dt){
+      var p=progression(n,dt);if(!p)return;
+      if(p.type==='ok')return;
+      var lbl=(days.length>1&&dt&&PROGRAM[dt])?n+' · '+PROGRAM[dt].short:n;
+      (p.type==='up'?ups:stalls).push([lbl,p]);
+    });
   });
   if(!ups.length&&!stalls.length){
     var tracked=Object.keys(EXTGT).filter(function(n){return exSessions(n).length;}).length;
@@ -3777,7 +3824,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v54 · 29 Ağu 2026';
+var APPVER='v55 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5726,11 +5773,12 @@ function paintViewerPose(){
    sayfa kayıyordu: kat kısa olduğunda ya da kendi sonuna dayandığında dokunuş
    gövdeye geçiyordu. İki katmanlı çözüm — CSS'te overscroll-behavior:contain,
    burada da gövde kilidi + eski iOS için touchmove engeli. */
-var SCROLLERS='.dsheet,.mdrwp,.mbox,.pvstage,.ovscroll';
+var SCROLLERS='.dsheet,.mdrwp,.mbox,.nybox,.pvstage,.ovscroll';
 function overlayOpen(){
   if(pvIdx!=null)return true;
   if(typeof mDrawer!=='undefined'&&mDrawer)return true;
   if(typeof dOpen!=='undefined'&&dOpen&&!dClosing)return true;
+  if(document.getElementById('nywrap'))return true;
   var m=document.getElementById('modal');
   return !!(m&&m.classList.contains('on'));
 }
@@ -6498,7 +6546,8 @@ function prevSummary(prev,e,fromOtherDay){
        olarak duruyor. Aynı bilgiyi iki kez göstermek ekranı uzatıyordu.
        "GEÇEN SEANS · 26 AĞU" başlığı duruyor: bir hareketin geçen seansı başka bir
        programda olabiliyor, tarih o yüzden gerekli. */
-    '<div class="gprevv" style="color:'+vc+'">'+
+    '<button class="gprevv" data-a="nyopen" data-x="'+esc(e.n)+'" style="color:'+vc+'">'+
+      '<span class="gpmore">›</span>'+
       '<div class="gpk"><i>NE YAPMALI</i></div>'+
       '<div class="gpt">'+verdict+' <u>(hedef '+lo+'-'+hi+')</u>'+
         ((e.r[0]!==lo||e.r[1]!==hi)
@@ -6508,8 +6557,55 @@ function prevSummary(prev,e,fromOtherDay){
           ?'<span style="color:'+C.amber+';font-weight:400"> · bu kayıt başka bir '+
             'programdan, o gün hareket sıran farklıydı — rakamı birebir ölçü alma</span>':'')+
       '</div>'+
-    '</div>'+
+    '</button>'+
   '</div>';
+}
+/* ---- NE YAPMALI detay penceresi ----
+   Özet sekmesindeki ağırlık artırma notları ayırt edici ama orada gömülü
+   kalıyordu; salonda hareketin başındayken görülmesi gereken şey o. Karar
+   kutusu tıklanabilir yapıldı, açılan pencere aynı metinleri hareketin
+   bağlamında gösteriyor: karar, motorun gerekçesi, kural ve geçen seansın
+   set dökümü. Yeni içerik üretilmiyor — mevcut metinler tek yerde toplanıyor. */
+var nyOpen=null;
+function nyPanel(name){
+  var dt=dtOf(cur),e=tgtFor(name,cur)||EXTGT[name];
+  if(!e)return '';
+  var pg=progression(name,dt)||progression(name);
+  var prev=prevSession(name,cur,dt),xd=false;
+  if(!prev){prev=prevSession(name,cur);xd=!!prev;}
+  var lo=e.r[0],hi=e.r[1],floor=Math.max(1,lo-2),inc=incFor(name);
+  var o='<div class="nybox" id="nybox">'+
+    '<button class="mx" data-a="nyclose" aria-label="Kapat">×</button>'+
+    '<div class="nyhd"><h3>'+esc(name)+'</h3>'+
+      '<div class="s">HEDEF '+lo+'-'+hi+' TEKRAR · '+(e.s||3)+' SET · KADEME '+inc+' KG</div></div>';
+
+  if(pg&&pg.msg){
+    var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
+    o+='<div class="nysec"><div class="nyk" style="color:'+pc+'">'+
+      (pg.type==='up'?'AĞIRLIĞI ARTIR':(pg.type==='ok'?'İLERLİYORSUN':'TAKILDIN'))+'</div>'+
+      '<div class="nyt">'+pg.msg+'</div></div>';
+  }
+
+  o+='<div class="nysec"><div class="nyk">KURAL</div><div class="nyt">'+
+    'Ağırlık ancak <b>bütün setlerde '+hi+' tekrara</b> ulaşınca artar. '+
+    'Aralığın üstünü aşma — '+hi+' gördüğün yerde dur, sonraki seans '+inc+' kg ekle. '+
+    'Yeni yükte tekrarların düşmesi normaldir; <b>'+floor+' tekrarın</b> (alt sınır − 2) '+
+    'altına inmediğin sürece devam et. Altına inersen yük fazla, bir kademe geri in.'+
+    '</div></div>';
+
+  if(prev&&prev.sets.length){
+    var pmax=Math.max.apply(null,prev.sets.map(function(s){return s.kg;}));
+    o+='<div class="nysec"><div class="nyk">GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+
+      (prev.dt&&PROGRAM[prev.dt]?' · '+PROGRAM[prev.dt].short.toUpperCase():'')+
+      (xd?' · BAŞKA GÜN':'')+'</div>';
+    prev.sets.forEach(function(s,i){
+      o+='<div class="nyrow"><i>'+(i+1)+'. set</i><span><b>'+fx(s.kg,s.kg%1?1:0)+
+        ' kg</b> × '+s.rep+(s.rir!=null?' <i>· RIR '+s.rir+'</i>':'')+'</span></div>';
+    });
+    o+='<div class="nyt" style="margin-top:8px;color:#a8987c;font-size:12px">'+
+      'Bir sonraki kademe: <b>'+nextWeight(pmax,name)+' kg</b></div></div>';
+  }
+  return o+'</div>';
 }
 /* antrenman sekmesi başlığı — gün sekmesindeki kart ile aynı dil */
 function workHero(){
@@ -6908,6 +7004,15 @@ app.addEventListener('click',function(ev){
     var rn=document.querySelector('[data-a="reponew"]');
     phCreateRepo(rn?rn.value:'');}
   else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
+  else if(a==='nyopen'){
+    var nm=t.getAttribute('data-x');
+    var w=document.getElementById('nywrap');
+    if(!w){w=document.createElement('div');w.id='nywrap';w.className='modal on';document.body.appendChild(w);}
+    w.innerHTML=nyPanel(nm);w.className='modal on';nyOpen=nm;syncLock();}
+  else if(a==='nyclose'){
+    var w2=document.getElementById('nywrap');
+    if(w2)w2.parentNode.removeChild(w2);
+    nyOpen=null;syncLock();}
   else if(a==='phopen'){
     /* karşılaştırmadan açılıyorsa kapsam iki kareyle sınırlı — ok tuşu
        galeriyi değil, karşılaştırdığın diğer fotoğrafı getirir */
@@ -7088,6 +7193,14 @@ app.addEventListener('click',function(ev){
 /* ============ BÜYÜTME PENCERESİ ============ */
 document.getElementById('mx').addEventListener('click',closeFig);
 document.getElementById('modal').addEventListener('click',function(e){if(e.target.id==='modal')closeFig();});
+document.addEventListener('keydown',function(e){
+  if(e.key==='Escape'){var w=document.getElementById('nywrap');
+    if(w){w.parentNode.removeChild(w);nyOpen=null;syncLock();}}
+});
+document.addEventListener('click',function(e){
+  if(e.target&&e.target.id==='nywrap'){
+    e.target.parentNode.removeChild(e.target);nyOpen=null;syncLock();}
+});
 document.addEventListener('keydown',function(e){if(e.key==='Escape')closeFig();});
 document.addEventListener('focusout',function(){
   setTimeout(function(){if(pendingRefresh&&!typing())gymRefresh();},80);
