@@ -1191,6 +1191,39 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
  {d:'2026-08-29',
+  t:'Ağırlık artışları salondaki gerçek kademelere bağlandı (v53)',
+  y:['SORUN: nextWeight() kiloya göre kademe uyduruyordu — 20 altı +1, 40 altı +2, '+
+     'üstü +2.5. Salonda böyle bir şey yok. Dambıl rafı el başına 2 kg atlıyor, iki '+
+     'dambılı birlikte yazdığın için kademe 4 kg. Makine ve kablo istasyonları 5 kg’lık '+
+     'pimlerle çalışıyor. Uygulama “38.5 kg’a çık” diyordu, karşılığı yoktu.',
+     'ÇÖZÜM: EXINC tablosu eklendi. Dambıl hareketleri 4 kg (el başına 2), makine ve '+
+     'kablo hareketleri 5 kg. Tabloda olmayan hareket 2.5 kg varsayılır.',
+     'KADEMELİ GEÇİŞ: sabit kademe hafif ağırlıklarda oransal olarak devleşiyor — '+
+     '36 kg dambılda 4 kg artış %11, 12 kg kabloda 5 kg artış %42. Tek seansta yutulacak '+
+     'yük değil, tekrar tabanın da altına düşer. Artış %8’i geçtiğinde uygulama artık '+
+     'kademeli geçiş öneriyor: ilk sette yeni kilo, kalan setlerde eski. Sonraki seans '+
+     'iki set yeni, sonra hepsi. Dambılda büyük sıçramayı yönetmenin en temiz yolu bu.']},
+ {d:'2026-08-29',
+  t:'İlerleme artık gün gün ayrı takip ediliyor (v52)',
+  y:['SORUN: Eğik dambıl press İtiş gününde 1. hareket (dinlenmiş gelirsin), Üst Vücut '+
+     'gününde 3. hareket (önünde iki hareket var). Aynı kiloda İtiş gününde daha çok '+
+     'tekrar çıkar. Karşılaştırma günleri ayırmadığı için yorgun seansın rakamı '+
+     'dinlenmiş güne ölçü oluyordu — ya hak etmediğin artış öneriyor ya da hak ettiğin '+
+     'artışı geciktiriyordu.',
+     'ÇÖZÜM: exSessions, progression ve prevSession artık plan günü filtresi alıyor. '+
+     'Antrenman ekranı önce AYNI günün geçen seansını arıyor. Yani İtiş günü açıldığında '+
+     'bir önceki İtiş gününe, Üst Vücut açıldığında bir önceki Üst Vücut gününe bakıyor. '+
+     'Ağırlık hattı da böylece gün başına ayrı ilerliyor: İtiş’te 38 kg, Üst’te 36 kg '+
+     'olabilir, ikisi birbirini bozmaz.',
+     'YEDEK KAYIT ETİKETLENDİ: o günde hareket ilk kez yapılıyorsa başka günün kaydı '+
+     'yedek olarak gösteriliyor — ama sessizce değil. Başlıkta “BAŞKA GÜN” rozeti, karar '+
+     'kutusunda da “bu kayıt başka bir programdan, hareket sıran farklıydı” notu çıkıyor. '+
+     'Veri yokken boş ekran göstermek yerine, ne olduğunu söyleyip kullanıcıya bırakmak.',
+     'BAŞLIKTA GÜN ADI: “GEÇEN SEANS · 26 AĞU · ÜST/KARIN” şeklinde artık hangi programda '+
+     'yapıldığı da yazıyor.',
+     'HEDEF ETİKETİ SADELEŞTİ: aralıklar v51’de tekleştiği için “o gün hedef” ibaresi '+
+     'gereksizleşti, “hedef 8-12” oldu. Farklılık çıkarsa not yine görünür.']},
+ {d:'2026-08-29',
   t:'Aynı hareketin günden güne değişen tekrar aralıkları tekleştirildi (v51)',
   y:['SORUN: Eğik dambıl press İtiş gününde 6-10, Üst Vücut gününde 8-12 hedefliydi. '+
      'Ekranda üstte “6-10 tekrar”, altındaki yeşil kutuda “her sette 12 tekrarı yakala” '+
@@ -1926,14 +1959,15 @@ function evalEx(sets,tgt,prev){
   return{state:st,vol:vol,done:inRange,perf:perf,up:up,need:need,label:label,color:color,bg:bg};
 }
 var _pc={},_sc={};
-function prevSession(name,before){
-  var ck=name+'|'+before; if(ck in _pc)return _pc[ck];
-  var ks=keys().filter(function(d){return d<before;}).reverse(),out=null;
+function prevSession(name,before,dt){
+  var ck=name+'|'+before+'|'+(dt||''); if(ck in _pc)return _pc[ck];
+  var ks=keys().filter(function(d){return d<before&&(!dt||dtOf(d)===dt);}).reverse(),out=null;
   for(var i=0;i<ks.length;i++){
     var sets=(D(ks[i]).ex||{})[name];
     if(sets){var f=sets.filter(function(s){return s.kg!=null&&s.rep!=null;});
       if(f.length){var v=0;f.forEach(function(s){v+=s.kg*s.rep;});
-        out={date:ks[i],vol:v,sets:f,txt:f.map(function(s){return s.kg+'×'+s.rep;}).join(' · ')};break;}}
+        out={date:ks[i],vol:v,sets:f,dt:dtOf(ks[i]),
+             txt:f.map(function(s){return s.kg+'×'+s.rep;}).join(' · ')};break;}}
   }
   _pc[ck]=out;return out;
 }
@@ -3197,7 +3231,41 @@ function supRate(k,days){
 
 /* ============ PROGRESİF YÜKLENME ============ */
 var _gc={};
-function nextWeight(kg){var inc=kg<20?1:(kg<40?2:2.5);return Math.round((kg+inc)*4)/4;}
+/* ============ GERÇEK AĞIRLIK KADEMELERİ ============
+   Eski hesap kiloya göre kademe uyduruyordu (20 altı +1, 40 altı +2, üstü +2.5).
+   Salonda böyle bir şey yok: dambıl rafı el başına 2 kg atlıyor, iki dambılı
+   birlikte yazdığın için kademe 4 kg. Makine ve kablo istasyonları 5 kg'lık
+   pimlerle çalışıyor. Uygulamanın "38.5 kg'a çık" demesinin karşılığı yoktu.
+   EXINC hareket adına göre gerçek kademeyi verir. Listede olmayan hareket
+   barbell/plaka kabul edilir. */
+var EXINC={
+  'Eğik dambıl press':4,'Düz dambıl press':4,'Oturarak dambıl omuz press':4,
+  'Eğik dambıl curl':4,'Hammer curl':4,'Oturarak dambıl yan kaldırış':4,
+  'Skullcrusher':4,
+  'Kablo yan kaldırış':5,'Tek kol kablo yan kaldırış':5,'Kablo curl':5,
+  'Kablo fly':5,'Halat pushdown':5,'Kafa üstü triceps ekstansiyon':5,
+  'Face pull':5,'Oturarak kablo row':5,'Makine row':5,'Lat pulldown / Barfiks':5,
+  'Makine omuz press':5,'Leg curl':5,'Leg extension':5,'Preacher curl':5,
+  'Leg press':5,'Ayakta calf raise':5,
+  'Squat / Hack squat':5,'Romanian deadlift':5,'Dar tutuş bench / Dips':5
+};
+function incFor(name){var v=EXINC[name];return v||2.5;}
+/* Kademe sabit olduğu için hafif ağırlıklarda sıçrama oransal olarak devleşiyor:
+   36 kg dambılda 4 kg artış %11, 20 kg kabloda 5 kg artış %25. Bu tek seferde
+   yutulacak bir yük değil — tekrar 12'den 6'nın da altına düşer. Böyle
+   durumlarda kademeli geçiş önerilir: ilk sette yeni kilo, kalan setlerde eski.
+   Sonraki seans iki set yeni, sonra hepsi. */
+function stagedNote(from,to){
+  if(!from||to<=from)return '';
+  var pct=(to-from)/from*100;
+  if(pct<8)return '';
+  return ' Sıçrama büyük (%'+Math.round(pct)+') — ilk sette '+to+' kg, kalan setlerde '+
+    from+' kg ile başla. Sonraki seans iki set '+to+', sonra üçü de.';
+}
+function nextWeight(kg,name){
+  var inc=incFor(name);
+  return Math.round((kg+inc)*4)/4;
+}
 /* ============ RIR — yetersizliğe kalan tekrar ============
    Yetersizliğe yakınlık, hipertrofi uyarımının ana belirleyicilerinden.
    0 = ≤1 tekrar kalmıştı, 2 = 2 kalmıştı, 3 = 3 veya daha fazla. */
@@ -3288,18 +3356,26 @@ function avgRir(sets){
   if(!a.length)return null;
   return a.reduce(function(x,s){return x+s.rir;},0)/a.length;
 }
-function exSessions(name){
+/* Aynı hareket iki ayrı günde farklı sırada olabiliyor: Eğik dambıl press
+   İtiş gününde 1. hareket (dinlenmiş), Üst Vücut gününde 3. hareket (yorgun).
+   Aynı kiloda İtiş gününde daha çok tekrar çıkar. Karşılaştırma günleri
+   ayırmazsa yorgun seansın rakamı dinlenmiş güne, dinlenmişin rakamı yorgun
+   güne ölçü olur — ikisi de haksız. dt verilirse sadece o plan gününün
+   seansları sayılır; verilmezse eski davranış (bütün günler). */
+function exSessions(name,dt){
   return keys().filter(function(d){
+    if(dt&&dtOf(d)!==dt)return false;
     var st=(D(d).ex||{})[name];
     return st&&st.some(function(s){return s.kg!=null&&s.rep!=null;});
   }).sort();
 }
-function progression(name){
-  if(name in _gc)return _gc[name];
-  var out=_progression(name);_gc[name]=out;return out;
+function progression(name,dt){
+  var ck=name+'|'+(dt||'');
+  if(ck in _gc)return _gc[ck];
+  var out=_progression(name,dt);_gc[ck]=out;return out;
 }
-function _progression(name){
-  var ss=exSessions(name);if(!ss.length)return null;
+function _progression(name,dt){
+  var ss=exSessions(name,dt);if(!ss.length)return null;
   var last=ss[ss.length-1];
   /* hedef, hareketin SON YAPILDIĞI GÜNDEN okunur — EXTGT'den değil.
      Yoksa Üst gününde yapılan Eğik dambıl press'e İtiş gününün 6-10
@@ -3320,7 +3396,7 @@ function _progression(name){
     if(Math.max.apply(null,st2.map(function(s){return s.kg;}))!==mx)break;
     streak++;firstAt=ss[i];
   }
-  var days=dayDiff(firstAt,last),nx=nextWeight(mx);
+  var days=dayDiff(firstAt,last),nx=nextWeight(mx,name);
   var dl=isDeload(today());
 
   /* RIR 3+ ise setler yeterince zorlamıyor. AMA tekrar aralığın altındaysa ağırlık
@@ -3330,7 +3406,8 @@ function _progression(name){
   var loHit=atMax.filter(function(s){return s.rep>=e.r[0];}).length;
   if(rir!=null&&rir>=2.6&&!dl&&atMax.length>=e.s&&loHit>=e.s)
     return {type:'up',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      msg:'Ortalama RIR '+fx(rir,1)+' — setler yetersizliğe uzak, uyarım düşük. <b>'+nx+' kg</b>’a çık.'};
+      msg:'Ortalama RIR '+fx(rir,1)+' — setler yetersizliğe uzak, uyarım düşük. <b>'+nx+' kg</b>’a çık.'+
+        stagedNote(mx,nx)};
 
   /* Ağırlık artırma şartı: hedeflenen set sayısının TAMAMI aynı kiloda
      yapılmış VE hepsi üst sınıra ulaşmış olmalı.
@@ -3343,7 +3420,8 @@ function _progression(name){
       msg:'Tüm setlerde '+e.r[1]+' tekrara ulaştın. <b>'+nx+' kg</b>’a çık. '+
           'İlk seansta '+e.r[0]+' tekrarın altında kalman normal — '+
           Math.max(1,e.r[0]-2)+' tekrarın altına düşmediğin sürece devam et, '+
-          'birkaç hafta içinde '+e.r[0]+'-'+e.r[1]+' aralığına tırmanırsın.'};
+          'birkaç hafta içinde '+e.r[0]+'-'+e.r[1]+' aralığına tırmanırsın.'+
+          stagedNote(mx,nx)};
   }
 
   /* RIR düşüyorsa aynı kiloda kalmak takılmak değil — gerçek ilerleme */
@@ -3652,7 +3730,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v51 · 29 Ağu 2026';
+var APPVER='v53 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3802,7 +3880,13 @@ function gymWorkout(){
   var sets=(r.ex||{})[e.n]||[];
   var te=tgtOn(e,cur);
   var cnt=Math.max(te.s,sets.length);
-  var prev=prevSession(e.n,cur),ev=evalEx(sets,te,prev),pg=progression(e.n);
+  /* Önce aynı plan gününün geçen seansı — aynı sıra, aynı yorgunluk, adil kıyas.
+     O gün bu hareket ilk kez yapılıyorsa başka günden yedek alınır ve kart
+     bunu açıkça söyler; sessizce yanlış güne kıyaslamaktansa etiketlemek doğru. */
+  var _dt=dtOf(cur);
+  var prev=prevSession(e.n,cur,_dt),prevX=false;
+  if(!prev){prev=prevSession(e.n,cur);prevX=!!prev;}
+  var ev=evalEx(sets,te,prev),pg=progression(e.n,_dt)||progression(e.n);
 
   var rows='',anyFilled=false;
   for(var i=0;i<cnt;i++){
@@ -3875,7 +3959,7 @@ function gymWorkout(){
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
-    prevSummary(prev,e)+
+    prevSummary(prev,e,prevX)+
     '<div class="gsets">'+rows+'</div>'+
     '<div class="ghint">'+hint+'</div>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
@@ -6294,7 +6378,7 @@ function heroM(){
 }
 /* geçen seansın ÖZETİ — setlerin tek tek listesi zaten her setin altında var.
    Burada ortalama tekrar ve "ağırlık mı tekrar mı" kararı duruyor. */
-function prevSummary(prev,e){
+function prevSummary(prev,e,fromOtherDay){
   if(!prev)
     return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
       e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
@@ -6343,7 +6427,9 @@ function prevSummary(prev,e){
   else{
     verdict='Aralığın altında set var — '+kgTxt+' kg’da kal, önce her sette '+lo+' tekrarı tuttur';vc=C.amber;}
   return '<div class="gprevbox">'+
-    '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+'</span>'+
+    '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+
+      (prev.dt&&PROGRAM[prev.dt]?' · '+PROGRAM[prev.dt].short.toUpperCase():'')+
+      (fromOtherDay?' <b style="color:'+C.amber+'">· BAŞKA GÜN</b>':'')+'</span>'+
       '<button class="gcopy" data-a="samelast">Aynısını doldur</button></div>'+
     /* Dörtlü istatistik kutusu kaldırıldı — ortalama tekrar, kilo, set sayısı ve
        ortalama RIR zaten her set satırının altında "geçen sefer 36 kg × 11 · RIR 2"
@@ -6352,10 +6438,13 @@ function prevSummary(prev,e){
        programda olabiliyor, tarih o yüzden gerekli. */
     '<div class="gprevv" style="color:'+vc+'">'+
       '<div class="gpk"><i>NE YAPMALI</i></div>'+
-      '<div class="gpt">'+verdict+' <u>(o gün hedef '+lo+'-'+hi+')</u>'+
+      '<div class="gpt">'+verdict+' <u>(hedef '+lo+'-'+hi+')</u>'+
         ((e.r[0]!==lo||e.r[1]!==hi)
-          ?'<span style="color:#a8987c;font-weight:400"> · bugün bu hareketin hedefi '+
-            e.r[0]+'-'+e.r[1]+', ayrı gün ayrı hat</span>':'')+
+          ?'<span style="color:#a8987c;font-weight:400"> · o seansta hedef '+lo+'-'+hi+
+            ' idi, bugün '+e.r[0]+'-'+e.r[1]+'</span>':'')+
+        (fromOtherDay
+          ?'<span style="color:'+C.amber+';font-weight:400"> · bu kayıt başka bir '+
+            'programdan, o gün hareket sıran farklıydı — rakamı birebir ölçü alma</span>':'')+
       '</div>'+
     '</div>'+
   '</div>';
