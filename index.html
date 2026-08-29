@@ -1191,6 +1191,24 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
  {d:'2026-08-29',
+  t:'Kademeli geçiş artık tanınıyor (v54)',
+  y:['SORUN: v53 büyük sıçramada “ilk sette yeni kilo, kalan setlerde eski” diyordu ama '+
+     'sonra bu girişi tanımıyordu. 40/36/36 girince en ağır kiloda tek set görüp '+
+     '“1/3 set girilmiş” ya da “aralığın altında set var” diye okuyordu. Yanlış değildi, '+
+     'eksikti — kendi önerdiği şeyi yarım kalmış seans sanıyordu.',
+     'TESPİT: stagedOf() deseni ayırt ediyor. Seansta birden fazla kilo var, en ağırı '+
+     'geçen seansın üstünde, hafif setler de tam geçen seansın kilosunda. Üçü birden '+
+     'tutuyorsa bu geri gitmek değil, planlı geçişin bir aşaması. Rastgele karışık kilo '+
+     '(32/36/36 gibi) desene uymaz, eski davranışla değerlendirilir.',
+     'MESAJ: kaçıncı aşamada olduğunu söylüyor — “3 setin 1 tanesi 40 kg’da, kalanı 36 '+
+     'kg’da. Bu seans 2 set 40 kg yap, sonra hepsi.” Üç set de yeni kiloya geçtiğinde '+
+     'geçiş biter, normal kurallar devreye girer.',
+     'TABAN KORUMASI: kademeli geçişte bile yeni kilodaki set tabanın altına düşerse '+
+     '(8-12 hedefinde 6’nın altı) turuncu uyarı çıkıyor — sıçrama kademeliyle bile fazla '+
+     'demek, eski kiloda kalıp üst sınırı sağlamlaştırmak gerekiyor.',
+     'Ağırlık artışı bandı da aynı mantığı kullanıyor: kademeli geçişte turuncu değil '+
+     'mavi, çünkü bir sorun değil.']},
+ {d:'2026-08-29',
   t:'Ağırlık artışları salondaki gerçek kademelere bağlandı (v53)',
   y:['SORUN: nextWeight() kiloya göre kademe uyduruyordu — 20 altı +1, 40 altı +2, '+
      'üstü +2.5. Salonda böyle bir şey yok. Dambıl rafı el başına 2 kg atlıyor, iki '+
@@ -2891,14 +2909,18 @@ function exRow(e,r){
           return '<div class="rirsch" style="background:'+hexa(kc,.13)+';color:'+kc+'" title="'+esc(rirWhy(e.n))+'">'+
             KINDN[kk].toUpperCase()+' <i>· hedef RIR '+rirScheme(e.n,count)+'</i></div>';})()+
         (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
-          var jc=ju.bad?C.orange:C.teal;
+          var jc=(ju.bad&&!ju.staged)?C.orange:C.teal;
           return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
             '<b>Ağırlık arttı: '+ju.from+' → '+ju.to+' kg.</b> '+
-            (ju.bad
+            ((ju.staged
+              ?'Kademeli geçiştesin — '+ju.staged.need+' setin <b>'+ju.staged.done+'</b> tanesi '+
+               ju.to+' kg’da, kalanı '+ju.from+' kg’da. Doğru yoldasın: sonraki seans '+
+               Math.min(ju.staged.need,ju.staged.done+1)+' set '+ju.to+', sonra hepsi.'
+              :ju.bad
               ?'Ama '+ju.low+' tekrarda kaldın — hedefin ('+ju.lo+'-'+ju.hi+') 2 altı olan <b>'+ju.floor+
                '</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
               :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
-               'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.')+'</div>';})()+
+               'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
         (function(){var pg=progression(e.n);if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
           var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
@@ -3340,8 +3362,33 @@ function justUp(name,d,e){
   var lo=e&&e.r?e.r[0]:8,floor=Math.max(1,lo-2);
   var reps=f.filter(function(s){return s.kg===mx&&s.rep!=null;}).map(function(s){return s.rep;});
   var low=reps.length?Math.min.apply(null,reps):null;
+  var stg=stagedOf(f,pk,e&&e.s?e.s:f.length);
   return {from:pk,to:mx,lo:lo,hi:e&&e.r?e.r[1]:12,floor:floor,low:low,
+          staged:(stg&&!stg.complete)?stg:null,
           bad:(low!=null&&low<floor)};
+}
+/* ---- KADEMELİ GEÇİŞ TESPİTİ ----
+   Uygulama büyük sıçramada "ilk sette yeni kilo, kalan setlerde eski" diyor ama
+   sonra bu girişi tanımıyordu: en ağır kiloda tek set görüp "aralığın altında
+   set var" ya da "1/3 set girilmiş" diye okuyordu. Yanlış değildi, eksikti.
+   Desen belli: seansta birden fazla kilo var, en ağırı geçen seansın üstünde,
+   hafif setler de tam geçen seansın kilosunda. Yani geri gitmek değil, planlı
+   geçişin bir aşaması. staged() bunu ayırt eder ve kaçıncı aşamada olduğunu
+   döndürür. */
+function stagedOf(sets,prevMax,needSets){
+  var f=(sets||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
+  if(f.length<2||prevMax==null)return null;
+  var kgs=f.map(function(s){return s.kg;});
+  var mx=Math.max.apply(null,kgs),mn=Math.min.apply(null,kgs);
+  if(mx===mn)return null;                 /* tek kilo — geçiş yok */
+  if(!(mx>prevMax))return null;           /* en ağır set eski kiloyu aşmıyor */
+  var light=f.filter(function(s){return s.kg<mx;});
+  if(!light.every(function(s){return s.kg===prevMax;}))return null;
+  var at=f.filter(function(s){return s.kg===mx;});
+  var n=needSets||f.length;
+  return {from:prevMax,to:mx,done:at.length,need:n,
+          reps:at.map(function(s){return s.rep;}),
+          complete:at.length>=n};
 }
 function kgStep(kg){
   if(kg==null)return 2.5;
@@ -3730,7 +3777,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v53 · 29 Ağu 2026';
+var APPVER='v54 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3948,14 +3995,18 @@ function gymWorkout(){
        kesik çerçeveyle işaretli. İkisi de ekranı uzatıp asıl karar kutusunu
        aşağı itiyordu. Metinler duruyor, sadece bu ekranda basılmıyor. */
     (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
-      var jc=ju.bad?C.orange:C.teal;
+      var jc=(ju.bad&&!ju.staged)?C.orange:C.teal;
       return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
         '<b>Ağırlık arttı: '+ju.from+' → '+ju.to+' kg.</b> '+
-        (ju.bad
+        ((ju.staged
+              ?'Kademeli geçiştesin — '+ju.staged.need+' setin <b>'+ju.staged.done+'</b> tanesi '+
+               ju.to+' kg’da, kalanı '+ju.from+' kg’da. Doğru yoldasın: sonraki seans '+
+               Math.min(ju.staged.need,ju.staged.done+1)+' set '+ju.to+', sonra hepsi.'
+              :ju.bad
           ?'Ama '+ju.low+' tekrarda kaldın — hedefin ('+ju.lo+'-'+ju.hi+') 2 altı olan '+
            '<b>'+ju.floor+'</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
           :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
-           'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.')+'</div>';})()+
+           'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
@@ -6411,8 +6462,19 @@ function prevSummary(prev,e,fromOtherDay){
   var pk=(pp&&pp.sets.length)?Math.max.apply(null,pp.sets.map(function(s){return s.kg;})):null;
   var fresh=(pk!=null&&kgMax>pk),floor=Math.max(1,lo-2);
   var lowRep=atMax.length?Math.min.apply(null,atMax.map(function(s){return s.rep;})):null;
+  /* Kademeli geçiş: karışık kilolu seans "yarım kaldı" değil, planlı bir aşama. */
+  var stg=(pk!=null)?stagedOf(prev.sets,pk,needSets):null;
   var verdict,vc;
-  if(atMax.length>=needSets&&topHit>=needSets){
+  if(stg&&!stg.complete){
+    var nextN=Math.min(stg.need,stg.done+1);
+    var lowS=Math.min.apply(null,stg.reps);
+    verdict=(lowS<floor
+      ?'Kademeli geçiştesin ama '+stg.to+' kg’da '+lowS+' tekrar — '+floor+
+        ' tabanının altı. '+stg.from+' kg’da kalıp '+hi+' tekrarı sağlamlaştır'
+      :'Kademeli geçiştesin — '+stg.need+' setin '+stg.done+' tanesi '+stg.to+' kg’da, kalanı '+
+        stg.from+' kg’da. Bu seans '+nextN+' set '+stg.to+' kg yap, sonra hepsi');
+    vc=(lowS<floor)?C.orange:C.teal;}
+  else if(atMax.length>=needSets&&topHit>=needSets){
     verdict='Tüm setlerde '+hi+' tekrara ulaştın — bugün ağırlığı artır';vc=C.green;}
   else if(atMax.length&&loHit>=atMax.length){
     verdict='Aralık içindeydin — '+kgTxt+' kg’da kal, her sette '+hi+' tekrarı yakala'+miss;vc=C.teal;}
