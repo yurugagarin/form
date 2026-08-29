@@ -480,7 +480,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
 .gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .gsync2{font-size:10.5px;color:#b3a488;font-weight:700}
-.gprevbox{margin-top:12px;padding-top:11px;border-top:1px dashed #e4d9c2}
+.gprevbox{margin-top:11px;padding-top:10px;border-top:1px dashed #e4d9c2}
 .gprevhd{display:flex;align-items:center;gap:10px;font-size:9.5px;letter-spacing:1px;
   font-weight:700;color:#b3a488}
 .gprevhd span{flex:1;min-width:0}
@@ -490,7 +490,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gprevst b{display:block;font-family:'Fraunces';font-size:17px;font-weight:600;line-height:1.05;
   color:#3a342c;font-variant-numeric:tabular-nums}
 .gprevst i{display:block;font-style:normal;font-size:9px;font-weight:700;color:#b3a488;margin-top:3px}
-.gprevv{margin-top:12px;border:1.5px solid currentColor;border-radius:13px;
+.gprevv{margin-top:10px;border:1.5px solid currentColor;border-radius:13px;
   background:#fdfaf4;padding:10px 12px 12px;box-shadow:0 1px 0 rgba(58,52,44,.04)}
 .gpk{display:inline-block;background:currentColor;border-radius:6px;padding:3px 8px 4px;
   font-size:8.5px;letter-spacing:1.3px;font-weight:800;margin-bottom:8px}
@@ -1141,7 +1141,7 @@ var PROGRAM={
   cardio:{label:'Kardiyo / yürüyüş',name:'Kardiyo',short:'Kardiyo',code:'KAR',color:C.teal,ex:[]},
   trav:{label:'Seyahat / izin',name:'Seyahat',short:'Seyahat',code:'SYH',color:'#2f8a7c',ex:[]},
   gun1:{label:'İtiş · Göğüs / Omuz / Triceps',name:'İtiş',short:'İtiş',code:'İTİ',color:C.orange,ex:[
-    {n:'Eğik dambıl press',s:3,r:[6,10]},
+    {n:'Eğik dambıl press',s:3,r:[8,12]},
     {n:'Düz dambıl press',s:3,r:[8,12]},
     {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
     {n:'Kablo yan kaldırış',s:4,r:[12,20]},
@@ -1171,10 +1171,10 @@ var PROGRAM={
     {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
     {n:'Preacher curl',s:3,r:[10,12]}]},
   gun5:{label:'Üst Vücut + Karın',name:'Üst Vücut + Karın',short:'Üst/Karın',code:'ÜST',color:C.pink,ex:[
-    {n:'Lat pulldown / Barfiks',s:3,r:[10,12]},
-    {n:'Makine row',s:3,r:[10,12]},
+    {n:'Lat pulldown / Barfiks',s:3,r:[8,12]},
+    {n:'Makine row',s:3,r:[8,12]},
     {n:'Eğik dambıl press',s:3,r:[8,12]},
-    {n:'Oturarak dambıl yan kaldırış',s:3,r:[15,20]},
+    {n:'Oturarak dambıl yan kaldırış',s:3,r:[12,20]},
     {n:'Kablo fly',s:3,r:[12,15]}]}
 };
 /* 26 Ağu 2026 — Üst Vücut gününden Halat pushdown, Kablo curl ve Cable crunch
@@ -1190,6 +1190,46 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-29',
+  t:'Aynı hareketin günden güne değişen tekrar aralıkları tekleştirildi (v51)',
+  y:['SORUN: Eğik dambıl press İtiş gününde 6-10, Üst Vücut gününde 8-12 hedefliydi. '+
+     'Ekranda üstte “6-10 tekrar”, altındaki yeşil kutuda “her sette 12 tekrarı yakala” '+
+     'yazıyordu. İkisi de kendi bağlamında doğruydu ama yan yana okunamıyordu ve '+
+     'antrenman sırasında hangi sayıyı kovalayacağı belirsiz kalıyordu.',
+     'PROGRAM TARANDI: aynı hata dört harekette varmış. Eğik dambıl press 6-10/8-12, '+
+     'Lat pulldown 8-12/10-12, Makine row 8-12/10-12, Oturarak dambıl yan kaldırış '+
+     '12-20/15-20. Dördü de tek aralığa çekildi: sırasıyla 8-12, 8-12, 8-12, 12-20. '+
+     'Face pull zaten iki günde de 15-20 idi.',
+     'GEREKÇE: farklı günlerde farklı aralık vermenin teorik bir gerekçesi var (bir gün '+
+     'ağır, bir gün yüksek tekrar) ama kazancı marjinal. Kesikteyken tek bir hedefe '+
+     'kilitlenmek daha değerli — hangi sayıyı kovaladığın her seferinde net oluyor ve '+
+     'ilerleme tek bir hat üzerinden okunuyor. Set sayıları gün gün farklı kalmaya devam '+
+     'ediyor; o bir çelişki değil, hacim tercihi.',
+     'YAN ETKİ: aralıklar eşitlendiği için “bugün bu hareketin hedefi X-Y, ayrı gün ayrı '+
+     'hat” notu artık hiç görünmüyor. Not kodda duruyor, ileride yine farklı aralıklı bir '+
+     'hareket eklenirse kendiliğinden çıkar.',
+     'Hareketler sekmesi, takvim ve raporlar aralığı doğrudan PROGRAM’dan okuduğu için '+
+     'hepsinde birlikte düzeldi. Geçmiş kayıtlar silinmedi; eski seanslar da artık yeni '+
+     'aralığa göre değerlendiriliyor.']},
+ {d:'2026-08-29',
+  t:'Antrenman ekranı sadeleşti (v50)',
+  y:['HAREKET AÇIKLAMASI KALDIRILDI: her hareketin altında “Sedye 30° eğik. Dambılları '+
+     'göğsün üst kısmından dikey yukarı it.” satırı duruyordu. Aynı metin fotoğrafa '+
+     'dokununca açılan kipte zaten var. Ekranda iki kez durup asıl karar kutusunu '+
+     'aşağı itiyordu.',
+     'RIR GEREKÇESİ KALDIRILDI: “Bileşik: erken setleri 2’de bırak, toparlanmayı seansın '+
+     'geri kalanına sakla.” satırı da gitti. Hedef RIR her setin altında kesik çerçeve ve '+
+     'köşe noktasıyla zaten işaretli, üstelik “hedef 2” yazısıyla birlikte. Aynı bilgiyi '+
+     'iki farklı yerde anlatmaya gerek yok. Metinler kodda duruyor, sadece bu ekranda '+
+     'basılmıyor.',
+     'DÖRTLÜ İSTATİSTİK KUTUSU KALDIRILDI: ortalama tekrar, kilo, set sayısı ve ortalama '+
+     'RIR kutucukları gitti. Dördü de her set satırının altındaki “geçen sefer 36 kg × 11 '+
+     '· RIR 2” satırında zaten var, üstelik set set — ortalamadan daha kullanışlı hali. '+
+     'Ayrıca karar artık ortalamaya bakmıyor, o yüzden ortalamayı öne çıkarmanın anlamı '+
+     'da kalmamıştı.',
+     'BAŞLIK DURUYOR: “GEÇEN SEANS · 26 AĞU” satırı kaldı. Bir hareketin geçen seansı '+
+     'başka bir program gününde olabiliyor; hangi tarihe bakıldığını görmek gerekiyor. '+
+     '“Aynısını doldur” düğmesi de yerinde.']},
  {d:'2026-08-29',
   t:'Fotoğraf titremesi, karşılaştırma okları, kat kaydırma kilidi (v49)',
   y:['ETİKET TİTREMESİ: tam ekranda poza dokununca bütün görüntüleyici innerHTML ile '+
@@ -3612,7 +3652,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v49 · 29 Ağu 2026';
+var APPVER='v51 · 29 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -3819,8 +3859,10 @@ function gymWorkout(){
           return '<div class="rirsch" style="background:'+hexa(kc,.13)+';color:'+kc+'">'+
             KINDN[kk].toUpperCase()+' <i>· hedef RIR '+rirScheme(e.n,cnt)+'</i></div>';})()+
       '</div></div>'+
-    '<div class="gdesc">'+esc(descOf(e.n))+'</div>'+
-    '<div class="rirwhy" style="padding-left:14px">'+rirWhy(e.n)+'</div>'+
+    /* Hareket açıklaması ve RIR gerekçesi buradan kaldırıldı: açıklama zaten
+       fotoğrafa dokununca açılan kipte var, RIR hedefi de her setin altında
+       kesik çerçeveyle işaretli. İkisi de ekranı uzatıp asıl karar kutusunu
+       aşağı itiyordu. Metinler duruyor, sadece bu ekranda basılmıyor. */
     (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
       var jc=ju.bad?C.orange:C.teal;
       return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
@@ -6256,12 +6298,8 @@ function prevSummary(prev,e){
   if(!prev)
     return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
       e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
-  var reps=prev.sets.map(function(s){return s.rep;});
-  var avg=reps.reduce(function(a,b){return a+b;},0)/reps.length;
   var kgs=prev.sets.map(function(s){return s.kg;});
-  var kgMax=Math.max.apply(null,kgs),kgMin=Math.min.apply(null,kgs);
-  var rr=prev.sets.filter(function(s){return s.rir!=null;}).map(function(s){return s.rir;});
-  var rAvg=rr.length?rr.reduce(function(a,b){return a+b;},0)/rr.length:null;
+  var kgMax=Math.max.apply(null,kgs);
   /* KARAR O SEANSIN KENDİ GÜNÜNÜN HEDEFİNE göre verilir — bugünün hedefine göre DEĞİL.
      ESKİ HATA: lo/hi bugünkü hareketin aralığından (e.r) okunuyordu. Eğik dambıl press
      Üst gününde 8-12, İtiş gününde 6-10. 26 Ağu (Üst) seansındaki 11/11/8 kaydı,
@@ -6307,12 +6345,11 @@ function prevSummary(prev,e){
   return '<div class="gprevbox">'+
     '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+'</span>'+
       '<button class="gcopy" data-a="samelast">Aynısını doldur</button></div>'+
-    '<div class="gprevst">'+
-      '<div><b>'+fx(avg,1)+'</b><i>ort. tekrar</i></div>'+
-      '<div><b>'+(kgMin===kgMax?fx(kgMax,kgMax%1?1:0):fx(kgMin,0)+'–'+fx(kgMax,0))+'</b><i>kg</i></div>'+
-      '<div><b>'+prev.sets.length+'</b><i>set</i></div>'+
-      '<div><b>'+(rAvg==null?'—':fx(rAvg,1))+'</b><i>ort. RIR</i></div>'+
-    '</div>'+
+    /* Dörtlü istatistik kutusu kaldırıldı — ortalama tekrar, kilo, set sayısı ve
+       ortalama RIR zaten her set satırının altında "geçen sefer 36 kg × 11 · RIR 2"
+       olarak duruyor. Aynı bilgiyi iki kez göstermek ekranı uzatıyordu.
+       "GEÇEN SEANS · 26 AĞU" başlığı duruyor: bir hareketin geçen seansı başka bir
+       programda olabiliyor, tarih o yüzden gerekli. */
     '<div class="gprevv" style="color:'+vc+'">'+
       '<div class="gpk"><i>NE YAPMALI</i></div>'+
       '<div class="gpt">'+verdict+' <u>(o gün hedef '+lo+'-'+hi+')</u>'+
