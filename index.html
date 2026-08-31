@@ -486,6 +486,20 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
 .gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
 .gsync2{font-size:10.5px;color:#b3a488;font-weight:700}
+/* antrenman kronometresi — üst çubukta, tam ekran boyunca görünür */
+.gclock{display:inline-flex;align-items:center;gap:5px;border:1px solid #e4d9c2;background:#f7f1e4;
+  border-radius:9px;padding:4px 9px;font-size:11px;font-weight:700;color:#6b5f4d;
+  -webkit-tap-highlight-color:transparent;cursor:pointer}
+.gclock.run{background:rgba(122,143,110,.14);border-color:rgba(122,143,110,.32);color:#5d7a52}
+.gclock b{font-weight:800}
+.gclock i{font-style:normal;color:#a8987c;font-weight:700}
+.gclock.over{background:rgba(200,124,60,.13);border-color:rgba(200,124,60,.3);color:#a5541f}
+.gclock.over i{color:#c08a5e}
+.wdrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;
+  background:#f7f1e4;border:1px solid #e4d9c2;border-radius:12px;padding:10px 12px}
+.wdrow b{font-family:'Fraunces';font-size:19px;font-weight:600}
+.wdrow i{font-style:normal;font-size:11px;font-weight:700;color:#a8987c;display:block;margin-top:2px}
+.wdrow .wdr{text-align:right;font-size:11.5px;font-weight:700;color:#8a7f6f;line-height:1.45}
 .gprevbox{margin-top:11px;padding-top:10px;border-top:1px dashed #e4d9c2}
 .gprevhd{display:flex;align-items:center;gap:10px;font-size:9.5px;letter-spacing:1px;
   font-weight:700;color:#b3a488}
@@ -746,6 +760,35 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .phcmpsel{display:flex;align-items:center;gap:8px;margin-bottom:11px}
 .phcmpsel select{flex:1;min-width:0;font-size:12.5px}
 .phar{color:#c0b193;font-weight:700;flex:none}
+/* --- karşılaştırma: açı + takvim seçici (v59) --- */
+.phstep{font-size:9.5px;letter-spacing:1px;font-weight:700;color:#b3a488;margin:2px 0 6px}
+.phslots{display:flex;align-items:stretch;gap:8px;margin-bottom:10px}
+.phslot{flex:1;min-width:0;text-align:left;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:12px;
+  padding:8px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.phslot.on{border-color:#3a342c;background:#f4ecdd;box-shadow:0 0 0 1px #3a342c inset}
+.phslot u{display:block;text-decoration:none;font-size:9px;letter-spacing:1px;font-weight:700;color:#b3a488}
+.phslot.on u{color:#6b5f4d}
+.phslot b{display:block;font-size:13px;font-weight:700;color:#4a4238;margin-top:2px}
+.phslot i{display:block;font-style:normal;font-size:10.5px;font-weight:700;color:#a8987c;margin-top:1px}
+.phcalw{border:1px solid #e4d9c2;background:#fbf8f2;border-radius:13px;padding:9px 9px 7px;margin-bottom:11px}
+.phcalhd{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:7px}
+.phcalhd b{font-family:'Fraunces';font-size:14px;font-weight:600;color:#4a4238}
+.phcalnav{border:1px solid #e4d9c2;background:#f7f1e4;border-radius:9px;width:30px;height:30px;
+  font-size:15px;color:#6b5f4d;flex:none;-webkit-tap-highlight-color:transparent}
+.phcalnav:disabled{opacity:.32}
+.phcalg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.phcalg .wd{font-size:9px;letter-spacing:.4px;font-weight:700;color:#c0b193;text-align:center;padding-bottom:2px}
+.phcd{position:relative;aspect-ratio:1;border:0;background:none;border-radius:9px;
+  font-size:11.5px;font-weight:700;color:#d6cab2;display:flex;align-items:center;justify-content:center;
+  -webkit-tap-highlight-color:transparent;padding:0}
+.phcd.off{visibility:hidden}
+.phcd.has{background:#f0e7d5;color:#5c5346;cursor:pointer;border:1px solid #e4d9c2}
+.phcd.has:active{transform:scale(.93)}
+.phcd.a,.phcd.b{background:#3a342c;color:#f3ecdf;border-color:#3a342c}
+.phcd u{position:absolute;top:1px;right:3px;text-decoration:none;font-size:8px;color:#a8987c;font-weight:700}
+.phcd.a u,.phcd.b u{color:#c5b8a2}
+.phcd i{position:absolute;bottom:1px;left:0;right:0;font-style:normal;font-size:7.5px;letter-spacing:.5px;color:#c5b8a2}
+.phcalft{font-size:10.5px;font-weight:700;color:#a8987c;margin-top:6px;text-align:center}
 .phcmp{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .phcl{font-size:9.5px;letter-spacing:.9px;font-weight:700;color:#a8987c;margin-bottom:5px}
 .phbig{border:0;background:none;padding:0;width:100%;display:block;cursor:pointer;
@@ -1150,6 +1193,7 @@ body.pvlock,body.ovlock{overflow:hidden;overscroll-behavior:none}
 
 /* ============ SABİTLER ============ */
 var AY=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+var AYU=['Ocak','Şubat','Mart','Nisan','Mayıs','Haziran','Temmuz','Ağustos','Eylül','Ekim','Kasım','Aralık'];
 var GUN=['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
 var GUNU=['Pazar','Pazartesi','Salı','Çarşamba','Perşembe','Cuma','Cumartesi'];
 var KEY='emre:form:v2';
@@ -1216,6 +1260,69 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-31',
+  t:'Antrenman süresi ölçülüyor (v59)',
+  y:['NEDEN: salona gitmeden önce "bu antrenman bende kaç dakika sürüyor" sorusunun '+
+     'cevabı yoktu. Program günü başına süre, hem günü planlamak hem de bir seansın '+
+     'olağandışı uzadığını görmek için işe yarıyor.',
+     'ÖLÇÜM: ilk set girişinden (kg, tekrar, RIR, ± düğmesi, ○ işareti — hangisi önce '+
+     'olursa) "Antrenmanı bitir"e basana kadar. Üç alan tutuluyor: ws başlangıç, '+
+     'wl son set hareketi, we bitir düğmesi.',
+     'BİTİR’E BASMAYI UNUTMAK: insani, o yüzden wl var. Bitiş kaydı yoksa süre son set '+
+     'hareketine kadar sayılır, raporda "bitir’e basılmamış" notuyla geçer. Ters yönde '+
+     'de çalışıyor: bitir’e bastıktan sonra yeni set girersen seans bitmemiş sayılır, '+
+     'sayaç kaldığı yerden devam eder.',
+     '3 SAAT KURALI: iki set hareketi arasında 3 saatten uzun boşluk varsa süre '+
+     'uzatılmaz — bu antrenman değil, sonradan düzenlemedir. Aynı sebeple sayaç '+
+     'yalnızca BUGÜNÜN kaydında başlar; geçmiş bir günü doldurmak saat tutmaz.',
+     'NEREDE GÖRÜNÜYOR: üst çubuktaki rozet antrenman öncesi beklenen süreyi '+
+     '("~1 sa 02 dk · bu gün ort."), sırasında geçen/beklenen süreyi, sonrasında '+
+     'toplamı yazıyor; 10 dakikadan fazla aşınca turuncuya dönüyor. Rozete dokunmak '+
+     'süreyi sıfırlar. Gün sekmesinde ve bitiş penceresinde kutu var: bu seans, plan '+
+     'gününün ortalaması ve fark. Rapora hem günlük süreler hem gün başına '+
+     'ortalama/en kısa/en uzun dökümü eklendi.',
+     'Beklenen süre o plan gününün son 5 bitirilmiş seansının ortalaması. O günde iki '+
+     'seanstan az veri varsa bütün günlerin ortalamasına düşüyor ve kaynağını söylüyor '+
+     '("genel ort."), uydurma bir sayı göstermiyor.']},
+ {d:'2026-08-31',
+  t:'Fotoğraf karşılaştırma: açılır liste yerine takvim (v59)',
+  y:['SORUN: iki açılır liste vardı, her satır "ÖN · 24 Ağu · H2 · 83.4 kg" gibi dört '+
+     'bilgiyi birden taşıyordu. Fotoğraf sayısı arttıkça liste okunmaz hale geldi ve '+
+     'aslında yapılan iş iki basit adımdan ibaret: hangi açı, hangi iki gün.',
+     'ÇÖZÜM: ekran adımlandı. "1 · HANGİ AÇI" — ön/sağ/sol/arka çipleri, etiketsizler '+
+     'için ayrı çip. Karşılaştırmaya girerken en çok fotoğrafı olan açı kendiliğinden '+
+     'seçiliyor, boş süzgeçle başlamıyorsun. "2 · HANGİ İKİ GÜN" — ÖNCE/SONRA '+
+     'kutuları ve altında ay takvimi.',
+     'TAKVİM: fotoğraf çekilmiş günler dolu, ötekiler soluk ve tıklanmaz. Bir güne '+
+     'dokunmak aktif kutuyu doldurur ve sırayı öteki kutuya geçirir — iki dokunuşta '+
+     'karşılaştırma kurulmuş olur. Aynı güne tekrar dokunmak o günün kareleri arasında '+
+     'dolaşır (aynı gün aynı açıdan iki kare çekilmiş olabiliyor, sağ üstteki sayı '+
+     'kaç tane olduğunu gösteriyor). Ay okları yalnızca fotoğraf olan aylar arasında '+
+     'atlıyor, boş aylarda ileri geri gidip durmuyorsun. Bir kutuya dokunmak takvimi '+
+     'o kutunun ayına götürüyor.',
+     'Alt nottaki "farklı poz" uyarısı duruyor, aynı gün seçilirse de söylüyor.']},
+ {d:'2026-08-31',
+  t:'Takılma uyarısı artık tekrarlara da bakıyor (v59)',
+  y:['SORUN: takılma kararının tek ölçüsü ağırlıktı. Aynı kiloda 3 seans = "takıldın". '+
+     'Ama 36 kg’da 8/8/6 yapıp sonraki seans 10/9/8, sonrakinde 11/10/10 yapmak açık '+
+     'ilerlemedir — uygulama buna "hiç gelişme yok" diyordu. Tek kaçış kapısı RIR’ın '+
+     'düşmesiydi; RIR girilmediği ya da sabit kaldığı durumda ilerleyen hareket '+
+     'takılmış görünüyordu.',
+     'ÇÖZÜM: stallRun() serideki her seansın EN AĞIR KİLODAKİ toplam tekrarını '+
+     'çıkarıyor (ısınma ve kademeli çıkış setleri sayılmıyor). Karar sırası: tekrar '+
+     'toplamı arttıysa "ilerliyorsun", tekrar sabit ama RIR düşüyorsa yine '+
+     '"ilerliyorsun", üçü de durduysa "takıldın". Takılma mesajı da artık bunu açıkça '+
+     'yazıyor: "3 seanstır 36 kg ve tekrarlar da artmıyor (26 → 26)" — yoksa haklı '+
+     'bir itiraz geliyor ve uyarı güvenilirliğini kaybediyor.',
+     'ZİRVE KONTROLÜ: bir seans patlayıp sonraki iki seans düşerse "tekrar arttı" '+
+     'denmiyor. Seri içindeki en iyi seansın kaç seans geride kaldığına bakılıyor; '+
+     'son iki seans da zirvenin altındaysa gerçek takılmadır.',
+     'ÖZET SEKMESİ: "ilerliyor" durumu eskiden tamamen gizleniyordu — hareket listeden '+
+     'düşüyor, ekranda hiç görünmüyordu, sanki takip edilmiyormuş gibi. Artık kendi '+
+     'grubu var (✓, teal), üstte hazır olanlar, ortada ilerleyenler, altta takılanlar. '+
+     'Kart altındaki açıklama ve rapor da aynı dili konuşuyor.',
+     'DEĞİŞMEYEN: ağırlık artırma şartı aynı — bütün setlerde üst sınır. Tekrar artışı '+
+     '"takılma değil" demek, "ağırlığı artır" demek değil.']},
  {d:'2026-08-29',
   t:'Kademeli geçiş uyarısı detay penceresinde kayboluyordu (v58)',
   y:['SORUN: v55te bu uyarıyı “motor mesajında zaten var, tekrar etmesin” diye '+
@@ -2352,6 +2459,71 @@ function sessE1(sets){
   return {v:sum/n,kg:mx,rep:br,n:n};
 }
 
+/* ============ ANTRENMAN SÜRESİ (v59) ============
+   İlk sete dokunduğun andan "Antrenmanı bitir"e bastığın ana kadar geçen süre.
+   Amaç tek: salona girmeden ne kadar kalacağını bilmek. Üç alan tutuluyor —
+     ws  ilk set girişinin zamanı (başlangıç)
+     wl  son set hareketinin zamanı (canlı bitiş; bitir'e basılmazsa bu kullanılır)
+     we  bitir düğmesinin zamanı (kesin bitiş)
+   Neden wl de var: bitir'e basmayı unutmak insani. wl olmasa o seansın süresi
+   ya hiç çıkmaz ya da ertesi gün açtığında saatlerce görünürdü.
+   3 SAAT KURALI: iki set hareketi arasında 3 saatten uzun boşluk varsa bu
+   antrenman değil, sonradan düzenlemedir — süre uzatılmaz. Aynı sebeple süre
+   yalnızca BUGÜNÜN kaydında başlar; geçmiş bir günü doldurmak saat tutmaz. */
+function markWork(r){
+  if(!r||cur!==today())return;
+  var now=Date.now();
+  if(!r.ws){r.ws=now;r.wl=now;return;}
+  if(now-(r.wl||r.ws)>3*3600*1000)return;         /* sonradan düzenleme — sayaca yansımaz */
+  /* Bitir'e basıldıktan sonra yeni set giriliyorsa seans bitmemiş demektir:
+     ya yanlışlıkla basılmış ya da bir hareket unutulmuş. Sayaç kaldığı
+     yerden devam eder, tekrar bitir'e basınca kesinleşir. */
+  if(r.we)delete r.we;
+  r.wl=now;
+}
+function endWork(r){
+  if(!r||!r.ws)return;
+  var now=Date.now();
+  r.we=(now-(r.wl||r.ws)>3*3600*1000)?(r.wl||r.ws):now;
+  r.wl=r.we;
+}
+/* dakika cinsinden süre — bitmemişse şu ana kadarki süre */
+function workMin(d,live){
+  var r=D(d);if(!r||!r.ws)return null;
+  var end=r.we||r.wl||r.ws;
+  if(live&&!r.we&&d===today()){
+    var now=Date.now();
+    if(now-(r.wl||r.ws)<=3*3600*1000)end=now;      /* hâlâ salondasın */
+  }
+  var m=Math.round((end-r.ws)/60000);
+  return (m>=0&&m<24*60)?m:null;
+}
+function fdur(m){
+  if(m==null)return '—';
+  if(m<60)return m+' dk';
+  return Math.floor(m/60)+' sa '+String(m%60).padStart(2,'0')+' dk';
+}
+/* aynı plan gününün geçmiş seans süreleri — en yeniden eskiye */
+function workDurs(dt,skipDay){
+  var out=[];
+  keys().forEach(function(d){
+    if(skipDay&&d===skipDay)return;
+    if(dt&&dtOf(d)!==dt)return;
+    var m=workMin(d);
+    if(m!=null&&m>=5&&D(d).we)out.push({d:d,m:m});   /* yalnız bitirilmiş seanslar */
+  });
+  return out.reverse();
+}
+/* bu plan gününün beklenen süresi: son 5 bitirilmiş seansın ortalaması.
+   O gün hiç veri yoksa bütün günlerin ortalamasına düşer, kaynağı da söyler. */
+function expWork(dt,skipDay){
+  var a=workDurs(dt,skipDay).slice(0,5);
+  if(a.length>=2)return {m:Math.round(a.reduce(function(x,o){return x+o.m;},0)/a.length),n:a.length,own:true};
+  var b=workDurs(null,skipDay).slice(0,6);
+  if(b.length>=2)return {m:Math.round(b.reduce(function(x,o){return x+o.m;},0)/b.length),n:b.length,own:false};
+  return null;
+}
+
 /* ============ HAFTALIK KAS GRUBU SETLERİ ============ */
 /* O haftada PLANLANMIŞ günlerden gelen kas hedefi.
    Deload haftasında set sayısı yarıya iner, hedef de otomatik iner. */
@@ -3000,7 +3172,7 @@ function exRow(e,r){
                'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
         (function(){var pg=progression(e.n);if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
-          var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
+          var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
           return '<div style="margin-top:6px;display:inline-block;font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 9px;background:'+hexa(col,.13)+';color:'+col+'">'+tx+'</div>';})()+
         '<div class="sets">'+boxes+'</div>'+
         '<div class="exft"><span data-vol>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
@@ -3555,11 +3727,37 @@ function _progression(name,dt){
           stagedNote(mx,nx)};
   }
 
-  /* RIR düşüyorsa aynı kiloda kalmak takılmak değil — gerçek ilerleme */
+  /* ---- TAKILMA MI, İLERLEME Mİ? (v59) ----
+     v58'e kadar takılma kararının tek ölçüsü ağırlıktı: aynı kiloda 3 seans
+     = "takıldın". Ama progresif yüklenmenin iki kolu var, ağırlık VE tekrar.
+     36 kg'da 8/8/6 yapıp sonraki seans 10/10/9 yapmak açık ilerlemedir;
+     uygulama buna "hiç gelişme yok" diyordu — yanlış olan buydu.
+     Artık seri içindeki tekrar hareketi de okunuyor. Takılma uyarısı ancak
+     üç kol birden durduğunda çıkıyor: ağırlık sabit, tekrar sabit, RIR sabit. */
   if(streak>=3||(streak>=2&&days>=14)){
+    var run=stallRun(name,ss,streak,mx);
+    var r0=run[0],rN=run[run.length-1];
+    var repGain=rN.reps-r0.reps;
+    /* seri içindeki en iyi seans kaç seans geride kaldı — son iki seans da
+       düşüyorsa "tekrar arttı" demek artık doğru değil */
+    var bi=0;for(var bq=1;bq<run.length;bq++)if(run[bq].reps>run[bi].reps)bi=bq;
+    var since=run.length-1-bi;
     var tr=rirTrend(name,ss);
+
+    /* 1) TEKRAR ARTIYOR — ağırlık sabit olsa da bu ilerlemedir */
+    if(repGain>0&&since<=1)
+      return {type:'ok',why:'rep',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+        short:'✓ tekrar artıyor — ilerliyorsun',
+        msg:streak+' seanstır '+mx+' kg ama tekrarların artıyor: <b>'+r0.reps+' → '+rN.reps+
+            '</b> toplam tekrar'+
+            ((r0.e1!=null&&rN.e1!=null&&rN.e1-r0.e1>0.05)?' (tahmini 1RM '+fx(r0.e1,1)+' → '+fx(rN.e1,1)+')':'')+
+            '. Aynı kiloda daha çok tekrar da progresif yüklenmedir — takılmadın. '+
+            'Bütün setlerde '+e.r[1]+' tekrarı gördüğünde '+nx+' kg’a geçersin.'};
+
+    /* 2) TEKRAR SABİT AMA RIR DÜŞÜYOR — yine takılma değil */
     if(tr!=null&&tr<=-0.5)
-      return {type:'ok',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+      return {type:'ok',why:'rir',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+        short:'✓ RIR düşüyor — ilerliyorsun',
         msg:streak+' seanstır '+mx+' kg ama RIR düşüyor ('+fx(tr,1)+') — takılmadın, aynı yükte güçleniyorsun.'};
     if(dl)return null;
     /* Tabanın altında takılmak ile aralık içinde takılmak aynı şey değil.
@@ -3568,14 +3766,39 @@ function _progression(name,dt){
     var lowMx=Math.min.apply(null,atMax.map(function(s){return s.rep;}));
     var flr=Math.max(1,e.r[0]-2);
     if(lowMx<flr)
-      return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+      return {type:'stall',why:'floor',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+        reps:rN.reps,reps0:r0.reps,
         msg:streak+' seanstır '+mx+' kg ama en düşük set '+lowMx+' tekrar — '+
             e.r[0]+'-'+e.r[1]+' hedefinin '+flr+' tekrarlık tabanının da altı. '+
             'Bir kademe geri in, orada '+e.r[1]+' tekrarı sağlamlaştır.'};
-    return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      msg:streak+' seanstır '+mx+' kg'+(days>=7?' ('+days+' gündür)':'')+'. Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'};
+    /* Buraya gelmek gerçek takılma: kilo da tekrar da RIR da yerinde sayıyor.
+       Mesaj artık bunu açıkça yazıyor, yoksa "ama ben tekrar artırdım" haklı
+       itirazı geliyor ve uyarı güvenilirliğini kaybediyor. */
+    return {type:'stall',why:'flat',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+      reps:rN.reps,reps0:r0.reps,
+      msg:streak+' seanstır '+mx+' kg'+(days>=7?' ('+days+' gündür)':'')+
+          ' <b>ve tekrarlar da artmıyor</b> ('+r0.reps+' → '+rN.reps+' toplam tekrar). '+
+          'Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'};
   }
   return null;
+}
+/* ---- SERİ İÇİ DÖKÜM (v59) ----
+   Aynı kilodaki son N seansın tekrar toplamı ve tahmini 1RM'i. Takılma kararı
+   buradan veriliyor: ağırlık sabitken tekrarların ne yaptığını görmeden
+   "gelişme yok" demek eksik bir okuma. Sayılan setler yalnızca o seansın en
+   ağır kilosundakiler — ısınma ve kademeli çıkış setleri karışmasın. */
+function stallRun(name,ss,streak,mx){
+  var out=[];
+  for(var i=Math.max(0,ss.length-streak);i<ss.length;i++){
+    var f=((D(ss[i]).ex||{})[name]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
+    var at=f.filter(function(s){return s.kg===mx;});
+    var e1=sessE1(f);
+    out.push({d:ss[i],sets:at.length,
+      reps:at.reduce(function(a,s){return a+s.rep;},0),
+      minRep:at.length?Math.min.apply(null,at.map(function(s){return s.rep;})):null,
+      e1:e1?e1.v:null});
+  }
+  return out;
 }
 /* son iki seansın ortalama RIR farkı */
 function rirTrend(name,ss){
@@ -3590,7 +3813,7 @@ function progressCard(){
      birleştirseydi antrenman ekranıyla çelişirdi: ekran "İtiş gününde 40 kg dene"
      derken özet başka bir sayı gösterirdi. Aynı hareket iki günde geçiyorsa iki
      satır çıkar ve hangi gün olduğu yazılır. */
-  var ups=[],stalls=[],dmap={};
+  var ups=[],stalls=[],oks=[],dmap={};
   ORDER.forEach(function(dt){
     (PROGRAM[dt]?PROGRAM[dt].ex:[]).forEach(function(x){(dmap[x.n]=dmap[x.n]||[]).push(dt);});
   });
@@ -3598,12 +3821,14 @@ function progressCard(){
     var days=dmap[n]||[null];
     days.forEach(function(dt){
       var p=progression(n,dt);if(!p)return;
-      if(p.type==='ok')return;
       var lbl=(days.length>1&&dt&&PROGRAM[dt])?n+' · '+PROGRAM[dt].short:n;
-      (p.type==='up'?ups:stalls).push([lbl,p]);
+      /* v59: 'ok' eskiden tamamen gizleniyordu. Aynı kiloda tekrarını artıran
+         hareket listeden düşüyor, ekranda hiç görünmüyordu — sanki takip
+         edilmiyormuş gibi. Artık kendi grubu var. */
+      (p.type==='up'?ups:(p.type==='ok'?oks:stalls)).push([lbl,p]);
     });
   });
-  if(!ups.length&&!stalls.length){
+  if(!ups.length&&!stalls.length&&!oks.length){
     var tracked=Object.keys(EXTGT).filter(function(n){return exSessions(n).length;}).length;
     return '<div class="card"><div class="hd"><h2>Ağırlık Artırma</h2>'+
       '<span class="meta">'+(tracked?tracked+' hareket izleniyor':'veri bekleniyor')+'</span></div>'+
@@ -3613,14 +3838,16 @@ function progressCard(){
         :'Antrenmanda kg × tekrar girmeye başladığında buraya öneriler düşecek.')+
       '<div style="margin-top:10px;font-size:12px;color:#a8987c">'+
         '<b style="color:'+C.green+'">↑ Hazır</b> — bir hareketin tüm setlerinde hedef aralığın üst sınırına ulaştığında yeni ağırlığı önerir.<br>'+
-        '<b style="color:'+C.amber+'">≡ Takıldı</b> — aynı ağırlıkta 3 seans geçirdiğinde ya da 2 seans + 14 gün olduğunda uyarır.'+
+        '<b style="color:'+C.teal+'">✓ İlerliyor</b> — ağırlık aynı ama tekrarın ya da RIR’ın iyileşiyorsa takılma sayılmaz.<br>'+
+        '<b style="color:'+C.amber+'">≡ Takıldı</b> — ancak ağırlık, tekrar ve RIR birlikte durduğunda uyarır (3 seans ya da 2 seans + 14 gün).'+
       '</div></div></div>';
   }
   function row(n,p){
-    var up=p.type==='up',col=up?C.green:C.amber;
+    var up=p.type==='up',okp=p.type==='ok';
+    var col=up?C.green:(okp?C.teal:C.amber);
     return '<div style="display:flex;gap:11px;align-items:flex-start;padding:11px 18px;border-top:1px solid #f0e8d8">'+
       '<span style="flex:none;width:26px;height:26px;border-radius:8px;background:'+hexa(col,.14)+';color:'+col+
-        ';font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">'+(up?'↑':'≡')+'</span>'+
+        ';font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">'+(up?'↑':(okp?'✓':'≡'))+'</span>'+
       '<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13.5px">'+esc(n)+
         '<span style="font-weight:600;color:#c0b193;margin-left:7px">'+p.kg+' kg</span></div>'+
       '<div style="font-size:12px;color:#8a7f6f;line-height:1.45;margin-top:2px">'+p.msg+'</div></div>'+
@@ -3628,9 +3855,10 @@ function progressCard(){
     '</div>';
   }
   return '<div class="card"><div class="hd"><h2>Ağırlık Artırma</h2>'+
-    '<span class="meta">'+(ups.length?ups.length+' hareket hazır':'')+(ups.length&&stalls.length?' · ':'')+
-    (stalls.length?stalls.length+' takıldı':'')+'</span></div>'+
+    '<span class="meta">'+[ups.length?ups.length+' hazır':'',oks.length?oks.length+' ilerliyor':'',
+      stalls.length?stalls.length+' takıldı':''].filter(Boolean).join(' · ')+'</span></div>'+
     ups.map(function(x){return row(x[0],x[1]);}).join('')+
+    oks.map(function(x){return row(x[0],x[1]);}).join('')+
     stalls.map(function(x){return row(x[0],x[1]);}).join('')+
     (ups.length?'<div style="padding:11px 18px;border-top:1px solid #f0e8d8;font-size:12px;'+
       'color:#a8987c;line-height:1.5"><b style="color:#8a7f6f">Ağırlık artınca tekrarın düşer — bu gerileme değil.</b> '+
@@ -3872,7 +4100,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v58 · 29 Ağu 2026';
+var APPVER='v59 · 31 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4103,7 +4331,7 @@ function gymWorkout(){
           :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
            'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
-        var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?'✓ RIR düşüyor — ilerliyorsun':'≡ '+pg.streak+' seanstır '+pg.kg+' kg');
+        var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
     prevSummary(prev,e,prevX)+
     '<div class="gsets">'+rows+'</div>'+
@@ -4729,6 +4957,7 @@ function detailLayer(){
         (ev3.off?' · +'+ev3.off+' plan dışı':'')+' · '+ti(ev3.vol)+' kg toplam hacim'+
         (ev3.trend!=null?' · geçen seansa göre <b style="color:'+(ev3.trend>1?C.green:ev3.trend<-1?C.orange:'#8a7f6f')+'">'+(ev3.trend>0?'+':'')+ev3.trend.toFixed(0)+'%</b>':'')+
         '</div></div>'+
+        durBox(cur,dt2)+
         '<div class="exlist" style="margin-top:12px">'+dayEx(cur,dt2).map(function(x){
           var v=evalEx((D(cur).ex||{})[x.n],tgtOn(x,cur),prevSession(x.n,cur));
           return '<div class="srow" style="pointer-events:none">'+
@@ -4766,6 +4995,28 @@ function detailLayer(){
         '<button class="dclose" data-a="dclose">✕</button></div>'+
       '<div class="dbody">'+body+'</div>'+
     '</div></div>';
+}
+/* ---- SEANS SÜRESİ KUTUSU (v59) ----
+   Süre tek başına bir şey söylemez; kıyas lazım. Bu kutu üç şeyi yan yana
+   koyuyor: bu seansın süresi, aynı plan gününün ortalaması ve fark.
+   Böylece "İtiş günü bende 62 dakika sürüyor" bilgisi salona girmeden elde. */
+function durBox(d,dt){
+  var m=workMin(d,true),r=D(d);
+  var ex=expWork(dt||dtOf(d),d);
+  if(m==null&&!ex)return '';
+  if(m==null)
+    return '<div class="wdrow"><div><b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu günün ortalaması':'genel ortalama')+
+      ' · '+ex.n+' seans</i></div><div class="wdr">Süre ilk set girişinde<br>başlar</div></div>';
+  var open=!r.we;
+  var diff=ex?m-ex.m:null;
+  var rightTxt = ex
+    ? (ex.own?'bu gün ort. ':'genel ort. ')+'<b>'+fdur(ex.m)+'</b> ('+ex.n+' seans)<br>'+
+      '<span style="color:'+(diff>5?C.orange:(diff<-5?C.green:'#a8987c'))+'">'+
+      (Math.abs(diff)<=2?'ortalamada':(diff>0?'+'+diff+' dk uzun':(-diff)+' dk kısa'))+'</span>'
+    : 'İlk kez ölçülüyor — birkaç<br>seans sonra ortalama çıkar';
+  return '<div class="wdrow"><div><b>'+fdur(m)+'</b><i>'+
+    (open?'sürüyor · bitir’e basınca kesinleşir':'ilk setten bitir’e kadar')+'</i></div>'+
+    '<div class="wdr">'+rightTxt+'</div></div>';
 }
 /* kilo / bel için büyük grafik — hedef çizgisi ve tarih ekseniyle */
 function measureLine(pts,col,goal,unit,tser){
@@ -5024,10 +5275,41 @@ function gymTop(){
     '<div class="gtoprow2">'+
       '<span class="gdate" style="display:inline-flex;align-items:center;gap:8px">'+mark(19)+
         GUNU[pd(cur).getDay()].toUpperCase()+' · '+fdate(cur)+'</span>'+
+      '<span id="g-clock">'+clockChip()+'</span>'+
       '<span class="gsync2"'+(S.sync.token&&S.sync.gist?' data-a="syncnow"':'')+'>'+
         (S.sync.token&&S.sync.gist?'☁ '+syncLabel()+' · ':'')+APPVER+'</span>'+
     '</div>'+
   '</div>';
+}
+/* ---- KRONOMETRE ROZETİ (v59) ----
+   Antrenman başlamadan önce: bu günün beklenen süresi ("~62 dk") — salona
+   girerken ne kadar kalacağını bilesin. Başladıktan sonra: geçen süre / beklenen.
+   Bittiğinde: toplam süre. Dokununca sıfırlanır (yanlış başlamışsa). */
+function clockChip(){
+  var dtc=planOf(cur),tc=PROGRAM[dtc];
+  if(!tc||!tc.ex.length)return '';
+  var r=D(cur),ex=expWork(dtc,cur);
+  if(!r.ws)
+    return ex?'<span class="gclock">⏱ <b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu gün ort.':'genel ort.')+'</i></span>'
+             :'<span class="gclock"><i>⏱ ilk sette başlar</i></span>';
+  var m=workMin(cur,true);
+  if(m==null)return '';
+  var done=!!r.we;
+  var over=(!done&&ex&&m>ex.m+10);
+  return '<span class="gclock '+(done?'':(over?'over':'run'))+'" data-a="wreset" title="sıfırlamak için dokun">⏱ <b>'+
+    fdur(m)+'</b>'+(ex?'<i>/ ~'+fdur(ex.m)+'</i>':'')+(done?'<i>bitti</i>':'')+'</span>';
+}
+/* Rozet her set girişinde değil, dakikada bir kendi kendine tazelenir:
+   tüm ekranı yeniden çizmek yazarken imleci kaçırıyor. */
+var clockIv=null;
+function paintClock(){var el=document.getElementById('g-clock');if(el)el.innerHTML=clockChip();}
+function startClock(){
+  if(clockIv)return;
+  clockIv=setInterval(function(){
+    var r=D(cur);
+    if(!r.ws||r.we||cur!==today())return;   /* sayacı ilgilendiren bir durum yok */
+    paintClock();
+  },20000);
 }
 var TABICON={
  w:'<path d="M4 9v6M20 9v6M7 6.5v11M17 6.5v11M7 12h10" />',
@@ -5073,7 +5355,7 @@ function gymNav(){
   '</div>';
 }
 /* gövde + çubuk birlikte tazelenir */
-function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());syncLock();}
+function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());paintClock();syncLock();}
 var pendingRefresh=false;
 function typing(){
   var ae=document.activeElement;
@@ -5089,7 +5371,7 @@ function renderGym(){
   document.body.className='gym'+(document.body.classList.contains('pvlock')?' pvlock':'');
   app.innerHTML=gymTop()+'<div id="g-body">'+gymBody()+'</div>'+
     '<div id="g-nav">'+gymNav()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
-  syncLock();
+  syncLock();startClock();
 }
 
 /* ============ AYARLAR / RAPOR ============ */
@@ -5213,8 +5495,10 @@ function report(){
       var t=PROGRAM[dtOf(d)];
       if(t&&t.ex.length){
         var e=sessionEval(d);
+        var wmR=workMin(d);
         o+='  '+t.short+(e&&!e.empty?' — '+e.verdict+' ('+e.tam+'/'+e.total+
-          (e.off?', +'+e.off+' plan dışı':'')+', hacim '+Math.round(e.vol)+' kg)':' — kayıt yok')+'\n';
+          (e.off?', +'+e.off+' plan dışı':'')+', hacim '+Math.round(e.vol)+' kg'+
+          (wmR!=null?', süre '+wmR+' dk'+(D(d).we?'':' [bitir’e basılmamış]'):'')+')':' — kayıt yok')+'\n';
         dayEx(d,dtOf(d)).forEach(function(x){
           var f=((r.ex||{})[x.n]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
           if(!f.length)return;
@@ -5239,14 +5523,30 @@ function report(){
     var pg=progression(nm);if(!pg)return;
     var tail=(pg.rir!=null?' [ort.RIR '+fx(pg.rir,1)+']':'');
     if(pg.type==='up')ups.push(nm+': '+pg.kg+' kg → '+pg.next+' kg'+tail);
-    else if(pg.type==='ok')okg.push(nm+': '+pg.kg+' kg, RIR düşüyor — takılma değil'+tail);
-    else stalls.push(nm+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı)'+tail);
+    else if(pg.type==='ok')okg.push(nm+': '+pg.kg+' kg, '+(pg.why==='rep'?'tekrarlar artıyor':'RIR düşüyor')+' — takılma değil'+tail);
+    else stalls.push(nm+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı, tekrar da artmıyor'+
+      (pg.reps0!=null?': '+pg.reps0+' → '+pg.reps+' tekrar':'')+')'+tail);
   });
   if(ups.length||stalls.length||okg.length){
     o+='## AĞIRLIK ARTIRMA DURUMU\n';
     if(ups.length)o+='Hazır:\n'+ups.map(function(x){return '- '+x+'\n';}).join('');
-    if(okg.length)o+='İlerliyor (aynı kilo, azalan RIR):\n'+okg.map(function(x){return '- '+x+'\n';}).join('');
+    if(okg.length)o+='İlerliyor (aynı kilo, artan tekrar / azalan RIR):\n'+okg.map(function(x){return '- '+x+'\n';}).join('');
     if(stalls.length)o+='Takıldı:\n'+stalls.map(function(x){return '- '+x+'\n';}).join('');
+    o+='\n';
+  }
+  /* seans süreleri: plan günü başına ortalama — salonda ne kadar kalındığı */
+  var durL=[];
+  ORDER.forEach(function(dtx){
+    var a=workDurs(dtx).slice(0,6);
+    if(!a.length)return;
+    var av=Math.round(a.reduce(function(x,o2){return x+o2.m;},0)/a.length);
+    var mn=Math.min.apply(null,a.map(function(o2){return o2.m;}));
+    var mx2=Math.max.apply(null,a.map(function(o2){return o2.m;}));
+    durL.push((PROGRAM[dtx]?PROGRAM[dtx].short:dtx)+': ort '+av+' dk (en kısa '+mn+', en uzun '+mx2+', '+a.length+' seans)');
+  });
+  if(durL.length){
+    o+='## SEANS SÜRELERİ (ilk setten bitir düğmesine)\n';
+    durL.forEach(function(x){o+='- '+x+'\n';});
     o+='\n';
   }
   var notes=ks.filter(function(d){return D(d).note;});
@@ -5695,12 +5995,23 @@ function shrinkImage(file,cb){
 /* --- görünüm durumu --- */
 var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false, pvDelArm=false;
 var cmpPose='all';   /* karşılaştırmada hangi poz süzülüyor */
+var cmpSlot='a';     /* takvimden seçilen gün hangi kutuya gidiyor: a=ÖNCE, b=SONRA */
+var cmpMon=null;     /* takvimde açık ay, 'YYYY-MM' */
 var phPick=null;     /* şu an etiketlenen fotoğrafın kimliği */
 /* karşılaştırma listesi: süzgeç açıksa sadece o pozdaki fotoğraflar */
 function phCmpList(){
   var all=phAll();
   if(cmpPose==='all')return all;
+  if(cmpPose==='none')return all.filter(function(x){return !phPoseOf(x);});
   return all.filter(function(x){return phPoseOf(x)===cmpPose;});
+}
+/* Karşılaştırmaya girerken en çok fotoğrafı olan açıyı kendiliğinden seç:
+   "önce hangi açı" sorusu zaten ilk adım, boş bir süzgeçle başlamanın anlamı yok. */
+function phAutoPose(){
+  var c=phPoseCounts(phAll()),best='',n=0;
+  POSES.forEach(function(p){if(c[p[0]]>n){n=c[p[0]];best=p[0];}});
+  if(n>=2)return best;
+  return c.none>=2?'none':'all';
 }
 function phDefaults(){
   var lst=phCmpList();
@@ -5709,13 +6020,6 @@ function phDefaults(){
     if(cmpB<=0||cmpB>=lst.length)cmpB=lst.length-1;
   } else {cmpA=0;cmpB=0;}
   return lst;
-}
-function phLabel(x){
-  var p=phPoseOf(x),s='';
-  if(p&&cmpPose==='all')s+=poseName(p).toUpperCase()+' · ';
-  s+=fdate(x.d)+' · H'+wkLabel(weekIdx(x.d));
-  var w=D(x.d).w; if(w!=null)s+=' · '+fx(w,1)+' kg';
-  return s;
 }
 /* --- tam ekran görüntüleyici (kırpmadan, tamamı görünür) --- */
 function pvNode(){
@@ -5917,14 +6221,76 @@ function phTagBar(x){
 /* poz süzgeci: aynı açıdan çekilmiş fotoğrafları yan yana koymak için */
 function phPoseBar(){
   var c=phPoseCounts(phAll()),tot=phAll().length;
-  var bits='<button class="phpb'+(cmpPose==='all'?' on':'')+'" data-a="cmppose" data-p="all">'+
-    'Tümü<i>'+tot+'</i></button>';
+  var bits='';
   POSES.forEach(function(p){
     if(!c[p[0]])return;
     bits+='<button class="phpb'+(cmpPose===p[0]?' on':'')+'" data-a="cmppose" data-p="'+p[0]+'">'+
       p[1]+'<i>'+c[p[0]]+'</i></button>';
   });
-  return '<div class="phposebar">'+bits+'</div>';
+  if(c.none)bits+='<button class="phpb'+(cmpPose==='none'?' on':'')+'" data-a="cmppose" data-p="none">'+
+    'Etiketsiz<i>'+c.none+'</i></button>';
+  bits+='<button class="phpb'+(cmpPose==='all'?' on':'')+'" data-a="cmppose" data-p="all">'+
+    'Tümü<i>'+tot+'</i></button>';
+  return '<div class="phstep">1 · HANGİ AÇI</div><div class="phposebar">'+bits+'</div>';
+}
+/* ---- KARŞILAŞTIRMA TAKVİMİ (v59) ----
+   Eskiden iki tane açılır liste vardı; içinde "ÖN · 24 Ağu · H2 · 83.4 kg" gibi
+   satırlar alt alta diziliydi ve fotoğraf çoğaldıkça okunmaz hale geliyordu.
+   Aslında yapılan iş iki adımdan ibaret: hangi açı, hangi iki gün. Takvim bu
+   ikinci adımı doğrudan gösteriyor — fotoğraf çekilmiş günler dolu, ötekiler
+   soluk. Ay içinde gezinirken sadece fotoğraf olan aylar arasında atlıyor,
+   boş aylarda ileri geri gidip durmuyorsun. */
+function phDayMap(lst){
+  var m={};(lst||[]).forEach(function(x){(m[x.d]=m[x.d]||[]).push(x);});
+  return m;
+}
+function phMonths(lst){
+  var seen={},o=[];
+  Object.keys(phDayMap(lst)).sort().forEach(function(d){
+    var mo=d.slice(0,7);if(!seen[mo]){seen[mo]=1;o.push(mo);}});
+  return o;
+}
+function phSlotBtn(w,ix,lst){
+  var x=lst[ix],lbl=(w==='a')?'ÖNCE':'SONRA';
+  if(!x)return '<button class="phslot'+(cmpSlot===w?' on':'')+'" data-a="cmpslot" data-w="'+w+'">'+
+    '<u>'+lbl+'</u><b>—</b><i>takvimden gün seç</i></button>';
+  var wv=D(x.d).w,day=phDayMap(lst)[x.d]||[];
+  return '<button class="phslot'+(cmpSlot===w?' on':'')+'" data-a="cmpslot" data-w="'+w+'">'+
+    '<u>'+lbl+'</u><b>'+fdate(x.d)+'</b>'+
+    '<i>hafta '+wkLabel(weekIdx(x.d))+(wv!=null?' · '+fx(wv,1)+' kg':'')+
+      (day.length>1?' · '+(day.indexOf(x)+1)+'/'+day.length:'')+'</i></button>';
+}
+function phCal(lst){
+  var map=phDayMap(lst),months=phMonths(lst);
+  if(!months.length)return '';
+  if(months.indexOf(cmpMon)<0)cmpMon=(lst[cmpB]||lst[lst.length-1]).d.slice(0,7);
+  if(months.indexOf(cmpMon)<0)cmpMon=months[months.length-1];
+  var mi=months.indexOf(cmpMon);
+  var y=+cmpMon.slice(0,4),mo=+cmpMon.slice(5,7);
+  var dim=new Date(y,mo,0).getDate();
+  var lead=(new Date(y,mo-1,1).getDay()+6)%7;      /* pazartesi başlangıç */
+  var A=lst[cmpA],B=lst[cmpB];
+  var WL=['Pt','Sa','Ça','Pe','Cu','Ct','Pz'];
+  var g=WL.map(function(w){return '<span class="wd">'+w+'</span>';}).join('');
+  for(var i=0;i<lead;i++)g+='<span class="phcd off"></span>';
+  for(var dn=1;dn<=dim;dn++){
+    var d=y+'-'+String(mo).padStart(2,'0')+'-'+String(dn).padStart(2,'0');
+    var day=map[d];
+    if(!day){g+='<span class="phcd">'+dn+'</span>';continue;}
+    var isA=!!(A&&A.d===d),isB=!!(B&&B.d===d);
+    g+='<button class="phcd has'+(isA?' a':'')+(isB?' b':'')+'" data-a="cmpday" data-d="'+d+'">'+
+      dn+(day.length>1?'<u>'+day.length+'</u>':'')+
+      ((isA||isB)?'<i>'+(isA&&isB?'Ö+S':(isA?'ÖNCE':'SONRA'))+'</i>':'')+'</button>';
+  }
+  return '<div class="phcalw">'+
+    '<div class="phcalhd">'+
+      '<button class="phcalnav" data-a="cmpmon" data-v="-1"'+(mi<=0?' disabled':'')+'>‹</button>'+
+      '<b>'+AYU[mo-1]+' '+y+'</b>'+
+      '<button class="phcalnav" data-a="cmpmon" data-v="1"'+(mi>=months.length-1?' disabled':'')+'>›</button>'+
+    '</div>'+
+    '<div class="phcalg">'+g+'</div>'+
+    '<div class="phcalft">Dolu günlerde fotoğraf var · seçilen kutu: <b>'+(cmpSlot==='a'?'ÖNCE':'SONRA')+'</b></div>'+
+  '</div>';
 }
 /* süzgeç açıkken karşılaştırmadaki sıra numarası tam listedekiyle aynı değil —
    büyütmeye giderken kimlikten gerçek sıraya çevir, yoksa başka kare açılır */
@@ -5937,22 +6303,20 @@ function phCompare(all){
   if(all.length<2)
     return phPoseBar()+
       '<div class="phempty">'+
-      (cmpPose!=='all'
-        ? '“'+poseName(cmpPose)+'” pozunda '+all.length+' fotoğraf var. '+
+      (cmpPose==='none'
+        ? 'Etiketsiz '+all.length+' fotoğraf var. Galeriden etiketlersen açı açı karşılaştırabilirsin.'
+        : cmpPose!=='all'
+        ? '“'+poseName(cmpPose)+'” açısında '+all.length+' fotoğraf var. '+
           'Aynı açıdan ikinci bir kare çekince buradan karşılaştırabilirsin.'
         : 'Karşılaştırmak için en az iki fotoğraf gerekiyor. '+
           'Şu an '+all.length+' tane var — bir-iki hafta sonra tekrar çek.')+'</div>';
-  function sel(w,val){
-    return '<select class="ginp sel" data-a="cmp" data-w="'+w+'">'+
-      all.map(function(x,ix){
-        return '<option value="'+ix+'"'+(val===ix?' selected':'')+'>'+phLabel(x)+'</option>';}).join('')+
-    '</select>';
-  }
   var A=all[cmpA],B=all[cmpB];
   var wa=D(A.d).w,wb=D(B.d).w;
   var pa=phPoseOf(A),pb=phPoseOf(B);
   return phPoseBar()+
-    '<div class="phcmpsel">'+sel('a',cmpA)+'<span class="phar">→</span>'+sel('b',cmpB)+'</div>'+
+    '<div class="phstep">2 · HANGİ İKİ GÜN</div>'+
+    '<div class="phslots">'+phSlotBtn('a',cmpA,all)+phSlotBtn('b',cmpB,all)+'</div>'+
+    phCal(all)+
     '<div class="phcmp">'+[[A,cmpA,'ÖNCE'],[B,cmpB,'SONRA']].map(function(o){
       var pp=phPoseOf(o[0]);
       return '<div><div class="phcl">'+o[2]+(pp?' · '+poseName(pp).toUpperCase():'')+' · '+fdate(o[0].d)+'</div>'+
@@ -5961,9 +6325,11 @@ function phCompare(all){
         '<div class="phcs">hafta '+wkLabel(weekIdx(o[0].d))+
           (D(o[0].d).w!=null?' · '+fx(D(o[0].d).w,1)+' kg':'')+'</div></div>';
     }).join('')+'</div>'+
-    '<div class="phnote">'+Math.abs(dayDiff(A.d,B.d))+' gün arayla'+
+    '<div class="phnote">'+
+      (A.d===B.d?'aynı gün — takvimden farklı iki gün seç'
+                :Math.abs(dayDiff(A.d,B.d))+' gün arayla')+
       ((wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'')+
-      ((pa&&pb&&pa!==pb)?' · <b>farklı poz</b> — üstten aynı açıyı seç':'')+
+      ((pa&&pb&&pa!==pb)?' · <b>farklı açı</b> — yukarıdan aynı açıyı seç':'')+
       '</div>';
 }
 function phUploader(){
@@ -6714,6 +7080,9 @@ function workHero(){
     pills.push([String(setsDone),'set girildi','#7c9ec4']);
     pills.push([vol?ti(vol):'—','kg hacim','#7fa88b']);
     pills.push([rirs.length?fx(rirs.reduce(function(a,b){return a+b;},0)/rirs.length,1):'—','ort. RIR','#9b8fc0']);
+    var wm=workMin(cur,true),wex=expWork(dt,cur);
+    pills.push([wm!=null?fdur(wm):(wex?'~'+fdur(wex.m):'—'),
+      wm!=null?(D(cur).we?'süre':'süre · sürüyor'):'beklenen süre','#c49a6c']);
   }
   return '<div class="mhero'+(isTr?' tr':'')+'">'+
     '<div class="mheroTop">'+
@@ -6725,6 +7094,7 @@ function workHero(){
     '</div>'+
     (pills.length?'<div class="mheroPills">'+pills.map(function(p){
       return '<div class="hpill"><b style="color:'+p[2]+'">'+p[0]+'</b><i>'+p[1]+'</i></div>';}).join('')+'</div>':'')+
+    (isTr?durBox(cur,dt):'')+
   '</div>';
 }
 function render(){
@@ -6860,6 +7230,7 @@ function applySet(t){
   var name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
   var r=touch(cur);r.ex=r.ex||{};
   if(!r.dt)r.dt=planOf(cur);
+  markWork(r);
   r.ex[name]=r.ex[name]||[];
   while(r.ex[name].length<=i)r.ex[name].push({kg:null,rep:null});
   r.ex[name][i][sk]=(sk==='rir'&&t.value==='')?null:n(t.value);
@@ -6872,6 +7243,7 @@ function applySet(t){
   var clrEl=rowEl&&rowEl.querySelector('.clr');
   if(clrEl)clrEl.className='clr'+((r.ex[name][i].kg!=null||r.ex[name][i].rep!=null)?' live':'');
   save(cur);refreshEx(name);refresh();
+  if(typeof paintClock==='function')paintClock();
 }
 
 /* ============ OLAYLAR ============ */
@@ -6908,10 +7280,6 @@ app.addEventListener('change',function(ev){
     if(phone())gymPaint();else zi('z-set',settings());}
   if(a==='repfrom'){repFrom=ev.target.value;document.getElementById('rep').value=report();}
   if(a==='repto'){repTo=ev.target.value;document.getElementById('rep').value=report();}
-  if(a==='cmp'){
-    var wch=ev.target.getAttribute('data-w');
-    if(wch==='a')cmpA=+ev.target.value;else cmpB=+ev.target.value;
-    repaintPhoto();return;}
   if(a==='photoadd'){
     var fl=ev.target.files;
     var arr=fl?Array.prototype.slice.call(fl):[];ev.target.value='';
@@ -7032,8 +7400,14 @@ app.addEventListener('click',function(ev){
     zi('dlayer',''); var dl=document.getElementById('dlayer');
     if(dl)dl.outerHTML=detailLayer(); else render();}
   else if(a==='finish'){
-    clearRest();dOpen={kind:'done',key:''};dClosing=false;
+    clearRest();
+    var rf=S.days[cur];if(rf&&rf.ws){endWork(rf);save(cur);paintClock();}
+    dOpen={kind:'done',key:''};dClosing=false;
     var dlf=document.getElementById('dlayer');if(dlf)dlf.outerHTML=detailLayer();else render();}
+  else if(a==='wreset'){
+    var rz=S.days[cur];
+    if(rz&&rz.ws){delete rz.ws;delete rz.wl;delete rz.we;save(cur);toast('süre sıfırlandı');
+      if(phone())render();else repaint();}}
   else if(a==='gosum'){
     dOpen=null;dClosing=false;gTab='s';render();window.scrollTo(0,0);}
   else if(a==='dclose'){
@@ -7089,7 +7463,13 @@ app.addEventListener('click',function(ev){
   else if(a==='repocreate'){
     var rn=document.querySelector('[data-a="reponew"]');
     phCreateRepo(rn?rn.value:'');}
-  else if(a==='phview'){phView=t.getAttribute('data-k');repaintPhoto();}
+  else if(a==='phview'){
+    phView=t.getAttribute('data-k');
+    if(phView==='cmp'&&cmpPose==='all'){
+      var ap=phAutoPose();
+      if(ap!=='all'){cmpPose=ap;var cl3=phCmpList();cmpA=0;cmpB=Math.max(0,cl3.length-1);cmpMon=null;cmpSlot='a';}
+    }
+    repaintPhoto();}
   else if(a==='nyopen'){
     var nm=t.getAttribute('data-x');
     var w=document.getElementById('nywrap');
@@ -7129,6 +7509,37 @@ app.addEventListener('click',function(ev){
     cmpPose=t.getAttribute('data-p')||'all';
     var cl2=phCmpList();
     cmpA=0;cmpB=Math.max(0,cl2.length-1);
+    cmpMon=null;cmpSlot='a';
+    repaintPhoto();}
+  else if(a==='cmpslot'){
+    cmpSlot=t.getAttribute('data-w')||'a';
+    /* takvimi o kutunun ayına götür — yoksa "ÖNCE seçili" yazarken o gün
+       ekranda görünmüyor olabiliyor, hangi kareyi değiştirdiğin belirsiz kalıyor */
+    var lsS=phCmpList(),xS=lsS[cmpSlot==='a'?cmpA:cmpB];
+    if(xS)cmpMon=xS.d.slice(0,7);
+    repaintPhoto();}
+  else if(a==='cmpmon'){
+    var lstM=phCmpList(),msM=phMonths(lstM),iM=msM.indexOf(cmpMon);
+    if(iM<0)iM=msM.length-1;
+    var jM=iM+(+t.getAttribute('data-v'));
+    if(jM>=0&&jM<msM.length){cmpMon=msM[jM];repaintPhoto();}}
+  else if(a==='cmpday'){
+    /* Aynı güne ikinci kez dokunmak o gündeki fotoğraflar arasında dolaşır
+       (dört poz aynı gün çekiliyor, süzgeç açıkken bile iki kare olabiliyor).
+       Yeni bir güne dokunmak kutuyu doldurur ve sırayı öteki kutuya geçirir —
+       iki dokunuşta karşılaştırma kurulmuş olur. */
+    var dD=t.getAttribute('data-d'),lstD=phCmpList(),ixs=[];
+    for(var qD=0;qD<lstD.length;qD++)if(lstD[qD].d===dD)ixs.push(qD);
+    if(!ixs.length)return;
+    var curIx=(cmpSlot==='a')?cmpA:cmpB;
+    var pos=ixs.indexOf(curIx);
+    if(pos>=0&&ixs.length>1){
+      var nx2=ixs[(pos+1)%ixs.length];
+      if(cmpSlot==='a')cmpA=nx2;else cmpB=nx2;
+    } else {
+      if(cmpSlot==='a')cmpA=ixs[0];else cmpB=ixs[0];
+      cmpSlot=(cmpSlot==='a')?'b':'a';
+    }
     repaintPhoto();}
   else if(a==='autotgt'){
     S.autoTargets=!S.autoTargets;
@@ -7146,14 +7557,14 @@ app.addEventListener('click',function(ev){
       toast('kalori hedefi '+ti(nv2)+' yapıldı');render();}}
   else if(a==='rir'){
     var trp=PROGRAM[planOf(cur)],exr=trp.ex[exIdx],ixr=+t.getAttribute('data-i'),vr=+t.getAttribute('data-v');
-    var rr5=touch(cur);if(!rr5.dt)rr5.dt=planOf(cur);rr5.ex=rr5.ex||{};
+    var rr5=touch(cur);if(!rr5.dt)rr5.dt=planOf(cur);rr5.ex=rr5.ex||{};markWork(rr5);
     var ar=rr5.ex[exr.n]=rr5.ex[exr.n]||[];
     while(ar.length<=ixr)ar.push({kg:null,rep:null});
     ar[ixr].rir=(ar[ixr].rir===vr)?null:vr;
     save(cur);gymPaint();}
   else if(a==='kgstep'){
     var tks=PROGRAM[planOf(cur)],exk=tks.ex[exIdx],ixk=+t.getAttribute('data-i'),dir=+t.getAttribute('data-dir');
-    var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};
+    var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};markWork(rk);
     var ak=rk.ex[exk.n]=rk.ex[exk.n]||[];
     while(ak.length<=ixk)ak.push({kg:null,rep:null});
     var base=ak[ixk].kg;
@@ -7187,7 +7598,7 @@ app.addEventListener('click',function(ev){
   else if(a==='restmax'){timer.mini=false;paintRest();}
   else if(a==='samelast'){
     var tp=PROGRAM[planOf(cur)],ex=tp.ex[exIdx],pv=prevSession(ex.n,cur);
-    if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};
+    if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};markWork(rr2);
       rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep,rir:null};});
       save(cur);gymPaint();}}
   else if(a==='setwipe'){
@@ -7204,7 +7615,7 @@ app.addEventListener('click',function(ev){
     }}
   else if(a==='setdone'){
     var tp2=PROGRAM[planOf(cur)],ex2=tp2.ex[exIdx],ix3=+t.getAttribute('data-i');
-    var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};
+    var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};markWork(rr3);
     var arr=rr3.ex[ex2.n]=rr3.ex[ex2.n]||[];
     while(arr.length<=ix3)arr.push({kg:null,rep:null});
     if(arr[ix3].kg==null||arr[ix3].rep==null){
