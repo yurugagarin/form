@@ -482,19 +482,22 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gtabs button.on{background:#3a342c;color:#f6efe1;font-weight:700;
   box-shadow:0 4px 12px rgba(58,52,44,.28)}
 .gtabs button.on .lb{opacity:.95}
-/* --- v61: beş sekme + Daha ---
-   Beş etiket yan yana sığmıyor. Çözüm: hepsi ikon, yalnız açık olan adıyla
-   birlikte koyu hapın içinde genişliyor. Açılan yere sağdaki ••• sığıyor. */
-.gtabs .gt{flex:0 0 auto;width:50px;padding:9px 0 8px}
-.gtabs .gt.on{flex:1 1 auto;min-width:0;flex-direction:row;gap:7px;width:auto;padding:10px 14px;
-  justify-content:center}
-.gtabs .gt .lb{display:none}
-.gtabs .gt.on .lb{display:block;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.gtabs .gsep{width:1px;flex:none;background:#e3d7c1;margin:9px 2px}
-.gtabs .gmore{flex:0 0 auto;width:42px;padding:0;align-items:center;justify-content:center;
+/* --- v63: sabit genişlikli sekmeler ---
+   v61-62'de açık sekme adıyla birlikte genişliyordu; güzel görünüyordu ama
+   diğer dördü ona yer açmak için daralıyordu ve geçiş sırasında hedefler
+   yer değiştirdiği için parmakla ıskalanıyordu. Artık hiçbir şey büyüyüp
+   küçülmüyor: dört sekme eşit genişlikte, hepsi adıyla duruyor, açık olan
+   yalnızca koyu hapla belli oluyor. ••• sağda sabit. */
+.gtabs .gt{flex:1 1 0;min-width:0;padding:8px 2px 7px}
+.gtabs .gt .lb{display:block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gtabs .gsep{width:1px;flex:none;background:#e3d7c1;margin:9px 3px}
+.gtabs .gmore{flex:0 0 auto;width:44px;padding:0;align-items:center;justify-content:center;
   font-size:15px;letter-spacing:1px;line-height:1}
 .gtabs .gmore.on{background:#3a342c;color:#f6efe1}
-@media(max-width:340px){.gtabs .gt{width:44px}.gtabs .gt.on .lb{font-size:11.5px}}
+@media(max-width:400px){.gtabs button{font-size:10px;letter-spacing:-.2px;padding:8px 1px 7px}
+  .gtabs .ic{width:23px;height:23px}}
+@media(max-width:340px){.gtabs button{font-size:9.5px}.gtabs .ic{width:21px;height:21px}
+  .gtabs .gmore{width:38px}}
 
 .gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
 .gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -1444,6 +1447,17 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-01',
+  t:'Alt çubuk sabitlendi: sekmeler artık büyüyüp küçülmüyor (v63)',
+  y:['SORUN: v61-62\'de açık sekme adıyla birlikte genişliyordu, diğerleri ona '+
+     'yer açmak için ikona daralıyordu. Görsel olarak hoştu ama kullanışlı '+
+     'değildi: bir sekmeye basınca hedefler yer değiştiriyor, sıradaki sekmeye '+
+     'geçmek isterken parmak ıskalıyordu. Küçülen üç düğme de zaten dar kalıyordu.',
+     'ÇÖZÜM: dört sekme eşit genişlikte ve sabit; hepsi adıyla duruyor, açık olan '+
+     'yalnızca koyu hapla belli oluyor. Hiçbir dokunma hedefi yer değiştirmiyor. '+
+     '390 piksellik ekranda her sekme 73 piksel, ••• düğmesi 44 piksel.',
+     'DAR EKRAN: 400 pikselin altında yazı ve ikon bir tık küçülüyor, 340 altında '+
+     'bir tık daha — etiketler yine de kırpılmadan sığıyor.']},
  {d:'2026-09-01',
   t:'Sürüm notları rapordan ayrıldı, ilerleme plan gününe bağlandı (v62)',
   y:['SÜRÜM NOTLARI: bu liste eskiden CHANGES içindeydi ve her raporun sonuna '+
@@ -4376,7 +4390,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v62 · 1 Eyl 2026';
+var APPVER='v63 · 1 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
