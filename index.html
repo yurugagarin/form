@@ -636,6 +636,12 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gfield label{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.5px;
   text-transform:uppercase;color:#a8987c;font-weight:700;margin-bottom:5px}
 .gfield label span{color:#c9bda4;text-transform:none;letter-spacing:0}
+/* uyku: gece + gündüz iki kutu tek hücrede */
+.slpair{display:flex;align-items:center;gap:5px}
+.slpair .ginp,.slpair .inp{flex:1;min-width:0}
+.slpair .ginp.sm,.slpair .inp.sm{flex:0 0 40%}
+.slpair .ginp.sm::placeholder,.slpair .inp.sm::placeholder{color:#cbbfa8}
+.slplus{flex:none;font-size:14px;font-weight:700;color:#c0b193}
 .ginp{width:100%;height:52px;border-radius:12px;border:1.5px solid #ddd0b8;background:#fff;
   text-align:center;font-size:19px;font-weight:700;outline:none;-webkit-appearance:none}
 .ginp:focus{border-color:#e3a23f;box-shadow:0 0 0 3px rgba(227,162,63,.18)}
@@ -1260,6 +1266,28 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Amaç: geçmiş veriye bakarken "bu hareket neden bir tarihten sonra yok"
    sorusunun cevabı raporun içinde dursun, hafızaya kalmasın. Satır silinmez. */
 var CHANGES=[
+ {d:'2026-08-31',
+  t:'Uyku ikiye ayrıldı: gece + gündüz (v60)',
+  y:['SORUN: tek alan vardı ve toplam yazılıyordu. 8 saat gece uyumakla, 6 saat '+
+     'uyuyup antrenmana gidip dönüşte 2 saat daha uyumak aynı satıra düşüyordu. '+
+     'Toplam aynı ama antrenmana giden uyku farklı — o seans 6 saatle yapılmıştı. '+
+     'Rapor bunu göremeyince "uyku tuttu ama seans kötü geçmiş" gibi yanlış bir '+
+     'eşleşme çıkıyordu. Küçük bir boşluktu ama yorumu bozan cinsten.',
+     'ÇÖZÜM: iki alan. sl = gece uykusu (eski kayıtlar burada duruyor, hiçbiri '+
+     'kaybolmadı), nap = gündüz/öğlen uykusu. Gündüz kutusu isteğe bağlı, çoğu gün '+
+     'boş kalacak; bu yüzden daha dar ve soluk. Altında toplam yazıyor.',
+     'HANGİSİ NEREDE KULLANILIYOR: ortalamalar, grafik, trend ve 14 günlük özet '+
+     'TOPLAM üzerinden — uykunun toparlanmaya katkısı toplamdır. Uyku↔performans '+
+     'ilişkisi ise GECE uykusuna bakıyor, çünkü antrenman gündüz uykusundan önce '+
+     'yapılıyor. Bu ayrım özet kartında da yazılı, karışmasın diye.',
+     'RAPOR: gün satırı dökümlü geçiyor — "uyku 6 sa gece + 2 sa gündüz = 8 sa". '+
+     'Haftalık satırda toplam ortalaması, gece ortalaması ve kaç gün gündüz uykusu '+
+     'olduğu var. Ayrıca yeni bir bölüm: gündüz uykusuyla tamamlanan antrenman '+
+     'günleri ayrı listeleniyor — toplam iyi görünse de seansa giden uyku az.',
+     'ESKİ VERİ: bugüne kadar toplamı tek kutuya yazdığın günler gece uykusu olarak '+
+     'okunuyor. Hangi günde şekerleme yaptığın geriye dönük bilinemez, o yüzden '+
+     'taşıma yapılmadı. İlk birkaç haftanın gece ortalaması bir miktar yüksek '+
+     'görünebilir; bundan sonraki günler doğru ayrışacak.']},
  {d:'2026-08-31',
   t:'Antrenman süresi ölçülüyor (v59)',
   y:['NEDEN: salona gitmeden önce "bu antrenman bende kaç dakika sürüyor" sorusunun '+
@@ -1914,7 +1942,24 @@ function n(v){if(v===''||v==null)return null;var x=parseFloat(String(v).replace(
 function fx(v,d){return v==null?'—':(+v).toFixed(d==null?1:d);}
 function ti(v){return v==null?'—':Math.round(v).toLocaleString('tr-TR');}
 function clamp(x){return Math.max(0,Math.min(100,x));}
-function blank(){return{w:null,b:null,sh:null,arm:null,ch:null,sl:null,st:null,kcal:null,p:null,c:null,f:null,dt:null,ex:{},sup:{},note:''};}
+function blank(){return{w:null,b:null,sh:null,arm:null,ch:null,sl:null,nap:null,st:null,kcal:null,p:null,c:null,f:null,dt:null,ex:{},sup:{},note:''};}
+/* ============ UYKU: GECE + GÜNDÜZ (v60) ============
+   Tek alan vardı ve toplam yazılıyordu. Sorun şu: 6 saat uyuyup antrenmana
+   gidip dönüşte 2 saat daha uyumak ile 8 saat gece uyumak aynı satıra
+   yazılıyordu. Toplam aynı ama antrenmana gidilen uyku farklı — o seans
+   6 saatle yapılmış. Rapor bunu göremeyince "uyku tuttu ama seans kötüydü"
+   diye okunuyordu.
+     sl  = gece uykusu (asıl alan, eski kayıtlar burada durur)
+     nap = gündüz / öğlen uykusu (isteğe bağlı, boş kalabilir)
+   Toplam her yerde analiz edilir; gece uykusu antrenman ilişkisinde kullanılır. */
+function slTot(r){
+  if(!r)return null;
+  if(r.sl==null&&r.nap==null)return null;
+  return (r.sl||0)+(r.nap||0);
+}
+/* 'slt' gerçek bir alan değil, gece+gündüz toplamının sanal anahtarı.
+   Grafik, ortalama ve trend hesapları bunu okur; giriş kutuları sl ve nap'i. */
+function mGet(r,k){return k==='slt'?slTot(r):(r?r[k]:null);}
 function D(d){return S.days[d]||blank();}
 function keys(){return Object.keys(S.days).sort();}
 function dtOf(d){var r=S.days[d];return (r&&r.dt)||null;}
@@ -2348,11 +2393,11 @@ function weightSeries(){return keys().filter(function(d){return D(d).w!=null;}).
    Trend, ham veriden çok daha dürüst bir gösterge. */
 function emaSeries(key,alpha){
   alpha=alpha||0.25;
-  var raw=keys().filter(function(d){return D(d)[key]!=null;});
+  var raw=keys().filter(function(d){return mGet(D(d),key)!=null;});
   if(!raw.length)return [];
   var out=[],e=null,first=raw[0],last=raw[raw.length-1],nD=dayDiff(first,last);
   for(var i=0;i<=nD;i++){
-    var d=addD(first,i),v=D(d)[key];
+    var d=addD(first,i),v=mGet(D(d),key);
     if(v!=null)e=(e==null)?v:(alpha*v+(1-alpha)*e);
     if(e!=null)out.push({d:d,v:e,raw:v});
   }
@@ -2613,6 +2658,10 @@ function isPR(name,d){
 }
 
 /* ============ UYKU ↔ PERFORMANS ============ */
+/* Burada bilerek GECE uykusu kullanılıyor, toplam değil. Antrenman gündüz
+   uykusundan ÖNCE yapılıyor: seansa giden uyku gecenin uykusudur. Toplamla
+   bakmak "8 saat uyumuş ama seans kötü geçmiş" gibi yanlış bir eşleşme
+   üretiyordu — oysa o seans 6 saatle yapılmıştı. */
 function sleepInsight(){
   var lo=[],hi=[];
   keys().forEach(function(d){
@@ -2627,9 +2676,21 @@ function sleepInsight(){
   var a=av(lo),b=av(hi);
   return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,diff:(b-a)*100};
 }
-function avgSleep(days){
+/* Antrenman günlerinde gece uykusu düşükken toplamın gündüz uykusuyla
+   tamamlandığı günler: tek başına "uyku tuttu" diye okunmaması gereken günler. */
+function napDays(){
+  var out=[];
+  keys().forEach(function(d){
+    var r=D(d);if(!r.nap)return;
+    var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
+    var e=sessionEval(d,dt);if(!e||e.empty)return;
+    out.push({d:d,sl:r.sl,nap:r.nap,tot:slTot(r),q:e.q});
+  });
+  return out;
+}
+function avgSleep(days,key){
   var ks=keys().filter(function(d){return d<=today()&&d>=addD(today(),-(days||7)+1);});
-  var a=ks.map(function(d){return D(d).sl;}).filter(function(v){return v!=null;});
+  var a=ks.map(function(d){return key==='sl'?D(d).sl:slTot(D(d));}).filter(function(v){return v!=null;});
   return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;
 }
 
@@ -2651,7 +2712,7 @@ function ratioSeries(){
 var MEAS=[
   ['w','Kilo','kg',C.blue],['b','Bel','cm',C.teal],
   ['sh','Omuz','cm',C.green],['arm','Kol','cm',C.orange],
-  ['ch','Göğüs','cm',C.pink],['sl','Uyku','saat',C.violet]
+  ['ch','Göğüs','cm',C.pink],['slt','Uyku','saat',C.violet]
 ];
 function measMeta(k){for(var i=0;i<MEAS.length;i++)if(MEAS[i][0]===k)return MEAS[i];return null;}
 
@@ -2667,7 +2728,7 @@ function hasData(d){
   if(r.dt)return true;
   if(r.ex&&Object.keys(r.ex).length)return true;
   return r.w!=null||r.b!=null||r.kcal!=null||r.st!=null||r.p!=null||
-         r.sh!=null||r.arm!=null||r.ch!=null||r.sl!=null||
+         r.sh!=null||r.arm!=null||r.ch!=null||r.sl!=null||r.nap!=null||
          !!(r.sup&&Object.keys(r.sup).length)||!!r.note;
 }
 function firstWeek(){
@@ -3001,6 +3062,23 @@ function dayCard(){
       '<div class="mhint" data-hint="'+key+'" style="color:'+(v==null?'#a8987c':col)+'">'+hint+'</div></div>';
   }
 
+  /* Uyku hücresi tek input değil: gece ve gündüz ayrı, altında toplam.
+     İkisini tek kutuya toplayıp kafadan eklemek eski davranıştı ve o toplam
+     antrenmanın hangi uykuyla yapıldığını gizliyordu. */
+  function sleepMetric(rr){
+    var sn=rr.sl,nd=rr.nap,tt=slTot(rr);
+    return '<div class="'+(tt!=null?'on':'')+'" style="--fc:'+C.violet+'">'+
+      '<label>Uyku<span class="u">gece + gündüz</span></label>'+
+      '<div class="slpair">'+
+        '<input class="inp r" data-f="sl" inputmode="decimal" value="'+(sn==null?'':sn)+'" placeholder="gece">'+
+        '<span class="slplus">+</span>'+
+        '<input class="inp r sm" data-f="nap" inputmode="decimal" value="'+(nd==null?'':nd)+'" placeholder="gündüz">'+
+      '</div>'+
+      '<div class="mhint" style="color:'+(tt==null?'#a8987c':C.violet)+'">'+
+        (tt==null?'—':'toplam '+fx(tt,1).replace(/\.0$/,'')+' saat'+(nd?' ('+fx(sn||0,1).replace(/\.0$/,'')+' gece)':''))+
+      '</div></div>';
+  }
+
   var h='<div class="card">'+
     '<div class="hd">'+
       '<div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">'+
@@ -3026,7 +3104,7 @@ function dayCard(){
     '<div class="metrics m4">'+
       metric(0,'w','Kilo','kg',null,C.blue)+
       metric(0,'b','Bel','cm',null,C.teal)+
-      metric(0,'sl','Uyku','saat',null,C.violet)+
+      sleepMetric(r)+
       metric(0,'st','Adım','',T.steps,C.orange)+
     '</div>'+
 
@@ -4100,7 +4178,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v59 · 31 Ağu 2026';
+var APPVER='v60 · 31 Ağu 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -4365,13 +4443,29 @@ function gymDay(){
       (tgt?'<div class="gbar"><i style="width:'+p.toFixed(0)+'%;background:'+c2+'"></i></div>':'')+
       (hint?'<div class="ghintv" style="color:'+(v==null?'#b3a488':c2)+'">'+hint+'</div>':'')+'</div>';
   }
+  /* Gece ve gündüz uykusu yan yana iki kutu. Gündüz kutusu boş kalabilir —
+     çoğu gün boş kalacak, o yüzden daha dar ve soluk. */
+  function slFld(rr){
+    var sn=rr.sl,nd=rr.nap,tt=slTot(rr);
+    return '<div class="gfield'+(tt!=null?' on':'')+'" style="--fc:'+C.violet+'">'+
+      '<label>Uyku<span>saat</span></label>'+
+      '<div class="slpair">'+
+        '<input class="ginp" data-f="sl" inputmode="decimal" placeholder="gece" value="'+(sn==null?'':sn)+'">'+
+        '<span class="slplus">+</span>'+
+        '<input class="ginp sm" data-f="nap" inputmode="decimal" placeholder="gündüz" value="'+(nd==null?'':nd)+'">'+
+      '</div>'+
+      '<div class="ghintv" style="color:'+(tt==null?'#b3a488':C.violet)+'">'+
+        (tt==null?'—':(nd?fx(sn||0,1).replace(/\.0$/,'')+' gece + '+fx(nd,1).replace(/\.0$/,'')+' gündüz = '+fx(tt,1).replace(/\.0$/,'')+' sa'
+                      :'toplam '+fx(tt,1).replace(/\.0$/,'')+' saat'))+
+      '</div></div>';
+  }
   var mk=Math.round((r.p||0)*4+(r.c||0)*4+(r.f||0)*9);
   var kr=supStreak('kreatin');
   var rt=(r.sh!=null&&r.b)?r.sh/r.b:null;
   var md=measDue();
   return heroM()+'<div class="gsec">Her gün</div>'+
     '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+fld('b','Bel','cm',null,C.teal)+
-      fld('sl','Uyku','saat',null,C.violet)+'</div>'+
+      slFld(r)+'</div>'+
     (rt!=null?'<div style="padding:10px 14px 0"><div class="gratio">'+
       '<div><div class="gmlbl">Omuz / bel oranı</div>'+
         '<div class="gratv" style="color:'+C.green+'">'+fx(rt,2)+'</div></div>'+
@@ -4635,13 +4729,17 @@ function adherenceM(){
   var gymPlan=0,gymDone=0;
   ks.forEach(function(d){var t=PROGRAM[dtOf(d)];
     if(t&&t.ex.length){gymPlan++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gymDone++;}});
+  /* uyku ortalaması gece+gündüz toplamı üzerinden — iki alan da olabilir,
+     yalnız biri de. avg() tek alan okuduğu için ayrı hesaplanıyor. */
+  var slA=ks.map(function(d){return slTot(D(d));}).filter(function(v){return v!=null;});
+  var avgTot=slA.length?Math.round(slA.reduce(function(x,y){return x+y;},0)/slA.length*10)/10:null;
   var rows=[
     {l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
     {l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
     {l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
     {l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
     {l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
-    {l:'Uyku',v:avg('sl'),t:7.5,c:C.cyan,u:'sa',dec:1},
+    {l:'Uyku',v:avgTot,t:7.5,c:C.cyan,u:'sa',dec:1},
     {l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
     {l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
   ];
@@ -4711,9 +4809,10 @@ function gymSum(){
       :(dl?'<div class="dlnote">Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)</div>':''))+
     (prToday.length?'<div class="prbanner">🏅 Bugün '+prToday.length+' rekor: '+
       prToday.map(function(x){return esc(x.n)+' '+x.kg+'×'+x.rep;}).join(' · ')+'</div>':'')+
-    (sli?'<div class="sleepnote">Uyku etkisi: 7 saatin altında uyuduğunda seans kalitesi ortalama '+
+    (sli?'<div class="sleepnote">Uyku etkisi: <b>gece</b> uykun 7 saatin altındayken seans kalitesi ortalama '+
       '<b>%'+Math.abs(sli.diff).toFixed(0)+'</b> '+(sli.diff>0?'düşük':'yüksek')+
-      ' ('+sli.nLo+' vs '+sli.nHi+' seans)</div>':'')+
+      ' ('+sli.nLo+' vs '+sli.nHi+' seans). Gündüz uykusu bu hesaba girmez — '+
+      'antrenman ondan önce yapılıyor.</div>':'')+
 
     '<button class="scard" data-a="dopen" data-kind="week" data-key="">'+
       '<div class="shead"><div><div class="stitle">Haftalık Hacim</div>'+
@@ -4743,8 +4842,8 @@ function gymSum(){
           spark(bp,C.teal,null)+'</button>'+
       '</div>'+
       '<div class="duo2" style="margin-top:11px">'+
-        ['sh','arm','ch','sl'].map(function(k){
-          var mm=measMeta(k),pk=keys().filter(function(d){return D(d)[k]!=null;}).map(function(d){return{d:d,v:D(d)[k]};});
+        ['sh','arm','ch','slt'].map(function(k){
+          var mm=measMeta(k),pk=keys().filter(function(d){return mGet(D(d),k)!=null;}).map(function(d){return{d:d,v:mGet(D(d),k)};});
           var lv=pk.length?pk[pk.length-1].v:null;
           return '<button class="dtap" data-a="dopen" data-kind="measure" data-key="'+k+'">'+
             '<div class="dlbl" style="color:'+mm[3]+'">'+mm[1].toUpperCase()+' <b>'+(lv!=null?fx(lv,1):'—')+'</b><span class="schev">›</span></div>'+
@@ -4809,8 +4908,8 @@ function detailLayer(){
   else if(dOpen.kind==='measure'){
     var mk=dOpen.key,mm=measMeta(mk)||['w','Kilo','kg',C.blue];
     var isW=(mk==='w'),unit=mm[2],mcol=mm[3];
-    var pts=keys().filter(function(d){return D(d)[mk]!=null;}).map(function(d){return{d:d,v:D(d)[mk]};});
-    title=isW?'Kilo':(mk==='b'?'Bel çevresi':(mk==='sl'?'Uyku':mm[1]+' çevresi'));
+    var pts=keys().filter(function(d){return mGet(D(d),mk)!=null;}).map(function(d){return{d:d,v:mGet(D(d),mk)};});
+    title=isW?'Kilo':(mk==='b'?'Bel çevresi':(mk==='slt'?'Uyku':mm[1]+' çevresi'));
     sub=pts.length+' ölçüm'+(pts.length?' · '+fdate(pts[0].d)+' — '+fdate(pts[pts.length-1].d):'');
     if(!pts.length)body='<div class="sempty">Henüz ölçüm girilmemiş</div>';
     else{
@@ -4827,14 +4926,14 @@ function detailLayer(){
       var wdiff=(av1!=null&&av2!=null)?av1-av2:null;
       var goalV=isW?S.goal.weight:null;
       var rem2=(goalV!=null&&tNow!=null)?tNow-goalV:null;
-      var down=(mk!=='sl');   /* uykuda artış iyi, diğerlerinde düşüş iyi */
+      var down=(mk!=='slt');   /* uykuda artış iyi, diğerlerinde düşüş iyi */
       function dcol(v){if(v==null)return '#a8987c';
         var good=down?(v<-0.05):(v>0.05),bad=down?(v>0.05):(v<-0.05);
         return good?C.green:(bad?C.orange:'#a8987c');}
       function sgn(v,dg){return (v>0?'+':'')+v.toFixed(dg==null?1:dg);}
 
       var cells=[
-        [tNow!=null&&mk!=='sl'?'Trend':'Şu an',(tNow!=null&&mk!=='sl'?tNow:lastV).toFixed(1),unit,
+        [tNow!=null&&mk!=='slt'?'Trend':'Şu an',(tNow!=null&&mk!=='slt'?tNow:lastV).toFixed(1),unit,
           'son ölçüm '+lastV.toFixed(1),'#3a342c'],
         ['Toplam değişim',sgn(tot),unit,fdate(pts[0].d)+'’den beri',dcol(tot)],
         ['Son 7 gün ort.',(av1!=null?av1.toFixed(1):'—'),unit,
@@ -5462,8 +5561,9 @@ function report(){
   var armR=lastOf('arm');
   if(armR!=null)o+=(shR!=null&&bR?' · ':'Çevre: ')+'kol '+fx(armR,1)+' cm';
   if(shR!=null||armR!=null)o+='\n';
-  var slpR=avgSleep(14);
-  if(slpR!=null)o+='Uyku (14 gün ort.): '+fx(slpR,1)+' saat\n';
+  var slpR=avgSleep(14),slpN=avgSleep(14,'sl');
+  if(slpR!=null)o+='Uyku (14 gün ort.): '+fx(slpR,1)+' saat toplam'+
+    ((slpN!=null&&Math.abs(slpR-slpN)>0.05)?' ('+fx(slpN,1)+' saat gece + '+fx(slpR-slpN,1)+' saat gündüz)':'')+'\n';
   o+='='.repeat(58)+'\n\n';
   var byW={};ks.forEach(function(d){var w=weekIdx(d);(byW[w]=byW[w]||[]).push(d);});
   Object.keys(byW).map(Number).sort(function(a,b){return a-b;}).forEach(function(w){
@@ -5473,6 +5573,15 @@ function report(){
     o+='## HAFTA '+w+' ('+fdate(ds[0])+' – '+fdate(ds[ds.length-1])+')\n';
     o+='Kilo ort: '+(av('w')||'—')+' kg | Bel ort: '+(av('b')||'—')+' cm\n';
     o+='Adım: '+(av('st')!=null?Math.round(av('st')):'—')+' | Kcal: '+(av('kcal')!=null?Math.round(av('kcal')):'—')+' | P/K/Y: '+(av('p')||'—')+'/'+(av('c')||'—')+'/'+(av('f')||'—')+' g\n';
+    var slW=ds.map(function(d){return slTot(D(d));}).filter(function(v){return v!=null;});
+    var nW=ds.map(function(d){return D(d).sl;}).filter(function(v){return v!=null;});
+    if(slW.length){
+      var slAv=slW.reduce(function(x,y){return x+y;},0)/slW.length;
+      var nAv=nW.length?nW.reduce(function(x,y){return x+y;},0)/nW.length:null;
+      var napD=ds.filter(function(d){return D(d).nap;}).length;
+      o+='Uyku ort: '+fx(slAv,1)+' sa toplam'+(nAv!=null?' ('+fx(nAv,1)+' sa gece)':'')+
+        (napD?' | gündüz uykusu '+napD+' gün':'')+'\n';
+    }
     var gp=0,gd=0;ds.forEach(function(d){var t=PROGRAM[dtOf(d)];if(t&&t.ex.length){gp++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gd++;}});
     var rl=restOf(ds[0]).map(function(x){return GUN[x];}).join(', ');
     var krh=ds.filter(function(d){return tookSup(d,'kreatin');}).length;
@@ -5488,6 +5597,13 @@ function report(){
       var r=D(d),b=[];
       if(r.w!=null)b.push(r.w+'kg');if(r.b!=null)b.push('bel '+r.b+'cm');
       if(r.st!=null)b.push(r.st+' adım');if(r.kcal!=null)b.push(r.kcal+'kcal');
+      /* uyku dökümlü yazılır: 6 sa gece + 2 sa gündüz = 8 sa. Toplamı tek başına
+         yazmak o günün antrenmanının kaç saat uykuyla yapıldığını gizliyor. */
+      if(r.sl!=null||r.nap!=null){
+        var slS=fx(r.sl||0,1).replace(/\.0$/,''),npS=fx(r.nap||0,1).replace(/\.0$/,'');
+        b.push(r.nap?('uyku '+slS+' sa gece + '+npS+' sa gündüz = '+fx(slTot(r),1).replace(/\.0$/,'')+' sa')
+                    :('uyku '+slS+' sa'));
+      }
       if(r.p!=null||r.c!=null||r.f!=null)b.push((r.p||0)+'/'+(r.c||0)+'/'+(r.f||0)+' PKY');
       var sp=SUPS.filter(function(x){return r.sup&&r.sup[x[0]];}).map(function(x){return x[1];});
       if(sp.length)b.push('takviye: '+sp.join('+'));
@@ -5568,8 +5684,23 @@ function report(){
   if(gaps.length)o+='## KALORİ GİRİLMEMİŞ VE NOT DA YOK ('+gaps.length+' gün)\n'+
     gaps.map(function(d){return d;}).join(', ')+'\n\n';
   var slI=sleepInsight();
-  if(slI)o+='## UYKU ETKİSİ\n7 saat altı ('+slI.nLo+' seans) ort. kalite %'+Math.round(slI.lo*100)+
+  if(slI)o+='## UYKU ETKİSİ (GECE UYKUSUNA GÖRE)\n'+
+    'Ölçü gece uykusudur, toplam değil: antrenman gündüz uykusundan önce yapılıyor.\n'+
+    '7 saat altı ('+slI.nLo+' seans) ort. kalite %'+Math.round(slI.lo*100)+
     ' | 7 saat üstü ('+slI.nHi+' seans) ort. kalite %'+Math.round(slI.hi*100)+'\n\n';
+  /* Gündüz uykusuyla tamamlanan antrenman günleri ayrı listeleniyor: bu günlerde
+     toplam iyi görünür ama seans az uykuyla yapılmıştır, ikisi karıştırılmasın. */
+  var npD=napDays();
+  if(npD.length){
+    o+='## GÜNDÜZ UYKUSUYLA TAMAMLANAN ANTRENMAN GÜNLERİ ('+npD.length+' gün)\n'+
+      'Toplam uyku yeterli görünse de seans gece uykusuyla yapıldı.\n';
+    npD.slice(-10).forEach(function(x){
+      o+='- '+x.d+': seansa giden uyku '+fx(x.sl||0,1).replace(/\.0$/,'')+' sa, '+
+        'gündüz +'+fx(x.nap,1).replace(/\.0$/,'')+' sa (toplam '+fx(x.tot,1).replace(/\.0$/,'')+' sa)'+
+        ' | seans kalitesi %'+Math.round(x.q*100)+'\n';
+    });
+    o+='\n';
+  }
   /* Program değişiklikleri — tarih aralığı ne olursa olsun her raporda tam liste.
      Geçmiş veri bu değişikliklerin ışığında okunmalı. */
   if(CHANGES.length){
@@ -7256,7 +7387,7 @@ app.addEventListener('input',function(ev){
     if(f==='note')r.note=t.value;else{r[f]=n(t.value);markFilled(t,t.value);}
     save(cur);
     if(!phone()){var hz=document.getElementById('z-hero');if(hz)hz.innerHTML=heroD();}
-    if(f==='w'||f==='b'||f==='sh'||f==='arm'||f==='ch'||f==='sl'){refresh();}else{refreshDayMetrics();refresh();}
+    if(f==='w'||f==='b'||f==='sh'||f==='arm'||f==='ch'||f==='sl'||f==='nap'){refresh();}else{refreshDayMetrics();refresh();}
     return;}
   /* set kutuları */
   if(t.getAttribute('data-s')){applySet(t);return;}
