@@ -466,7 +466,7 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gsync{text-align:center;font-size:11px;color:#a8987c;font-weight:600;margin-top:6px}
 
 .gtabs{position:fixed;left:12px;right:12px;bottom:calc(10px + env(safe-area-inset-bottom));
-  z-index:40;display:flex;gap:4px;border-radius:34px;
+  z-index:40;display:flex;gap:2px;border-radius:34px;
   background:rgba(250,246,238,.78);-webkit-backdrop-filter:saturate(190%) blur(26px);
   backdrop-filter:saturate(190%) blur(26px);
   border:1px solid rgba(255,255,255,.55);
@@ -482,6 +482,19 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .gtabs button.on{background:#3a342c;color:#f6efe1;font-weight:700;
   box-shadow:0 4px 12px rgba(58,52,44,.28)}
 .gtabs button.on .lb{opacity:.95}
+/* --- v61: beş sekme + Daha ---
+   Beş etiket yan yana sığmıyor. Çözüm: hepsi ikon, yalnız açık olan adıyla
+   birlikte koyu hapın içinde genişliyor. Açılan yere sağdaki ••• sığıyor. */
+.gtabs .gt{flex:0 0 auto;width:42px;padding:9px 0 8px}
+.gtabs .gt.on{flex:1 1 auto;min-width:0;flex-direction:row;gap:6px;width:auto;padding:9px 12px;
+  justify-content:center}
+.gtabs .gt .lb{display:none}
+.gtabs .gt.on .lb{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.gtabs .gsep{width:1px;flex:none;background:#e3d7c1;margin:9px 2px}
+.gtabs .gmore{flex:0 0 auto;width:34px;padding:0;align-items:center;justify-content:center;
+  font-size:15px;letter-spacing:1px;line-height:1}
+.gtabs .gmore.on{background:#3a342c;color:#f6efe1}
+@media(max-width:340px){.gtabs .gt{width:38px}.gtabs .gt.on .lb{font-size:11px}}
 
 .gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
 .gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
@@ -818,31 +831,41 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
 .msechtx b{display:block;font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.15}
 .msechtx i{display:block;font-style:normal;font-size:11px;font-weight:700;color:#b3a488;margin-top:1px}
 .msecbody{padding:14px}
+/* --- Daha: alttan yukarı açılan tabaka (v61) ---
+   Eskiden sağdan giren bir paneldi; sekme çubuğu artık altta olduğu için
+   menünün de aynı kenardan gelmesi doğru: dokunduğun yerden açılıyor. */
 .mdrw{position:fixed;inset:0;z-index:120}
 .mdrwbg{position:absolute;inset:0;background:rgba(30,25,18,.42);
-  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);animation:fadein .18s ease}
-.mdrwp{position:absolute;top:0;right:0;bottom:0;width:min(80vw,320px);background:#fbf8f2;
-  border-left:1px solid #e4d9c2;box-shadow:-12px 0 34px rgba(50,42,30,.22);
-  padding:calc(14px + env(safe-area-inset-top)) 12px calc(14px + env(safe-area-inset-bottom));
-  overflow-y:auto;animation:slidein .22s cubic-bezier(.2,.9,.3,1)}
+  -webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px);animation:fadein .2s ease}
+.mdrwp{position:absolute;left:0;right:0;bottom:0;max-height:88vh;background:#fbf8f2;
+  border-radius:26px 26px 0 0;border-top:1px solid rgba(255,255,255,.7);
+  box-shadow:0 -14px 40px rgba(50,42,30,.26);
+  padding:9px 13px calc(20px + env(safe-area-inset-bottom));
+  overflow-y:auto;animation:sheetup .3s cubic-bezier(.32,.72,0,1)}
 @keyframes fadein{from{opacity:0}to{opacity:1}}
-@keyframes slidein{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes sheetup{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.mgrab{width:38px;height:4px;border-radius:4px;background:#e0d3ba;margin:0 auto 13px}
 .mdrwhd{display:flex;align-items:center;gap:10px;padding:0 4px 12px}
-.mdrwhd b{flex:1;font-family:'Fraunces';font-size:21px;font-weight:600}
-.mdrwx{width:36px;height:36px;flex:none;border-radius:11px;border:1px solid #e4d9c2;background:#f3ecdd;
-  font-size:15px;color:#8a7f6f;-webkit-tap-highlight-color:transparent}
-.mdrwi{display:flex;align-items:center;gap:11px;width:100%;text-align:left;border:0;background:none;
-  padding:12px 8px;border-radius:12px;-webkit-tap-highlight-color:transparent;border-bottom:1px solid #f0e8d8}
-.mdrwi:last-child{border-bottom:0}
-.mdrwi.on{background:#3a342c}
-.mdrwi.on .mdrwtx b,.mdrwi.on .mdrwic,.mdrwi.on .mdrwa{color:#f6efe1}
+.mdrwhd b{flex:1;font-family:'Fraunces';font-size:19px;font-weight:600}
+.mdrwx{width:34px;height:34px;flex:none;border-radius:11px;border:1px solid #e4d9c2;background:#f3ecdd;
+  font-size:14px;color:#8a7f6f;-webkit-tap-highlight-color:transparent}
+.mdgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.mdrwi{display:flex;flex-direction:column;gap:2px;text-align:left;border:1px solid #ece1cd;
+  background:#f7f1e4;border-radius:15px;padding:12px 12px 11px;
+  -webkit-tap-highlight-color:transparent;transition:transform .16s cubic-bezier(.32,.72,0,1)}
+.mdrwi:active{transform:scale(.97)}
+.mdrwi.wide{grid-column:1/-1;flex-direction:row;align-items:center;gap:11px}
+.mdrwi.on{background:#3a342c;border-color:#3a342c}
+.mdrwi.on .mdrwtx b,.mdrwi.on .mdrwic{color:#f6efe1}
 .mdrwi.on .mdrwtx i{color:#b3a488}
-.mdrwic{width:26px;flex:none;text-align:center;font-size:17px;color:#a8987c}
-.mdrwtx{flex:1;min-width:0}
-.mdrwtx b{display:block;font-size:14px;font-weight:700;color:#3a342c}
+.mdrwic{width:19px;height:19px;flex:none;color:#a8987c;display:block;margin-bottom:7px}
+.mdrwic svg{width:100%;height:100%;display:block}
+.mdrwi.wide .mdrwic{margin:0}
+.mdrwtx{min-width:0}
+.mdrwi.wide .mdrwtx{flex:1}
+.mdrwtx b{display:block;font-size:13px;font-weight:700;color:#3a342c;line-height:1.25}
 .mdrwtx i{display:block;font-style:normal;font-size:10.5px;font-weight:600;color:#b3a488;margin-top:2px;
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.mdrwa{flex:none;font-size:17px;color:#cdbfa8}
 .phbk{margin-top:16px;padding-top:14px;border-top:1px solid #ece1cd}
 .phbkhd{display:flex;align-items:baseline;gap:10px;margin-bottom:7px}
 .phbkhd b{font-family:'Fraunces';font-size:15px;font-weight:600;color:#3a342c;flex:1}
@@ -1094,6 +1117,112 @@ body.pvlock,body.ovlock{overflow:hidden;overscroll-behavior:none}
 .mc.today{border-color:#e3a23f}
 .mc.sel{border-color:#3a342c}
 .mlegend{display:flex;flex-wrap:wrap;gap:8px 14px;margin-top:11px;font-size:11px;color:#a8987c;font-weight:600}
+/* ============================================================
+   v61 · TAKVİM SEKMESİ — tek ızgara, iki deri
+   İki ayrı takvim (plan + puan) yerine tek bir ızgara var; üstteki
+   düğme yalnızca kutuların içini değiştiriyor, geometri sabit kalıyor.
+   Ayın günü her kutunun içinde: "H3" nereye denk geliyor sorusu bitiyor.
+   ============================================================ */
+.chero{padding:15px 16px 13px}
+.chero .cd1{font-family:'Fraunces';font-size:26px;font-weight:600;letter-spacing:-.4px;line-height:1.12}
+.chero .cd2{font-size:12.5px;color:#8a7f6f;font-weight:600;margin-top:5px}
+.cprog{margin-top:13px;height:5px;border-radius:5px;background:#e0d5c0;overflow:hidden}
+.cprog i{display:block;height:100%;border-radius:5px;background:linear-gradient(90deg,#7fa88b,#5f9e78)}
+.cpmeta{display:flex;justify-content:space-between;margin-top:6px;font-size:10.5px;
+  color:#a8987c;font-weight:700}
+.cseg{display:flex;gap:3px;background:#e2d8c4;border-radius:12px;padding:3px;margin:0 14px 12px}
+.cseg button{flex:1;border:0;background:transparent;border-radius:10px;padding:8px 0;
+  font-family:inherit;font-size:12px;font-weight:700;color:#8a7f6f;
+  transition:background .2s cubic-bezier(.32,.72,0,1),color .2s;-webkit-tap-highlight-color:transparent}
+.cseg button.on{background:#fbf8f2;color:#3a342c;box-shadow:0 1px 3px rgba(60,52,44,.14)}
+.cwrap{background:#fbf8f2;border:1px solid #f0e8d8;border-radius:16px;margin:0 12px 12px;padding:12px 10px}
+.ncalhd{display:grid;grid-template-columns:30px repeat(7,1fr);gap:3px;margin-bottom:5px}
+.ncalhd span{text-align:center;font-size:9.5px;font-weight:700;color:#c0b193}
+.ncalrow{display:grid;grid-template-columns:30px repeat(7,1fr);gap:3px;margin-bottom:3px}
+.nwk{font-size:10px;font-weight:700;color:#c0b193;display:flex;flex-direction:column;
+  justify-content:center;line-height:1.12;text-align:center}
+.nwk i{font-style:normal;font-size:7.5px;letter-spacing:.3px;color:#cf9a3c;display:block}
+.ncalrow.now .nwk{color:#3a342c}
+.ncalrow.pre .nc{opacity:.5}
+.nc{border-radius:9px;background:#f2ead9;min-height:42px;padding:4px 2px 3px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  border:0;font-family:inherit;-webkit-tap-highlight-color:transparent;
+  transition:transform .14s cubic-bezier(.32,.72,0,1)}
+.nc:active{transform:scale(.92)}
+.nc .dn{font-size:9px;font-weight:600;color:#c0b193;line-height:1}
+.nc .cd{font-size:10.5px;font-weight:700;line-height:1.1;margin-top:2px}
+.nc .sv{font-family:'Fraunces';font-size:13.5px;font-weight:600;margin-top:1px;line-height:1.2}
+.nc.rest{background:#eee5d3}
+.nc.rest .cd{color:#b3a48a;font-weight:600}
+.nc.fut{background:#f2ead9}
+.nc.lwc{background-image:repeating-linear-gradient(45deg,transparent,transparent 4px,
+  rgba(31,75,70,.14) 4px,rgba(31,75,70,.14) 8px)}
+.nc.today{box-shadow:inset 0 0 0 2px #3a342c,0 3px 9px rgba(58,52,44,.18)}
+.nc.today .dn{color:#3a342c;font-weight:800}
+.nc.sel{box-shadow:inset 0 0 0 2px #cf9a3c}
+.nc.paintable{cursor:pointer}
+.nmonth{display:flex;align-items:center;gap:8px;margin:9px 0 6px}
+.nmonth b{font-family:'Fraunces';font-size:12px;font-weight:600;color:#8a7f6f;flex:none}
+.nmonth i{flex:1;height:1px;background:#ece1cd;display:block}
+.cedit{width:100%;border:1px dashed #d6c8ae;background:transparent;border-radius:12px;
+  padding:10px;font-family:inherit;font-size:11.5px;font-weight:700;color:#a8987c;
+  margin-top:4px;-webkit-tap-highlight-color:transparent}
+.cedit.on{border-style:solid;border-color:#3a342c;background:#3a342c;color:#f6efe1}
+.clegend{display:flex;flex-wrap:wrap;gap:5px 12px;font-size:10.5px;color:#8a7f6f;font-weight:600;
+  padding:2px 2px 0}
+.clegend b{font-weight:800;margin-right:3px}
+
+/* ============================================================
+   v61 · FOTOĞRAF — açıya göre şerit
+   Sıralama tarihten değil açıdan başlıyor. Her açı kendi yatay şeridi,
+   soldan sağa eskiden yeniye. Şeridin başı ile sonu zaten "önce ve sonra".
+   ============================================================ */
+.ptrk{background:#fbf8f2;border:1px solid #f0e8d8;border-radius:16px;padding:11px 0 10px;margin-bottom:11px}
+.ptrk.untag{background:#f8f2e4;border-style:dashed;border-color:#e2d5ba}
+.ptrkhd{display:flex;align-items:baseline;gap:8px;padding:0 13px 9px}
+.ptrkhd b{font-family:'Fraunces';font-size:14.5px;font-weight:600}
+.ptrkhd i{font-style:normal;font-size:10.5px;color:#b3a488;font-weight:700;flex:1}
+.ptrkhd u{text-decoration:none;font-size:10.5px;font-weight:700;color:#5f9e78}
+.ptrkhd u.warn{color:#cf9a3c}
+.ptrack{display:flex;gap:7px;overflow-x:auto;padding:0 13px 3px;-webkit-overflow-scrolling:touch}
+.ptrack::-webkit-scrollbar{display:none}
+.pcell{flex:none;width:66px;border:0;background:none;padding:0;font-family:inherit;
+  -webkit-tap-highlight-color:transparent}
+.pcell .pim{display:block;aspect-ratio:3/4;border-radius:10px;overflow:hidden;background:#efe7d6;
+  position:relative;border:1px solid rgba(255,255,255,.6)}
+.pcell .pim img{width:100%;height:100%;object-fit:cover;display:block}
+.pcell.pk .pim{box-shadow:0 0 0 2px #3a342c}
+.pcell .pin{position:absolute;top:4px;left:4px;font-size:8.5px;font-weight:800;
+  background:rgba(45,38,30,.62);color:#fbf8f2;border-radius:12px;padding:1.5px 5px;
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.pcell .pdt{display:block;font-size:9.5px;font-weight:700;color:#8a7f6f;text-align:center;margin-top:4px}
+.pcell .pkg{display:block;font-size:9px;color:#c0b193;text-align:center;font-weight:600}
+.pcell.padd .pim{display:flex;align-items:center;justify-content:center;background:transparent;
+  border:1px dashed #d3c4a8;color:#c0b193;font-size:18px}
+.pcmpbtn{margin:9px 13px 0;width:calc(100% - 26px);border:1px solid #ddd0b8;background:#f7f1e4;
+  border-radius:11px;padding:8px;font-family:inherit;font-size:11.5px;font-weight:700;color:#6b5f4d;
+  -webkit-tap-highlight-color:transparent}
+/* kaydırıcı — karşılaştırmada iki günü seçmek için */
+.pscrub{background:#fbf8f2;border:1px solid #f0e8d8;border-radius:14px;padding:9px 12px 10px;margin-bottom:11px}
+.pscrl{display:flex;align-items:center;height:26px}
+.psd{flex:1;display:flex;align-items:center;justify-content:center;border:0;background:none;
+  padding:0;-webkit-tap-highlight-color:transparent}
+.psd i{display:block;width:7px;height:7px;border-radius:7px;background:#dbcfb7;
+  transition:all .18s cubic-bezier(.32,.72,0,1)}
+.psd.on i{width:12px;height:12px;background:#3a342c}
+.pscrlbl{display:flex;justify-content:space-between;font-size:10px;color:#a8987c;font-weight:700;margin-top:2px}
+.pdelta{background:#eef4ef;border:1px solid #dbe8de;border-radius:14px;padding:10px 13px;
+  font-size:12px;color:#2f5340;font-weight:600;display:flex;justify-content:space-between;
+  align-items:center;gap:10px;margin-bottom:11px}
+.pdelta b{font-family:'Fraunces';font-size:14.5px;font-weight:600}
+.pdelta.warn{background:#faf0dc;border-color:#f0e0bd;color:#8a6a26}
+/* masaüstünde şeritler daha geniş: yer var, kareyi küçük tutmanın anlamı yok */
+@media(min-width:760px){
+  .pcell{width:96px}
+  .pcell .pdt{font-size:11px}
+  .pcell .pkg{font-size:10px}
+  .ptrkhd b{font-size:16px}
+}
 .mpt{display:flex;gap:6px;overflow-x:auto;padding-bottom:10px}
 .mexlist{display:flex;flex-direction:column;gap:8px}
 .mexrow{display:flex;gap:11px;align-items:flex-start;width:100%;background:#f7f1e4;border:1px solid #ece1cd;
@@ -4178,7 +4307,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v60 · 31 Ağu 2026';
+var APPVER='v61 · 1 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5230,25 +5359,133 @@ function paintBar(){
   '<button class="mfill" data-a="autofill">'+(fillArm?'Emin misin?':'Otomatik doldur')+'</button></div>';
 }
 
+/* ============================================================
+   v61 · TAKVİM SEKMESİ (gTab='cal')
+   Tek ızgara, iki deri. Plan/Puan düğmesi kutuların geometrisini
+   değiştirmiyor, yalnızca içini değiştiriyor — aynı nesnenin iki yüzü.
+   Her kutuda ayın günü var; ayın 1'inin düştüğü haftanın önüne ince
+   bir ay çizgisi giriyor. "Hafta 3 nereye denk geliyor" sorusu bitiyor.
+   ============================================================ */
+var calSkin='plan';     /* 'plan' | 'puan' */
+var calEdit=false;      /* plan boyama açık mı */
+
+function calHero(){
+  var tod=today(),pdn=progDay(tod),tot=S.weeks*7;
+  var kal=Math.max(0,tot-pdn),pct=Math.max(0,Math.min(100,pdn/tot*100));
+  var wk=weekIdx(tod);
+  return '<div class="chero">'+
+    '<div class="cd1">'+GUNU[pd(tod).getDay()]+', '+pd(tod).getDate()+' '+AYU[pd(tod).getMonth()]+'</div>'+
+    '<div class="cd2">Hafta '+wkLabel(wk)+' · programın '+(pdn>0?pdn:0)+'. günü</div>'+
+    '<div class="cprog"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+    '<div class="cpmeta"><span>Başlangıç '+(S.startDate?pd(S.startDate).getDate()+' '+AYU[pd(S.startDate).getMonth()]:'—')+'</span>'+
+      '<span>'+kal+' gün kaldı</span></div>'+
+  '</div>';
+}
+/* plan derisi: hangi antrenman, ne kadarı yapıldı */
+function calCellPlan(d,tod){
+  var dt=effDt(d),t=dt?PROGRAM[dt]:null,code=(t&&t.code)||'';
+  var future=d>tod,rest=(dt==='rest'||(t&&!t.ex.length&&dt!=='trav'));
+  var q=future?null:dayQuality(d);
+  var cls='nc',st='',ink='';
+  if(rest&&dt!=='trav'){cls+=' rest';}
+  else if(future){cls+=' fut';ink=code?(t.color||'#b0a189'):'#c0b193';}
+  else if(typeof q==='number'){
+    st='background:'+qColor(q)+';';
+    ink=(q>=0.9?'#fbf8f2':(q>=0.7?'#2f5340':'#7a4a33'));
+  } else {cls+=' fut';ink=code?(t.color||'#b0a189'):'#c0b193';}
+  if(dt==='trav')cls+=' lwc';
+  return {cls:cls,st:st,
+    inner:'<span class="dn"'+(q>=0.9?' style="color:rgba(251,248,242,.72)"':'')+'>'+pd(d).getDate()+'</span>'+
+      '<span class="cd"'+(ink?' style="color:'+ink+'"':'')+'>'+
+        (code||(rest?'DİN':'·'))+'</span>'};
+}
+/* puan derisi: o günün 0–100'ü */
+function calCellScore(d){
+  var sc=dayScore(d);
+  if(!sc)return {cls:'nc fut',st:'',
+    inner:'<span class="dn">'+pd(d).getDate()+'</span>'};
+  return {cls:'nc',st:'background:'+sColor(sc.t)+';color:'+sInk(sc.t)+';',
+    inner:'<span class="dn" style="color:inherit;opacity:.62">'+pd(d).getDate()+'</span>'+
+      '<span class="sv">'+sc.t+'</span>'};
+}
+function calGrid(){
+  var wFrom=firstWeek(),tod=today(),wkNow=weekIdx(tod);
+  var m0=addD(monday(S.startDate),(wFrom-1)*7),nW=S.weeks-wFrom+1;
+  var WL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  var g='<div class="cwrap"><div class="ncalhd"><span></span>'+
+    WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
+  var lastMon=-1;
+  for(var w=0;w<nW;w++){
+    var wn=wFrom+w,preW=wn<1,wdl=wn>0&&deloadEvery()>0&&wn%deloadEvery()===0;
+    var rowStart=addD(m0,w*7);
+    /* ay çizgisi: ayın 1'inin düştüğü haftanın önüne */
+    for(var mi=0;mi<7;mi++){
+      var md=pd(addD(rowStart,mi));
+      if(md.getMonth()!==lastMon&&(mi===0||md.getDate()===1)){
+        g+='<div class="nmonth"><b>'+AYU[md.getMonth()]+'</b><i></i></div>';
+        lastMon=md.getMonth();break;
+      }
+    }
+    var cells='';
+    for(var i=0;i<7;i++){
+      var d=addD(rowStart,i);
+      var o=(calSkin==='plan')?calCellPlan(d,tod):calCellScore(d);
+      var extra=(d===tod?' today':'')+(d===cur&&d!==tod?' sel':'')+(calEdit?' paintable':'');
+      /* boyama açık VE bir tür seçiliyse kare boyanır; değilse her koşulda
+         o güne gider — "Git ↗" seçiliyken de dokunma boşa gitmesin. */
+      var act=(calEdit&&paintMode)?'data-a="cell" data-d="'+d+'"'
+             :(calSkin==='puan'&&dayScore(d)?'data-a="dopen" data-kind="score" data-key="'+d+'"'
+                                            :'data-a="calgo" data-d="'+d+'"');
+      cells+='<button class="'+o.cls+extra+'" style="'+o.st+'" '+act+'>'+o.inner+'</button>';
+    }
+    g+='<div class="ncalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+'">'+
+      '<span class="nwk">'+wkLabel(wn)+(wdl?'<i>DL</i>':'')+'</span>'+cells+'</div>';
+  }
+  return g+'</div>';
+}
+function calFoot(){
+  if(calSkin==='puan'){
+    var a7=scoreAvg(7),str=scoreStreak();
+    return '<div class="cwrap"><div class="clegend" style="font-weight:500;line-height:1.55">'+
+      scoreWeights()+'</div>'+
+      '<div class="clegend" style="margin-top:8px">'+
+      '<span>Son 7 gün ortalaması <b style="margin:0 0 0 3px">'+(a7?a7.avg:'—')+'</b></span>'+
+      '<span>Seri <b style="margin:0 0 0 3px">'+str+' gün</b></span></div></div>';
+  }
+  var leg='<div class="clegend">'+ORDER.map(function(k){
+      return '<span><b style="color:'+PROGRAM[k].color+'">'+PROGRAM[k].code+'</b>'+
+        esc(PROGRAM[k].short)+'</span>';}).join('')+
+    '<span><b style="color:#b3a48a">DİN</b>Dinlenme</span>'+
+    '<span><b style="color:#2f8a7c">SYH</b>Seyahat</span></div>';
+  var edit=calEdit
+    ? paintBar()+'<button class="cedit on" data-a="caledit">Düzenlemeyi bitir</button>'
+    : '<button class="cedit" data-a="caledit">Planı düzenle</button>';
+  return '<div class="cwrap">'+leg+edit+'</div>';
+}
+function gymCal(){
+  return calHero()+
+    '<div class="cseg">'+
+      '<button class="'+(calSkin==='plan'?'on':'')+'" data-a="calskin" data-k="plan">Plan</button>'+
+      '<button class="'+(calSkin==='puan'?'on':'')+'" data-a="calskin" data-k="puan">Puan</button>'+
+    '</div>'+calGrid()+calFoot();
+}
+
 /* --- daha sekmesi: açılır kapanır bölümler --- */
 /* ============ DAHA — yan menü ============
    Her şeyi tek sayfaya yığmak yerine: yandan menü açılır, seçtiğin bölüm
    tek başına görünür. Ekranda aynı anda yalnızca bir iş var. */
 var mSect=null, mDrawer=false;
+/* Takvim ve Fotoğraf buradan çıktı — ikisi de artık alt çubukta kendi
+   sekmesi. Menü yediden beşe indi, tabaka tek ekrana sığıyor. */
 var MENU=[
-  ['cal','▦','Takvim & Plan'],
-  ['pho','◪','Fotoğraf'],
-  ['prog','☰','Program & Hareketler'],
-  ['rep','↗','Rapor'],
-  ['tgt','◎','Hedefler'],
-  ['sync','☁','Senkron & Yedek'],
-  ['app','⚙','Uygulama']
+  ['prog','prog','Hareketler'],
+  ['rep','rep','Rapor'],
+  ['tgt','tgt','Hedefler'],
+  ['sync','sync','Senkron & Yedek'],
+  ['app','app','Uygulama']
 ];
 function menuTitle(k){for(var i=0;i<MENU.length;i++)if(MENU[i][0]===k)return MENU[i][2];return '';}
 function menuSub(k){
-  var pdn=progDay(today());
-  if(k==='cal')return (pdn>0?pdn:0)+'. gün · '+Math.max(0,S.weeks*7-pdn)+' gün kaldı';
-  if(k==='pho')return photoCount()+' fotoğraf';
   if(k==='prog')return PROGRAM[pTab].ex.length+' hareket · '+PROGRAM[pTab].short;
   if(k==='rep')return keys().length+' gün kayıtlı';
   if(k==='tgt')return S.targets.kcal+' kcal · '+S.targets.protein+'g P';
@@ -5261,13 +5498,15 @@ function gymDrawer(){
   return '<div id="mdrw" class="mdrw on">'+
     '<div class="mdrwbg" data-a="drwclose"></div>'+
     '<div class="mdrwp">'+
+      '<div class="mgrab"></div>'+
       '<div class="mdrwhd"><b>Daha</b>'+
         '<button class="mdrwx" data-a="drwclose" aria-label="Kapat">✕</button></div>'+
-      MENU.map(function(x){
-        return '<button class="mdrwi'+(mSect===x[0]?' on':'')+'" data-a="msel" data-k="'+x[0]+'">'+
-          '<span class="mdrwic">'+x[1]+'</span>'+
+      '<div class="mdgrid">'+MENU.map(function(x,i){
+        return '<button class="mdrwi'+(i>=3?' wide':'')+(mSect===x[0]?' on':'')+
+          '" data-a="msel" data-k="'+x[0]+'">'+
+          '<span class="mdrwic">'+menuIcon(x[1])+'</span>'+
           '<span class="mdrwtx"><b>'+x[2]+'</b><i>'+esc(menuSub(x[0]))+'</i></span>'+
-          '<span class="mdrwa">›</span></button>';}).join('')+
+          '</button>';}).join('')+'</div>'+
     '</div></div>';
 }
 /* --- tek tek bölümler --- */
@@ -5342,8 +5581,6 @@ function secApp(){
     '<div class="mhint2" style="margin-top:10px">Sürüm '+APPVER+'</div>';
 }
 function secBody(k){
-  if(k==='cal')return secCal();
-  if(k==='pho')return phBody();
   if(k==='prog')return secProg();
   if(k==='rep')return secRep();
   if(k==='tgt')return secTgt();
@@ -5354,9 +5591,9 @@ function secBody(k){
 function gymMore(){
   if(!mSect)
     return '<div class="mnone">'+
-      '<div class="mnonei">☰</div>'+
+      '<div class="mnonei">•••</div>'+
       '<b>Menüden bir bölüm seç</b>'+
-      '<span>Takvim, fotoğraf, rapor, hedefler…</span>'+
+      '<span>Hareketler, rapor, hedefler, senkron…</span>'+
       '<button class="mbtn dark" data-a="drwopen" style="max-width:220px;margin:14px auto 0">Menüyü aç</button>'+
     '</div>';
   return '<div class="msechd">'+
@@ -5414,21 +5651,51 @@ var TABICON={
  w:'<path d="M4 9v6M20 9v6M7 6.5v11M17 6.5v11M7 12h10" />',
  d:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 8.5h6M9 12.5h6M9 16.5h3"/>',
  s:'<path d="M4 19V5M4 19h16M8 15.5l3.5-4 3 2.5L20 8"/>',
+ cal:'<rect x="3.5" y="5" width="17" height="15.5" rx="2.5"/><path d="M3.5 10h17M8 3.5v3M16 3.5v3"/>'+
+     '<circle cx="12" cy="15" r="1.35" fill="currentColor" stroke="none"/>',
+ pho:'<path d="M3.5 8.8a2 2 0 0 1 2-2h2l1.4-2.1h6.2l1.4 2.1h2a2 2 0 0 1 2 2v8.4a2 2 0 0 1-2 2h-13a2 2 0 0 1-2-2z"/>'+
+     '<circle cx="12" cy="13" r="3.5"/>',
  m:'<circle cx="6" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18" cy="12" r="1.4"/>'
 };
+/* Daha menüsündeki simgeler de aynı çizgi ailesinden — tabakada
+   dingbat karakter kullanınca yazı tipi cihazdan cihaza değişiyordu. */
+var MENUICON={
+ prog:'<path d="M4 6.5h16M4 12h16M4 17.5h10"/><circle cx="18" cy="17.5" r="1.5"/>',
+ rep:'<path d="M5.5 19V9.5M10.5 19V5M15.5 19v-6.5M20 19H4"/>',
+ tgt:'<circle cx="12" cy="12" r="7.5"/><circle cx="12" cy="12" r="2.6"/><path d="M12 2v2.6M12 19.4V22"/>',
+ sync:'<path d="M7 17.5h9.5a4 4 0 0 0 .4-8A6 6 0 0 0 5.6 11 3.4 3.4 0 0 0 7 17.5z"/>',
+ app:'<circle cx="12" cy="12" r="3"/><path d="M12 3.2v2.3M12 18.5v2.3M20.8 12h-2.3M5.5 12H3.2'+
+     'M18.2 5.8l-1.6 1.6M7.4 16.6l-1.6 1.6M18.2 18.2l-1.6-1.6M7.4 7.4L5.8 5.8"/>'
+};
+function menuIcon(k){
+  return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" '+
+    'stroke-linecap="round" stroke-linejoin="round">'+(MENUICON[k]||'')+'</svg>';
+}
 function tabIcon(k){
   return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" '+
     'stroke-linecap="round" stroke-linejoin="round">'+TABICON[k]+'</svg>';
 }
 function gymTabsInner(){
-  var tabs=[['w','Antrenman'],['d','Gün'],['s','Özet'],['m','Daha']];
+  var tabs=[['w','Antrenman'],['d','Gün'],['s','Özet'],['cal','Takvim'],['pho','Fotoğraf']];
   return tabs.map(function(x){
-    return '<button class="'+(gTab===x[0]?'on':'')+'" data-a="gtab" data-k="'+x[0]+'" aria-current="'+(gTab===x[0])+'">'+
-      '<span class="ic">'+tabIcon(x[0])+'</span><span class="lb">'+x[1]+'</span></button>';}).join('');
+    return '<button class="gt'+(gTab===x[0]?' on':'')+'" data-a="gtab" data-k="'+x[0]+'" aria-current="'+(gTab===x[0])+'">'+
+      '<span class="ic">'+tabIcon(x[0])+'</span><span class="lb">'+x[1]+'</span></button>';}).join('')+
+    '<span class="gsep"></span>'+
+    '<button class="gmore'+(gTab==='m'?' on':'')+'" data-a="drwopen" aria-label="Daha">•••</button>';
 }
 function gymTabs(){return '<div class="gtabs" id="g-tabs">'+gymTabsInner()+'</div>';}
 function gymBody(){
-  return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():gymMore();
+  return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():
+         gTab==='cal'?gymCal():gTab==='pho'?gymPho():gymMore();
+}
+/* fotoğraf sekmesi: başlık + gövde. phBody masaüstüyle ortak. */
+function gymPho(){
+  return '<div class="chero" style="padding-bottom:11px">'+
+    '<div class="cd1">Fotoğraf</div>'+
+    '<div class="cd2">'+photoCount()+' kare · '+photoDates().length+' gün'+
+      (photoDates().length>1?' · '+Math.abs(dayDiff(photoDates()[0],photoDates()[photoDates().length-1]))+' günlük aralık':'')+
+    '</div></div>'+
+    '<div style="padding:0 14px">'+phBody()+'</div>';
 }
 /* Hareket değiştirme çubuğu artık #g-body'nin DIŞINDA.
    İçerideyken sorun şuydu: #g-body'nin giriş animasyonu (tabIn) transform
@@ -6124,7 +6391,7 @@ function shrinkImage(file,cb){
   fr.readAsDataURL(file);
 }
 /* --- görünüm durumu --- */
-var phView='all', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false, pvDelArm=false;
+var phView='pose', cmpA=0, cmpB=0, pvIdx=null, pvZoom=false, pvDelArm=false;
 var cmpPose='all';   /* karşılaştırmada hangi poz süzülüyor */
 var cmpSlot='a';     /* takvimden seçilen gün hangi kutuya gidiyor: a=ÖNCE, b=SONRA */
 var cmpMon=null;     /* takvimde açık ay, 'YYYY-MM' */
@@ -6348,6 +6615,74 @@ function phTagBar(x){
       (cp?'<button class="phchip clr" data-a="phset" data-id="'+id+'" data-p="">✕</button>':'')+
     '</div></div>';
 }
+/* ============================================================
+   v61 · AÇIYA GÖRE ŞERİT
+   Galeriyi tarihe göre dizmek şunu zorlaştırıyordu: aynı açının iki
+   ucunu görmek için günler arasında gezinmek gerekiyor. Burada sıralama
+   açıdan başlıyor — her açı kendi yatay şeridi, soldan sağa eskiden
+   yeniye. Şeridin ilk ve son karesi zaten "önce" ve "sonra"; ikisine
+   dokunmadan da fark rakamı başlıkta yazıyor.
+   ============================================================ */
+var PLONG={f:'Önden',r:'Sağ profil',l:'Sol profil',b:'Arkadan'};
+function poseLong(p){return PLONG[p]||poseName(p)||'Etiketsiz';}
+function phByPose(){
+  var m={},all=phAll();
+  all.forEach(function(x){
+    var k=phPoseOf(x)||'none';
+    (m[k]=m[k]||[]).push(x);
+  });
+  Object.keys(m).forEach(function(k){
+    m[k].sort(function(a,b){return a.d<b.d?-1:a.d>b.d?1:(a.t||0)-(b.t||0);});
+  });
+  return m;
+}
+function phTrackCell(x,pin){
+  var wv=D(x.d).w;
+  return '<button class="pcell'+(pin?' pk':'')+'" data-a="phopen" data-x="'+phIxOf(x)+'">'+
+    '<span class="pim"><img src="'+x.u+'" loading="lazy" alt="">'+
+      (pin?'<span class="pin">'+pin+'</span>':'')+'</span>'+
+    '<span class="pdt">'+fdate(x.d)+'</span>'+
+    '<span class="pkg">'+(wv!=null?fx(wv,1)+' kg':'H'+wkLabel(weekIdx(x.d)))+'</span>'+
+  '</button>';
+}
+function phTrackRow(k,lst){
+  var first=lst[0],last=lst[lst.length-1],n=lst.length;
+  var scope=(n>1)?(first.id+'|'+last.id):'';
+  var head='';
+  if(k==='none'){
+    head='<u class="warn">etiketle</u>';
+  } else if(n>1){
+    var wa=D(first.d).w,wb=D(last.d).w;
+    head=(wa!=null&&wb!=null)
+      ? '<u'+((wb-wa)>0?' class="warn"':'')+'>'+((wb-wa)>0?'+':'')+fx(wb-wa,1)+' kg</u>'
+      : '<u>'+Math.abs(dayDiff(first.d,last.d))+' gün</u>';
+  }
+  var cells=lst.map(function(x,i){
+    var pin=(n>1&&i===0)?'önce':((n>1&&i===n-1)?'sonra':'');
+    return phTrackCell(x,pin);
+  }).join('');
+  cells+='<label class="pcell padd"><span class="pim">＋</span>'+
+    '<span class="pdt" style="color:#c0b193">bugün</span>'+
+    '<input type="file" accept="image/*" multiple data-a="photoadd" style="display:none"></label>';
+  return '<div class="ptrk'+(k==='none'?' untag':'')+'">'+
+    '<div class="ptrkhd"><b>'+esc(poseLong(k))+'</b><i>'+n+' kare</i>'+head+'</div>'+
+    '<div class="ptrack">'+cells+'</div>'+
+    (n>1?'<button class="pcmpbtn" data-a="cmpopen" data-p="'+esc(k)+'">'+
+      esc(poseLong(k))+' · ilkini sonuncuyla karşılaştır</button>':'')+
+  '</div>';
+}
+function phPoseView(){
+  var m=phByPose(),out='',any=false;
+  POSES.forEach(function(pp){
+    var lst=m[pp[0]];
+    if(!lst||!lst.length)return;
+    any=true;out+=phTrackRow(pp[0],lst);
+  });
+  if(m.none&&m.none.length){any=true;out+=phTrackRow('none',m.none);}
+  if(!any)return '<div class="phempty">Henüz fotoğraf yok. '+
+    'Her seferinde aynı ışık, aynı mesafe, aynı duruş — açıyı tuttuğun sürece değişimi görürsün.</div>';
+  return out+'<div class="phnote">Bir kareye dokun büyüsün · şeridin sonundaki ＋ bugüne fotoğraf ekler</div>';
+}
 /* --- karşılaştırma: iki fotoğraf, ikisi de tam görünür --- */
 /* poz süzgeci: aynı açıdan çekilmiş fotoğrafları yan yana koymak için */
 function phPoseBar(){
@@ -6362,7 +6697,7 @@ function phPoseBar(){
     'Etiketsiz<i>'+c.none+'</i></button>';
   bits+='<button class="phpb'+(cmpPose==='all'?' on':'')+'" data-a="cmppose" data-p="all">'+
     'Tümü<i>'+tot+'</i></button>';
-  return '<div class="phstep">1 · HANGİ AÇI</div><div class="phposebar">'+bits+'</div>';
+  return '<div class="phposebar">'+bits+'</div>';
 }
 /* ---- KARŞILAŞTIRMA TAKVİMİ (v59) ----
    Eskiden iki tane açılır liste vardı; içinde "ÖN · 24 Ağu · H2 · 83.4 kg" gibi
@@ -6430,38 +6765,55 @@ function phIxOf(x){
   for(var i=0;i<a.length;i++)if(a[i].id===x.id&&a[i].d===x.d&&a[i].i===x.i)return i;
   return 0;
 }
+function phScrub(all){
+  if(all.length<2)return '';
+  var lo=Math.min(cmpA,cmpB),hi=Math.max(cmpA,cmpB);
+  var dots=all.map(function(x,i){
+    var on=(i===cmpA||i===cmpB);
+    return '<button class="psd'+(on?' on':'')+'" data-a="cmpdot" data-i="'+i+'" '+
+      'aria-label="'+esc(fdate(x.d))+'"><i></i></button>';}).join('');
+  return '<div class="pscrub"><div class="pscrl">'+dots+'</div>'+
+    '<div class="pscrlbl"><span>'+fdate(all[lo].d)+'</span>'+
+      '<span>'+all.length+' çekim</span>'+
+      '<span>'+fdate(all[hi].d)+'</span></div></div>';
+}
 function phCompare(all){
   if(all.length<2)
     return phPoseBar()+
       '<div class="phempty">'+
       (cmpPose==='none'
-        ? 'Etiketsiz '+all.length+' fotoğraf var. Galeriden etiketlersen açı açı karşılaştırabilirsin.'
+        ? 'Etiketsiz '+all.length+' fotoğraf var. Etiketlersen açı açı karşılaştırabilirsin.'
         : cmpPose!=='all'
         ? '“'+poseName(cmpPose)+'” açısında '+all.length+' fotoğraf var. '+
           'Aynı açıdan ikinci bir kare çekince buradan karşılaştırabilirsin.'
         : 'Karşılaştırmak için en az iki fotoğraf gerekiyor. '+
           'Şu an '+all.length+' tane var — bir-iki hafta sonra tekrar çek.')+'</div>';
-  var A=all[cmpA],B=all[cmpB];
-  var wa=D(A.d).w,wb=D(B.d).w;
+  var lo=Math.min(cmpA,cmpB),hi=Math.max(cmpA,cmpB);
+  var A=all[lo],B=all[hi];
+  var wa=D(A.d).w,wb=D(B.d).w,ba=D(A.d).b,bb=D(B.d).b;
   var pa=phPoseOf(A),pb=phPoseOf(B);
+  var bits=[];
+  if(wa!=null&&wb!=null)bits.push(((wb-wa)>0?'+':'')+fx(wb-wa,1)+' kg');
+  if(ba!=null&&bb!=null)bits.push('bel '+((bb-ba)>0?'+':'')+fx(bb-ba,1));
+  var gun=Math.abs(dayDiff(A.d,B.d));
+  var kotu=(wa!=null&&wb!=null&&wb>wa);
   return phPoseBar()+
-    '<div class="phstep">2 · HANGİ İKİ GÜN</div>'+
-    '<div class="phslots">'+phSlotBtn('a',cmpA,all)+phSlotBtn('b',cmpB,all)+'</div>'+
-    phCal(all)+
-    '<div class="phcmp">'+[[A,cmpA,'ÖNCE'],[B,cmpB,'SONRA']].map(function(o){
-      var pp=phPoseOf(o[0]);
-      return '<div><div class="phcl">'+o[2]+(pp?' · '+poseName(pp).toUpperCase():'')+' · '+fdate(o[0].d)+'</div>'+
+    '<div class="phcmp">'+[[A,'ÖNCE'],[B,'SONRA']].map(function(o){
+      var pp=phPoseOf(o[0]),rw=D(o[0].d);
+      return '<div><div class="phcl">'+o[1]+' · '+fdate(o[0].d)+'</div>'+
         '<button class="phbig" data-a="phopen" data-x="'+phIxOf(o[0])+'" '+
           'data-scope="'+esc(A.id+'|'+B.id)+'"><img src="'+o[0].u+'" alt=""></button>'+
         '<div class="phcs">hafta '+wkLabel(weekIdx(o[0].d))+
-          (D(o[0].d).w!=null?' · '+fx(D(o[0].d).w,1)+' kg':'')+'</div></div>';
+          (rw.w!=null?' · '+fx(rw.w,1)+' kg':'')+
+          (rw.b!=null?' · bel '+fx(rw.b,1):'')+'</div></div>';
     }).join('')+'</div>'+
-    '<div class="phnote">'+
-      (A.d===B.d?'aynı gün — takvimden farklı iki gün seç'
-                :Math.abs(dayDiff(A.d,B.d))+' gün arayla')+
-      ((wa!=null&&wb!=null)?' · '+fx(wa,1)+' → '+fx(wb,1)+' kg ('+(wb-wa>0?'+':'')+fx(wb-wa,1)+')':'')+
-      ((pa&&pb&&pa!==pb)?' · <b>farklı açı</b> — yukarıdan aynı açıyı seç':'')+
-      '</div>';
+    phScrub(all)+
+    (A.d===B.d
+      ? '<div class="pdelta warn"><span>Aynı gün</span><b>noktalardan iki farklı gün seç</b></div>'
+      : '<div class="pdelta'+(kotu?' warn':'')+'"><span>'+gun+' günde</span>'+
+        '<b>'+(bits.length?bits.join(' · '):'ölçü girilmemiş')+'</b></div>')+
+    ((pa&&pb&&pa!==pb)?'<div class="phnote"><b>Farklı açı</b> — yukarıdan aynı açıyı seç</div>':'')+
+    '<div class="phnote">Noktalara dokun · aynı açıdaki her çekim bir nokta</div>';
 }
 function phUploader(){
   return '<label class="phaddbig">'+
@@ -6472,7 +6824,7 @@ function phUploader(){
 function phStatus(){
   if(!repoOK())
     return '<div class="phst warn">Bu cihazda yedeklenmiyor · <b>'+
-      (phone()?'Daha → Yedek &amp; Depo':'Ayarlar → Yedek &amp; Depo')+'</b>’dan bağla</div>';
+      (phone()?'Daha → Senkron &amp; Yedek':'Ayarlar → Yedek &amp; Depo')+'</b>’dan bağla</div>';
   return '<div class="phst">☁ '+(phMsg||phSyncLabel())+'</div>';
 }
 function phBody(){
@@ -6481,12 +6833,12 @@ function phBody(){
     return phUploader()+
       '<div class="phempty">Her seferinde aynı ışık, aynı mesafe, aynı duruş. '+
       'Aynı açıyı tuttuğun sürece değişimi görürsün.</div>'+phStatus();
-  return phUploader()+
-    '<div class="phtabs">'+
-      '<button class="phtab'+(phView==='all'?' on':'')+'" data-a="phview" data-k="all">Tümü<i>'+all.length+'</i></button>'+
-      '<button class="phtab'+(phView==='cmp'?' on':'')+'" data-a="phview" data-k="cmp">Karşılaştır</button>'+
-    '</div>'+
-    (phView==='all'?phGallery(all):phCompare(cl))+phStatus();
+  var V=[['pose','Açıya göre'],['all','Güne göre'],['cmp','Karşılaştır']];
+  return '<div class="phtabs">'+V.map(function(v){
+      return '<button class="phtab'+(phView===v[0]?' on':'')+'" data-a="phview" data-k="'+v[0]+'">'+
+        v[1]+(v[0]==='all'?'<i>'+all.length+'</i>':'')+'</button>';}).join('')+'</div>'+
+    (phView==='pose'?phPoseView():phView==='all'?(phUploader()+phGallery(all)):phCompare(cl))+
+    phStatus();
 }
 /* ============ FOTOĞRAF YEDEĞİ ============
    İki ayrı yol var, ikisi de bağımsız çalışır:
@@ -7523,7 +7875,7 @@ app.addEventListener('click',function(ev){
     else{STORE.set(KEY,JSON.stringify(S));syncNow();}}
   else if(a==='goday'){
     cur=t.getAttribute('data-d');dOpen=null;dClosing=false;
-    if(phone()){gTab='d';mSect=null;mDrawer=false;}else{dTab='today';}
+    if(phone()){gTab='d';mSect=null;mDrawer=false;calEdit=false;}else{dTab='today';}
     render();window.scrollTo(0,0);}
   else if(a==='syncnow'){syncNow();}
   else if(a==='dopen'){
@@ -7547,11 +7899,36 @@ app.addEventListener('click',function(ev){
       var d3=document.getElementById('dlayer');if(d3)d3.outerHTML=detailLayer();},260);}
   else if(a==='gtab'){
     var gk2=t.getAttribute('data-k');
-    if(gk2==='m'){gTab='m';mDrawer=true;render();window.scrollTo(0,0);return;}
-    gTab=gk2;mDrawer=false;gymPaint();gymTabsRefresh();window.scrollTo(0,0);}
+    gTab=gk2;mDrawer=false;mSect=null;calEdit=false;paintMode=null;
+    gymPaint();gymTabsRefresh();window.scrollTo(0,0);}
   else if(a==='drwopen'){mDrawer=true;render();}
   else if(a==='drwclose'){mDrawer=false;render();}
-  else if(a==='msel'){mSect=t.getAttribute('data-k');mDrawer=false;render();window.scrollTo(0,0);}
+  else if(a==='msel'){
+    mSect=t.getAttribute('data-k');mDrawer=false;gTab='m';
+    render();window.scrollTo(0,0);}
+  /* --- takvim sekmesi --- */
+  else if(a==='calskin'){
+    calSkin=t.getAttribute('data-k')||'plan';
+    if(calSkin==='puan'){calEdit=false;paintMode=null;}
+    gymPaint();}
+  else if(a==='caledit'){
+    calEdit=!calEdit;if(!calEdit)paintMode=null;
+    gymPaint();}
+  else if(a==='calgo'){
+    var cdg=t.getAttribute('data-d');if(!cdg)return;
+    cur=cdg;exIdx=0;gTab='w';gymPaint();gymTabsRefresh();window.scrollTo(0,0);}
+  /* --- fotoğraf: şeritten karşılaştırmaya --- */
+  else if(a==='cmpopen'){
+    var cp=t.getAttribute('data-p')||'all';
+    cmpPose=cp;
+    var lc=phCmpList();
+    cmpA=0;cmpB=Math.max(0,lc.length-1);
+    phView='cmp';repaintPhoto();window.scrollTo(0,0);}
+  else if(a==='cmpdot'){
+    var di=+t.getAttribute('data-i');
+    /* hangi uca yakınsa o ucu taşı — iki dokunuşta aralık kurulur */
+    if(Math.abs(di-cmpA)<=Math.abs(di-cmpB))cmpA=di;else cmpB=di;
+    repaintPhoto();}
   else if(a==='gym'){setMode('gym');}
   else if(a==='desktop'){setMode('desk');}
   else if(a==='dtab'){goTab(t.getAttribute('data-k'));}
