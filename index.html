@@ -2171,6 +2171,21 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-04',
+  t:'Süre rozeti artık tek dokunuşta silmiyor (v65)',
+  y:['HATA: v59’da rozete tek dokunuş, o günün süresini onaysız ve geri alınamaz '+
+     'şekilde siliyordu. Rozet üst çubukta, ekranın en çok bakılan yerinde ve '+
+     'dokunmatik; yanlışlıkla basmak an meselesi. Yıkıcı bir işlemin tek dokunuşa '+
+     'bağlanması yanlıştı.',
+     'İKİ AŞAMA: ilk dokunuş sadece uyarıyor ("sıfırlamak için tekrar dokun"). '+
+     '4 saniye içinde ikinci dokunuş gelmezse hiçbir şey olmuyor.',
+     'GERİ AL: sıfırlandıktan sonra 90 saniye boyunca rozet "geri al" yazıyor ve '+
+     'silinen süreyi gösteriyor; dokununca ws/wl/we geri geliyor.',
+     'ELLE GİRİŞ: bir günde set kaydı var ama süre yoksa (yanlışlıkla silinmiş, '+
+     'bitir’e basılmamış, eski gün) Gün sekmesindeki süre kutusunda dakika alanı '+
+     'çıkıyor. Yazılan dakika o günün akşamına yaslanarak kaydediliyor; ortalamaya '+
+     've rapora normal seans gibi giriyor. 3 saat kuralı korunuyor, sonradan set '+
+     'girmek bu süreyi uzatmıyor.']},
  {d:'2026-09-02',
   t:'Koyu tema geldi (v64)',
   y:['Salon modunun tamamı artık koyu görünümde de çalışıyor: antrenman, gün, özet, '+
@@ -3487,6 +3502,12 @@ function endWork(r){
   r.we=(now-(r.wl||r.ws)>3*3600*1000)?(r.wl||r.ws):now;
   r.wl=r.we;
 }
+/* o günde gerçekten set girilmiş mi — süre kutusu buna bakar */
+function loggedSets(r){
+  var e=(r&&r.ex)||{};
+  for(var k in e){var a=e[k];
+    if(a&&a.length)for(var i=0;i<a.length;i++)if(a[i]&&(a[i].kg!=null||a[i].rep!=null))return true;}
+  return false;}
 /* dakika cinsinden süre — bitmemişse şu ana kadarki süre */
 function workMin(d,live){
   var r=D(d);if(!r||!r.ws)return null;
@@ -5133,7 +5154,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v64 · 2 Eyl 2026';
+var APPVER='v65 · 4 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6081,10 +6102,20 @@ function detailLayer(){
 function durBox(d,dt){
   var m=workMin(d,true),r=D(d);
   var ex=expWork(dt||dtOf(d),d);
-  if(m==null&&!ex)return '';
-  if(m==null)
-    return '<div class="wdrow"><div><b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu günün ortalaması':'genel ortalama')+
-      ' · '+ex.n+' seans</i></div><div class="wdr">Süre ilk set girişinde<br>başlar</div></div>';
+  /* o gün set girilmiş ama süre yoksa (rozete yanlışlıkla basılmış, kayıt
+     bozulmuş, eski gün) dakikayı elle yazabilmek gerekir — yoksa o seansın
+     süresi ortalamadan da rapordan da sonsuza kadar düşer. */
+  var lost=(m==null&&loggedSets(r));
+  if(m==null&&!ex&&!lost)return '';
+  if(m==null){
+    var head=ex?'<div><b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu günün ortalaması':'genel ortalama')+
+        ' · '+ex.n+' seans</i></div><div class="wdr">Süre ilk set girişinde<br>başlar</div>'
+      :'<div><b>—</b><i>bu gün için süre kaydı yok</i></div>';
+    return '<div class="wdrow">'+head+'</div>'+
+      (lost?'<div class="wdrow"><div><input class="ginp" data-a="wmin" inputmode="numeric" '+
+        'placeholder="dk" style="max-width:110px;height:44px;text-align:center">'+
+        '<i>süreyi elle gir</i></div>'+
+        '<div class="wdr">Set var, süre yok.<br>Kaç dakika sürdüyse yaz.</div></div>':'');}
   var open=!r.we;
   var diff=ex?m-ex.m:null;
   var rightTxt = ex
@@ -6492,17 +6523,30 @@ function gymTop(){
     '</div>'+
   '</div>';
 }
-/* ---- KRONOMETRE ROZETİ (v59) ----
+/* ---- KRONOMETRE ROZETİ (v59, v65'te düzeltildi) ----
    Antrenman başlamadan önce: bu günün beklenen süresi ("~62 dk") — salona
    girerken ne kadar kalacağını bilesin. Başladıktan sonra: geçen süre / beklenen.
-   Bittiğinde: toplam süre. Dokununca sıfırlanır (yanlış başlamışsa). */
+   Bittiğinde: toplam süre.
+     v59 HATASI: rozete tek dokunuş süreyi anında siliyordu. Rozet ekranın en
+     üstünde, sürekli göz önünde ve dokunmatik bir alan — yanlışlıkla basmak
+     kaçınılmaz. Onay yok, geri alma yok, veri gitti. Yıkıcı bir işlem asla tek
+     dokunuşa bağlanmaz.
+     v65: iki aşamalı. İlk dokunuş yalnız uyarır ("tekrar dokun"), 4 saniye
+     içinde ikinci dokunuş sıfırlar. Silinen değerler 90 saniye bellekte tutulur;
+     o süre içinde rozete dokunmak süreyi geri getirir. Ayrıca süre kaybolmuşsa
+     Gün sekmesindeki kutudan elle dakika girilebilir. */
+var wUndo=null,wArm=0;
+function wUndoLive(){return !!(wUndo&&wUndo.d===cur&&Date.now()-wUndo.t<90000);}
 function clockChip(){
   var dtc=planOf(cur),tc=PROGRAM[dtc];
   if(!tc||!tc.ex.length)return '';
   var r=D(cur),ex=expWork(dtc,cur);
-  if(!r.ws)
+  if(!r.ws){
+    if(wUndoLive())
+      return '<span class="gclock" data-a="wreset" title="süreyi geri al">⏱ <b>'+
+        fdur(Math.round(((wUndo.we||wUndo.wl||wUndo.ws)-wUndo.ws)/60000))+'</b><i>geri al</i></span>';
     return ex?'<span class="gclock">⏱ <b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu gün ort.':'genel ort.')+'</i></span>'
-             :'<span class="gclock"><i>⏱ ilk sette başlar</i></span>';
+             :'<span class="gclock"><i>⏱ ilk sette başlar</i></span>';}
   var m=workMin(cur,true);
   if(m==null)return '';
   var done=!!r.we;
@@ -8625,6 +8669,17 @@ app.addEventListener('input',function(ev){
 app.addEventListener('change',function(ev){
   if(ev.target.getAttribute&&ev.target.getAttribute('data-s')){applySet(ev.target);return;}
   var a=ev.target.getAttribute('data-a');
+  /* elle süre: mutlak saat önemli değil, kullanılan tek şey ws→we farkı.
+     O günün akşam 20:00'ını bitiş sayıp geriye doğru yazıyoruz; böylece
+     kayıt o güne ait kalır ve 3 saat kuralı sonradan uzatmayı engeller. */
+  if(a==='wmin'){
+    var mv=Math.round(n(ev.target.value)||0);
+    if(!(mv>0&&mv<600)){toast('1–599 dakika arası bir sayı yaz');return;}
+    var rw=touch(cur),endT=new Date(cur+'T20:00:00').getTime();
+    if(!isFinite(endT))endT=Date.now();
+    rw.ws=endT-mv*60000;rw.wl=endT;rw.we=endT;
+    wUndo=null;wArm=0;save(cur);toast('süre '+mv+' dk olarak kaydedildi');
+    if(phone())render();else repaint();return;}
   if(a==='dt'){var v0=ev.target.value;touch(cur).dt=v0;S.plan=S.plan||{};S.plan[cur]=v0;S._pt=Date.now();save(cur);render();}
   if(a==='reprange'){repRange=ev.target.value;
     if(repRange==='custom'){if(!repTo)repTo=today();if(!repFrom)repFrom=addD(today(),-6);}
@@ -8758,8 +8813,24 @@ app.addEventListener('click',function(ev){
     var dlf=document.getElementById('dlayer');if(dlf)dlf.outerHTML=detailLayer();else render();}
   else if(a==='wreset'){
     var rz=S.days[cur];
-    if(rz&&rz.ws){delete rz.ws;delete rz.wl;delete rz.we;save(cur);toast('süre sıfırlandı');
-      if(phone())render();else repaint();}}
+    if(!rz)return;
+    /* 1) geri alma: sıfırlandıktan sonraki 90 sn içinde rozet "geri al" olur */
+    if(!rz.ws&&wUndoLive()){
+      rz.ws=wUndo.ws;if(wUndo.wl)rz.wl=wUndo.wl;if(wUndo.we)rz.we=wUndo.we;
+      wUndo=null;wArm=0;save(cur);toast('süre geri geldi');
+      if(phone())render();else repaint();return;}
+    if(!rz.ws){
+      /* rozet ekranda "geri al" kalmış ama 90 sn geçmişse: sessiz kalma, söyle */
+      if(wUndo&&wUndo.d===cur){wUndo=null;toast('geri alma süresi doldu');
+        if(phone())render();else repaint();}
+      return;}
+    /* 2) ilk dokunuş yalnız uyarır — yanlışlıkla basmak veriyi silmesin */
+    if(Date.now()-wArm>4000){wArm=Date.now();toast('sıfırlamak için tekrar dokun');return;}
+    wArm=0;
+    wUndo={ws:rz.ws,wl:rz.wl,we:rz.we,t:Date.now(),d:cur};
+    delete rz.ws;delete rz.wl;delete rz.we;save(cur);
+    toast('sıfırlandı — geri almak için dokun');
+    if(phone())render();else repaint();}
   else if(a==='gosum'){
     dOpen=null;dClosing=false;gTab='s';render();window.scrollTo(0,0);}
   else if(a==='dclose'){
