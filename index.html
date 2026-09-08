@@ -320,6 +320,18 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .big{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1}
 .chip{font-size:11.5px;font-weight:700;border-radius:999px;padding:4px 10px;white-space:nowrap}
 .metrics.m4{grid-template-columns:repeat(4,1fr)}
+.metrics.m3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:1100px){.metrics.m3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.metrics.m3{grid-template-columns:repeat(2,1fr)}}
+/* gündüz uykusu antrenmandan önce mi sonra mı (v66) */
+.napw{display:flex;gap:5px;margin-top:6px}
+.napw button{flex:1;font:inherit;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+  padding:5px 4px;border-radius:9px;border:1px solid var(--line,#e3d9c2);
+  background:transparent;color:var(--ink3,#a8987c);cursor:pointer;
+  transition:background .15s ease,color .15s ease,border-color .15s ease}
+.napw button.on{background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.45);color:#8b5cf6}
+html.dark .napw button{border-color:#333b43;color:#8f979e}
+html.dark .napw button.on{background:rgba(179,165,232,.18);border-color:rgba(179,165,232,.5);color:#b3a5e8}
 @media(max-width:1100px){.metrics.m4{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.metrics.m4{grid-template-columns:repeat(2,1fr)}}
 .dsecbar{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
@@ -1911,8 +1923,28 @@ html.dark{
   color-scheme:dark;
 }
 html.dark body{background:#121619}
-/* renk dalgası — yalnızca salon modunda basılır, tüm ekrana yayılır */
+/* ============ RENK DALGASI ============
+   v64'te yalnız koyu temada vardı. v66'da açık temaya da geldi — ama aynı
+   renklerle değil: koyudaki mor/turuncu/mavi doygun tonlar krem zeminde
+   çamur gibi duruyor. Açık temanın zemini sıcak krem (#f0e8da), o yüzden
+   dalga da sıcak tarafta kalıyor: terrakota, bal, adaçayı, tozlu mavi ve
+   leylak — düşük doygunluk, yüksek bulanıklık. Yüzeydeki kartlar yarı saydam
+   olduğu için renk kartın ARKASINDAN geçiyor, üstünden değil. */
 .mesh{display:none}
+body.gym .mesh{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(56% 30% at 8% 2%,rgba(196,138,92,.46),transparent 68%),
+    radial-gradient(54% 28% at 94% 0%,rgba(214,132,86,.42),transparent 68%),
+    radial-gradient(74% 32% at 46% 14%,rgba(150,168,196,.40),transparent 72%),
+    radial-gradient(46% 20% at 82% 22%,rgba(198,150,178,.30),transparent 74%),
+    radial-gradient(48% 20% at 14% 34%,rgba(140,176,158,.30),transparent 76%),
+    radial-gradient(60% 24% at 66% 52%,rgba(168,150,206,.22),transparent 78%),
+    radial-gradient(56% 22% at 18% 72%,rgba(206,158,110,.20),transparent 78%),
+    radial-gradient(60% 24% at 74% 92%,rgba(146,172,190,.22),transparent 78%);
+  filter:blur(34px) saturate(112%);
+  -webkit-mask-image:linear-gradient(#000 0%,#000 20%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.38) 100%);
+  mask-image:linear-gradient(#000 0%,#000 20%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.38) 100%)}
+body.gym .wrap{position:relative;z-index:1}
 html.dark .mesh{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
     radial-gradient(56% 30% at 8% 2%,rgba(120,86,224,.70),transparent 68%),
@@ -1995,6 +2027,85 @@ html.dark .dlayer .dsheet,html.dark .mbox{background:#1e2429}
   -webkit-tap-highlight-color:transparent}
 .thsel button.on{background:var(--ink);color:var(--card);box-shadow:var(--lift)}
 html.dark .thsel button.on{background:#bbf246;color:#10161a}
+
+/* ============================================================
+   v66 · YUZEY: OVAL KÖŞE + DERİNLİK
+   Kartların hepsi keskin köşeliydi ve salon modunda köşe yarıçapı sıfıra
+   iniyordu (tam genişlik şerit). Sonuç: içerik zeminden ayrılmıyor, ekran
+   tek düzlem gibi okunuyordu. Burada üç şey yapılıyor — köşeler büyüyor,
+   kart zeminden ayrılıyor (kenar boşluğu + saç teli kenar), ve gölge iki
+   katmanlı hale geliyor: yakın sert gölge (temas) + geniş yumuşak gölge
+   (yükseklik). Koyu temanın kendi kuralları daha yüksek özgüllükte olduğu
+   için orada hiçbir şey değişmiyor.
+   ============================================================ */
+.card{border-radius:20px;
+  box-shadow:0 1px 2px rgba(60,52,44,.07),0 12px 28px -14px rgba(60,52,44,.28)}
+.kpi > div{border-radius:18px;
+  box-shadow:0 1px 2px rgba(60,52,44,.07),0 10px 24px -14px rgba(60,52,44,.26)}
+.metrics{border-radius:0}
+.charts > .card{border-radius:20px}
+
+/* salon modu (telefon) — açık tema */
+body.gym .card{border-radius:20px;margin:10px 12px;border-left:0;border-right:0;
+  box-shadow:0 1px 2px rgba(60,52,44,.07),0 14px 32px -18px rgba(60,52,44,.34)}
+body.gym .scard,body.gym .gcard,body.gym .mhero{
+  margin:12px 14px 0;border-radius:22px;border:1px solid rgba(255,255,255,.7);
+  border-top:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);
+  background:rgba(252,249,243,.86);
+  -webkit-backdrop-filter:saturate(150%) blur(16px);backdrop-filter:saturate(150%) blur(16px);
+  box-shadow:0 1px 2px rgba(60,52,44,.08),0 16px 34px -20px rgba(60,52,44,.42);
+  overflow:hidden}
+body.gym .scard.dom{border-left:3px solid var(--dc,var(--ink3))}
+body.gym .mhero{border-left:3px solid var(--rec)}
+body.gym .mhero.tr{border-left-color:var(--trn)}
+body.gym .gstats{margin:12px 14px 0;border-radius:22px;overflow:hidden;
+  box-shadow:0 1px 2px rgba(60,52,44,.08),0 16px 34px -20px rgba(60,52,44,.42)}
+body.gym .cwrap{border-radius:20px}
+body.gym .ggrid > .gfield{border-radius:16px}
+
+/* ============ v66 · YENİ BİLEŞENLER ============ */
+/* kart altındaki açıklama satırı — grafiğin ne söylediğini yazan yer */
+.sexp{margin-top:9px;font-size:11px;line-height:1.5;font-weight:600;color:var(--ink3,#b3a488)}
+
+/* gün tipi devamlılığı */
+.tadh{display:flex;flex-direction:column;gap:2px}
+.tadhr{align-items:flex-start}
+.tadhr .sname{display:flex;flex-direction:column;gap:2px}
+.tabar{display:block;height:5px;border-radius:3px;background:var(--inset,#efe7d6);
+  overflow:hidden;margin-top:5px;max-width:190px}
+.tabar i{display:block;height:100%;border-radius:3px}
+.tadhr .sval{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
+.tadhr .sval b{font-family:'Fraunces';font-size:15px;font-weight:600}
+.tadhr .sval i{font-size:10px;font-style:normal;font-weight:700;color:var(--ink3,#b3a488)}
+
+/* son 7 gün — gün gün liste */
+.a7{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.a7r{display:flex;align-items:center;gap:10px}
+.a7r.now .a7d{color:var(--ink,#3a342c)}
+.a7d{flex:0 0 52px;font-size:10.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;
+  color:var(--ink3,#b3a488)}
+.a7d i{font-style:normal;font-weight:600;margin-left:4px;opacity:.75}
+.a7b{flex:1;min-width:0;position:relative;height:9px;border-radius:5px;
+  background:var(--inset,#efe7d6);overflow:hidden}
+.a7b span{display:block;height:100%;border-radius:5px}
+.a7b u{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--ink3,#b3a488);
+  opacity:.55;text-decoration:none}
+.a7v{flex:0 0 78px;text-align:right;font-size:12px;font-weight:700}
+.a7note{font-size:11px;line-height:1.5;font-weight:600;color:var(--ink3,#b3a488);margin-top:2px}
+
+/* dokunulabilir ortalama satırı */
+.a7tap{display:block;width:100%;text-align:left;background:transparent;border:0;padding:0;
+  font:inherit;color:inherit;cursor:pointer;border-radius:10px;
+  transition:opacity .15s ease,transform .15s ease}
+.a7tap:active{transform:scale(.985);opacity:.75}
+.advr.tap{display:block;width:100%;text-align:left;background:transparent;border:0;padding:0;
+  font:inherit;color:inherit;cursor:pointer}
+.advr.tap:active{opacity:.7}
+.a7chev{font-size:12px;font-weight:700;color:var(--ink3,#c0b193);margin-left:1px}
+html.dark .tabar{background:#2a3138}
+html.dark .a7b{background:#2a3138}
+html.dark .a7b u{background:#8f979e}
+html.dark .sexp,html.dark .a7note{color:#8f979e}
 
 </style>
 </head>
@@ -2171,6 +2282,47 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-08',
+  t:'Seyahat, ölçümler, güç endeksi (v66)',
+  y:['SEYAHAT: seyahat işaretli günde tartı ve mezura artık beklenmiyor. Önceden '+
+     'gün puanı "tartılmadın" diye kırıyordu — yanında tartı yokken kaydedilemeyecek '+
+     'bir şey için ceza kesmek anlamsızdı. Kilo alanı açık kalıyor, tartı bulursan girersin.',
+     'ÇEVRE ÖLÇÜLERİ KAPALI GELİYOR: mezura tekniği oturmadan alınan sayı gürültüden '+
+     'ibaret; aynı gün iki ölçüm 2 cm oynayabiliyor. Güvenilmeyen sayının hedef gibi '+
+     'durması, puan kırması ve "SIRA GELDİ" diye hatırlatması yanlıştı. Bel, omuz, kol, '+
+     'göğüs hiçbir ekranda çıkmıyor. GEÇMİŞ VERİ SİLİNMEDİ — Ayarlar → Çevre ölçüleri '+
+     'açılınca hepsi grafikleriyle geri geliyor.',
+     'GÜNDÜZ UYKUSU: kutunun altına "antrenmandan ÖNCE / SONRA" etiketi geldi. İki ayrı '+
+     'kutu yerine tek kutu + etiket, çünkü ikinci kutu her gün boş kalırdı. Uyku-performans '+
+     'hesabı artık "seansa giden uyku = gece + varsa antrenman öncesi gündüz" üzerinden '+
+     'çalışıyor; eskiden gündüz uykusunun hep antrenmandan SONRA olduğu varsayılıyordu.',
+     'HATA — HAREKET İLERLEMESİ: yüzde (son seans − ilk seans) / ilk seans idi. Üç sorun: '+
+     'tek kötü son seans sekiz haftalık yükselişi eksiye çeviriyordu; ilk seans keşif '+
+     'seansı olduğu için taban yanlıştı; ve deload haftasında set sayısı yarıya inince '+
+     'yorgunluk setleri düştüğü için seans ortalaması YÜKSELİYOR, yani deload sahte '+
+     'ilerleme üretiyordu. Yeni hesap: ilk 2 seansın ortalaması taban, son 2 seansın '+
+     'ortalaması güncel, deload seansları hariç, 3 seanstan az olanda yüzde yok. '+
+     'Ayrıca satırdaki "1RM ~x" etiketi yanındaki kg × tekrar ile uyuşmuyordu (biri en iyi '+
+     'set, diğeri ortalama) — "endeks" olarak düzeltildi.',
+     'HAFTALIK HACİM → HAFTALIK YÜKLENME: kg×tekrar toplamı ilerlemeyi ölçmüyordu. Bacak '+
+     'günü olan hafta otomatik yüksek çıkıyor, 5 antrenmanlık hafta 3\'lükten yüksek '+
+     'çıkıyor, deload çakılıyor — grafiğin inip çıkması antrenmanı değil, o hafta hangi '+
+     'günlerin denk geldiğini gösteriyordu. Artık sütun = o haftanın çalışma seti, '+
+     'çizgi = GÜÇ ENDEKSİ (her hareketin o haftaki tahmini 1RM\'i kendi başlangıcına '+
+     'oranlanıp ortalanıyor; 100 = başladığın yer). Kesimde set düşse bile endeks 100 '+
+     'civarındaysa kas korunuyor demektir.',
+     'TÜR DAĞILIMI → GÜN TİPİ DEVAMLILIĞI: hacim payı bir sonuç değil aritmetikti — bacak '+
+     'hareketleri ağır olduğu için payı büyük çıkar ve her hafta aynı beş günü yapsan da '+
+     'o pasta hiç değişmez. Artık planlanan/yapılan gün sayısı, ortalama seans kalitesi ve '+
+     'son yapılma tarihi görünüyor, en çok kaçırılan gün en üstte.',
+     'SON 7 GÜN: satırlar dokunulabilir. Ortalama tek başına yanıltıcı — her gün 2.040 kcal '+
+     'yiyen hafta ile üç gün 1.500, iki gün 2.900 yiyen hafta aynı ortalamayı verir. '+
+     'Dokununca yedi günün tek tek değeri, hedef çizgisi, kaç günün tuttuğu ve en '+
+     'düşük/en yüksek gün açılıyor.',
+     'GÖRÜNÜM: renk dalgası açık temaya da geldi — koyudaki doygun mor/turuncu yerine '+
+     'krem zemine uyan terrakota, bal, adaçayı, tozlu mavi ve leylak. Bütün kartlar oval '+
+     'köşe, ince kenar ve iki katmanlı gölge kazandı (yakın temas gölgesi + geniş yükseklik '+
+     'gölgesi); salon modunda kartlar artık tam genişlik şerit değil, zeminden ayrık.']},
  {d:'2026-09-04',
   t:'Süre rozeti artık tek dokunuşta silmiyor (v65)',
   y:['HATA: v59’da rozete tek dokunuş, o günün süresini onaysız ve geri alınamaz '+
@@ -2880,6 +3032,7 @@ function enName(name){var m=EXMETA[name];return m?m[1]:name;}
 
 /* ============ DURUM ============ */
 var S={ startDate:null, weeks:20, restDays:[3,0], restWeeks:{}, plan:{}, _pt:0, _st:0, deloadEvery:7, autoTargets:false,
+  meas:false,
   sync:{token:'',gist:'',auto:true,last:0,repo:''},
   base:{weight:84.6,waist:null}, goal:{weight:75},
   targets:{steps:10000,kcal:2150,protein:175,carbs:215,fat:65},
@@ -2900,7 +3053,7 @@ function n(v){if(v===''||v==null)return null;var x=parseFloat(String(v).replace(
 function fx(v,d){return v==null?'—':(+v).toFixed(d==null?1:d);}
 function ti(v){return v==null?'—':Math.round(v).toLocaleString('tr-TR');}
 function clamp(x){return Math.max(0,Math.min(100,x));}
-function blank(){return{w:null,b:null,sh:null,arm:null,ch:null,sl:null,nap:null,st:null,kcal:null,p:null,c:null,f:null,dt:null,ex:{},sup:{},note:''};}
+function blank(){return{w:null,b:null,sh:null,arm:null,ch:null,sl:null,nap:null,napp:null,st:null,kcal:null,p:null,c:null,f:null,dt:null,ex:{},sup:{},note:''};}
 /* ============ UYKU: GECE + GÜNDÜZ (v60) ============
    Tek alan vardı ve toplam yazılıyordu. Sorun şu: 6 saat uyuyup antrenmana
    gidip dönüşte 2 saat daha uyumak ile 8 saat gece uyumak aynı satıra
@@ -2918,6 +3071,41 @@ function slTot(r){
 /* 'slt' gerçek bir alan değil, gece+gündüz toplamının sanal anahtarı.
    Grafik, ortalama ve trend hesapları bunu okur; giriş kutuları sl ve nap'i. */
 function mGet(r,k){return k==='slt'?slTot(r):(r?r[k]:null);}
+/* ============ ÇEVRE ÖLÇÜLERİ AÇIK MI (v66) ============
+   Bel / omuz / kol / göğüs mezurayla ölçülüyor ve ölçüm tekniği oturmadığında
+   sayı gürültüden ibaret kalıyor: aynı gün iki ölçüm 2 cm oynayabiliyor.
+   Güvenilmeyen bir sayının uygulamada hedef gibi durması, gün puanını
+   düşürmesi ve "SIRA GELDİ" diye hatırlatma çıkarması yanlış — ölçmemek değil,
+   ölçtüğüne inanmadan karar vermek zarar veriyor.
+   Bu yüzden çevre ölçüleri komple KAPALI geliyor. Geçmiş kayıtlar silinmiyor;
+   Ayarlar → Çevre ölçüleri açılırsa hepsi olduğu gibi geri geliyor. */
+function measOn(){return S.meas===true;}
+/* ============ SEYAHAT GÜNÜ (v66) ============
+   Seyahatte tartı ve mezura yanında olmuyor. Uygulamanın o günler için
+   "tartılmadın" diye puan kırması, kaydedilemeyecek bir şey için ceza kesmek
+   demekti. Seyahat işaretli günde kilo ve çevre ölçüsü beklenmez. */
+function travDay(d){return effDt(d||cur)==='trav';}
+/* Gündüz uykusu kutusunun altındaki önce/sonra seçici (v66).
+   İki ayrı kutu yerine tek kutu + zaman etiketi: gün içinde iki kez uyuduğun
+   gün nadir, ama uykunun antrenmandan önce mi sonra mı olduğu her seferinde
+   önemli. İki kutunun biri hep boş kalır ve boş kutu ekranı kirletir; etiket
+   ise aynı bilgiyi tek dokunuşla verir. İşaretlenmemiş eski kayıtlar
+   "bilinmiyor" sayılır ve uyku-performans hesabına sokulmaz. */
+function napWhen(rr){
+  if(rr.nap==null)return '';
+  var v=rr.napp||'';
+  return '<div class="napw">'+
+    [['o','Antr. ÖNCE'],['s','Antr. SONRA']].map(function(x){
+      return '<button data-a="napp" data-k="'+x[0]+'"'+(v===x[0]?' class="on"':'')+'>'+x[1]+'</button>';
+    }).join('')+'</div>';
+}
+/* antrenmana giden uyku: gece + (varsa) antrenmandan ÖNCEKİ gündüz uykusu */
+function preSleep(r){
+  if(!r)return null;
+  var pre=(r.napp==='o')?(r.nap||0):0;
+  if(r.sl==null&&!pre)return null;
+  return (r.sl||0)+pre;
+}
 function D(d){return S.days[d]||blank();}
 function keys(){return Object.keys(S.days).sort();}
 function dtOf(d){var r=S.days[d];return (r&&r.dt)||null;}
@@ -3296,24 +3484,32 @@ function dayScore(d){
       s:ti(r.st)+' / '+ti(T.steps)+(sf>=.97?' · tamam':' · '+ti(T.steps-r.st)+' eksik')});
   }
 
-  /* 5 · tartı */
-  it.push({k:'weigh',l:'Tartı',max:SCW.weigh,p:r.w!=null?SCW.weigh:0,st:r.w!=null?2:0,
-    s:r.w!=null?fx(r.w)+' kg girildi':'tartılmadın'});
+  /* 5 · tartı — seyahatte tartı yanında olmuyor, beklenmez (v66) */
+  if(r.w!=null)
+    it.push({k:'weigh',l:'Tartı',max:SCW.weigh,p:SCW.weigh,st:2,s:fx(r.w)+' kg girildi'});
+  else if(trav)
+    it.push({k:'weigh',l:'Tartı',max:SCW.weigh,p:SCW.weigh,st:3,s:'seyahat günü — tartı beklenmiyor'});
+  else
+    it.push({k:'weigh',l:'Tartı',max:SCW.weigh,p:0,st:0,s:'tartılmadın'});
 
   /* 6 · kreatin */
   var kr=!!(r.sup&&r.sup.kreatin);
   it.push({k:'krea',l:'Kreatin',max:SCW.krea,p:kr?SCW.krea:0,st:kr?2:0,
     s:kr?'5 g alındı':'alınmadı'});
 
-  /* 7 · çevre ölçüsü — sırası gelmediyse ceza yok */
-  var mDone=(r.sh!=null||r.arm!=null||r.ch!=null),mq=measDueOn(d);
-  if(mDone)it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:SCW.meas,st:2,
-    s:[r.sh!=null?'omuz '+fx(r.sh):null,r.arm!=null?'kol '+fx(r.arm):null,r.ch!=null?'göğüs '+fx(r.ch):null]
-      .filter(Boolean).join(' · ')});
-  else if(!mq.due)it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:SCW.meas,st:3,
-    s:'sırası gelmedi'+(mq.last?' · son ölçüm '+fdate(mq.last):'')});
-  else it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:0,st:0,
-    s:'sırası geldi ama ölçülmedi'+(mq.days!=null?' · '+mq.days+' gündür':'')});
+  /* 7 · çevre ölçüsü — kapalıysa puan tablosuna hiç girmez (v66) */
+  if(measOn()){
+    var mDone=(r.sh!=null||r.arm!=null||r.ch!=null),mq=measDueOn(d);
+    if(mDone)it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:SCW.meas,st:2,
+      s:[r.sh!=null?'omuz '+fx(r.sh):null,r.arm!=null?'kol '+fx(r.arm):null,r.ch!=null?'göğüs '+fx(r.ch):null]
+        .filter(Boolean).join(' · ')});
+    else if(trav)it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:SCW.meas,st:3,
+      s:'seyahat günü — mezura beklenmiyor'});
+    else if(!mq.due)it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:SCW.meas,st:3,
+      s:'sırası gelmedi'+(mq.last?' · son ölçüm '+fdate(mq.last):'')});
+    else it.push({k:'meas',l:'Çevre ölçüsü',max:SCW.meas,p:0,st:0,
+      s:'sırası geldi ama ölçülmedi'+(mq.days!=null?' · '+mq.days+' gündür':'')});
+  }
 
   var tot=0,got=0;
   it.forEach(function(x){tot+=x.max;got+=x.p;});
@@ -3634,23 +3830,29 @@ function isPR(name,d){
 }
 
 /* ============ UYKU ↔ PERFORMANS ============ */
-/* Burada bilerek GECE uykusu kullanılıyor, toplam değil. Antrenman gündüz
-   uykusundan ÖNCE yapılıyor: seansa giden uyku gecenin uykusudur. Toplamla
-   bakmak "8 saat uyumuş ama seans kötü geçmiş" gibi yanlış bir eşleşme
-   üretiyordu — oysa o seans 6 saatle yapılmıştı. */
+/* v66 — Eskiden burada SADECE gece uykusu vardı ve gerekçesi "gündüz uykusu
+   antrenmandan sonra" varsayımıydı. Bu varsayım her zaman doğru değil: kimi
+   gün antrenmandan önce uyunuyor, o zaman o uyku seansa GİRİYOR ve hesaba
+   katılması gerekiyor. Artık ölçü şu:
+     seansa giden uyku = gece uykusu + (o gün antrenmandan ÖNCE uyunduysa) gündüz
+   Gündüz uykusu işaretlenmemişse (eski kayıtlar) yalnız gece sayılır — tahmin
+   üretmiyoruz, sadece bilineni kullanıyoruz. */
 function sleepInsight(){
-  var lo=[],hi=[];
+  var lo=[],hi=[],nPre=0;
   keys().forEach(function(d){
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
     var e=sessionEval(d,dt);if(!e||e.empty)return;
-    var sl=D(addD(d,-1)).sl;if(sl==null)sl=D(d).sl;
+    var r=D(d),sl=r.sl;
+    if(sl==null)sl=D(addD(d,-1)).sl;
     if(sl==null)return;
-    (sl<7?lo:hi).push(e.q);
+    var pre=(r.napp==='o'&&r.nap)?r.nap:0;
+    if(pre)nPre++;
+    ((sl+pre)<7?lo:hi).push(e.q);
   });
   if(lo.length<3||hi.length<3)return null;
   function av(a){return a.reduce(function(x,y){return x+y;},0)/a.length;}
   var a=av(lo),b=av(hi);
-  return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,diff:(b-a)*100};
+  return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,diff:(b-a)*100,pre:nPre};
 }
 /* Antrenman günlerinde gece uykusu düşükken toplamın gündüz uykusuyla
    tamamlandığı günler: tek başına "uyku tuttu" diye okunmaması gereken günler. */
@@ -3995,23 +4197,25 @@ function adherence(){
   var gymPlan=0,gymDone=0;
   ks.forEach(function(d){var t=PROGRAM[dtOf(d)];if(t&&t.ex.length){gymPlan++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gymDone++;}});
   var rows=[
-    {l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
-    {l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
-    {l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
-    {l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
-    {l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
-    {l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
-    {l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
+    {k:'st',l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
+    {k:'p',l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
+    {k:'c',l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
+    {k:'f',l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
+    {k:'kcal',l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
+    {k:'trn',l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
+    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
   ];
+  /* v66 — satır artık düğme: ortalamanın arkasındaki yedi gün açılıyor. */
   var body='<div style="padding:16px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:13px 18px">'+rows.map(function(r){
     var p=r.v==null?0:clamp(r.v/r.t*100);
     var col=r.v==null?''+THC.c39+'':(r.inv?(r.v<=r.t*1.08?r.c:C.red):(p>=95?r.c:p>=75?C.amber:C.orange));
     var txt=r.v==null?'—':(r.raw?r.v+' / '+r.t:ti(r.v)+(r.u?' '+r.u:'')+' · hedef '+ti(r.t));
-    return '<div><div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:700">'+
-      '<span>'+r.l+'</span><span style="color:'+THC.c21+';font-weight:600">'+txt+'</span></div>'+
-      '<div class="mbar" style="height:7px;margin-top:5px"><i style="width:'+p.toFixed(0)+'%;background:'+col+'"></i></div></div>';
+    return '<button class="a7tap" data-a="dopen" data-kind="avg7" data-key="'+r.k+'">'+
+      '<div style="display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;font-weight:700">'+
+      '<span>'+r.l+' <span class="a7chev">›</span></span><span style="color:'+THC.c21+';font-weight:600">'+txt+'</span></div>'+
+      '<div class="mbar" style="height:7px;margin-top:5px"><i style="width:'+p.toFixed(0)+'%;background:'+col+'"></i></div></button>';
   }).join('')+'</div>';
-  return card('Son 7 Gün Ortalaması',ks.length+' gün',body);
+  return card('Son 7 Gün Ortalaması',ks.length+' gün · satıra dokun',body);
 }
 function card(title,meta,body,cls,body2){
   if(body==null&&body2!=null){body=body2;}
@@ -4050,6 +4254,7 @@ function dayCard(){
         '<span class="slplus">+</span>'+
         '<input class="inp r sm" data-f="nap" inputmode="decimal" value="'+(nd==null?'':nd)+'" placeholder="gündüz">'+
       '</div>'+
+      napWhen(rr)+
       '<div class="mhint" style="color:'+(tt==null?''+THC.c21+'':C.violet)+'">'+
         (tt==null?'—':'toplam '+fx(tt,1).replace(/\.0$/,'')+' saat'+(nd?' ('+fx(sn||0,1).replace(/\.0$/,'')+' gece)':''))+
       '</div></div>';
@@ -4076,10 +4281,13 @@ function dayCard(){
       '</div>'+
     '</div>'+
 
-    dsec('Her gün','kilo ve bel her sabah, aç karnına')+
-    '<div class="metrics m4">'+
+    dsec('Her gün',travDay(cur)
+      ?'seyahat günü — tartı beklenmiyor, kalori ve adım yeter'
+      :(measOn()?'kilo ve bel her sabah, aç karnına':'kilo her sabah, aç karnına'))+
+    (travDay(cur)?'<div class="duenote">Seyahat işaretli: bu gün tartı ve mezura beklenmiyor, gün puanı da eksik saymıyor. Kilo alanı yine de açık — tartı bulursan gir.</div>':'')+
+    '<div class="metrics '+(measOn()?'m4':'m3')+'">'+
       metric(0,'w','Kilo','kg',null,C.blue)+
-      metric(0,'b','Bel','cm',null,C.teal)+
+      (measOn()?metric(0,'b','Bel','cm',null,C.teal):'')+
       sleepMetric(r)+
       metric(0,'st','Adım','',T.steps,C.orange)+
     '</div>'+
@@ -4102,6 +4310,7 @@ function dayCard(){
     '</div>'+
 
     (function(){
+      if(!measOn())return '';
       var md=measDue();
       var hd=dsec('Çevre ölçüleri',
         md.due?'<span class="duebadge">SIRA GELDİ</span>'
@@ -4467,9 +4676,13 @@ function scoreCalendar(){
 }
 function scoreWeights(){
   var L=[['Antrenman',SCW.trn],['Kalori',SCW.kcal],['Protein',SCW.prot],['Adım',SCW.step],
-         ['Tartı',SCW.weigh],['Kreatin',SCW.krea],['Çevre ölçüsü',SCW.meas]];
+         ['Tartı',SCW.weigh],['Kreatin',SCW.krea]];
+  if(measOn())L.push(['Çevre ölçüsü',SCW.meas]);
   return 'Puan dağılımı: '+L.map(function(x){return x[0]+' '+x[1];}).join(' · ')+
-    '. Dinlenme ve seyahat günlerinde antrenman puanı otomatik verilir; çevre ölçüsünün sırası gelmediyse ceza yazılmaz.';
+    '. Dinlenme ve seyahat günlerinde antrenman puanı otomatik verilir; '+
+    'seyahat gününde tartı da beklenmez. '+
+    (measOn()?'Çevre ölçüsünün sırası gelmediyse ceza yazılmaz.'
+             :'Çevre ölçüleri kapalı, puana hiç girmiyor.');
 }
 /* telefon: satır = hafta, sütun = gün */
 function scoreCalendarM(){
@@ -4970,6 +5183,7 @@ function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,photoRepo:(S.sync&&S.sync.repo)||'',
     base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
+    meas:!!S.meas,
     phDel:_phDel,phPose:_phPose};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
@@ -5154,7 +5368,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v65 · 4 Eyl 2026';
+var APPVER='v66 · 8 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5420,9 +5634,11 @@ function gymDay(){
       (hint?'<div class="ghintv" style="color:'+(v==null?''+THC.c23+'':c2)+'">'+hint+'</div>':'')+'</div>';
   }
   /* Gece ve gündüz uykusu yan yana iki kutu. Gündüz kutusu boş kalabilir —
-     çoğu gün boş kalacak, o yüzden daha dar ve soluk. */
+     çoğu gün boş kalacak, o yüzden daha dar ve soluk. Gündüz dolduğunda
+     altında önce/sonra etiketi çıkar (v66). */
   function slFld(rr){
     var sn=rr.sl,nd=rr.nap,tt=slTot(rr);
+    var wtxt=nd==null?'':(rr.napp==='o'?' · antrenmandan önce':(rr.napp==='s'?' · antrenmandan sonra':' · ne zaman?'));
     return '<div class="gfield'+(tt!=null?' on':'')+'" style="--fc:'+C.violet+'">'+
       '<label>Uyku<span>saat</span></label>'+
       '<div class="slpair">'+
@@ -5430,8 +5646,9 @@ function gymDay(){
         '<span class="slplus">+</span>'+
         '<input class="ginp sm" data-f="nap" inputmode="decimal" placeholder="gündüz" value="'+(nd==null?'':nd)+'">'+
       '</div>'+
+      napWhen(rr)+
       '<div class="ghintv" style="color:'+(tt==null?''+THC.c23+'':C.violet)+'">'+
-        (tt==null?'—':(nd?fx(sn||0,1).replace(/\.0$/,'')+' gece + '+fx(nd,1).replace(/\.0$/,'')+' gündüz = '+fx(tt,1).replace(/\.0$/,'')+' sa'
+        (tt==null?'—':(nd?fx(sn||0,1).replace(/\.0$/,'')+' gece + '+fx(nd,1).replace(/\.0$/,'')+' gündüz = '+fx(tt,1).replace(/\.0$/,'')+' sa'+wtxt
                       :'toplam '+fx(tt,1).replace(/\.0$/,'')+' saat'))+
       '</div></div>';
   }
@@ -5439,10 +5656,14 @@ function gymDay(){
   var kr=supStreak('kreatin');
   var rt=(r.sh!=null&&r.b)?r.sh/r.b:null;
   var md=measDue();
-  return heroM()+'<div class="gsec">Her gün</div>'+
-    '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+fld('b','Bel','cm',null,C.teal)+
+  var trv=travDay(cur);
+  return heroM()+'<div class="gsec">Her gün'+
+      (trv?' <span style="text-transform:none;letter-spacing:0;color:'+THC.c28+'">· seyahat — tartı beklenmiyor</span>':'')+'</div>'+
+    (trv?'<div class="gduenote">Seyahat işaretli gün: tartı ve mezura beklenmiyor, gün puanı eksik saymıyor. Kalori, protein ve adım normal işliyor.</div>':'')+
+    '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+
+      (measOn()?fld('b','Bel','cm',null,C.teal):'')+
       slFld(r)+'</div>'+
-    (rt!=null?'<div style="padding:10px 14px 0"><div class="gratio">'+
+    (measOn()&&rt!=null?'<div style="padding:10px 14px 0"><div class="gratio">'+
       '<div><div class="gmlbl">Omuz / bel oranı</div>'+
         '<div class="gratv" style="color:'+C.green+'">'+fx(rt,2)+'</div></div>'+
       '<div class="gratn">'+ratioNote(rt)+'</div></div></div>':'')+
@@ -5459,15 +5680,17 @@ function gymDay(){
       '</div>'+
       '<div class="gmnote">Lifesum ile %3-8 fark normaldir. Kalori alanına uygulamanın sayısını yaz, buradaki hesap kontrol içindir.</div>'+
     '</div></div>'+
-    '<div class="gsec">Çevre ölçüleri '+
-      (md.due?'<span class="gdue">SIRA GELDİ</span>'
-             :'<span style="text-transform:none;letter-spacing:0;color:'+THC.c28+'">· '+md.left+' gün sonra</span>')+'</div>'+
-    (md.due
-      ?'<div class="gduebanner">'+(md.last?'Son ölçüm <b>'+fdate(md.last)+'</b> — üzerinden '+md.days+' gün geçti. ':'Henüz çevre ölçüsü girmedin. ')+
-        'Omuz, kol ve göğsü ölç, aşağıya yaz.</div>'
-      :'<div class="gduenote">2 haftada bir ölçülür'+(md.last?' · son ölçüm '+fdate(md.last):'')+'. Bugün girmen gerekmiyor, günlük sayıma da katılmaz.</div>')+
-    '<div class="ggrid">'+fld('sh','Omuz','cm',null,C.green)+fld('arm','Kol','cm',null,C.orange)+
-      fld('ch','Göğüs','cm',null,C.pink)+'</div>'+
+    (measOn()
+      ?'<div class="gsec">Çevre ölçüleri '+
+        (md.due?'<span class="gdue">SIRA GELDİ</span>'
+               :'<span style="text-transform:none;letter-spacing:0;color:'+THC.c28+'">· '+(md.off?'beklenmiyor':md.left+' gün sonra')+'</span>')+'</div>'+
+      (md.due
+        ?'<div class="gduebanner">'+(md.last?'Son ölçüm <b>'+fdate(md.last)+'</b> — üzerinden '+md.days+' gün geçti. ':'Henüz çevre ölçüsü girmedin. ')+
+          'Omuz, kol ve göğsü ölç, aşağıya yaz.</div>'
+        :'<div class="gduenote">2 haftada bir ölçülür'+(md.last?' · son ölçüm '+fdate(md.last):'')+'. Bugün girmen gerekmiyor, günlük sayıma da katılmaz.</div>')+
+      '<div class="ggrid">'+fld('sh','Omuz','cm',null,C.green)+fld('arm','Kol','cm',null,C.orange)+
+        fld('ch','Göğüs','cm',null,C.pink)+'</div>'
+      :'')+
     '<div class="gsec">Takviye'+(kr.n?' <span style="color:'+C.violet+'">· seri '+kr.n+' gün</span>':'')+'</div>'+
     '<div class="gsups">'+SUPS.map(function(x){
       var on=!!(r.sup&&r.sup[x[0]]);
@@ -5528,12 +5751,121 @@ function volByType(){
   });
   return {vol:out,cnt:cnt};
 }
+/* ============ HAREKET İLERLEMESİ — ÖLÇÜ (v66) ============
+   ESKİ HESAP: gain = (son seans − ilk seans) / ilk seans. İki noktaya bakıyordu
+   ve üç ayrı yerden yanlış çıkıyordu:
+     1) Tek kötü son seans (uykusuz gün, yorgun gün) bütün ilerlemeyi eksiye
+        çeviriyordu. Sekiz seanslık yükseliş, dokuzuncudaki bir düşüşle silinir.
+     2) İlk seans "keşif" seansıdır — kiloyu bilmediğin için ya çok hafif ya çok
+        ağır girersin. Yanlış bir tabana bölünce yüzde şişiyor ya da eziliyor.
+     3) DELOAD haftası: set sayısı yarıya iner. Seansın değeri setlerin Epley
+        ORTALAMASI olduğu için, yorgunluk setleri düşünce ortalama YÜKSELİYOR.
+        Yani deload haftası sahte ilerleme üretiyordu.
+   YENİ HESAP: taban = ilk 2 (deload dışı) seansın ortalaması, güncel = son 2
+   (deload dışı) seansın ortalaması. En az 3 seans yoksa yüzde yazılmaz — iki
+   noktadan trend çıkarmak zaten uydurma. */
+function exGain(hh){
+  var f=(hh||[]).filter(function(x){return x.e1>0&&!isDeload(x.d);});
+  if(f.length<3)return null;
+  function av(a){return a.reduce(function(x,y){return x+y.e1;},0)/a.length;}
+  var base=av(f.slice(0,2)),now=av(f.slice(-2));
+  if(!(base>0))return null;
+  return (now-base)/base*100;
+}
+/* ============ HAFTALIK YÜKLENME (v66) ============
+   "Haftalık hacim" (kg×tekrar toplamı) tek başına ne söylüyordu? Neredeyse
+   hiçbir şey: bacak günü olan hafta otomatik yüksek çıkıyor (leg press 100 kg,
+   yan kaldırış 12 kg), 5 antrenmanlık hafta 3 antrenmanlıktan yüksek çıkıyor,
+   deload haftası çakılıyor. Yani grafiğin inip çıkması antrenmanın iyi ya da
+   kötü olduğunu değil, o hafta hangi günlerin denk geldiğini gösteriyordu.
+   Kesimde asıl soru başka: kalori açığındayken GÜCÜ koruyor muyum?
+   GÜÇ ENDEKSİ bunu ölçer — her hareketin o haftaki tahmini 1RM'i, kendi
+   başlangıç değerine oranlanır ve ortalanır. 100 = başladığın yerdesin,
+   104 = %4 daha güçlüsün. Hangi gün denk geldiğinden, kaç antrenman yaptığından
+   ve hareketin ağır mı hafif mi olduğundan bağımsız.
+   Yanına iki dürüst sayı daha konuyor: o hafta kaç seans, kaç çalışma seti. */
+function exBaselines(){
+  var out={},exDay={};
+  ORDER.forEach(function(dt){
+    (PROGRAM[dt]?PROGRAM[dt].ex:[]).forEach(function(x){(exDay[x.n]=exDay[x.n]||[]).push(dt);});
+  });
+  Object.keys(exDay).forEach(function(nm){
+    exDay[nm].forEach(function(dt){
+      var hh=exSessionsData(nm,dt).filter(function(z){return z.e1>0&&!isDeload(z.d);});
+      if(hh.length<2)return;
+      var b=(hh[0].e1+hh[1].e1)/2;
+      if(b>0)out[nm+'|'+dt]={base:b,h:exSessionsData(nm,dt)};
+    });
+  });
+  return out;
+}
+function weekLoad(){
+  var m={};
+  function slot(w){return m[w]=m[w]||{wk:w,total:0,reps:0,sets:0,sess:0,by:{},bys:{},idx:null,_r:[]};}
+  keys().forEach(function(d){
+    if(d>today())return;
+    var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
+    var e=sessionEval(d,dt);if(!e||e.empty)return;
+    var w=weekIdx(d),o=slot(w);
+    o.sess++;o.total+=e.vol;o.by[dt]=(o.by[dt]||0)+e.vol;
+    dayEx(d,dt).forEach(function(x){
+      ((D(d).ex||{})[x.n]||[]).forEach(function(st){
+        if(st.kg!=null&&st.rep!=null){o.sets++;o.reps+=st.rep;o.bys[dt]=(o.bys[dt]||0)+1;}});
+    });
+  });
+  var bl=exBaselines();
+  Object.keys(bl).forEach(function(k){
+    var b=bl[k].base;
+    bl[k].h.forEach(function(z){
+      if(!(z.e1>0))return;
+      var w=weekIdx(z.d);if(!m[w])return;
+      m[w]._r.push(z.e1/b*100);
+    });
+  });
+  var rows=Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return a.wk-b.wk;});
+  rows.forEach(function(r){
+    if(r._r.length)r.idx=r._r.reduce(function(a,b){return a+b;},0)/r._r.length;
+    r.dl=isDeload(monday(addD(S.startDate,(r.wk-1)*7)));
+    delete r._r;
+  });
+  return rows;
+}
+/* ============ GÜN TİPİ DEVAMLILIĞI (v66) ============
+   "Antrenman türü dağılımı" hacim payını gösteriyordu: Bacak %31, Omuz/Kol %14.
+   Bu bir sonuç değil, aritmetik — bacak hareketleri ağır olduğu için payı büyük
+   çıkar, omuz hareketleri hafif olduğu için küçük. Her hafta aynı beş günü
+   yapsan bile bu dağılım hiç değişmez, yani hiçbir soruya cevap vermiyordu.
+   Asıl soru: HANGİ GÜNÜ KAÇIRIYORUM? Planlanan gün sayısı, yapılan gün sayısı,
+   ortalama seans kalitesi ve en son ne zaman yapıldığı. Bacak günü sürekli
+   atlanıyorsa burada görünür — hacim pastasında görünmez. */
+function typeAdherence(){
+  var m={};ORDER.forEach(function(k){m[k]={k:k,plan:0,done:0,q:[],last:null,vol:0};});
+  var st=S.startDate,en=today();
+  if(!st)return [];
+  var all={};
+  Object.keys(S.plan||{}).forEach(function(d){all[d]=1;});
+  keys().forEach(function(d){all[d]=1;});
+  Object.keys(all).sort().forEach(function(d){
+    if(d>en||d<st)return;
+    var dt=effDt(d);if(ORDER.indexOf(dt)<0)return;
+    var o=m[dt];o.plan++;
+    var e=sessionEval(d,dt);
+    if(e&&!e.empty){o.done++;o.q.push(e.q);o.last=d;o.vol+=e.vol;}
+  });
+  return ORDER.map(function(k){
+    var o=m[k];
+    o.pct=o.plan?o.done/o.plan:null;
+    o.avgQ=o.q.length?o.q.reduce(function(a,b){return a+b;},0)/o.q.length:null;
+    o.skip=o.plan-o.done;
+    return o;
+  }).filter(function(o){return o.plan>0||o.done>0;})
+    .sort(function(a,b){return (b.skip-a.skip)||((a.pct==null?1:a.pct)-(b.pct==null?1:b.pct));});
+}
 function typeExercises(k){
   return PROGRAM[k].ex.map(function(e){
     var h=exSessionsData(e.n,k);
     var last=h.length?h[h.length-1]:null,first=h.length?h[0]:null;
-    return {e:e,h:h,last:last,
-      gain:(last&&first&&first.e1>0)?((last.e1-first.e1)/first.e1*100):null};
+    return {e:e,h:h,last:last,first:first,gain:exGain(h)};
   }).filter(function(x){return x.h.length;});
 }
 
@@ -5556,6 +5888,61 @@ function volBars(rows,onTapKind){
     g+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="'+THC.c23+'" font-family="Karla">H'+r.wk+'</text>';
   });
   return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:104px;display:block">'+g+'</svg>';
+}
+/* Haftalık yüklenme grafiği: sütun = o haftanın çalışma seti (gün tipine göre
+   renkli), çizgi = güç endeksi. İkisi bilerek aynı karede: set sayısı düşerken
+   endeks korunuyorsa bu iyi haber (daha az işle aynı gücü tutuyorsun),
+   ikisi birden düşüyorsa gerçekten geriliyorsun. */
+function loadChart(rows){
+  if(!rows.length)return '<div class="sempty">Antrenman girdikçe burada birikecek</div>';
+  var W=340,H=118,PL=8,PR=8,TP=16,BT=22;
+  var n=rows.length,slot=(W-PL-PR)/n,bw=Math.max(6,Math.min(28,slot*0.58));
+  var mx=Math.max.apply(null,rows.map(function(r){return r.sets;}))*1.15||1;
+  var g='';
+  rows.forEach(function(r,i){
+    var x=PL+slot*i+slot/2-bw/2,base=H-BT,b=base;
+    var cid='L'+i+Math.random().toString(36).slice(2,5),top=base-(r.sets/mx)*(base-TP);
+    g+='<defs><clipPath id="'+cid+'"><rect x="'+x.toFixed(1)+'" y="'+top.toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(0,base-top).toFixed(1)+'" rx="'+Math.min(5,bw/2.4).toFixed(1)+'"/></clipPath></defs>';
+    ORDER.forEach(function(k){
+      var v=r.bys[k];if(!v)return;
+      var hh=(v/mx)*(base-TP);
+      g+='<rect x="'+x.toFixed(1)+'" y="'+(b-hh).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+hh.toFixed(1)+'" fill="'+PROGRAM[k].color+'" clip-path="url(#'+cid+')" opacity="'+(r.dl?'.42':'.9')+'"/>';
+      b-=hh;});
+    g+='<text x="'+(x+bw/2).toFixed(1)+'" y="'+(H-7)+'" text-anchor="middle" font-size="9.5" font-weight="700" fill="'+THC.c23+'" font-family="Karla">H'+r.wk+'</text>';
+  });
+  /* güç endeksi çizgisi */
+  var iw=rows.filter(function(r){return r.idx!=null;});
+  if(iw.length>1){
+    var vs=iw.map(function(r){return r.idx;});
+    var lo=Math.min.apply(null,vs.concat([100])),hi=Math.max.apply(null,vs.concat([100]));
+    var pad=Math.max(2,(hi-lo)*0.5);lo-=pad;hi+=pad;
+    function IY(v){return TP+(1-(v-lo)/(hi-lo))*((H-BT)-TP);}
+    function IX(r){return PL+slot*rows.indexOf(r)+slot/2;}
+    g+='<line x1="'+PL+'" y1="'+IY(100).toFixed(1)+'" x2="'+(W-PR)+'" y2="'+IY(100).toFixed(1)+
+       '" stroke="'+THC.c34+'" stroke-width="1" stroke-dasharray="4 4"/>';
+    var ln=iw.map(function(r,i){return (i?'L':'M')+IX(r).toFixed(1)+','+IY(r.idx).toFixed(1);}).join(' ');
+    g+='<path d="'+ln+'" fill="none" stroke="'+C.green+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>';
+    iw.forEach(function(r){g+='<circle cx="'+IX(r).toFixed(1)+'" cy="'+IY(r.idx).toFixed(1)+'" r="2.6" fill="'+C.green+'"/>';});
+    var lastI=iw[iw.length-1];
+    g+='<text x="'+(W-PR)+'" y="'+Math.max(11,IY(lastI.idx)-6).toFixed(1)+'" text-anchor="end" font-size="10" font-weight="700" fill="'+C.green+'" font-family="Karla">endeks '+lastI.idx.toFixed(0)+'</text>';
+  }
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:118px;display:block">'+g+'</svg>';
+}
+/* Gün tipi devamlılığı listesi */
+function typeAdhList(rows){
+  if(!rows.length)return '<div class="sempty">Program başlayınca burası dolacak</div>';
+  return '<div class="tadh">'+rows.map(function(o){
+    var col=o.pct==null?''+THC.c28+'':(o.pct>=.9?C.green:(o.pct>=.7?C.amber:C.orange));
+    var qt=o.avgQ==null?'—':'%'+Math.round(o.avgQ*100)+' ortalama kalite';
+    return '<button class="srow tadhr" data-a="dopen" data-kind="type" data-key="'+o.k+'">'+
+      '<span class="sdot" style="background:'+PROGRAM[o.k].color+'"></span>'+
+      '<span class="sname"><b>'+esc(PROGRAM[o.k].name)+'</b>'+
+        '<i>'+qt+(o.last?' · son '+fdate(o.last):' · hiç yapılmadı')+'</i>'+
+        '<span class="tabar"><i style="width:'+((o.pct||0)*100).toFixed(0)+'%;background:'+col+'"></i></span></span>'+
+      '<span class="sval" style="color:'+col+'"><b>'+o.done+'/'+o.plan+'</b>'+
+        (o.skip>0?'<i>'+o.skip+' kaçtı</i>':'<i>tam</i>')+'</span>'+
+      '<span class="schev">›</span></button>';
+  }).join('')+'</div>';
 }
 function typeDonut(tv){
   var tot=0;ORDER.forEach(function(k){tot+=tv.vol[k];});
@@ -5716,31 +6103,32 @@ function adherenceM(){
   var slA=ks.map(function(d){return slTot(D(d));}).filter(function(v){return v!=null;});
   var avgTot=slA.length?Math.round(slA.reduce(function(x,y){return x+y;},0)/slA.length*10)/10:null;
   var rows=[
-    {l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
-    {l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
-    {l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
-    {l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
-    {l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
-    {l:'Uyku',v:avgTot,t:7.5,c:C.cyan,u:'sa',dec:1},
-    {l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
-    {l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
+    {k:'kcal',l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
+    {k:'p',l:'Protein',v:avg('p'),t:T.protein,c:C.green,u:'g'},
+    {k:'c',l:'Karbonhidrat',v:avg('c'),t:T.carbs,c:C.amber,u:'g'},
+    {k:'f',l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
+    {k:'st',l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
+    {k:'slt',l:'Uyku',v:avgTot,t:7.5,c:C.cyan,u:'sa',dec:1},
+    {k:'trn',l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
+    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
   ];
   var hit=0,tot=0;
   rows.forEach(function(r){if(r.v==null)return;tot++;
     var ok=r.inv?(r.v<=r.t*1.08):(r.v/r.t>=.95);if(ok)hit++;});
   return '<div class="scard static">'+
     '<div class="shead"><div><div class="stitle">Son 7 Gün Ortalaması</div>'+
-      '<div class="ssub">'+ks.length+' gün kayıt'+(tot?' · '+hit+'/'+tot+' hedef tutmuş':'')+'</div></div></div>'+
+      '<div class="ssub">'+ks.length+' gün kayıt'+(tot?' · '+hit+'/'+tot+' hedef tutmuş':'')+' · satıra dokun</div></div></div>'+
     '<div class="advg">'+rows.map(function(r){
       var p=r.v==null?0:clamp(r.v/r.t*100);
       var col=r.v==null?''+THC.c39+'':(r.inv?(r.v<=r.t*1.08?r.c:C.red):(p>=95?r.c:p>=75?C.amber:C.orange));
       var txt=r.v==null?'—':(r.raw?r.v+' / '+r.t
         :(r.dec?fx(r.v,r.dec):ti(r.v))+(r.u?' '+r.u:''));
       var sub=r.raw?'':('hedef '+(r.dec?fx(r.t,r.dec):ti(r.t))+(r.u?' '+r.u:''));
-      return '<div class="advr"><div class="advt"><span>'+r.l+'</span>'+
+      return '<button class="advr tap" data-a="dopen" data-kind="avg7" data-key="'+r.k+'">'+
+        '<div class="advt"><span>'+r.l+' <span class="a7chev">›</span></span>'+
         '<b style="color:'+col+'">'+txt+'</b></div>'+
         '<div class="mbar"><i style="width:'+p.toFixed(0)+'%;background:'+col+'"></i></div>'+
-        (sub?'<div class="advs">'+sub+'</div>':'')+'</div>';}).join('')+'</div>'+
+        (sub?'<div class="advs">'+sub+'</div>':'')+'</button>';}).join('')+'</div>'+
   '</div>';
 }
 function gymSum(){
@@ -5751,10 +6139,9 @@ function gymSum(){
   var ds=chartDays();
   var wp=ds.filter(function(x){return D(x).w!=null;}).map(function(x){return{d:x,v:D(x).w};});
   var bp=ds.filter(function(x){return D(x).b!=null;}).map(function(x){return{d:x,v:D(x).b};});
-  var wk=volByWeek(),tv=volByType();
-  var totVol=0,totReps=0;wk.forEach(function(r){totVol+=r.total;totReps+=r.reps;});
+  var wk=weekLoad(),tadh=typeAdherence();
   var lastWk=wk.length?wk[wk.length-1]:null,prevWk=wk.length>1?wk[wk.length-2]:null;
-  var dv=(lastWk&&prevWk&&prevWk.total)?((lastWk.total-prevWk.total)/prevWk.total*100):null;
+  var di=(lastWk&&prevWk&&lastWk.idx!=null&&prevWk.idx!=null)?(lastWk.idx-prevWk.idx):null;
   var tn=trendNow(),tdA=tdeeAdvice();
   var remT=(tn!=null)?tn-S.goal.weight:(lw!=null?lw-S.goal.weight:null);
   var _mon=monday(today());
@@ -5780,13 +6167,13 @@ function gymSum(){
     var dts=exDay[nm]||[null];
     dts.forEach(function(dt){
       var hh=exSessionsData(nm,dt);if(hh.length<1)return;
-      var last=hh[hh.length-1],first=hh[0];
+      var last=hh[hh.length-1];
       exList.push({n:nm,dt:dt,
         lbl:(dts.length>1&&dt&&PROGRAM[dt])?nm+' · '+PROGRAM[dt].short:nm,
         h:hh,last:last,
-        /* tek seans varsa kazanç hesaplanamaz; 0 yazmak "ilerlemedi" gibi
-           okunuyordu, artık boş geçiyor */
-        gain:(hh.length>1&&first.e1>0)?((last.e1-first.e1)/first.e1*100):null});
+        /* v66: iki uç nokta yerine ilk 2 / son 2 seans ortalaması, deload
+           seansları dışarıda. Tek kötü seans ilerlemeyi silmiyor. */
+        gain:exGain(hh)});
     });
   });
   exList.sort(function(a,b){
@@ -5805,25 +6192,32 @@ function gymSum(){
       :(dl?'<div class="dlnote">Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)</div>':''))+
     (prToday.length?'<div class="prbanner">🏅 Bugün '+prToday.length+' rekor: '+
       prToday.map(function(x){return esc(x.n)+' '+x.kg+'×'+x.rep;}).join(' · ')+'</div>':'')+
-    (sli?'<div class="sleepnote">Uyku etkisi: <b>gece</b> uykun 7 saatin altındayken seans kalitesi ortalama '+
+    (sli?'<div class="sleepnote">Uyku etkisi: <b>seansa giden uykun</b> 7 saatin altındayken seans kalitesi ortalama '+
       '<b>%'+Math.abs(sli.diff).toFixed(0)+'</b> '+(sli.diff>0?'düşük':'yüksek')+
-      ' ('+sli.nLo+' vs '+sli.nHi+' seans). Gündüz uykusu bu hesaba girmez — '+
-      'antrenman ondan önce yapılıyor.</div>':'')+
+      ' ('+sli.nLo+' vs '+sli.nHi+' seans). Seansa giden uyku = gece'+
+      (sli.pre?' + antrenmandan önce uyunan gündüz uykusu ('+sli.pre+' gün)':'')+
+      '. Antrenmandan sonraki gündüz uykusu bu hesaba girmez.</div>':'')+
 
     '<button class="scard" data-a="dopen" data-kind="week" data-key="">'+
-      '<div class="shead"><div><div class="stitle">Haftalık Hacim</div>'+
-        '<div class="ssub">'+(lastWk?'Hafta '+lastWk.wk+' · '+ti(lastWk.total)+' kg'+
-          (dv!=null?' <b style="color:'+(dv>=0?C.green:C.orange)+'">'+(dv>0?'+':'')+dv.toFixed(0)+'%</b>':''):'veri bekleniyor')+'</div></div>'+
+      '<div class="shead"><div><div class="stitle">Haftalık Yüklenme</div>'+
+        '<div class="ssub">'+(lastWk
+          ?'Hafta '+lastWk.wk+' · '+lastWk.sess+' seans · '+lastWk.sets+' set'+
+           (lastWk.idx!=null?' · güç endeksi <b style="color:'+(lastWk.idx>=100?C.green:C.orange)+'">'+lastWk.idx.toFixed(0)+'</b>':'')+
+           (di!=null?' <b style="color:'+(di>=0?C.green:C.orange)+'">'+(di>0?'+':'')+di.toFixed(1)+'</b>':'')
+          :'veri bekleniyor')+'</div></div>'+
         '<span class="schev">›</span></div>'+
-      volBars(wk)+
+      loadChart(wk)+
       '<div class="sfoot">'+ORDER.map(function(k){
-        return '<span><i style="background:'+PROGRAM[k].color+'"></i>'+PROGRAM[k].code+'</span>';}).join('')+'</div>'+
+        return '<span><i style="background:'+PROGRAM[k].color+'"></i>'+PROGRAM[k].code+'</span>';}).join('')+
+        '<span><i style="background:'+C.green+'"></i>endeks</span></div>'+
+      '<div class="sexp">Sütun = o haftanın çalışma seti · çizgi = güç endeksi (100 = başladığın yer). '+
+        'Kesimde set sayısı düşse bile endeks 100 civarında kalıyorsa kas korunuyor demektir.</div>'+
     '</button>'+
 
     '<div class="scard static">'+
-      '<div class="shead"><div><div class="stitle">Antrenman Türü Dağılımı</div>'+
-        '<div class="ssub">türe dokun, hareketleri gör</div></div></div>'+
-      typeDonut(tv)+
+      '<div class="shead"><div><div class="stitle">Gün Tipi Devamlılığı</div>'+
+        '<div class="ssub">en çok kaçırdığın gün en üstte · dokun, hareketleri gör</div></div></div>'+
+      typeAdhList(tadh)+
     '</div>'+
 
     '<div class="scard static dom dom-bod">'+
@@ -5833,23 +6227,33 @@ function gymSum(){
         '<button class="dtap" data-a="dopen" data-kind="measure" data-key="w">'+
           '<div class="dlbl" style="color:'+C.blue+'">KİLO <b>'+(tn!=null?tn.toFixed(1):(lw!=null?lw.toFixed(1):'—'))+'</b><span class="schev">›</span></div>'+
           sparkT(wp,trendW(),C.blue,S.goal.weight)+'</button>'+
-        '<button class="dtap" data-a="dopen" data-kind="measure" data-key="b">'+
-          '<div class="dlbl" style="color:'+C.teal+'">BEL <b>'+(bp.length?bp[bp.length-1].v.toFixed(1):'—')+'</b><span class="schev">›</span></div>'+
-          spark(bp,C.teal,null)+'</button>'+
+        (measOn()
+          ?'<button class="dtap" data-a="dopen" data-kind="measure" data-key="b">'+
+            '<div class="dlbl" style="color:'+C.teal+'">BEL <b>'+(bp.length?bp[bp.length-1].v.toFixed(1):'—')+'</b><span class="schev">›</span></div>'+
+            spark(bp,C.teal,null)+'</button>'
+          :(function(){var pk=keys().filter(function(d){return mGet(D(d),'slt')!=null;}).map(function(d){return{d:d,v:mGet(D(d),'slt')};});
+            var lv=pk.length?pk[pk.length-1].v:null;
+            return '<button class="dtap" data-a="dopen" data-kind="measure" data-key="slt">'+
+              '<div class="dlbl" style="color:'+C.violet+'">UYKU <b>'+(lv!=null?fx(lv,1):'—')+'</b><span class="schev">›</span></div>'+
+              spark(pk,C.violet,null)+'</button>';})())+
       '</div>'+
-      '<div class="duo2" style="margin-top:11px">'+
-        ['sh','arm','ch','slt'].map(function(k){
-          var mm=measMeta(k),pk=keys().filter(function(d){return mGet(D(d),k)!=null;}).map(function(d){return{d:d,v:mGet(D(d),k)};});
-          var lv=pk.length?pk[pk.length-1].v:null;
-          return '<button class="dtap" data-a="dopen" data-kind="measure" data-key="'+k+'">'+
-            '<div class="dlbl" style="color:'+mm[3]+'">'+mm[1].toUpperCase()+' <b>'+(lv!=null?fx(lv,1):'—')+'</b><span class="schev">›</span></div>'+
-            spark(pk,mm[3],null)+'</button>';}).join('')+
-      '</div>'+
+      (measOn()
+        ?'<div class="duo2" style="margin-top:11px">'+
+          ['sh','arm','ch','slt'].map(function(k){
+            var mm=measMeta(k),pk=keys().filter(function(d){return mGet(D(d),k)!=null;}).map(function(d){return{d:d,v:mGet(D(d),k)};});
+            var lv=pk.length?pk[pk.length-1].v:null;
+            return '<button class="dtap" data-a="dopen" data-kind="measure" data-key="'+k+'">'+
+              '<div class="dlbl" style="color:'+mm[3]+'">'+mm[1].toUpperCase()+' <b>'+(lv!=null?fx(lv,1):'—')+'</b><span class="schev">›</span></div>'+
+              spark(pk,mm[3],null)+'</button>';}).join('')+
+        '</div>'
+        :'<div class="sexp">Çevre ölçüleri kapalı — Daha → Ayarlar’dan açabilirsin. Geçmiş ölçümlerin duruyor.</div>')+
     '</div>'+
 
     '<div class="scard static">'+
       '<div class="shead"><div><div class="stitle">Hareket İlerlemesi</div>'+
         '<div class="ssub">'+exList.length+' satır · plan günü ayrı sayılıyor</div></div></div>'+
+      '<div class="sexp" style="margin-bottom:2px">Yüzde = son 2 seansın ortalaması ÷ ilk 2 seansın ortalaması. '+
+        'Deload seansları hesaba girmez. 3 seanstan az olan hareketlerde yüzde yazılmaz — iki noktadan trend çıkmaz.</div>'+
       (exList.length
         ?'<div class="exlist">'+exList.slice(0,14).map(function(x){
           var col=(x.gain==null)?''+THC.c28+'':(x.gain>0.5?C.green:(x.gain<-0.5?C.orange:''+THC.c21+''));
@@ -5857,7 +6261,7 @@ function gymSum(){
               '" data-dt="'+(x.dt||'')+'">'+
             '<span class="exthumb">'+figSVG(x.n)+'</span>'+
             '<span class="sname"><b>'+esc(x.lbl)+'</b><i>'+x.last.e1kg+' kg × '+x.last.e1rep+
-              ' · 1RM ~'+fx(x.last.e1,1)+' · '+x.h.length+' seans</i></span>'+
+              ' · endeks '+fx(x.last.e1,1)+' · '+x.h.length+' seans</i></span>'+
             miniLine(x.h.map(function(z){return z.e1;}),col)+
             '<span class="sgain" style="color:'+col+'">'+
               (x.gain==null?'—':(x.gain>0?'+':'')+x.gain.toFixed(0)+'%')+'</span>'+
@@ -5868,24 +6272,121 @@ function gymSum(){
     '<div style="padding:4px 0 0">'+progressCard()+'</div>';
 }
 
+/* ============ SON 7 GÜN — SATIRIN ARKASI (v66) ============
+   "Son 7 gün ortalaması" tek sayı veriyordu: 2.040 kcal. Ama o ortalama iki
+   çok farklı haftadan çıkabilir — her gün 2.040 yiyen hafta ile üç gün 1.500,
+   iki gün 2.900 yiyen hafta aynı ortalamayı verir. Ortalamaya bakıp "iyi
+   gidiyorum" demek bu yüzden yanıltıcı. Satıra dokununca o yedi günün tek tek
+   ne olduğu, kaç günün hedefi tuttuğu ve en düşük/en yüksek gün açılır. */
+function AVG7META(k){
+  var T=S.targets;
+  var M={
+    kcal:{l:'Kalori',u:'kcal',t:T.kcal,c:C.blue,inv:true},
+    p:{l:'Protein',u:'g',t:T.protein,c:C.green},
+    c:{l:'Karbonhidrat',u:'g',t:T.carbs,c:C.amber},
+    f:{l:'Yağ',u:'g',t:T.fat,c:C.violet},
+    st:{l:'Adım',u:'',t:T.steps,c:C.orange},
+    slt:{l:'Uyku',u:'sa',t:7.5,c:C.violet,dec:1},
+    trn:{l:'Antrenman',u:'',t:1,c:C.pink,kind:'trn'},
+    krea:{l:'Kreatin',u:'',t:1,c:C.violet,kind:'sup',sup:'kreatin'}
+  };
+  return M[k]||{l:k,u:'',t:1,c:C.blue};
+}
+function avg7Days(){
+  var out=[],d=today();
+  for(var i=6;i>=0;i--)out.push(addD(d,-i));
+  return out;
+}
+function avg7Val(d,k,m){
+  var r=D(d);
+  if(m.kind==='sup')return (r.sup&&r.sup[m.sup])?1:0;
+  if(m.kind==='trn'){
+    var dt=dtOf(d),t=dt?PROGRAM[dt]:null;
+    if(!t||!t.ex.length)return null;
+    var e=sessionEval(d,dt);
+    return (e&&!e.empty)?e.q:0;
+  }
+  return mGet(r,k);
+}
+function avg7Body(k,m){
+  var ds=avg7Days(),rows=[],vals=[],hit=0,n=0;
+  ds.forEach(function(d){
+    var v=avg7Val(d,k,m);
+    rows.push({d:d,v:v});
+    if(v==null)return;
+    n++;vals.push(v);
+    var ok=m.inv?(v<=m.t*1.08&&v>=m.t*0.85):(m.kind==='trn'?v>=0.6:(m.kind==='sup'?v>0:v/m.t>=0.95));
+    if(ok)hit++;
+  });
+  var avg=vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
+  var lo=vals.length?Math.min.apply(null,vals):null;
+  var hi=vals.length?Math.max.apply(null,vals):null;
+  function show(v){
+    if(v==null)return '—';
+    if(m.kind==='trn')return '%'+Math.round(v*100);
+    if(m.kind==='sup')return v>0?'alındı':'yok';
+    return (m.dec?fx(v,m.dec):ti(v))+(m.u?' '+m.u:'');
+  }
+  var mx=Math.max(m.t,hi||0)*1.1||1;
+  var cells=[
+    ['Ortalama',avg==null?'—':(m.kind==='trn'?'%'+Math.round(avg*100):(m.kind==='sup'?hit+'/7':(m.dec?fx(avg,m.dec):ti(avg)))),
+      (m.kind==='trn'||m.kind==='sup')?'':m.u,n+' / 7 gün kayıtlı',''+THC.c6+''],
+    ['Hedefi tutan',hit+' gün','/ 7',(m.kind==='sup'?'alındığı gün':(m.inv?'hedef bandında':'hedefin %95’i ve üstü')),
+      hit>=5?C.green:(hit>=3?C.amber:C.orange)],
+    ['En düşük',show(lo),'', (m.kind==='sup'?'':'yedi gün içinde'),''+THC.c6+''],
+    ['En yüksek',show(hi),'','yedi gün içinde',''+THC.c6+'']
+  ];
+  var list='<div class="a7">'+rows.map(function(x){
+    var v=x.v,p=(v==null)?0:clamp(v/mx*100),tp=clamp(m.t/mx*100);
+    var col=(v==null)?''+THC.c39+''
+      :(m.kind==='sup'?(v>0?m.c:''+THC.c34+'')
+      :(m.kind==='trn'?(v>=0.85?C.green:(v>=0.6?C.amber:C.orange))
+      :(m.inv?((v<=m.t*1.08&&v>=m.t*0.85)?m.c:C.red):(v/m.t>=0.95?m.c:(v/m.t>=0.75?C.amber:C.orange)))));
+    var dl=(x.d===today());
+    return '<div class="a7r'+(dl?' now':'')+'">'+
+      '<div class="a7d">'+GUN[pd(x.d).getDay()].slice(0,3)+'<i>'+pd(x.d).getDate()+'</i></div>'+
+      '<div class="a7b"><span style="width:'+p.toFixed(0)+'%;background:'+col+'"></span>'+
+        ((m.kind==='sup')?'':'<u style="left:'+tp.toFixed(0)+'%"></u>')+'</div>'+
+      '<div class="a7v" style="color:'+col+'">'+show(v)+'</div></div>';
+  }).join('')+'</div>';
+  return '<div class="mstats">'+cells.map(function(x){
+      return '<div><div class="l">'+x[0]+'</div>'+
+        '<div class="v" style="color:'+x[4]+'">'+x[1]+(x[2]?'<span>'+x[2]+'</span>':'')+'</div>'+
+        '<div class="s">'+esc(x[3])+'</div></div>';}).join('')+'</div>'+
+    ((m.kind==='sup'||m.kind==='trn')?'':'<div class="a7note">İnce dikey çizgi hedef ('+
+      (m.dec?fx(m.t,m.dec):ti(m.t))+(m.u?' '+m.u:'')+'). Ortalama iyi görünse bile günler '+
+      'birbirinden çok uzaksa hafta düzgün geçmemiş demektir.</div>')+
+    list;
+}
+
 /* --- detay penceresi --- */
 var dOpen=null,dClosing=false;
 function detailLayer(){
   if(!dOpen)return '<div id="dlayer"></div>';
   var body='',title='',sub='';
   if(dOpen.kind==='week'){
-    var wk=volByWeek();
-    title='Haftalık Hacim';sub=wk.length+' hafta kayıtlı';
-    var mx=Math.max.apply(null,wk.map(function(r){return r.total;}))||1;
-    body=volBars(wk)+
+    var wk=weekLoad();
+    title='Haftalık Yüklenme';sub=wk.length+' hafta kayıtlı';
+    body=loadChart(wk)+
+      '<div class="tdmsg" style="background:'+hexa(C.green,.1)+';color:'+C.green+';margin:12px 0">'+
+        '<b>Güç endeksi</b> her hareketin o haftaki tahmini 1RM’ini kendi başlangıç değerine oranlar ve ortalar. '+
+        '100 = başladığın yer. Toplam hacim (kg×tekrar) o hafta hangi günlerin denk geldiğine göre oynadığı için '+
+        'tek başına ilerlemenin ölçüsü değil — burada ikinci sırada duruyor.</div>'+
       '<div class="dtable">'+wk.slice().reverse().map(function(r){
-        var parts=ORDER.filter(function(k){return r.by[k];});
-        return '<div class="dtrow"><div class="dtw">Hafta '+r.wk+'</div>'+
+        var parts=ORDER.filter(function(k){return r.bys[k];});
+        var icol=r.idx==null?''+THC.c21+'':(r.idx>=100?C.green:C.orange);
+        return '<div class="dtrow"><div class="dtw">Hafta '+r.wk+(r.dl?' · DL':'')+'</div>'+
           '<div class="dtbar">'+parts.map(function(k){
-            return '<i style="width:'+(r.by[k]/r.total*100).toFixed(1)+'%;background:'+PROGRAM[k].color+'" title="'+PROGRAM[k].code+'"></i>';}).join('')+'</div>'+
-          '<div class="dtv">'+ti(r.total)+' kg</div></div>'+
-          '<div class="dtsub">'+r.reps+' tekrar · '+parts.map(function(k){return PROGRAM[k].code+' '+ti(r.by[k]);}).join(' · ')+'</div>';
+            return '<i style="width:'+(r.bys[k]/r.sets*100).toFixed(1)+'%;background:'+PROGRAM[k].color+'" title="'+PROGRAM[k].code+'"></i>';}).join('')+'</div>'+
+          '<div class="dtv" style="color:'+icol+'">'+(r.idx==null?'—':r.idx.toFixed(0))+'</div></div>'+
+          '<div class="dtsub">'+r.sess+' seans · '+r.sets+' set · '+r.reps+' tekrar · '+ti(r.total)+' kg'+
+            (r.dl?' · deload':'')+'</div>';
       }).join('')+'</div>';
+  }
+  else if(dOpen.kind==='avg7'){
+    var ak=dOpen.key,am=AVG7META(ak);
+    title=am.l;sub='son 7 gün · gün gün';
+    body=avg7Body(ak,am);
   }
   else if(dOpen.kind==='type'){
     var k=dOpen.key,list=typeExercises(k);
@@ -6683,6 +7184,15 @@ function settings(){
     '<div class="mhint" style="margin-top:7px">Seçili günler dinlenme sayılır; kalan günlerde program sırayla Gün 1 → 5 ilerler.</div>'+
   '</div>'+
   '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+
+    '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:8px">Çevre ölçüleri</label>'+
+    '<div class="rest7" style="max-width:260px">'+
+      '<button data-a="measoff"'+(measOn()?'':' class="on"')+'>Kapalı</button>'+
+      '<button data-a="measoff"'+(measOn()?' class="on"':'')+'>Açık</button>'+
+    '</div>'+
+    '<div class="mhint" style="margin-top:7px">Kapalıyken bel, omuz, kol ve göğüs alanları hiçbir ekranda çıkmaz; gün puanına girmez, hatırlatma yapılmaz. '+
+      '<b>Geçmiş ölçümler silinmez</b> — açtığın anda grafikleriyle birlikte geri gelir. Kilo ve uyku bu anahtardan etkilenmez.</div>'+
+  '</div>'+
+  '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+
     '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:8px">Rapor · sohbete yapıştırmak için</label>'+
     '<div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">'+
       '<div style="flex:1;min-width:190px"><label style="font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;color:'+THC.c28+';font-weight:700;display:block;margin-bottom:5px">Kapsam</label>'+
@@ -6733,11 +7243,13 @@ function report(){
   if(aR)o+='Gerçek bakım: '+aR.t.tdee+' kcal (ölçülen, '+aR.t.logged+'/'+aR.t.days+' gün, güven '+aR.t.conf+
     ') · ortalama alım '+aR.t.avg+' · günlük açık '+Math.abs(aR.t.deficit)+
     ' · önerilen hedef '+aR.sug+'\n';
-  var shR=lastOf('sh'),bR=lastOf('b');
-  if(shR!=null&&bR)o+='Omuz/bel oranı: '+fx(shR/bR,2)+' (omuz '+fx(shR,1)+' cm, bel '+fx(bR,1)+' cm)';
-  var armR=lastOf('arm');
-  if(armR!=null)o+=(shR!=null&&bR?' · ':'Çevre: ')+'kol '+fx(armR,1)+' cm';
-  if(shR!=null||armR!=null)o+='\n';
+  if(measOn()){
+    var shR=lastOf('sh'),bR=lastOf('b');
+    if(shR!=null&&bR)o+='Omuz/bel oranı: '+fx(shR/bR,2)+' (omuz '+fx(shR,1)+' cm, bel '+fx(bR,1)+' cm)';
+    var armR=lastOf('arm');
+    if(armR!=null)o+=(shR!=null&&bR?' · ':'Çevre: ')+'kol '+fx(armR,1)+' cm';
+    if(shR!=null||armR!=null)o+='\n';
+  }else o+='Çevre ölçüleri kapalı (mezura ölçümü güvenilir bulunmadığı için) — ilerleme kilo trendi ve salon performansından okunuyor.\n';
   var slpR=avgSleep(14),slpN=avgSleep(14,'sl');
   if(slpR!=null)o+='Uyku (14 gün ort.): '+fx(slpR,1)+' saat toplam'+
     ((slpN!=null&&Math.abs(slpR-slpN)>0.05)?' ('+fx(slpN,1)+' saat gece + '+fx(slpR-slpN,1)+' saat gündüz)':'')+'\n';
@@ -6748,7 +7260,7 @@ function report(){
     function av(k){var a=ds.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});
       return a.length?Math.round(a.reduce(function(x,y){return x+y;},0)/a.length*10)/10:null;}
     o+='## HAFTA '+w+' ('+fdate(ds[0])+' – '+fdate(ds[ds.length-1])+')\n';
-    o+='Kilo ort: '+(av('w')||'—')+' kg | Bel ort: '+(av('b')||'—')+' cm\n';
+    o+='Kilo ort: '+(av('w')||'—')+' kg'+(measOn()?' | Bel ort: '+(av('b')||'—')+' cm':'')+'\n';
     o+='Adım: '+(av('st')!=null?Math.round(av('st')):'—')+' | Kcal: '+(av('kcal')!=null?Math.round(av('kcal')):'—')+' | P/K/Y: '+(av('p')||'—')+'/'+(av('c')||'—')+'/'+(av('f')||'—')+' g\n';
     var slW=ds.map(function(d){return slTot(D(d));}).filter(function(v){return v!=null;});
     var nW=ds.map(function(d){return D(d).sl;}).filter(function(v){return v!=null;});
@@ -6772,13 +7284,14 @@ function report(){
     o+='\n';
     ds.forEach(function(d){
       var r=D(d),b=[];
-      if(r.w!=null)b.push(r.w+'kg');if(r.b!=null)b.push('bel '+r.b+'cm');
+      if(r.w!=null)b.push(r.w+'kg');if(measOn()&&r.b!=null)b.push('bel '+r.b+'cm');
       if(r.st!=null)b.push(r.st+' adım');if(r.kcal!=null)b.push(r.kcal+'kcal');
       /* uyku dökümlü yazılır: 6 sa gece + 2 sa gündüz = 8 sa. Toplamı tek başına
          yazmak o günün antrenmanının kaç saat uykuyla yapıldığını gizliyor. */
       if(r.sl!=null||r.nap!=null){
         var slS=fx(r.sl||0,1).replace(/\.0$/,''),npS=fx(r.nap||0,1).replace(/\.0$/,'');
-        b.push(r.nap?('uyku '+slS+' sa gece + '+npS+' sa gündüz = '+fx(slTot(r),1).replace(/\.0$/,'')+' sa')
+        var npW=(r.napp==='o')?' (antr. öncesi)':((r.napp==='s')?' (antr. sonrası)':'');
+        b.push(r.nap?('uyku '+slS+' sa gece + '+npS+' sa gündüz'+npW+' = '+fx(slTot(r),1).replace(/\.0$/,'')+' sa')
                     :('uyku '+slS+' sa'));
       }
       if(r.p!=null||r.c!=null||r.f!=null)b.push((r.p||0)+'/'+(r.c||0)+'/'+(r.f||0)+' PKY');
@@ -8207,23 +8720,36 @@ function photoCard(){
 var FILLF=[['w','Kilo'],['b','Bel'],['sl','Uyku'],
   ['st','Adım'],['kcal','Kalori'],['p','Protein'],['c','Karb'],['f','Yağ'],
   ['sup:kreatin','Kreatin']];
+/* O gün gerçekten doldurulması beklenen alanlar (v66):
+   seyahatte tartı yok, çevre ölçüsü kapalıyken bel de istenmez. Beklenmeyen
+   alanı "eksik" diye saymak halka göstergesini haksız yere düşürüyordu. */
+function fillFields(d){
+  var tr=travDay(d),mo=measOn();
+  return FILLF.filter(function(x){
+    if(x[0]==='w'&&tr)return false;
+    if(x[0]==='b'&&(!mo||tr))return false;
+    return true;
+  });
+}
 function fillState(d){
   var r=D(d),done=0,miss=[];
-  FILLF.forEach(function(x){
+  fillFields(d).forEach(function(x){
     var k=x[0],ok;
     if(k.indexOf('sup:')===0)ok=!!(r.sup&&r.sup[k.slice(4)]);
     else ok=r[k]!=null;
     if(ok)done++; else miss.push(x[1]);
   });
-  return {done:done,total:FILLF.length,miss:miss};
+  return {done:done,total:fillFields(d).length,miss:miss};
 }
 /* çevre ölçüleri 2 haftada bir — sırası geldi mi? */
 function measDue(){
   var ks=keys().filter(function(d){
     return d<=today()&&(D(d).sh!=null||D(d).arm!=null||D(d).ch!=null);});
-  if(!ks.length)return {due:true,last:null,days:null,left:0};
+  /* Kapalıyken ve seyahat gününde uyarı çıkmaz — mezura yanında yok (v66) */
+  var off=(!measOn()||travDay(cur||today()));
+  if(!ks.length)return {due:!off,last:null,days:null,left:0,off:off};
   var last=ks[ks.length-1],dd=dayDiff(last,today());
-  return {due:dd>=14,last:last,days:dd,left:Math.max(0,14-dd)};
+  return {due:!off&&dd>=14,last:last,days:dd,left:Math.max(0,14-dd),off:off};
 }
 function ringSVG(pct,col,size,txt,sub){
   var R=(size/2)-5,CC=2*Math.PI*R,off=CC*(1-Math.min(1,pct));
@@ -8728,7 +9254,7 @@ app.addEventListener('change',function(ev){
     fr.onload=function(){try{var d=JSON.parse(fr.result);
       if(!d||!d.days)throw 0;
       S.days=d.days;if(d.targets)S.targets=Object.assign(S.targets,d.targets);
-      if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;
+      if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;if(d.meas!=null)S.meas=!!d.meas;
       save();render();toast('yedek yüklendi');}catch(e){toast('yedek okunamadı');}};
     fr.readAsText(file);ev.target.value='';}
 });
@@ -9104,6 +9630,12 @@ app.addEventListener('click',function(ev){
     rr.sup=rr.sup||{};rr.sup[sk]=!rr.sup[sk];
     if(!rr.sup[sk])delete rr.sup[sk];
     save(cur);repaint();}
+  else if(a==='napp'){
+    var nw=t.getAttribute('data-k'),rn=touch(cur);
+    rn.napp=(rn.napp===nw)?null:nw;
+    save(cur);repaint();}
+  else if(a==='measoff'){
+    S.meas=!measOn();S._st=Date.now();save();render();}
   else if(a==='restd'){
     var rd=t.getAttribute('data-d');
     setPlan(rd,effDt(rd)==='rest'?'clear':'rest');repaint();}
@@ -9168,6 +9700,7 @@ STORE.get(KEY).then(function(res){
     S.days=p.days||{};S.startDate=p.startDate||today();S.weeks=p.weeks||20;
     if(p.deloadEvery!=null)S.deloadEvery=p.deloadEvery;
     if(p.autoTargets!=null)S.autoTargets=!!p.autoTargets;
+    if(p.meas!=null)S.meas=!!p.meas;
     if(p.targets)S.targets=Object.assign(S.targets,p.targets);
     if(p.base)S.base=Object.assign(S.base,p.base);
     if(p.goal)S.goal=Object.assign(S.goal,p.goal);
