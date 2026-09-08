@@ -2219,11 +2219,12 @@ var PROGRAM={
     {n:'Face pull',s:3,r:[15,20]},
     {n:'Kablo curl',s:3,r:[10,15]},
     {n:'Eğik dambıl curl',s:3,r:[10,12]}]},
+  /* v66 · 8 Eyl: Romanian deadlift çıkarıldı (bel ağrısı). Kaybedilen 3 set
+     Leg press ve Leg curl'e dağıtıldı — yeni hareket eklenmedi. */
   gun3:{label:'Bacak',name:'Bacak',short:'Bacak',code:'BAC',color:C.violet,ex:[
     {n:'Squat / Hack squat',s:3,r:[6,10]},
-    {n:'Romanian deadlift',s:3,r:[8,12]},
-    {n:'Leg press',s:3,r:[10,15]},
-    {n:'Leg curl',s:3,r:[10,15]},
+    {n:'Leg press',s:4,r:[10,15]},
+    {n:'Leg curl',s:4,r:[10,15]},
     {n:'Leg extension',s:2,r:[12,15]},
     {n:'Ayakta calf raise',s:4,r:[10,15]}]},
   gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
@@ -2258,6 +2259,30 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-09-08',
+  t:'Bacak günü: Romanian deadlift çıkarıldı, Leg press ve Leg curl 4 sete çıktı',
+  y:['SEBEP: RDL her seansta bele ağrı veriyordu. RDL\'de yük omurga üzerinden '+
+     'taşınır ve kalça menteşesi bir derece bozulduğu anda yük doğrudan bele biner. '+
+     'Öğrenmesi en zor hareketlerden biri; uygulamada zaten \'form kritik\' sınıfındaydı '+
+     '(her set RIR 2, sınıra gidilmiyor). Ağrı veren bir hareketi tekniğe güvenerek '+
+     'sürdürmenin kazancı yok, riski var.',
+     'YERİNE HAREKET KONMADI: kaybedilen 3 set, zaten programda olan iki harekete '+
+     'dağıtıldı — Leg press 3→4, Leg curl 3→4. Bacak haftalık efektif set 18\'den '+
+     '17\'ye indi, yani hacim pratikte korundu. Sırt 20.5\'ten 19\'a indi (RDL sırta '+
+     '0.5 yazıyordu); sırt zaten Çekiş gününde üç hareketle çalışılıyor, bu düşüş önemsiz.',
+     'KAYIP — DÜRÜST OLMAK GEREKİRSE: RDL hamstringi UZUN BOYDA ve kalça ekstansiyonu '+
+     'yoluyla çalıştıran tek hareketti. Leg curl yalnız diz bükme işlevini çalıştırır, '+
+     'aynı şey değil. Gluteus da direkt hareketini kaybetti. Telafi: Leg press\'te '+
+     'ayakları platformda BİRAZ YUKARI ve omuz genişliğinden geniş koy, dizi göğse '+
+     'yaklaştırarak derin in — bu ayarla leg press gluteus ve hamstringi belirgin '+
+     'şekilde daha çok yükler. Yeni hareket öğrenmeye gerek yok.',
+     'BAĞLAM: hedef omuz-bel oranı, bacak öncelikli kas değil. Kesim döneminde '+
+     'ağrı veren bir hareket için risk almanın karşılığı yok. Kesim bitip '+
+     'kas yapma dönemine geçildiğinde menteşe paterni (kablo pull-through gibi '+
+     'affedici bir hareketle) tekrar değerlendirilir.',
+     'GEÇMİŞ VERİ BOZULMADI: RDL\'nin 8 Eyl öncesi bütün kayıtları duruyor; hacme ve '+
+     'kas seti sayacına giriyor, raporda \'PLAN DIŞI\' etiketiyle görünüyor. '+
+     'Yalnız bundan sonraki seans kalite yüzdesine girmiyor.']},
  {d:'2026-08-26',
   t:'Üst Vücut günü: Halat pushdown, Kablo curl ve Cable crunch çıkarıldı',
   y:['Haftalık efektif set hedefi biceps 23, triceps 22.5 idi. Kalori açığındayken '+
