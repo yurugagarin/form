@@ -330,6 +330,8 @@ input,button,select,textarea{font-family:inherit;color:inherit}
   background:transparent;color:var(--ink3,#a8987c);cursor:pointer;
   transition:background .15s ease,color .15s ease,border-color .15s ease}
 .napw button.on{background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.45);color:#8b5cf6}
+.napw.off button{opacity:.42}
+.napw.off button.on{opacity:.7}
 html.dark .napw button{border-color:#333b43;color:#8f979e}
 html.dark .napw button.on{background:rgba(179,165,232,.18);border-color:rgba(179,165,232,.5);color:#b3a5e8}
 @media(max-width:1100px){.metrics.m4{grid-template-columns:repeat(2,1fr)}}
@@ -911,6 +913,11 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   margin:14px 0 10px;text-transform:uppercase}
 /* tam ekran görüntüleyici */
 body.pvlock,body.ovlock{overflow:hidden;overscroll-behavior:none}
+/* iOS'ta overflow:hidden tek başına gövdeyi kilitlemiyor; kat açıkken sayfa
+   arkada kayıyordu. position:fixed + kaydırma konumunu geri yazmak tek
+   güvenilir yol. */
+body.ovlock{position:fixed;left:0;right:0;width:100%}
+.dsheet,.mdrwp{will-change:transform}
 /* Kat açıkken arka sayfanın kaymasını kes. overscroll-behavior kaydırıcı
    sona dayandığında zincirlemeyi durdurur; kilit de sayfayı sabitler. */
 .dsheet,.mdrwp,.mbox,.pvstage,.dwrap,.mdrw,.modal{overscroll-behavior:contain}
@@ -1933,17 +1940,17 @@ html.dark body{background:#121619}
 .mesh{display:none}
 body.gym .mesh{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(56% 30% at 8% 2%,rgba(196,138,92,.46),transparent 68%),
-    radial-gradient(54% 28% at 94% 0%,rgba(214,132,86,.42),transparent 68%),
-    radial-gradient(74% 32% at 46% 14%,rgba(150,168,196,.40),transparent 72%),
-    radial-gradient(46% 20% at 82% 22%,rgba(198,150,178,.30),transparent 74%),
-    radial-gradient(48% 20% at 14% 34%,rgba(140,176,158,.30),transparent 76%),
-    radial-gradient(60% 24% at 66% 52%,rgba(168,150,206,.22),transparent 78%),
-    radial-gradient(56% 22% at 18% 72%,rgba(206,158,110,.20),transparent 78%),
-    radial-gradient(60% 24% at 74% 92%,rgba(146,172,190,.22),transparent 78%);
-  filter:blur(34px) saturate(112%);
-  -webkit-mask-image:linear-gradient(#000 0%,#000 20%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.38) 100%);
-  mask-image:linear-gradient(#000 0%,#000 20%,rgba(0,0,0,.55) 46%,rgba(0,0,0,.38) 100%)}
+    radial-gradient(56% 30% at 8% 2%,rgba(190,118,68,.74),transparent 68%),
+    radial-gradient(54% 28% at 94% 0%,rgba(214,116,60,.70),transparent 68%),
+    radial-gradient(74% 32% at 46% 14%,rgba(118,146,186,.64),transparent 72%),
+    radial-gradient(46% 20% at 82% 22%,rgba(192,124,162,.52),transparent 74%),
+    radial-gradient(48% 20% at 14% 34%,rgba(102,158,136,.50),transparent 76%),
+    radial-gradient(60% 24% at 66% 52%,rgba(146,122,200,.40),transparent 78%),
+    radial-gradient(56% 22% at 18% 72%,rgba(202,140,72,.36),transparent 78%),
+    radial-gradient(60% 24% at 74% 92%,rgba(112,150,178,.38),transparent 78%);
+  filter:blur(30px) saturate(126%);
+  -webkit-mask-image:linear-gradient(#000 0%,#000 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.66) 100%);
+  mask-image:linear-gradient(#000 0%,#000 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.66) 100%)}
 body.gym .wrap{position:relative;z-index:1}
 html.dark .mesh{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
@@ -2045,11 +2052,27 @@ html.dark .thsel button.on{background:#bbf246;color:#10161a}
 .metrics{border-radius:0}
 .charts > .card{border-radius:20px}
 
-/* salon modu (telefon) — açık tema */
-body.gym .card{border-radius:20px;margin:10px 12px;border-left:0;border-right:0;
+/* ---- salon modu: TEK GENİŞLİK ----
+   Kartların her biri kendi kuralından geliyordu: .scard 14px kenar boşluğu,
+   .card 12px, .cwrap 12px, banner'lar (deload, rekor, uyku notu) ise sıfır —
+   yani tam genişlik şerit. Alt alta gelince ekran merdiven gibi görünüyordu.
+   Artık salon modundaki HER blok aynı yatay boşluğu ve aynı köşe yarıçapını
+   kullanıyor; tek yerden değiştirilebilsin diye değişkene bağlandı. */
+body.gym{--gm:14px;--grd:20px}
+body.gym .card,body.gym .scard,body.gym .gcard,body.gym .mhero,
+body.gym .gstats,body.gym .cwrap,
+body.gym .dlbanner,body.gym .dlnote,body.gym .sleepnote,body.gym .prbanner{
+  margin-left:var(--gm);margin-right:var(--gm);border-radius:var(--grd);
+  border-left-width:0;border-right-width:0}
+body.gym .dlbanner,body.gym .dlnote,body.gym .sleepnote,body.gym .prbanner{
+  margin-top:12px;border-top:0;border-bottom:0;padding-left:14px;padding-right:14px;
+  box-shadow:0 1px 2px rgba(60,52,44,.06),0 12px 26px -18px rgba(60,52,44,.3)}
+body.gym .cwrap{margin-top:12px;margin-bottom:12px}
+body.gym .gstats{margin-top:12px}
+body.gym .card{margin-top:12px;margin-bottom:0;
   box-shadow:0 1px 2px rgba(60,52,44,.07),0 14px 32px -18px rgba(60,52,44,.34)}
 body.gym .scard,body.gym .gcard,body.gym .mhero{
-  margin:12px 14px 0;border-radius:22px;border:1px solid rgba(255,255,255,.7);
+  margin-top:12px;margin-bottom:0;border:1px solid rgba(255,255,255,.7);
   border-top:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);
   background:rgba(252,249,243,.86);
   -webkit-backdrop-filter:saturate(150%) blur(16px);backdrop-filter:saturate(150%) blur(16px);
@@ -2058,10 +2081,22 @@ body.gym .scard,body.gym .gcard,body.gym .mhero{
 body.gym .scard.dom{border-left:3px solid var(--dc,var(--ink3))}
 body.gym .mhero{border-left:3px solid var(--rec)}
 body.gym .mhero.tr{border-left-color:var(--trn)}
-body.gym .gstats{margin:12px 14px 0;border-radius:22px;overflow:hidden;
+body.gym .gstats{overflow:hidden;
   box-shadow:0 1px 2px rgba(60,52,44,.08),0 16px 34px -20px rgba(60,52,44,.42)}
-body.gym .cwrap{border-radius:20px}
 body.gym .ggrid > .gfield{border-radius:16px}
+/* koyu temada da aynı genişlik geçerli olsun — oradaki kendi kuralları
+   yalnız renk/gölge veriyor, ölçüyü buradan alıyor */
+html.dark body.gym .scard,html.dark body.gym .gcard,html.dark body.gym .mhero,
+html.dark body.gym .gstats,html.dark body.gym .cwrap{
+  margin-left:var(--gm);margin-right:var(--gm);margin-top:12px;border-radius:var(--grd)}
+html.dark body.gym .cwrap{margin-bottom:12px}
+
+/* Giriş animasyonu (riseIn) her tazelemede yeniden oynuyordu: bir kutuya yazı
+   yazınca bütün kartlar tekrar aşağıdan yukarı kayıyor, ekran titriyor gibi
+   görünüyordu. Artık yalnız sekme gerçekten değiştiğinde oynuyor — #g-body'ye
+   tek seferlik .anim sınıfı eklenerek. */
+body.gym #g-body:not(.anim) .card,
+body.gym #g-body:not(.anim) .scard{animation:none}
 
 /* ============ v66 · YENİ BİLEŞENLER ============ */
 /* kart altındaki açıklama satırı — grafiğin ne söylediğini yazan yer */
@@ -2307,6 +2342,32 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-08',
+  t:'Titreme, kat kaydırma ve tek genişlik (v66.1)',
+  y:['HATA — TİTREME: alt çubuktaki üç noktaya (Daha) basınca çekmece açılırken '+
+     'render() çağrılıyordu; bu app.innerHTML\'i baştan yazıyor, yani ekrandaki her şey '+
+     'silinip yeniden kuruluyordu. Göz kırpması buradan geliyordu. Artık yalnız çekmece '+
+     'elemanı güncelleniyor. Aynı sorun bir kutuya yazı yazınca da vardı: telefonda '+
+     'repaint() de tam yeniden kurma yapıyordu, o da bölge tazelemeye çevrildi.',
+     'HATA — KARTLARIN ZIPLAMASI: kartların giriş animasyonu (aşağıdan yukarı kayma) '+
+     'her tazelemede yeniden oynuyordu. Artık yalnız sekme gerçekten değiştiğinde oynuyor.',
+     'HATA — KAT AÇIKKEN ARKA SAYFA KAYIYORDU: gövde kilidi overflow:hidden ile '+
+     'yapılıyordu, iOS bunu tek başına dinlemiyor. Artık position:fixed + kaydırma '+
+     'konumunu geri yazma yöntemi kullanılıyor.',
+     'KAT SÜRÜKLEME: alt sayfa kendi içinde kaydırılamayacak yöne gelindiğinde artık '+
+     'parmağı takip eden bir lastik hareketi yapıyor — içerik kısa olsa bile bir şey '+
+     'oluyor, arkadaki ekran değil kat hareket ediyor. 120 pikselden fazla aşağı '+
+     'çekilirse kat kapanıyor.',
+     'TEK GENİŞLİK: özet ekranında her blok kendi kuralından geliyordu — kartlar 14 px '+
+     'kenar boşluğu, program kartı 12 px, deload/rekor/uyku notları ise sıfır (tam '+
+     'genişlik şerit). Alt alta gelince merdiven gibi duruyordu. Artık salon modundaki '+
+     'her blok aynı yatay boşluğu ve aynı köşe yarıçapını tek bir değişkenden alıyor.',
+     'GÜNDÜZ UYKUSU ETİKETİ: "antrenmandan önce / sonra" etiketi yalnız gündüz uykusu '+
+     'girilmişken basılıyordu; ama kutuya yazarken ekran bilerek tazelenmediği için '+
+     '(yazarken DOM\'a dokunulmuyor) etiket hiç görünmüyordu. Artık her zaman orada, '+
+     'gündüz kutusu boşken soluk duruyor.',
+     'RENK DALGASI: açık temadaki tonlar belirginleştirildi ve alt tarafa doğru sönümü '+
+     'azaltıldı — renk artık ekranın tamamında okunuyor.']},
  {d:'2026-09-08',
   t:'Seyahat, ölçümler, güç endeksi (v66)',
   y:['SEYAHAT: seyahat işaretli günde tartı ve mezura artık beklenmiyor. Önceden '+
@@ -3117,11 +3178,15 @@ function travDay(d){return effDt(d||cur)==='trav';}
    ise aynı bilgiyi tek dokunuşla verir. İşaretlenmemiş eski kayıtlar
    "bilinmiyor" sayılır ve uyku-performans hesabına sokulmaz. */
 function napWhen(rr){
-  if(rr.nap==null)return '';
-  var v=rr.napp||'';
-  return '<div class="napw">'+
+  /* v66.1 — Etiket önce yalnız gündüz uykusu girilmişken çıkıyordu; ama kutuya
+     yazarken ekran tazelenmediği için (yazarken DOM'a dokunulmuyor) etiket hiç
+     görünmüyordu. Artık her zaman basılıyor: gündüz kutusu boşken soluk ve
+     bilgilendirici, dolduğunda seçilebilir. */
+  var v=rr.napp||'',empty=(rr.nap==null);
+  return '<div class="napw'+(empty?' off':'')+'">'+
     [['o','Antr. ÖNCE'],['s','Antr. SONRA']].map(function(x){
-      return '<button data-a="napp" data-k="'+x[0]+'"'+(v===x[0]?' class="on"':'')+'>'+x[1]+'</button>';
+      return '<button data-a="napp" data-k="'+x[0]+'"'+(v===x[0]?' class="on"':'')+
+        (empty?' aria-disabled="true"':'')+'>'+x[1]+'</button>';
     }).join('')+'</div>';
 }
 /* antrenmana giden uyku: gece + (varsa) antrenmandan ÖNCEKİ gündüz uykusu */
@@ -5393,7 +5458,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v66 · 8 Eyl 2026';
+var APPVER='v66.1 · 8 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7157,7 +7222,22 @@ function gymNav(){
   '</div>';
 }
 /* gövde + çubuk birlikte tazelenir */
-function gymPaint(){zi('g-body',gymBody());zi('g-nav',gymNav());paintClock();syncLock();}
+/* anim=true yalnız sekme değişiminde: giriş animasyonu her tazelemede
+   oynayınca ekran titriyor gibi görünüyordu. */
+function gymPaint(anim){
+  var gb=document.getElementById('g-body');
+  zi('g-body',gymBody());
+  if(gb&&gb.classList)gb.classList.toggle('anim',!!anim);
+  zi('g-nav',gymNav());paintClock();syncLock();
+}
+/* çekmeceyi açıp kapamak için bütün ekranı yeniden kurmaya gerek yok —
+   eskiden render() çağrılıyordu ve app.innerHTML tamamen yeniden yazıldığı için
+   göz kırpması oluyordu (özellikle alt çubuktaki üç noktaya basınca). */
+function drawerPaint(){
+  var el=document.getElementById('mdrw');
+  if(el)el.outerHTML=gymDrawer();else render();
+  syncLock();
+}
 var pendingRefresh=false;
 function typing(){
   var ae=document.activeElement;
@@ -7171,7 +7251,7 @@ function gymRefresh(){
 function gymTabsRefresh(){zi('g-tabs',gymTabsInner());}
 function renderGym(){
   document.body.className='gym'+(document.body.classList.contains('pvlock')?' pvlock':'');
-  app.innerHTML='<div class="mesh"></div>'+gymTop()+'<div id="g-body">'+gymBody()+'</div>'+
+  app.innerHTML='<div class="mesh"></div>'+gymTop()+'<div id="g-body" class="anim">'+gymBody()+'</div>'+
     '<div id="g-nav">'+gymNav()+'</div>'+restBar()+gymTabs()+detailLayer()+gymDrawer();
   syncLock();startClock();
 }
@@ -7991,6 +8071,7 @@ function paintViewerPose(){
    gövdeye geçiyordu. İki katmanlı çözüm — CSS'te overscroll-behavior:contain,
    burada da gövde kilidi + eski iOS için touchmove engeli. */
 var SCROLLERS='.dsheet,.mdrwp,.mbox,.nybox,.pvstage,.ovscroll';
+var _lockY=null;
 function overlayOpen(){
   if(pvIdx!=null)return true;
   if(typeof mDrawer!=='undefined'&&mDrawer)return true;
@@ -8000,10 +8081,80 @@ function overlayOpen(){
   return !!(m&&m.classList.contains('on'));
 }
 function syncLock(){
-  var on=overlayOpen();
-  if(on)document.body.classList.add('ovlock');
-  else document.body.classList.remove('ovlock');
+  var on=overlayOpen(),b=document.body;
+  if(on){
+    if(_lockY==null)_lockY=window.pageYOffset||document.documentElement.scrollTop||0;
+    b.style.top=(-_lockY)+'px';
+    b.classList.add('ovlock');
+  }else{
+    b.classList.remove('ovlock');
+    if(_lockY!=null){var y=_lockY;_lockY=null;b.style.top='';window.scrollTo(0,y);}
+  }
 }
+/* ============ KAT SÜRÜKLEME (v66.1) ============
+   Alt sayfayı parmakla kaydırmaya çalışırken iki şey ters gidiyordu:
+   (1) katın içeriği kısa olduğunda hiçbir şey olmuyor, dokunuş arkadaki
+       sayfaya kaçıyordu;
+   (2) kat kendi sonuna dayanınca kaydırma yine gövdeye geçiyordu.
+   Çözüm: kat kendi içinde kaydırılamayacak yöne gelindiğinde parmağı
+   TAKİP EDEN bir lastik hareketi. Aşağı çekerken direnç yarım, yukarı
+   çekerken daha sert (orada gidilecek yer yok, sadece geri bildirim).
+   120 pikselden fazla aşağı çekilirse kat kapanır — telefon alışkanlığı bu. */
+function dCloseNow(){
+  if(!dOpen||dClosing)return;
+  dClosing=true;
+  var dl=document.getElementById('dlayer');if(dl)dl.outerHTML=detailLayer();
+  setTimeout(function(){dOpen=null;dClosing=false;
+    var d2=document.getElementById('dlayer');if(d2)d2.outerHTML=detailLayer();
+    syncLock();},260);
+}
+(function(){
+  var el=null,y0=0,dy=0,mode=null,moved=false;
+  function pick(t){return (t&&t.closest)?t.closest('.dsheet,.mdrwp'):null;}
+  function reset(e2){
+    if(!e2||!e2.style)return;
+    e2.style.transition='transform .38s cubic-bezier(.16,1,.3,1)';
+    e2.style.transform='';
+    setTimeout(function(){if(e2&&e2.style)e2.style.transition='';},400);
+  }
+  document.addEventListener('touchstart',function(ev){
+    el=null;
+    if(!ev.touches||ev.touches.length!==1)return;
+    var p=pick(ev.target);if(!p)return;
+    el=p;y0=ev.touches[0].clientY;dy=0;mode=null;moved=false;
+    el.style.transition='';
+  },{passive:true});
+  document.addEventListener('touchmove',function(ev){
+    if(!el||!ev.touches||ev.touches.length!==1)return;
+    var d=ev.touches[0].clientY-y0;
+    if(mode==null){
+      if(Math.abs(d)<3)return;
+      var room=el.scrollHeight-el.clientHeight;
+      var canDown=el.scrollTop>0;                    /* yukarı kaydırılacak yer var mı */
+      var canUp=room>1&&el.scrollTop<room-1;         /* aşağı kaydırılacak yer var mı */
+      mode=((d>0&&!canDown)||(d<0&&!canUp))?'drag':'scroll';
+    }
+    if(mode!=='drag')return;
+    dy=d;moved=true;
+    if(ev.cancelable)ev.preventDefault();
+    var r=(dy>0)?dy*0.5:dy*0.2;
+    el.style.transform='translateY('+r.toFixed(1)+'px)';
+  },{passive:false});
+  function end(){
+    var e2=el;el=null;
+    if(!e2||!moved)return;
+    var far=(dy>120);
+    if(far){
+      e2.style.transition='';e2.style.transform='';
+      if(e2.classList&&e2.classList.contains('mdrwp')){mDrawer=false;drawerPaint();}
+      else dCloseNow();
+      return;
+    }
+    reset(e2);
+  }
+  document.addEventListener('touchend',end);
+  document.addEventListener('touchcancel',end);
+})();
 document.addEventListener('touchmove',function(ev){
   var b=document.body;
   if(!b.classList.contains('ovlock')&&!b.classList.contains('pvlock'))return;
@@ -9099,7 +9250,7 @@ function goTab(k,scrollTo){
 }
 /* boyama sonrası: sayfayı yeniden kurmadan ilgili bölümleri tazele */
 function repaint(){
-  if(phone()){render();return;}
+  if(phone()){gymPaint();return;}
   zi('z-cal',calendar());zi('z-scal',scoreCalendar());
   zi('z-day',dayCard());
   zi('z-week',weekTable());zi('z-kpi',kpi());zi('z-prg',progressCard());
@@ -9384,19 +9535,17 @@ app.addEventListener('click',function(ev){
     if(phone())render();else repaint();}
   else if(a==='gosum'){
     dOpen=null;dClosing=false;gTab='s';render();window.scrollTo(0,0);}
-  else if(a==='dclose'){
-    dClosing=true;var dl2=document.getElementById('dlayer');if(dl2)dl2.outerHTML=detailLayer();
-    setTimeout(function(){dOpen=null;dClosing=false;
-      var d3=document.getElementById('dlayer');if(d3)d3.outerHTML=detailLayer();},260);}
+  else if(a==='dclose'){dCloseNow();}
   else if(a==='gtab'){
     var gk2=t.getAttribute('data-k');
     gTab=gk2;mDrawer=false;mSect=null;calEdit=false;paintMode=null;
-    gymPaint();gymTabsRefresh();window.scrollTo(0,0);}
-  else if(a==='drwopen'){mDrawer=true;render();}
-  else if(a==='drwclose'){mDrawer=false;render();}
+    gymPaint(true);gymTabsRefresh();window.scrollTo(0,0);}
+  else if(a==='drwopen'){mDrawer=true;drawerPaint();}
+  else if(a==='drwclose'){mDrawer=false;drawerPaint();}
   else if(a==='msel'){
     mSect=t.getAttribute('data-k');mDrawer=false;gTab='m';
-    render();window.scrollTo(0,0);}
+    if(phone()){drawerPaint();gymPaint(true);gymTabsRefresh();window.scrollTo(0,0);}
+    else{render();window.scrollTo(0,0);}}
   /* --- takvim sekmesi --- */
   else if(a==='relopen'){
     var ri=+t.getAttribute('data-i');
