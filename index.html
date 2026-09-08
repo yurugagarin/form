@@ -181,6 +181,10 @@ input,button,select,textarea{font-family:inherit;color:inherit}
 .advt b{font-family:'Fraunces';font-size:14px;font-weight:600;white-space:nowrap}
 .advr .mbar{height:6px;margin-top:5px}
 .advs{font-size:10.5px;font-weight:600;color:#b3a488;margin-top:3px}
+/* dar kartta etiket ile sayı üst üste binmesin: etiket kısalır, sayı korunur */
+.advr{min-width:0;overflow:hidden}
+.advt span{min-width:0;flex:1 1 auto}
+.advt b{flex:none;font-variant-numeric:tabular-nums}
 .mbar{height:4px;background:#efe7d6;border-radius:3px;margin-top:8px;overflow:hidden}
 .mbar i{display:block;height:100%;border-radius:3px;transition:width .3s}
 .mhint{font-size:11.5px;font-weight:600;margin-top:5px;color:#a8987c}
@@ -329,11 +333,11 @@ input,button,select,textarea{font-family:inherit;color:inherit}
   padding:5px 4px;border-radius:9px;border:1px solid var(--line,#e3d9c2);
   background:transparent;color:var(--ink3,#a8987c);cursor:pointer;
   transition:background .15s ease,color .15s ease,border-color .15s ease}
-.napw button.on{background:rgba(139,92,246,.14);border-color:rgba(139,92,246,.45);color:#8b5cf6}
+.napw button.on{background:rgba(13,148,136,.15);border-color:rgba(13,148,136,.48);color:#0d9488}
 .napw.off button{opacity:.42}
 .napw.off button.on{opacity:.7}
 html.dark .napw button{border-color:#333b43;color:#8f979e}
-html.dark .napw button.on{background:rgba(179,165,232,.18);border-color:rgba(179,165,232,.5);color:#b3a5e8}
+html.dark .napw button.on{background:rgba(79,191,174,.2);border-color:rgba(79,191,174,.5);color:#4fbfae}
 @media(max-width:1100px){.metrics.m4{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.metrics.m4{grid-template-columns:repeat(2,1fr)}}
 .dsecbar{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;
@@ -1940,14 +1944,14 @@ html.dark body{background:#121619}
 .mesh{display:none}
 body.gym .mesh{display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
   background:
-    radial-gradient(56% 30% at 8% 2%,rgba(190,118,68,.74),transparent 68%),
-    radial-gradient(54% 28% at 94% 0%,rgba(214,116,60,.70),transparent 68%),
-    radial-gradient(74% 32% at 46% 14%,rgba(118,146,186,.64),transparent 72%),
-    radial-gradient(46% 20% at 82% 22%,rgba(192,124,162,.52),transparent 74%),
-    radial-gradient(48% 20% at 14% 34%,rgba(102,158,136,.50),transparent 76%),
-    radial-gradient(60% 24% at 66% 52%,rgba(146,122,200,.40),transparent 78%),
-    radial-gradient(56% 22% at 18% 72%,rgba(202,140,72,.36),transparent 78%),
-    radial-gradient(60% 24% at 74% 92%,rgba(112,150,178,.38),transparent 78%);
+    radial-gradient(56% 30% at 8% 2%,rgba(190,118,68,.64),transparent 68%),
+    radial-gradient(54% 28% at 94% 0%,rgba(214,116,60,.59),transparent 68%),
+    radial-gradient(74% 32% at 46% 14%,rgba(118,146,186,.56),transparent 72%),
+    radial-gradient(46% 20% at 82% 22%,rgba(192,124,162,.42),transparent 74%),
+    radial-gradient(48% 20% at 14% 34%,rgba(102,158,136,.42),transparent 76%),
+    radial-gradient(60% 24% at 66% 52%,rgba(146,122,200,.35),transparent 78%),
+    radial-gradient(56% 22% at 18% 72%,rgba(202,140,72,.28),transparent 78%),
+    radial-gradient(60% 24% at 74% 92%,rgba(112,150,178,.31),transparent 78%);
   filter:blur(30px) saturate(126%);
   -webkit-mask-image:linear-gradient(#000 0%,#000 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.66) 100%);
   mask-image:linear-gradient(#000 0%,#000 34%,rgba(0,0,0,.82) 58%,rgba(0,0,0,.66) 100%)}
@@ -2071,6 +2075,10 @@ body.gym .cwrap{margin-top:12px;margin-bottom:12px}
 body.gym .gstats{margin-top:12px}
 body.gym .card{margin-top:12px;margin-bottom:0;
   box-shadow:0 1px 2px rgba(60,52,44,.07),0 14px 32px -18px rgba(60,52,44,.34)}
+/* .scard'ın kendi kuralında width:100% var (düğme olarak da kullanılıyor).
+   Yatay kenar boşluğu eklenince kutu ebeveynden 28 px taşıyordu — bu yüzden
+   özet kartları üstteki iki karttan daha geniş görünüyordu. */
+body.gym .scard,body.gym .srow,body.gym .a7tap,body.gym .advr.tap{width:auto}
 body.gym .scard,body.gym .gcard,body.gym .mhero{
   margin-top:12px;margin-bottom:0;border:1px solid rgba(255,255,255,.7);
   border-top:1px solid rgba(255,255,255,.7);border-bottom:1px solid rgba(255,255,255,.7);
@@ -2109,7 +2117,9 @@ body.gym #g-body:not(.anim) .scard{animation:none}
 .tabar{display:block;height:5px;border-radius:3px;background:var(--inset,#efe7d6);
   overflow:hidden;margin-top:5px;max-width:190px}
 .tabar i{display:block;height:100%;border-radius:3px}
-.tadhr .sval{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15}
+.tadhr .sval{display:flex;flex-direction:column;align-items:flex-end;line-height:1.15;flex:none}
+.tadhr .sname{min-width:0}
+.tadhr .sname b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
 .tadhr .sval b{font-family:'Fraunces';font-size:15px;font-weight:600}
 .tadhr .sval i{font-size:10px;font-style:normal;font-weight:700;color:var(--ink3,#b3a488)}
 
@@ -2125,7 +2135,8 @@ body.gym #g-body:not(.anim) .scard{animation:none}
 .a7b span{display:block;height:100%;border-radius:5px}
 .a7b u{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--ink3,#b3a488);
   opacity:.55;text-decoration:none}
-.a7v{flex:0 0 78px;text-align:right;font-size:12px;font-weight:700}
+.a7v{flex:0 0 72px;min-width:0;text-align:right;font-size:12px;font-weight:700;
+  font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .a7note{font-size:11px;line-height:1.5;font-weight:600;color:var(--ink3,#b3a488);margin-top:2px}
 
 /* dokunulabilir ortalama satırı */
@@ -2207,7 +2218,7 @@ function applyTheme(){
     MEAS[0][3]=C.blue; MEAS[1][3]=C.teal; MEAS[2][3]=C.green;
     MEAS[3][3]=C.orange; MEAS[4][3]=C.pink; MEAS[5][3]=C.violet;
     RIRV[0][2]=C.orange; RIRV[1][2]=C.green; RIRV[2][2]=C.amber;
-    if(SUPS[0])SUPS[0][3]=C.violet;
+    if(SUPS[0])SUPS[0][3]=C.teal;
   }catch(e){}
   try{document.documentElement.classList.toggle('dark',d);}catch(e){}
   try{var m=document.querySelector('meta[name="theme-color"]');
@@ -2343,8 +2354,15 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-08',
-  t:'Titreme, kat kaydırma ve tek genişlik (v66.1)',
-  y:['HATA — TİTREME: alt çubuktaki üç noktaya (Daha) basınca çekmece açılırken '+
+  t:'Titreme, kat kaydırma ve tek genişlik (v66.1–66.2)',
+  y:['HATA — KART TAŞMASI (66.2): .scard kuralında width:100% vardı (kart aynı zamanda '+
+     'düğme olarak kullanılıyor). Yatay kenar boşluğu eklenince kutu ebeveynden 28 px '+
+     'taşıyor, bu yüzden özet kartları üstteki hero ve istatistik kartlarından geniş '+
+     'görünüyordu. Genişlik auto\'ya alındı; artık hepsi aynı hatta. Daralan kartta '+
+     'etiketle sayının üst üste binmemesi için etiketler kısalıyor, sayılar sabit kalıyor.',
+     'RENK: gündüz uykusu "antrenmandan önce / sonra" etiketi ve kreatin artık mor değil '+
+     'teal. Mor zaten yağ makrosunda kullanılıyordu, kreatinle çakışıyordu.',
+     'HATA — TİTREME: alt çubuktaki üç noktaya (Daha) basınca çekmece açılırken '+
      'render() çağrılıyordu; bu app.innerHTML\'i baştan yazıyor, yani ekrandaki her şey '+
      'silinip yeniden kuruluyordu. Göz kırpması buradan geliyordu. Artık yalnız çekmece '+
      'elemanı güncelleniyor. Aynı sorun bir kutuya yazı yazınca da vardı: telefonda '+
@@ -2850,7 +2868,7 @@ var RELEASES=[
      '12×14/10/5 = 15.9 < 12×12 ×4 = 16.8 — sıralama düzeldi. '+
      'PR tespiti, hareket grafiği ve rapordaki 1RM değerleri hepsi bu ölçüyü kullanıyor.']}
 ];
-var SUPS=[['kreatin','Kreatin','5 g',''+THC.c18+'']];
+var SUPS=[['kreatin','Kreatin','5 g',C.teal]];
 /* Bir hareket birden fazla günde geçebilir (ör. lat pulldown hem Çekiş hem
    Üst günde). İlk geçtiği gün "asıl" gündür; hedef set/tekrar aralığı oradan
    alınır, sonraki günler üstüne yazmaz. */
@@ -4293,7 +4311,7 @@ function adherence(){
     {k:'f',l:'Yağ',v:avg('f'),t:T.fat,c:C.violet,u:'g'},
     {k:'kcal',l:'Kalori',v:avg('kcal'),t:T.kcal,c:C.blue,u:'',inv:true},
     {k:'trn',l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
-    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
+    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.teal,u:'',raw:true}
   ];
   /* v66 — satır artık düğme: ortalamanın arkasındaki yedi gün açılıyor. */
   var body='<div style="padding:16px 18px;display:grid;grid-template-columns:repeat(2,1fr);gap:13px 18px">'+rows.map(function(r){
@@ -5458,7 +5476,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v66.1 · 8 Eyl 2026';
+var APPVER='v66.2 · 8 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5781,7 +5799,7 @@ function gymDay(){
       '<div class="ggrid">'+fld('sh','Omuz','cm',null,C.green)+fld('arm','Kol','cm',null,C.orange)+
         fld('ch','Göğüs','cm',null,C.pink)+'</div>'
       :'')+
-    '<div class="gsec">Takviye'+(kr.n?' <span style="color:'+C.violet+'">· seri '+kr.n+' gün</span>':'')+'</div>'+
+    '<div class="gsec">Takviye'+(kr.n?' <span style="color:'+C.teal+'">· seri '+kr.n+' gün</span>':'')+'</div>'+
     '<div class="gsups">'+SUPS.map(function(x){
       var on=!!(r.sup&&r.sup[x[0]]);
       return '<button class="gsup'+(on?' on':'')+'" data-a="sup" data-k="'+x[0]+'"'+
@@ -6200,7 +6218,7 @@ function adherenceM(){
     {k:'st',l:'Adım',v:avg('st'),t:T.steps,c:C.orange,u:''},
     {k:'slt',l:'Uyku',v:avgTot,t:7.5,c:C.cyan,u:'sa',dec:1},
     {k:'trn',l:'Antrenman',v:gymDone,t:gymPlan||1,c:C.pink,u:'',raw:true},
-    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.violet,u:'',raw:true}
+    {k:'krea',l:'Kreatin',v:supRate('kreatin',7),t:7,c:C.teal,u:'',raw:true}
   ];
   var hit=0,tot=0;
   rows.forEach(function(r){if(r.v==null)return;tot++;
@@ -6378,7 +6396,7 @@ function AVG7META(k){
     st:{l:'Adım',u:'',t:T.steps,c:C.orange},
     slt:{l:'Uyku',u:'sa',t:7.5,c:C.violet,dec:1},
     trn:{l:'Antrenman',u:'',t:1,c:C.pink,kind:'trn'},
-    krea:{l:'Kreatin',u:'',t:1,c:C.violet,kind:'sup',sup:'kreatin'}
+    krea:{l:'Kreatin',u:'',t:1,c:C.teal,kind:'sup',sup:'kreatin'}
   };
   return M[k]||{l:k,u:'',t:1,c:C.blue};
 }
