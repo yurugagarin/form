@@ -2273,12 +2273,16 @@ var PROGRAM={
     {n:'Leg curl',s:4,r:[10,15]},
     {n:'Leg extension',s:2,r:[12,15]},
     {n:'Ayakta calf raise',s:4,r:[10,15]}]},
+  /* v67 · 12 Eyl: Skullcrusher çıkarıldı (form oturmuyordu). Yerine İtiş gününde
+     zaten yapılan Kafa üstü triceps ekstansiyon geldi — 3 set korundu, tekrar aralığı
+     İtiş'tekiyle aynı (10-15). Sıra da değişti: hareket 2. sıradan kablo bloğunun sonuna
+     alındı, böylece kablo istasyonundaki üç hareket arka arkaya geliyor. */
   gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
     {n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
-    {n:'Skullcrusher',s:3,r:[10,12]},
     {n:'Hammer curl',s:3,r:[10,15]},
-    {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
     {n:'Face pull',s:3,r:[15,20]},
+    {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
+    {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
     {n:'Makine omuz press',s:3,r:[8,12]},
     {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
     {n:'Preacher curl',s:3,r:[10,12]}]},
@@ -2305,6 +2309,37 @@ var ORDER=['gun1','gun2','gun3','gun4','gun5'];
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-09-12',
+  t:'Omuz & Kol günü: Skullcrusher çıkarıldı, yerine Kafa üstü triceps ekstansiyon geldi',
+  y:['SEBEP: Skullcrusher\'da form oturmadı. Barı alnın üzerinde sabit bir yolda tutmak '+
+     'gerekiyor ve dirsek dışa açıldığı anda yük triceps\'ten çıkıp dirsek eklemine biniyor. '+
+     'Tekniği kovalamaya devam etmenin karşılığı yok: aynı kası, aynı gerilmiş pozisyonda, '+
+     'yörüngesi kablo tarafından sabitlenmiş halde yükleyen bir hareket zaten programda vardı.',
+     'YENİ HAREKET DEĞİL: Kafa üstü triceps ekstansiyon İtiş gününde 3×10-15 olarak '+
+     'yapılıyor. Çizimi, İngilizce arama adı, 90 sn dinlenme süresi, 5 kg\'lık kablo kademesi '+
+     've izolasyon RIR şeması (2 / ≤1 / ≤1) uygulamada hazırdı — öğrenilecek yeni teknik yok.',
+     'TEKRAR ARALIĞI İTİŞ\'TEKİYLE AYNI TUTULDU: 3×10-15. Skullcrusher 3×10-12 idi. Aynı '+
+     'hareketin günden güne farklı aralığı olursa ekran bir hedef, ilerleme motoru başka bir '+
+     'hedef söylüyor — v51\'de tam bu sorun çözülmüştü, geri getirilmedi.',
+     'HACİM DEĞİŞMEDİ: iki hareket de triceps\'e 1 birim yazıyor, set sayısı 3\'te kaldı. '+
+     'Haftalık triceps efektif set hedefi aynı kalıyor.',
+     'SIRA DEĞİŞTİ: hareket 2. sıradan 5. sıraya, kablo bloğunun sonuna alındı. Kablo '+
+     'istasyonunda yapılan üç hareket (face pull → tek kol yan kaldırış → kafa üstü '+
+     'ekstansiyon) artık arka arkaya; ardından makine/barbell bölümüne (makine omuz press → '+
+     'dar tutuş bench → preacher curl) tek seferde geçiliyor. Skullcrusher 2. sıradayken '+
+     'kablo bloğunu ikiye bölüyordu. NOT: halat hem face pull\'da hem kafa üstü ekstansiyonda '+
+     'kullanılıyor, aralarında tek kol tutamağı olduğu için aparat iki kez değişiyor — '+
+     'rahatsız ederse 3 ve 4 geri takas edilir, antrenman etkisi yok.',
+     'BUNUN BEDELİ: Dar tutuş bench artık triceps daha yorgunken geliyor — arasında yalnız '+
+     'makine omuz press var. Orada ağırlık düşerse çözüm basit: kafa üstü ekstansiyon ile '+
+     'tek kol kablo yan kaldırış yer değiştirir, ikisi de aynı istasyonda.',
+     'İLK SEANS İÇİN: Omuz & Kol gününde bu hareketin kaydı henüz yok, antrenman ekranı '+
+     'İtiş gününün son kaydını "BAŞKA GÜN" rozetiyle referans gösterir. İtiş\'te bu hareketin '+
+     'önünde iki pres var, Omuz & Kol\'de triceps\'i yoran bir şey yok — aynı kiloda daha çok '+
+     'tekrar çıkabilir. Uygulama iki günü ayrı hatlarda takip eder, biri diğerini bozmaz.',
+     'GEÇMİŞ VERİ BOZULMADI: Skullcrusher\'ın 12 Eyl öncesi bütün kayıtları duruyor; hacme ve '+
+     'kas seti sayacına giriyor, raporda \'PLAN DIŞI\' etiketiyle görünüyor. Yalnız bundan '+
+     'sonraki seans kalite yüzdesine girmiyor.']},
  {d:'2026-09-08',
   t:'Bacak günü: Romanian deadlift çıkarıldı, Leg press ve Leg curl 4 sete çıktı',
   y:['SEBEP: RDL her seansta bele ağrı veriyordu. RDL\'de yük omurga üzerinden '+
@@ -2353,6 +2388,32 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-12',
+  t:'Gün ayrımı artık her yerde (v67)',
+  y:['SORUN: aynı hareket iki plan gününde farklı sırada yapılıyor — kafa üstü ekstansiyon '+
+     'İtiş gününde iki presin arkasından, Omuz & Kol gününde dinlenmiş triceps ile geliyor. '+
+     'Kilo da tekrar da değişiyor. v52\'de ilerleme motoru ve geçen seans kutusu gün bazına '+
+     'alınmıştı; uygulamanın geri kalanı hâlâ günleri tek havuzda karıştırıyordu.',
+     'GEÇEN SEANS: prevSess() o günde kayıt bulamayınca sessizce başka günün seansına '+
+     'düşüyordu — hareket satırındaki "önceki 5 Eyl: 40×10" başka bir günün rakamı '+
+     'olabiliyordu. Artık gün dışına çıkmıyor; o günde ilk kez yapılıyorsa "ilk kez '+
+     'yapılıyor" yazıyor. Buna bağlı her şey düzeldi: hacim trendi, seans karşılaştırması, '+
+     '"Ağırlık arttı" kutusu ve salon modundaki kilo/tekrar ön dolguları.',
+     'KARAR ROZETİ: hareket satırındaki ilerleme rozeti (↑ ağırlığı X kg yap / ≡ takıldın) '+
+     'gün filtresi olmadan hesaplanıyordu. Artık o günün hattını okuyor.',
+     'BAŞKA GÜN YEDEĞİ: antrenman kartı ve NE YAPMALI penceresi o günde veri yokken başka '+
+     'günün kaydını göstermeye devam ediyor — ama ETİKETLİ (BAŞKA GÜN rozeti). Motorun '+
+     'KARARI ise artık yedek veriyle üretilmiyor: o günün verisi yoksa rozet hiç çıkmıyor. '+
+     'Yanlış güne dayalı "3 seanstır takıldın" cümlesi görmektense boş görmek doğru.',
+     'REKOR: isPR ve prsOn bütün günleri tek havuzda tarıyordu. Dinlenmiş günde konan rekor '+
+     'yorgun günde kırılması imkânsız bir eşik oluyordu, aynı hareket ikinci gününde hiç PR '+
+     'alamıyordu. Artık rekor kendi plan günü içinde aranıyor. DİKKAT: geçmiş etiketler '+
+     'yeniden hesaplanır — eskiden PR görünmeyen bazı seanslar artık PR işaretli gelebilir.',
+     'RAPOR: AĞIRLIK ARTIRMA DURUMU bölümü gün başına satır basıyor ve hangi gün olduğunu '+
+     'yazıyor ("Kafa üstü triceps ekstansiyon · Omuz/Kol").',
+     'ETKİLENEN HAREKETLER: iki günde geçen altısı — Eğik dambıl press, Makine row, '+
+     'Lat pulldown / Barfiks, Face pull, Oturarak dambıl yan kaldırış, Kafa üstü triceps '+
+     'ekstansiyon. Tek günde geçen hareketlerde hiçbir şey değişmiyor.']},
  {d:'2026-09-08',
   t:'Titreme, kat kaydırma ve tek genişlik (v66.1–66.2)',
   y:['HATA — KART TAŞMASI (66.2): .scard kuralında width:100% vardı (kart aynı zamanda '+
@@ -3477,9 +3538,14 @@ function prevSession(name,before,dt){
    AYNI plan gününün bir önceki örneğidir. Önce onu arıyoruz; o gün ilk kez
    yapılıyorsa veri kaybetmemek için herhangi bir güne düşüyoruz. */
 function prevSess(name,before){
+  /* v67 — Eskiden o plan gününde kayıt bulamayınca sessizce BAŞKA GÜNÜN seansına
+     düşüyordu. Hareketin sırası ve o günkü yorgunluk hem kiloyu hem tekrarı
+     değiştirdiği için bu kıyas yanlış: "önceki 5 Eyl: 40×10" diye gösterilen rakam
+     başka bir günün rakamı olabiliyordu. Artık gün dışına çıkmıyor — o günde ilk kez
+     yapılıyorsa "ilk kez yapılıyor" denir. Etiketli yedeği olan tek iki yer var:
+     antrenman kartı ve NE YAPMALI penceresi (BAŞKA GÜN rozeti). */
   var dt=dtOf(before)||planOf(before);
-  var p=dt?prevSession(name,before,dt):null;
-  return p||prevSession(name,before);
+  return dt?prevSession(name,before,dt):prevSession(name,before);
 }
 function sessionEval(d,ov){
   if(ov)return _sessionEval(d,ov);
@@ -3912,15 +3978,23 @@ function weekProgress(mon){
 }
 
 /* ============ REKOR (PR) ============ */
+/* v67 — Rekor artık KENDİ PLAN GÜNÜNDE aranıyor. Eskiden bütün günler tek havuzdu:
+   aynı hareket iki günde geçtiğinde dinlenmiş günde konan rakam, yorgun günde
+   kırılması imkânsız bir eşik oluyordu — ikinci gün hiç PR alamıyordu. */
+function prBase(name,d,dt){
+  var prevBest=0;
+  keys().forEach(function(dd){
+    if(dd>=d)return;
+    if(dt&&dtOf(dd)!==dt)return;
+    var x=sessE1((D(dd).ex||{})[name]);if(x&&x.v>prevBest)prevBest=x.v;
+  });
+  return prevBest;
+}
 function prsOn(d){
-  var r=D(d),out=[];
+  var r=D(d),out=[],dt=dtOf(d);
   Object.keys(r.ex||{}).forEach(function(nm){
     var cur1=sessE1(r.ex[nm]);if(!cur1)return;
-    var prevBest=0;
-    keys().forEach(function(dd){
-      if(dd>=d)return;
-      var b=sessE1((D(dd).ex||{})[nm]);if(b&&b.v>prevBest)prevBest=b.v;
-    });
+    var prevBest=prBase(nm,d,dt);
     if(prevBest>0&&cur1.v>prevBest*1.005)
       out.push({n:nm,kg:cur1.kg,rep:cur1.rep,v:cur1.v,gain:(cur1.v-prevBest)/prevBest*100});
   });
@@ -3929,11 +4003,7 @@ function prsOn(d){
 function isPR(name,d){
   /* rekor ölçüsü seans 1RM — tek iyi set değil (bkz. sessE1) */
   var b=sessE1((D(d).ex||{})[name]);if(!b)return false;
-  var prevBest=0;
-  keys().forEach(function(dd){
-    if(dd>=d)return;
-    var x=sessE1((D(dd).ex||{})[name]);if(x&&x.v>prevBest)prevBest=x.v;
-  });
+  var prevBest=prBase(name,d,dtOf(d));
   return prevBest>0&&b.v>prevBest*1.005;
 }
 
@@ -4541,7 +4611,7 @@ function exRow(e,r){
                '</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
               :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
                'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
-        (function(){var pg=progression(e.n);if(!pg)return '';
+        (function(){var pg=progression(e.n,dtOf(cur)||planOf(cur));if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
           var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
           return '<div style="margin-top:6px;display:inline-block;font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 9px;background:'+hexa(col,.13)+';color:'+col+'">'+tx+'</div>';})()+
@@ -5476,7 +5546,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v66.2 · 8 Eyl 2026';
+var APPVER='v67 · 12 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5632,7 +5702,8 @@ function gymWorkout(){
   var _dt=dtOf(cur);
   var prev=prevSession(e.n,cur,_dt),prevX=false;
   if(!prev){prev=prevSession(e.n,cur);prevX=!!prev;}
-  var ev=evalEx(sets,te,prev),pg=progression(e.n,_dt)||progression(e.n);
+  /* v67: karar rozeti başka günün verisiyle üretilmez — o günün hattı yoksa çıkmaz */
+  var ev=evalEx(sets,te,prev),pg=progression(e.n,_dt);
 
   var rows='',anyFilled=false;
   for(var i=0;i<cnt;i++){
@@ -7447,14 +7518,25 @@ function report(){
     o+='\n';
   });
 
-  var ups=[],stalls=[],okg=[];
+  /* v67 — Özet ve İlerleme ekranları v52'den beri aynı hareketin iki plan gününü ayrı
+     satırda gösteriyordu; rapor göstermiyordu — progression() burada gün filtresi olmadan
+     çağrılıyordu. İki günün seansları tek seriye dizilince takılma sayısı ve kilo hattı
+     yanlış çıkıyordu. Artık rapor da gün başına satır basıyor. */
+  var ups=[],stalls=[],okg=[],rdmap={};
+  ORDER.forEach(function(dt){
+    (PROGRAM[dt]?PROGRAM[dt].ex:[]).forEach(function(x){(rdmap[x.n]=rdmap[x.n]||[]).push(dt);});
+  });
   Object.keys(EXTGT).forEach(function(nm){
-    var pg=progression(nm);if(!pg)return;
-    var tail=(pg.rir!=null?' [ort.RIR '+fx(pg.rir,1)+']':'');
-    if(pg.type==='up')ups.push(nm+': '+pg.kg+' kg → '+pg.next+' kg'+tail);
-    else if(pg.type==='ok')okg.push(nm+': '+pg.kg+' kg, '+(pg.why==='rep'?'tekrarlar artıyor':'RIR düşüyor')+' — takılma değil'+tail);
-    else stalls.push(nm+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı, tekrar da artmıyor'+
-      (pg.reps0!=null?': '+pg.reps0+' → '+pg.reps+' tekrar':'')+')'+tail);
+    var dts=rdmap[nm]||[null];
+    dts.forEach(function(dt){
+      var pg=progression(nm,dt);if(!pg)return;
+      var lb=(dts.length>1&&dt&&PROGRAM[dt])?nm+' · '+PROGRAM[dt].short:nm;
+      var tail=(pg.rir!=null?' [ort.RIR '+fx(pg.rir,1)+']':'');
+      if(pg.type==='up')ups.push(lb+': '+pg.kg+' kg → '+pg.next+' kg'+tail);
+      else if(pg.type==='ok')okg.push(lb+': '+pg.kg+' kg, '+(pg.why==='rep'?'tekrarlar artıyor':'RIR düşüyor')+' — takılma değil'+tail);
+      else stalls.push(lb+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı, tekrar da artmıyor'+
+        (pg.reps0!=null?': '+pg.reps0+' → '+pg.reps+' tekrar':'')+')'+tail);
+    });
   });
   if(ups.length||stalls.length||okg.length){
     o+='## AĞIRLIK ARTIRMA DURUMU\n';
@@ -9116,7 +9198,7 @@ var nyOpen=null;
 function nyPanel(name){
   var dt=dtOf(cur),e=tgtFor(name,cur)||EXTGT[name];
   if(!e)return '';
-  var pg=progression(name,dt)||progression(name);
+  var pg=progression(name,dt);   /* v67: yedek günden karar üretilmez */
   var prev=prevSession(name,cur,dt),xd=false;
   if(!prev){prev=prevSession(name,cur);xd=!!prev;}
   var lo=e.r[0],hi=e.r[1],floor=Math.max(1,lo-2),inc=incFor(name);
