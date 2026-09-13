@@ -2300,6 +2300,73 @@ var PROGRAM={
    Hangi takvim gününde yaptığın önemli değil, sıra bozulmaz. */
 var ORDER=['gun1','gun2','gun3','gun4','gun5'];
 
+/* ============ PROGRAM TARİH KİLİDİ (v68) ============
+   HATA: PROGRAM tek bir "bugünkü program" tutuyordu ve geçmiş günler de onunla
+   değerlendiriliyordu. Program değiştirildiğinde geçmiş geriye dönük bozuluyordu:
+   8 Eyl'de bacak gününde Leg press 3→4 sete çıkınca Ağustos'ta yapılmış bütün bacak
+   seansları "1 set eksik" göründü; 12 Eyl'de Skullcrusher çıkıp yerine Kafa üstü
+   ekstansiyon gelince geçmiş Omuz & Kol günleri "hiç yapılmamış bir hareket" gösterip
+   seans puanını düşürdü. Yapılmış iş geriye dönük eksik sayılamaz.
+
+   ÇÖZÜM: PROGRAM artık YALNIZ bugünü anlatır. PROGHIST, değişiklik tarihinden
+   ÖNCEKİ günler için o tarihte yürürlükte olan hareket listesini tutar. Bir günün
+   hedefi, hacmi, kalite yüzdesi ve raporu artık O GÜNÜN programıyla hesaplanır.
+
+   KURAL — BUNDAN SONRA: programda kalıcı bir değişiklik yaparken eski liste
+   PROGHIST'e taşınmadan PROGRAM'daki satır DÜZELTİLMEZ. Değişiklik gününün kendisi
+   yeni programa dahildir (to = değişikliğin ilk geçerli olduğu tarih, o tarih dahil
+   yeni liste). Kayıtlar en yeniden en eskiye doğru sıralı değil, ilk eşleşen kazanır.
+
+   NOT — 26 Ağu öncesi: Üst Vücut gününden o tarihte Halat pushdown, Kablo curl ve
+   Cable crunch çıkarılmıştı. O tarihten önceki hedefleri (set/tekrar) elimizdeki
+   hiçbir yedekte yok, uydurulmadı — 26 Ağu öncesi Üst Vücut günleri için o üç hareket
+   PLAN DIŞI sayılmaya devam eder (hacme girer, kalite yüzdesine girmez). */
+var PROGHIST=[
+  /* 29 Ağu öncesi — v51 tekrar aralığı tekleştirmesinden önceki hedefler */
+  {to:'2026-08-29',days:{
+    gun1:[{n:'Eğik dambıl press',s:3,r:[6,10]},
+          {n:'Düz dambıl press',s:3,r:[8,12]},
+          {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
+          {n:'Kablo yan kaldırış',s:4,r:[12,20]},
+          {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
+          {n:'Halat pushdown',s:3,r:[12,15]}],
+    gun5:[{n:'Lat pulldown / Barfiks',s:3,r:[10,12]},
+          {n:'Makine row',s:3,r:[10,12]},
+          {n:'Eğik dambıl press',s:3,r:[8,12]},
+          {n:'Oturarak dambıl yan kaldırış',s:3,r:[15,20]},
+          {n:'Kablo fly',s:3,r:[12,15]}]}},
+  /* 8 Eyl öncesi — Romanian deadlift hâlâ programdaydı, Leg press ve Leg curl 3 setti */
+  {to:'2026-09-08',days:{
+    gun3:[{n:'Squat / Hack squat',s:3,r:[6,10]},
+          {n:'Romanian deadlift',s:3,r:[8,12]},
+          {n:'Leg press',s:3,r:[10,15]},
+          {n:'Leg curl',s:3,r:[10,15]},
+          {n:'Leg extension',s:2,r:[12,15]},
+          {n:'Ayakta calf raise',s:4,r:[10,15]}]}},
+  /* 12 Eyl öncesi — Skullcrusher hâlâ 2. sıradaydı, kafa üstü ekstansiyon bu günde yoktu */
+  {to:'2026-09-12',days:{
+    gun4:[{n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
+          {n:'Skullcrusher',s:3,r:[10,12]},
+          {n:'Hammer curl',s:3,r:[10,15]},
+          {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
+          {n:'Face pull',s:3,r:[15,20]},
+          {n:'Makine omuz press',s:3,r:[8,12]},
+          {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
+          {n:'Preacher curl',s:3,r:[10,12]}]}}
+];
+/* d tarihinde o plan gününde yürürlükte olan hareket listesi.
+   d verilmezse bugünkü (yani PROGRAM'daki) liste döner. */
+function planEx(dt,d){
+  var t=PROGRAM[dt];if(!t)return [];
+  if(d)for(var i=0;i<PROGHIST.length;i++){
+    var h=PROGHIST[i];
+    if(d<h.to&&h.days[dt])return h.days[dt];
+  }
+  return t.ex;
+}
+/* o gün programda kaç hareket vardı — geçmiş günler için eski sayı */
+function planLen(dt,d){return planEx(dt,d).length;}
+
 /* ============ PROGRAM DEĞİŞİKLİK GÜNLÜĞÜ ============
    YALNIZCA programın kendisi değiştiğinde buraya satır düşülür: bir hareket
    çıkarıldığında, eklendiğinde, set/tekrar hedefi değiştiğinde. Bu liste
@@ -2337,9 +2404,12 @@ var CHANGES=[
      'İtiş gününün son kaydını "BAŞKA GÜN" rozetiyle referans gösterir. İtiş\'te bu hareketin '+
      'önünde iki pres var, Omuz & Kol\'de triceps\'i yoran bir şey yok — aynı kiloda daha çok '+
      'tekrar çıkabilir. Uygulama iki günü ayrı hatlarda takip eder, biri diğerini bozmaz.',
-     'GEÇMİŞ VERİ BOZULMADI: Skullcrusher\'ın 12 Eyl öncesi bütün kayıtları duruyor; hacme ve '+
-     'kas seti sayacına giriyor, raporda \'PLAN DIŞI\' etiketiyle görünüyor. Yalnız bundan '+
-     'sonraki seans kalite yüzdesine girmiyor.']},
+     'GEÇMİŞ VERİ: Skullcrusher\'ın 12 Eyl öncesi bütün kayıtları duruyor. İlk yazıldığında '+
+     'burada "plan dışı sayılır" yazıyordu — YANLIŞTI. 12 Eyl öncesinde Skullcrusher '+
+     'programın asıl parçasıydı, o günlerde plan dışı sayılamaz. Aynı şekilde Kafa üstü '+
+     'ekstansiyon o günlerde Omuz & Kol programında YOKTU, "eksik hareket" olarak '+
+     'gösterilemez. Tarih kilidi (v68) bunu düzeltti: 12 Eyl öncesi Omuz & Kol günleri '+
+     'eski listeyle değerlendiriliyor.']},
  {d:'2026-09-08',
   t:'Bacak günü: Romanian deadlift çıkarıldı, Leg press ve Leg curl 4 sete çıktı',
   y:['SEBEP: RDL her seansta bele ağrı veriyordu. RDL\'de yük omurga üzerinden '+
@@ -2361,9 +2431,12 @@ var CHANGES=[
      'ağrı veren bir hareket için risk almanın karşılığı yok. Kesim bitip '+
      'kas yapma dönemine geçildiğinde menteşe paterni (kablo pull-through gibi '+
      'affedici bir hareketle) tekrar değerlendirilir.',
-     'GEÇMİŞ VERİ BOZULMADI: RDL\'nin 8 Eyl öncesi bütün kayıtları duruyor; hacme ve '+
-     'kas seti sayacına giriyor, raporda \'PLAN DIŞI\' etiketiyle görünüyor. '+
-     'Yalnız bundan sonraki seans kalite yüzdesine girmiyor.']},
+     'GEÇMİŞ VERİ: RDL\'nin 8 Eyl öncesi bütün kayıtları duruyor. İlk yazıldığında burada '+
+     '"plan dışı sayılır" yazıyordu — YANLIŞTI. 8 Eyl öncesinde RDL programın asıl '+
+     'parçasıydı; ayrıca Leg press ve Leg curl o tarihte 3 setti, 4 değil — 4\'e çıkarılması '+
+     'geçmiş bacak seanslarını geriye dönük "1 set eksik" gösteriyordu. Tarih kilidi (v68) '+
+     'bunu düzeltti: 8 Eyl öncesi bacak günleri RDL dahil, Leg press/Leg curl 3 setle '+
+     'değerlendiriliyor.']},
  {d:'2026-08-26',
   t:'Üst Vücut günü: Halat pushdown, Kablo curl ve Cable crunch çıkarıldı',
   y:['Haftalık efektif set hedefi biceps 23, triceps 22.5 idi. Kalori açığındayken '+
@@ -2388,6 +2461,32 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-13',
+  t:'Geçmiş günler artık o tarihteki programla değerlendiriliyor (v68)',
+  y:['HATA: PROGRAM tek bir "bugünkü program" tutuyordu ve geçmiş günler de onunla '+
+     'değerlendiriliyordu. Program her değiştiğinde geçmiş geriye dönük bozuluyordu: '+
+     '8 Eyl\'de Leg press ve Leg curl 3→4 sete çıkınca Ağustos\'taki bacak seansları '+
+     '"1 set eksik" göründü; 12 Eyl\'de Skullcrusher çıkıp yerine Kafa üstü ekstansiyon '+
+     'gelince geçmiş Omuz & Kol günleri hiç programında olmayan bir hareketi "yapılmamış" '+
+     'gösterdi. Seans kalite yüzdesi, gün puanı ve rapor bu yanlış listeye göre çıkıyordu.',
+     'ÇÖZÜM — TARİH KİLİDİ: PROGRAM artık yalnız bugünü anlatıyor. PROGHIST, her '+
+     'değişiklik tarihinden önceki dönem için o tarihte yürürlükte olan listeyi tutuyor. '+
+     'Bir günün hedefi, eksik set sayısı, kalite yüzdesi, kas seti sayacı ve rapor satırı '+
+     'artık O GÜNÜN programıyla hesaplanıyor. Yapılmış iş geriye dönük eksik sayılamıyor.',
+     'KİLİTLENEN ÜÇ DÖNEM: 29 Ağu öncesi — v51 tekrar aralığı tekleştirmesinden önceki '+
+     'hedefler (İtiş\'te Eğik dambıl press 6-10; Üst\'te Lat pulldown ve Makine row 10-12, '+
+     'yan kaldırış 15-20). 8 Eyl öncesi — bacak günü RDL dahil, Leg press ve Leg curl 3 set. '+
+     '12 Eyl öncesi — Omuz & Kol günü Skullcrusher 2. sırada, kafa üstü ekstansiyon yok.',
+     'PUANLAR YENİDEN HESAPLANIR: bu düzeltmeden etkilenen geçmiş günlerin kalite yüzdesi '+
+     've gün puanı yükselecek — çünkü o günlerde gerçekten eksik iş yapılmamıştı.',
+     'ELDE OLMAYAN TEK DÖNEM: 26 Ağu\'da Üst Vücut gününden çıkarılan Halat pushdown, '+
+     'Kablo curl ve Cable crunch\'ün o tarihten önceki set/tekrar hedefleri hiçbir yedekte '+
+     'yok. Uydurulmadı: 26 Ağu öncesi Üst Vücut günlerinde bu üç hareket PLAN DIŞI '+
+     'kalmaya devam ediyor (hacme girer, kalite yüzdesine girmez). Eski bir yedek '+
+     'çıkarsa o dönem de kilitlenir.',
+     'BUNDAN SONRAKİ KURAL: programda kalıcı bir değişiklik yapılırken eski liste '+
+     'PROGHIST\'e taşınmadan PROGRAM\'daki satır düzeltilmiyor. Kural kodun içine, '+
+     'PROGRAM\'ın hemen altına yazıldı.']},
  {d:'2026-09-12',
   t:'Gün ayrımı artık her yerde (v67)',
   y:['SORUN: aynı hareket iki plan gününde farklı sırada yapılıyor — kafa üstü ekstansiyon '+
@@ -3437,8 +3536,8 @@ function tgtOn(e,d){
    diyordu — oysa o gün hedef 8-12'ydi ve 11 tekrar üst sınır değildi.
    Artık hedef, hareketin gerçekten yapıldığı günden okunuyor. */
 function tgtFor(name,d){
-  var e=null,dt=d?dtOf(d):null,t=dt?PROGRAM[dt]:null;
-  if(t)t.ex.forEach(function(x){if(x.n===name)e=x;});
+  var e=null,dt=d?dtOf(d):null;
+  if(dt&&PROGRAM[dt])planEx(dt,d).forEach(function(x){if(x.n===name)e=x;});
   if(!e)e=EXTGT[name];
   if(!e)return null;
   return d?tgtOn(e,d):e;
@@ -3468,7 +3567,7 @@ function tgtLabel(name){
    bugünün puanı da şişmez. */
 function dayEx(d,dt){
   var t=dt?PROGRAM[dt]:null;if(!t)return [];
-  var list=t.ex.slice(),seen={};
+  var list=planEx(dt,d).slice(),seen={};   /* v68: O GÜNÜN programı */
   list.forEach(function(x){seen[x.n]=1;});
   var ex=(D(d)||{}).ex||{};
   Object.keys(ex).forEach(function(nm){
@@ -5546,7 +5645,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v67 · 12 Eyl 2026';
+var APPVER='v68 · 13 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5675,13 +5774,13 @@ function restBar(){
 
 /* --- antrenman sekmesi: tek hareket --- */
 function gymWorkout(){
-  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur),TEX=planEx(dt,cur);
   var col=(t&&t.color)||''+THC.c21+'';
   var isTr=ORDER.indexOf(dt)>=0;
   var ord=isTr?weekOrder(cur):null;
   var pick=workHero();
 
-  if(!t||!t.ex.length)
+  if(!t||!TEX.length)
     return pick+'<div class="gempty"><b>'+esc(t?t.label:'Planlanmadı')+'</b>'+
       'Bugün antrenman yok — yemek, uyku ve adım öne çıkıyor. Gün sekmesinden verilerini gir.</div>';
 
@@ -5691,8 +5790,8 @@ function gymWorkout(){
   if(isDeload(cur)&&!isTrav(cur))pick+='<div class="dlbanner" style="margin:0">'+
     '<b>Deload haftası.</b> Set sayıları otomatik yarıya indirildi. '+
     'Ağırlıkları <u>aynı tut</u>, her seti RIR 3-4’te bırak — bu hafta yorulmak değil toparlanmak için.</div>';
-  if(exIdx>=t.ex.length)exIdx=0;
-  var e=t.ex[exIdx];
+  if(exIdx>=TEX.length)exIdx=0;
+  var e=TEX[exIdx];
   var sets=(r.ex||{})[e.n]||[];
   var te=tgtOn(e,cur);
   var cnt=Math.max(te.s,sets.length);
@@ -5752,7 +5851,7 @@ function gymWorkout(){
     '<div class="ghead">'+
       '<button class="gfig" data-a="fig" data-n="'+esc(e.n)+'">'+figSVG(e.n)+'</button>'+
       '<div style="flex:1;min-width:0">'+
-        '<div class="gnum">'+(exIdx+1)+' / '+t.ex.length+' · HAREKET</div>'+
+        '<div class="gnum">'+(exIdx+1)+' / '+TEX.length+' · HAREKET</div>'+
         '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+
         '<div class="gtgt">'+te.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme'+
           (te.dl?' <b style="color:'+C.amber+'">· DELOAD ('+e.s+'→'+te.s+' set)</b>':'')+'</div>'+
@@ -7295,19 +7394,19 @@ function gymBody(){
    Dışarıda, hiç yeniden yaratılmayan kendi kabında duruyor: gerçekten sabit. */
 function gymNav(){
   if(gTab!=='w')return '';
-  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
-  if(!t||!t.ex.length)return '';
-  if(exIdx>=t.ex.length)exIdx=0;
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur),TEX=planEx(dt,cur);
+  if(!t||!TEX.length)return '';
+  if(exIdx>=TEX.length)exIdx=0;
   var dots='';
-  for(var j=0;j<t.ex.length;j++){
-    var ev2=evalEx((r.ex||{})[t.ex[j].n],tgtOn(t.ex[j],cur),prevSess(t.ex[j].n,cur));
+  for(var j=0;j<TEX.length;j++){
+    var ev2=evalEx((r.ex||{})[TEX[j].n],tgtOn(TEX[j],cur),prevSess(TEX[j].n,cur));
     var cl=j===exIdx?'on':(ev2.state==='tam'?'ok':(ev2.state==='yakin'?'near':(ev2.state!=='bos'?'part':'')));
     dots+='<button class="gdot '+cl+'" data-a="goex" data-i="'+j+'" aria-label="'+(j+1)+'. hareket"></button>';
   }
   return '<div class="gnav">'+
     '<button class="garrow" data-a="exprev"'+(exIdx===0?' disabled':'')+'>‹</button>'+
     '<div class="gdots">'+dots+'</div>'+
-    '<button class="garrow" data-a="exnext"'+(exIdx>=t.ex.length-1?' disabled':'')+'>›</button>'+
+    '<button class="garrow" data-a="exnext"'+(exIdx>=TEX.length-1?' disabled':'')+'>›</button>'+
   '</div>';
 }
 /* gövde + çubuk birlikte tazelenir */
@@ -9258,10 +9357,10 @@ function nyPanel(name){
 }
 /* antrenman sekmesi başlığı — gün sekmesindeki kart ile aynı dil */
 function workHero(){
-  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur);
-  var isTr=!!(t&&t.ex.length),ord=isTr?weekOrder(cur):null;
-  var doneEx=0,totEx=isTr?t.ex.length:0,vol=0,setsDone=0,rirs=[];
-  if(isTr)t.ex.forEach(function(e){
+  var dt=planOf(cur),t=PROGRAM[dt],r=D(cur),TEX=planEx(dt,cur);
+  var isTr=!!(t&&TEX.length),ord=isTr?weekOrder(cur):null;
+  var doneEx=0,totEx=isTr?TEX.length:0,vol=0,setsDone=0,rirs=[];
+  if(isTr)TEX.forEach(function(e){
     var f=((r.ex||{})[e.n]||[]).filter(function(x){return x.kg!=null&&x.rep!=null;});
     setsDone+=f.length;
     f.forEach(function(x){vol+=x.kg*x.rep;if(x.rir!=null)rirs.push(x.rir);});
@@ -9404,7 +9503,7 @@ function refreshDayMetrics(){
 }
 function refreshEx(name){
   var t=PROGRAM[planOf(cur)];if(!t)return;
-  var e=null;t.ex.forEach(function(x){if(x.n===name)e=x;});
+  var e=null;planEx(planOf(cur),cur).forEach(function(x){if(x.n===name)e=x;});
   if(!e)return;
   var row=document.querySelector('[data-ex="'+cssq(name)+'"]');if(!row)return;
   var ev=evalEx((D(cur).ex||{})[name],tgtOn(e,cur),prevSess(name,cur));
@@ -9808,14 +9907,14 @@ app.addEventListener('click',function(ev){
     if(nv2>0){S.targets.kcal=nv2;S._st=Date.now();save();
       toast('kalori hedefi '+ti(nv2)+' yapıldı');render();}}
   else if(a==='rir'){
-    var trp=PROGRAM[planOf(cur)],exr=trp.ex[exIdx],ixr=+t.getAttribute('data-i'),vr=+t.getAttribute('data-v');
+    var trp=planEx(planOf(cur),cur),exr=trp[exIdx],ixr=+t.getAttribute('data-i'),vr=+t.getAttribute('data-v');
     var rr5=touch(cur);if(!rr5.dt)rr5.dt=planOf(cur);rr5.ex=rr5.ex||{};markWork(rr5);
     var ar=rr5.ex[exr.n]=rr5.ex[exr.n]||[];
     while(ar.length<=ixr)ar.push({kg:null,rep:null});
     ar[ixr].rir=(ar[ixr].rir===vr)?null:vr;
     save(cur);gymPaint();}
   else if(a==='kgstep'){
-    var tks=PROGRAM[planOf(cur)],exk=tks.ex[exIdx],ixk=+t.getAttribute('data-i'),dir=+t.getAttribute('data-dir');
+    var tks=planEx(planOf(cur),cur),exk=tks[exIdx],ixk=+t.getAttribute('data-i'),dir=+t.getAttribute('data-dir');
     var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};markWork(rk);
     var ak=rk.ex[exk.n]=rk.ex[exk.n]||[];
     while(ak.length<=ixk)ak.push({kg:null,rep:null});
@@ -9838,7 +9937,7 @@ app.addEventListener('click',function(ev){
   else if(a==='gdt'){var gk=t.getAttribute('data-k');touch(cur).dt=gk;S.plan=S.plan||{};S.plan[cur]=gk;S._pt=Date.now();exIdx=0;dtPick=false;save(cur);render();}
   else if(a==='goex'){exIdx=+t.getAttribute('data-i');gymPaint();window.scrollTo(0,0);}
   else if(a==='exprev'){if(exIdx>0){exIdx--;gymPaint();window.scrollTo(0,0);}}
-  else if(a==='exnext'){var tt=PROGRAM[planOf(cur)];if(tt&&exIdx<tt.ex.length-1){exIdx++;gymPaint();window.scrollTo(0,0);}}
+  else if(a==='exnext'){var tt=planEx(planOf(cur),cur);if(exIdx<tt.length-1){exIdx++;gymPaint();window.scrollTo(0,0);}}
   else if(a==='rest30'){
     if(timer.done){timer.done=false;timer.total=30;timer.endAt=Date.now()+30000;
       try{if(titleSaved){document.title=titleSaved;titleSaved='';}}catch(e){}
@@ -9849,7 +9948,7 @@ app.addEventListener('click',function(ev){
   else if(a==='restmin'){timer.mini=true;paintRest();}
   else if(a==='restmax'){timer.mini=false;paintRest();}
   else if(a==='samelast'){
-    var tp=PROGRAM[planOf(cur)],ex=tp.ex[exIdx],pv=prevSess(ex.n,cur);
+    var tp=planEx(planOf(cur),cur),ex=tp[exIdx],pv=prevSess(ex.n,cur);
     if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};markWork(rr2);
       rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep,rir:null};});
       save(cur);gymPaint();}}
@@ -9858,7 +9957,7 @@ app.addEventListener('click',function(ev){
     var rr4=D(cur);
     if(rr4.ex&&rr4.ex[nw]&&rr4.ex[nw][iw]){rr4.ex[nw][iw]={kg:null,rep:null,rir:null};save(cur);render();}}
   else if(a==='setclear'){
-    var tpc=PROGRAM[planOf(cur)],exc=tpc.ex[exIdx],ixc=+t.getAttribute('data-i');
+    var tpc=planEx(planOf(cur),cur),exc=tpc[exIdx],ixc=+t.getAttribute('data-i');
     var rc=D(cur);
     if(rc.ex&&rc.ex[exc.n]&&rc.ex[exc.n][ixc]){
       if(rc.ex[exc.n].length>exc.s&&ixc>=exc.s)rc.ex[exc.n].splice(ixc,1);
@@ -9866,7 +9965,7 @@ app.addEventListener('click',function(ev){
       save(cur);gymPaint();
     }}
   else if(a==='setdone'){
-    var tp2=PROGRAM[planOf(cur)],ex2=tp2.ex[exIdx],ix3=+t.getAttribute('data-i');
+    var tp2=planEx(planOf(cur),cur),ex2=tp2[exIdx],ix3=+t.getAttribute('data-i');
     var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};markWork(rr3);
     var arr=rr3.ex[ex2.n]=rr3.ex[ex2.n]||[];
     while(arr.length<=ix3)arr.push({kg:null,rep:null});
