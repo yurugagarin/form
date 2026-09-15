@@ -2461,6 +2461,59 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-15',
+  t:'Kilo kaybı hızı, seans kalitesi ve seans süreleri düzeltildi (v69)',
+  y:['HIZ — EN BÜYÜK HATA: haftalık kayıp hızı EMA (trend) serisine regresyon '+
+     'uygulanarak bulunuyordu ve ölçüm olmayan günlere son trend değeri '+
+     'kopyalanıp seriye ekleniyordu. 7-11 Eyl seyahatinde 5 gün tartı girilmedi; '+
+     'uygulama o 5 güne yatay 5 nokta yazdı. Değer donarken zaman sayacı '+
+     'ilerledi, regresyon da hızı sıfıra doğru çekti: ekranda -0.30 kg/hafta, '+
+     'gerçekte -0.43. Bu fark günde ~170 kcal demek.',
+     'DÜZELTME: regresyon artık HAM tartılara, x ekseni gerçek takvim farkına '+
+     'uygulanıyor. Tartılmayan gün denkleme hiç girmiyor — uydurulmuş veri yok. '+
+     'EMA de boşluğa duyarlı: 5 gün sonra gelen ölçüm 1 gün sonra gelenden daha '+
+     'çok söz sahibi (1-(1-a)^gün). Pencere her yerde 21 gün; rapor başlığı 14, '+
+     'TDEE 21 gün kullanıp yan yana iki farklı hız yazmıyor artık.',
+     'VERİ KALİTESİ GÖRÜNÜR: rapor artık hızın kaç tartıdan, kaç günden çıktığını '+
+     've kaç gün boşluk olduğunu yazıyor (R² ve sapma dahil). 16 tartı / 21 gün ile '+
+     '21 tartı / 21 gün aynı güvende değil.',
+     'TDEE ARTIK "ÖLÇÜLEN" DEMİYOR: bakım = ortalama alım − hız×7700/7. Bu bir '+
+     'ölçüm değil, iki girdiden türeyen bir kimlik. "Günlük açık" diye yazılan '+
+     'sayı da aynı denklemin ikinci yüzü: açık = hız×1100. Yani TDEE hızı '+
+     'doğrulamaz, hızdan türer. İkisini yan yana koyup "uyumlu" demek sağlamanın '+
+     'sağlamasını yapmaktır. Kart artık bunu açıkça yazıyor ve karar vermiyor.',
+     'ÖNERİ MANTIĞI DEĞİŞTİ: eskiden öneri TDEE\'den üretiliyordu (TDEE − 0.55×1100) '+
+     've sabit bir 0.3-0.7 aralığına bakıyordu. Kendi çıktısını girdi sanıyordu. '+
+     'Artık GEREKEN hız = (trend kilo − hedef kilo) ÷ kalan hafta ile GERÇEKLEŞEN '+
+     'hız karşılaştırılıyor; fark kcal\'e çevrilip önce ADIM olarak öneriliyor '+
+     '(1000 adım ≈ 35 kcal), yetmezse kalori. Hedefin önündeyken hiçbir sayı '+
+     'önerilmiyor.',
+     'RAPORDAKİ ÇELİŞKİ KALKTI: kart "tam hedef aralıkta, değiştirme" derken rapor '+
+     'aynı anda "önerilen hedef 1900" yazıyordu, çünkü rapor öneri tipine bakmadan '+
+     'sug değerini basıyordu. Artık öneri yoksa satır da yok.',
+     'SEANS KALİTESİ — PAYDA HATASI: wsum O GÜNÜN programındaki hareketlerden '+
+     'toplanıyor ama BUGÜNÜN program uzunluğuna bölünüyordu. 6 Eyl bacak gününde '+
+     '6 hareket vardı (RDL dahil), bugün 5 var → kalite %120\'ye çıkabiliyordu. '+
+     'Rapordaki "6/5 hareket tam" ve "%110 seans kalitesi" bu. Şişen yüzde gün '+
+     'puanına, takvim rengine, uyku karşılaştırmasına ve bütün ortalamalara '+
+     'giriyordu. Payda artık o günün kilitli program uzunluğu.',
+     'KAS SETİ HEDEFİ: rapor haftalık hedefi musTargets() ile, yani bugünün '+
+     'programının tam 7 günlük hedefiyle yazıyordu. İki sonuç: (a) 26 Ağu öncesi '+
+     'haftalar bugünün hedefine göre notlanıyordu — tarih kilidinin tersi; (b) '+
+     '4 günlük ilk hafta ve 5 günü seyahat olan hafta 7 günlük hedefe bölünüp '+
+     'olmayan bir eksik gösteriyordu ("Sırt 1.5/19"). Artık tamamlanmış haftalar '+
+     'musPlanned(), süren hafta musExpected() ile ölçülüyor; ikisi de seyahat ve '+
+     'deload farkında.',
+     'SEANS SÜRELERİ — İKİ HATA: (1) o plan gününde 2\'den az seans varsa bütün '+
+     'günlerin ortalamasına düşülüyordu. Omuz/Kol 60 dk, Bacak 41 dk; bunların '+
+     'ortalaması hiçbir günün süresi değil. Artık düşmüyor, veri yoksa yok deniyor. '+
+     '(2) Rapor ort/en kısa/en uzun üçlüsü basıyordu; sorulan soru bu değil. '+
+     'Sorulan soru: geçen bacak seansını kaç dakikada bitirmiştim, bu sefer ne '+
+     'oldu. Rapor, gün kutusu ve üst çubuktaki rozet artık aynı plan gününün BİR '+
+     'ÖNCEKİ seansını ve farkı gösteriyor; ortalama ikincil bilgi olarak duruyor.',
+     'RAPOR ARALIĞI: ileri tarihli boş bir gün kaydı raporun sonuna hiç yaşanmamış '+
+     'bir hafta ekliyordu ("HAFTA 6 · 0/1 antrenman"). Rapor artık bugünü '+
+     'geçmiyor.']},
  {d:'2026-09-13',
   t:'Geçmiş günler artık o tarihteki programla değerlendiriliyor (v68)',
   y:['HATA: PROGRAM tek bir "bugünkü program" tutuyordu ve geçmiş günler de onunla '+
@@ -3667,16 +3720,25 @@ function _sessionEval(d,dt){
     if(ev.state==='tam'||ev.state==='yakin')tam++;
     if(ev.state!=='bos')giren++;
   });
-  if(!giren&&!off)return{empty:true,total:t.ex.length};
-  if(!giren)return{empty:false,vol:vol,tam:0,q:0,total:t.ex.length,giren:0,off:off,
+  /* v69 HATA DÜZELTMESİ — payda.
+     wsum, O GÜNÜN programındaki hareketler üzerinden toplanıyordu ama
+     BUGÜNÜN program uzunluğuna bölünüyordu. 6 Eyl bacak gününde 6 hareket
+     vardı (RDL dahil), bugün 5 var → kalite %120'ye kadar çıkıyordu; rapordaki
+     "6/5 hareket tam" ve "%110 seans kalitesi" bu. Şişen yüzde sonra gün
+     puanına, takvim rengine, uyku karşılaştırmasına ve ortalamalara giriyordu.
+     Payda artık o günün kilitli program uzunluğu. Plan dışı hareketler zaten
+     kaliteye girmiyor, paydaya da girmez. */
+  var planN=dayEx(d,dt).filter(function(x){return !x.off;}).length||t.ex.length;
+  if(!giren&&!off)return{empty:true,total:planN};
+  if(!giren)return{empty:false,vol:vol,tam:0,q:0,total:planN,giren:0,off:off,
     verdict:'Plan dışı seans',vcolor:C.amber,trend:(hasPrev&&prevVol>0)?((vol-prevVol)/prevVol*100):null};
-  var pct=wsum/t.ex.length*100;
+  var pct=wsum/planN*100;
   var v,vc;
   if(pct>=85){v='Güçlü seans';vc=C.green;}
   else if(pct>=60){v='İyi seans';vc=''+THC.c7+'';}
   else if(pct>=35){v='Eksik seans';vc=C.amber;}
   else{v='Zayıf seans';vc=C.orange;}
-  return{empty:false,vol:vol,tam:tam,q:wsum/t.ex.length,total:t.ex.length,giren:giren,off:off,verdict:v,vcolor:vc,
+  return{empty:false,vol:vol,tam:tam,q:wsum/planN,total:planN,giren:giren,off:off,verdict:v,vcolor:vc,
     trend:(hasPrev&&prevVol>0)?((vol-prevVol)/prevVol*100):null};
 }
 /* takvim rengi: antrenman kalitesi */
@@ -3830,71 +3892,136 @@ function weightSeries(){return keys().filter(function(d){return D(d).w!=null;}).
 /* ============ TREND KİLO (üssel hareketli ortalama) ============
    Tek bir tartı ölçümü su/glikojen yüzünden 1-3 kg sapabilir.
    Trend, ham veriden çok daha dürüst bir gösterge. */
+/* v69 HATA DÜZELTMESİ — ölçüm olmayan gün artık seriye nokta yazmıyor.
+   ESKİSİ: ölçüm yoksa son EMA değeri o güne kopyalanıyor ve seriye
+   ekleniyordu. 7-11 Eyl seyahatinde bu, 5 gün boyunca YATAY 5 nokta üretti.
+   O noktalar sonra regresyona girip hızı sıfıra doğru çekti: gerçek -0.46
+   kg/hafta, ekranda -0.30. Değer donarken zaman sayacı ilerliyordu.
+   YENİSİ: yalnız gerçekten tartılan günler nokta üretir. EMA ağırlığı da
+   aradaki boşluk kadar açılır (1-(1-a)^gün): 5 gün sonra gelen ölçüm 1 gün
+   sonra gelen ölçümden daha fazla söz sahibi olur — olması gerektiği gibi. */
 function emaSeries(key,alpha){
   alpha=alpha||0.25;
   var raw=keys().filter(function(d){return mGet(D(d),key)!=null;});
   if(!raw.length)return [];
-  var out=[],e=null,first=raw[0],last=raw[raw.length-1],nD=dayDiff(first,last);
-  for(var i=0;i<=nD;i++){
-    var d=addD(first,i),v=mGet(D(d),key);
-    if(v!=null)e=(e==null)?v:(alpha*v+(1-alpha)*e);
-    if(e!=null)out.push({d:d,v:e,raw:v});
-  }
+  var out=[],e=null,prev=null;
+  raw.forEach(function(d){
+    var v=mGet(D(d),key);
+    if(e==null)e=v;
+    else{
+      var gap=Math.max(1,dayDiff(prev,d));
+      var a=1-Math.pow(1-alpha,gap);
+      e=a*v+(1-a)*e;
+    }
+    prev=d;out.push({d:d,v:e,raw:v});
+  });
   return out;
 }
 function trendW(){return emaSeries('w');}
 function trendNow(){var t=trendW();return t.length?t[t.length-1].v:null;}
-/* trendin son N gündeki eğimi — kg/hafta */
-function trendSlope(days){
-  var t=trendW();if(t.length<4)return null;
-  var end=t[t.length-1],from=addD(end.d,-(days||14));
-  var w=t.filter(function(x){return x.d>=from;});
+/* ============ KİLO KAYBI HIZI (v69) ============
+   HATA: hız, EMA serisine regresyon uygulanarak bulunuyordu. EMA gecikmeli
+   bir filtredir — bugünün değeri 0.6 kg geriden gelir. Gecikmiş bir seriyi
+   regresyona sokmak hızı sistematik olarak küçültür. Üstüne boşluk günleri
+   de yatay nokta olarak giriyordu.
+   DOĞRUSU: regresyon HAM tartılara, x ekseni gerçek takvim farkına
+   uygulanır. Tartılmayan gün denkleme hiç girmez — uydurulmuş veri yok.
+   Pencere her yerde 21 gün: rapor başlığı ile TDEE farklı pencere kullanıp
+   yan yana iki farklı hız yazmasın. */
+function slopeInfo(days){
+  var ws=weightSeries();if(ws.length<4)return null;
+  var end=ws[ws.length-1].d,from=addD(end,-((days||21)-1));
+  var w=ws.filter(function(x){return x.d>=from;});
   if(w.length<4)return null;
+  var span=dayDiff(w[0].d,w[w.length-1].d)+1;
+  if(span<10)return null;                       /* 10 günden kısa aralıktan hız çıkmaz */
   var n=w.length,sx=0,sy=0,sxy=0,sxx=0;
   w.forEach(function(p){var x=dayDiff(w[0].d,p.d);sx+=x;sy+=p.v;sxy+=x*p.v;sxx+=x*x;});
   var den=n*sxx-sx*sx;if(!den)return null;
-  return ((n*sxy-sx*sy)/den)*7;
+  var b=(n*sxy-sx*sy)/den,a0=(sy-b*sx)/n,my=sy/n,ssr=0,sst=0;
+  w.forEach(function(p){var x=dayDiff(w[0].d,p.d),f=a0+b*x;ssr+=(p.v-f)*(p.v-f);sst+=(p.v-my)*(p.v-my);});
+  return {slope:b*7,n:n,span:span,gaps:span-n,first:w[0].d,last:w[w.length-1].d,
+    r2:(sst>0?1-ssr/sst:null),sd:(n>2?Math.sqrt(ssr/(n-2)):null)};
 }
+function trendSlope(days){var s=slopeInfo(days);return s?s.slope:null;}
 
-/* ============ GERÇEK BAKIM KALORİSİ (adaptive TDEE) ============
+/* ============ BAKIM KALORİSİ (türetilmiş) ============
    TDEE = ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7)
-   Sabit hedef zamanla yanlışlaşır; bu kendi verinden geri hesaplar. */
+   DİKKAT — bu bir ÖLÇÜM DEĞİL, KİMLİKTİR. İçine giren iki şey var:
+   girdiğin kaloriler ve tartının gösterdiği hız. "Açık" diye yazılan sayı
+   da aynı denklemin ikinci kez yazılmış hali: açık = hız × 7700/7. Yani
+   TDEE, hızı doğrulamaz — hızdan türer. Doğrulama sanıp ikisini yan yana
+   koymak, sağlamanın sağlamasını yapmaktır.
+   Ayrıca bütün rakam Lifesum girişlerinin doğruluğuna bağlı: girişlerde
+   sistematik %10 eksik sayım varsa TDEE de o kadar düşük çıkar.
+   KARAR VERİRKEN KULLANILMAZ. Karar verecek tek veri kilo trendidir. */
 var KCAL_PER_KG=7700;
 function tdee(win){
   win=win||21;
-  var t=trendW();if(t.length<8)return {ok:false,why:'kilo',n:t.length};
-  var end=t[t.length-1].d,from=addD(end,-(win-1));
-  var span=t.filter(function(x){return x.d>=from;});
-  if(span.length<8)return {ok:false,why:'kilo',n:span.length};
+  var si=slopeInfo(win);
+  if(!si)return {ok:false,why:'kilo',n:weightSeries().length};
+  var ws=weightSeries(),end=ws[ws.length-1].d,from=addD(end,-(win-1));
   var kd=[];
-  for(var i=0;i<=dayDiff(span[0].d,end);i++){
-    var d=addD(span[0].d,i),v=D(d).kcal;if(v!=null)kd.push(v);
+  for(var i=0;i<=dayDiff(from,end);i++){
+    var d=addD(from,i),v=D(d).kcal;if(v!=null)kd.push(v);
   }
-  var nDays=dayDiff(span[0].d,end)+1,cov=kd.length/nDays;
+  var nDays=dayDiff(from,end)+1,cov=kd.length/nDays;
   if(kd.length<7)return {ok:false,why:'kalori',n:kd.length};
   var avg=kd.reduce(function(a,b){return a+b;},0)/kd.length;
-  var slope=trendSlope(Math.min(win,nDays));
-  if(slope==null)return {ok:false,why:'kilo',n:span.length};
-  var val=avg-(slope*KCAL_PER_KG/7);
-  var conf=(kd.length>=17&&cov>=.8)?'yüksek':((kd.length>=11&&cov>=.6)?'orta':'düşük');
-  return {ok:true,tdee:Math.round(val),avg:Math.round(avg),kgWeek:slope,
-    days:nDays,logged:kd.length,cov:cov,conf:conf,
+  var val=avg-(si.slope*KCAL_PER_KG/7);
+  /* güven artık tartı sıklığını da içeriyor: 21 günün 16'sında tartılmak ile
+     hepsinde tartılmak aynı şey değil */
+  var conf=(kd.length>=17&&cov>=.8&&si.n>=15)?'yüksek':((kd.length>=11&&cov>=.6&&si.n>=10)?'orta':'düşük');
+  return {ok:true,tdee:Math.round(val),avg:Math.round(avg),kgWeek:si.slope,
+    days:nDays,logged:kd.length,cov:cov,conf:conf,si:si,derived:true,
     deficit:Math.round(val-avg)};
 }
-/* hedef kayıp hızı: haftada 0.5-0.7 kg */
-var RATE_LO=-0.7,RATE_HI=-0.3,RATE_TGT=-0.55;
+/* ============ ÖNERİ (v69) ============
+   ESKİ HATA: öneri TDEE'den üretiliyordu (sug = TDEE − 0.55×1100). TDEE'nin
+   kendisi hızdan türediği için bu, kendi çıktısını girdi sanmak demekti.
+   Üstelik eşik sabitti (0.3-0.7 kg/hafta) — programın gerçekten neye ihtiyacı
+   olduğuna bakmıyordu.
+   YENİSİ: GEREKEN hız ile GERÇEKLEŞEN hız karşılaştırılır.
+     gereken = (trend kilo − hedef kilo) ÷ kalan hafta
+   Fark kcal'e çevrilir, önce ADIM olarak önerilir (1000 adım ≈ 35 kcal),
+   yetmezse kalori. Hedefin önündeyken hiçbir sayı önerilmez. */
+var RATE_MAX=0.7;            /* haftada bundan hızlısı kas maliyeti getirir */
+var KCAL_PER_1000_STEPS=35;
+function weeksLeft(){
+  if(!S.startDate||!S.weeks)return null;
+  var done=dayDiff(S.startDate,today())/7;
+  return Math.max(0.5,S.weeks-done);
+}
+function reqSlope(){
+  var w=trendNow(),wl=weeksLeft();
+  if(w==null||wl==null||S.goal.weight==null)return null;
+  var gap=w-S.goal.weight;
+  return gap<=0?0:-(gap/wl);
+}
 function tdeeAdvice(){
   var t=tdee();if(!t.ok)return null;
-  var sug=Math.round((t.tdee+RATE_TGT*KCAL_PER_KG/7)/10)*10;
-  var d=Math.round(sug-S.targets.kcal);
-  if(t.kgWeek>RATE_HI)
-    return {t:t,type:'slow',sug:sug,delta:d,
-      msg:'Haftalık kayıp '+fx(Math.abs(t.kgWeek),2)+' kg — hedef aralığın altında. Kaloriyi <b>'+ti(sug)+'</b>’a çek ya da günlük 2000 adım ekle.'};
-  if(t.kgWeek<RATE_LO)
-    return {t:t,type:'fast',sug:sug,delta:d,
-      msg:'Haftada '+fx(Math.abs(t.kgWeek),2)+' kg kaybediyorsun — bu hızda kas da gider. Kaloriyi <b>'+ti(sug)+'</b>’a çıkar.'};
-  return {t:t,type:'ok',sug:sug,delta:d,
-    msg:'Haftada '+fx(Math.abs(t.kgWeek),2)+' kg — tam hedef aralıkta (0.3-0.7). Değiştirme, devam et.'};
+  var req=reqSlope();if(req==null)return null;
+  var act=t.kgWeek;
+  if(req===0)
+    return {t:t,req:req,act:act,type:'ok',sug:null,delta:0,
+      msg:'Hedef kiloya ulaşıldı — açığı kapat, bakıma geç.'};
+  var need=Math.min(Math.abs(req),RATE_MAX);
+  if(act<-RATE_MAX-0.15){
+    var back=Math.round((Math.abs(act)-RATE_MAX)*KCAL_PER_KG/7);
+    return {t:t,req:req,act:act,type:'fast',sug:Math.round((S.targets.kcal+back)/10)*10,delta:back,
+      msg:'Haftada '+fx(Math.abs(act),2)+' kg — '+RATE_MAX+' sınırının üstünde, bu hızda kas da gider. '+
+        'Kaloriyi <b>'+ti(Math.round((S.targets.kcal+back)/10)*10)+'</b>’a çıkar.'};
+  }
+  if(Math.abs(act)>=need-0.05)
+    return {t:t,req:req,act:act,type:'ok',sug:null,delta:0,
+      msg:'Gereken hız '+fx(need,2)+' kg/hafta, gerçekleşen '+fx(Math.abs(act),2)+
+        ' — plandasın. Kalori de adım da değişmiyor.'};
+  var gapK=Math.round((need-Math.abs(act))*KCAL_PER_KG/7);
+  var stepAdd=Math.round(gapK/KCAL_PER_1000_STEPS)*1000;
+  var sug=Math.round((S.targets.kcal-gapK)/10)*10;
+  return {t:t,req:req,act:act,type:'slow',sug:sug,delta:sug-S.targets.kcal,gapK:gapK,steps:stepAdd,
+    msg:'Gereken '+fx(need,2)+', gerçekleşen '+fx(Math.abs(act),2)+' kg/hafta — günde ~<b>'+gapK+
+      ' kcal</b> eksik. Önce adım: günlük <b>+'+ti(stepAdd)+'</b>. Yetmezse kaloriyi <b>'+ti(sug)+'</b>’a çek.'};
 }
 
 /* ============ DELOAD ============ */
@@ -4004,14 +4131,29 @@ function workDurs(dt,skipDay){
   });
   return out.reverse();
 }
-/* bu plan gününün beklenen süresi: son 5 bitirilmiş seansın ortalaması.
-   O gün hiç veri yoksa bütün günlerin ortalamasına düşer, kaynağı da söyler. */
+/* ============ SEANS SÜRESİ KARŞILAŞTIRMASI (v69) ============
+   HATA 1 — GÜNLERİ KARIŞTIRMAK: o plan gününde 2'den az seans varsa
+   "genel ortalama"ya düşülüyordu. Omuz/Kol 60 dk, Bacak 41 dk, Çekiş 41 dk;
+   bunların ortalaması hiçbir günün süresi değil. Bacak gününe girerken
+   "~52 dk beklenen" demek bilgi değil gürültü. Artık düşmüyor: o günün
+   verisi yoksa yok denir.
+   HATA 2 — ORTALAMAYA BAKMAK: salona girerken sorulan soru "bacak günü
+   ortalama kaç dakika sürüyor" değil, "GEÇEN bacak seansını kaç dakikada
+   bitirmiştim" sorusudur. Karşılaştırma artık her zaman aynı plan gününün
+   bir önceki seansıyla yapılıyor; ortalama yanında ikincil bilgi. */
+function durStat(dt,skipDay){
+  var a=workDurs(dt,skipDay);
+  if(!a.length)return null;
+  var five=a.slice(0,5);
+  return {last:a[0],prev:a[1]||null,
+    avg:Math.round(five.reduce(function(x,o){return x+o.m;},0)/five.length),
+    n:five.length,all:a.length,
+    delta:a[1]?(a[0].m-a[1].m):null};
+}
 function expWork(dt,skipDay){
-  var a=workDurs(dt,skipDay).slice(0,5);
-  if(a.length>=2)return {m:Math.round(a.reduce(function(x,o){return x+o.m;},0)/a.length),n:a.length,own:true};
-  var b=workDurs(null,skipDay).slice(0,6);
-  if(b.length>=2)return {m:Math.round(b.reduce(function(x,o){return x+o.m;},0)/b.length),n:b.length,own:false};
-  return null;
+  var st=durStat(dt,skipDay);
+  if(!st)return null;
+  return {m:st.avg,n:st.n,own:true,last:st.last,prev:st.prev};
 }
 
 /* ============ HAFTALIK KAS GRUBU SETLERİ ============ */
@@ -6259,15 +6401,22 @@ function miniLine(vals,col){
    Kilo düştükçe bakım kalorisi de düşer; sabit hedef zamanla yanlışlaşır.
    Protein ve yağ vücut ağırlığına bağlanır, karbonhidrat kalan kaloriden çıkar. */
 var PROT_PER_KG=2.1, FAT_PER_KG=0.8;
+/* v69 — hedef kayıp hızı artık sabit 0.55 değil.
+   Sabit hız, programın gerçekten neye ihtiyacı olduğuna bakmıyordu: 6.7 kg
+   kalmışken de 1 kg kalmışken de aynı açığı öneriyordu. Artık gereken hız
+   (kalan kilo ÷ kalan hafta) kullanılıyor, kas maliyeti sınırıyla (0.7)
+   tavanlanarak. */
 function autoTargets(){
   var t=tdee();if(!t.ok)return null;
   var w=trendNow();if(w==null)return null;
-  var kcal=Math.round((t.tdee+RATE_TGT*KCAL_PER_KG/7)/10)*10;
+  var rq=reqSlope();if(rq==null)return null;
+  var rate=-Math.min(Math.abs(rq),RATE_MAX);
+  var kcal=Math.round((t.tdee+rate*KCAL_PER_KG/7)/10)*10;
   var prot=Math.round(w*PROT_PER_KG/5)*5;
   var fat=Math.round(w*FAT_PER_KG/5)*5;
   var rest=kcal-(prot*4+fat*9);
   var carb=Math.max(60,Math.round(rest/4/5)*5);
-  return {kcal:kcal,protein:prot,fat:fat,carbs:carb,w:w,tdee:t.tdee,conf:t.conf};
+  return {kcal:kcal,protein:prot,fat:fat,carbs:carb,w:w,tdee:t.tdee,conf:t.conf,rate:rate};
 }
 function autoDiff(){
   var a=autoTargets();if(!a)return null;
@@ -6320,19 +6469,19 @@ function tdeeCard(a){
   }
   var t=a.t,col=a.type==='ok'?C.green:(a.type==='fast'?C.orange:C.amber);
   var cells=[
-    ['Gerçek bakım',ti(t.tdee),'kcal',''+THC.c6+''],
-    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+''],
-    ['Günlük açık',ti(Math.abs(t.deficit)),'kcal',t.deficit>0?C.green:C.orange],
-    ['Haftalık değişim',(t.kgWeek>0?'+':'')+fx(t.kgWeek,2),'kg',col]
+    ['Gereken hız',fx(a.req,2),'kg/hf',''+THC.c6+''],
+    ['Gerçekleşen',fx(a.act,2),'kg/hf',col],
+    ['Bakım (türetilmiş)',ti(t.tdee),'kcal',''+THC.c21+''],
+    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+'']
   ];
   return '<div class="scard static dom dom-nut"><div class="shead"><div>'+
-    '<div class="stitle">Gerçek Bakım Kalorisi</div>'+
-    '<div class="ssub">'+t.logged+'/'+t.days+' gün kayıtlı · güven '+t.conf+'</div></div></div>'+
+    '<div class="stitle">Hız ve Bakım</div>'+
+    '<div class="ssub">'+t.logged+'/'+t.days+' gün kalori · '+t.si.n+' tartı · güven '+t.conf+'</div></div></div>'+
     '<div class="mstats" style="margin-bottom:10px">'+cells.map(function(x){
       return '<div><div class="l">'+x[0]+'</div><div class="v" style="color:'+x[3]+'">'+x[1]+
         '<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
     '<div class="tdmsg" style="background:'+hexa(col,.12)+';color:'+col+'">'+a.msg+'</div>'+
-    (a.delta&&Math.abs(a.delta)>=60
+    (a.sug!=null&&Math.abs(a.delta)>=60
       ?'<button class="mbtn dark" data-a="usetdee" data-v="'+a.sug+'" style="margin-top:9px">'+
         'Kalori hedefini '+ti(a.sug)+' yap ('+(a.delta>0?'+':'')+ti(a.delta)+')</button>'
       :'<div class="sfoot" style="margin-top:8px">Mevcut hedefin '+ti(S.targets.kcal)+' kcal — uygun.</div>')+
@@ -6431,7 +6580,7 @@ function gymSum(){
     ['Trend kilo',(tn==null?(lw==null?'—':lw.toFixed(1)):tn.toFixed(1)),'kg',C.blue],
     ['Hedefe kalan',(remT==null?'—':(remT<=0?'0':remT.toFixed(1))),'kg',''+THC.c51+''],
     ['Bu hafta',tam+'/'+(plan||5),'antrenman',C.green],
-    ['Gerçek bakım',(tdA?ti(tdA.t.tdee):'—'),'kcal',C.orange]
+    ['Hız',(tdA?fx(tdA.act,2):'—'),'kg/hf',C.orange]
   ];
 
   /* Hareket ilerleme listesi — hareket başına DEĞİL, hareket+plan günü başına.
@@ -6725,7 +6874,8 @@ function detailLayer(){
             '<div class="s">'+esc(x[3])+'</div></div>';}).join('')+'</div>'+
         (isW&&trendSlope()!=null
           ?'<div class="tdmsg" style="background:'+hexa(C.blue,.1)+';color:'+C.blue+';margin-bottom:12px">'+
-            'Trend eğimi: haftada <b>'+sgn(trendSlope(),2)+' kg</b> — günlük dalgalanmadan arındırılmış gerçek hız.</div>'
+            'Hız: haftada <b>'+sgn(trendSlope(),2)+' kg</b> — ham tartılara uygulanmış regresyon'+
+            (function(){var q=slopeInfo();return q?' ('+q.n+' tartı / '+q.span+' gün'+(q.gaps?', '+q.gaps+' gün boşluk denkleme girmedi':'')+')':'';})()+'.</div>'
           :'')+
         '<div class="dchart">'+measureLine(pts,mcol,goalV,unit,tser)+'</div>'+
         (function(){
@@ -6887,8 +7037,9 @@ function durBox(d,dt){
   var lost=(m==null&&loggedSets(r));
   if(m==null&&!ex&&!lost)return '';
   if(m==null){
-    var head=ex?'<div><b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu günün ortalaması':'genel ortalama')+
-        ' · '+ex.n+' seans</i></div><div class="wdr">Süre ilk set girişinde<br>başlar</div>'
+    var head=ex?'<div><b>~'+fdur(ex.last.m)+'</b><i>geçen '+(PROGRAM[dt||dtOf(d)]?PROGRAM[dt||dtOf(d)].short:'seans')+
+        ' · '+fdate(ex.last.d)+'</i></div><div class="wdr">Süre ilk set girişinde<br>başlar'+
+        (ex.n>1?'<br><span style="opacity:.7">bu gün ort. '+fdur(ex.m)+'</span>':'')+'</div>'
       :'<div><b>—</b><i>bu gün için süre kaydı yok</i></div>';
     return '<div class="wdrow">'+head+'</div>'+
       (lost?'<div class="wdrow"><div><input class="ginp" data-a="wmin" inputmode="numeric" '+
@@ -6896,12 +7047,15 @@ function durBox(d,dt){
         '<i>süreyi elle gir</i></div>'+
         '<div class="wdr">Set var, süre yok.<br>Kaç dakika sürdüyse yaz.</div></div>':'');}
   var open=!r.we;
-  var diff=ex?m-ex.m:null;
-  var rightTxt = ex
-    ? (ex.own?'bu gün ort. ':'genel ort. ')+'<b>'+fdur(ex.m)+'</b> ('+ex.n+' seans)<br>'+
+  /* v69 — kıyas artık GEÇEN SEANSA göre; ortalama ikinci satırda kalıyor */
+  var ref=(ex&&ex.last)?ex.last:null;
+  var diff=ref?m-ref.m:null;
+  var rightTxt = ref
+    ? 'geçen seans ('+fdate(ref.d)+') <b>'+fdur(ref.m)+'</b><br>'+
       '<span style="color:'+(diff>5?C.orange:(diff<-5?C.green:''+THC.c21+''))+'">'+
-      (Math.abs(diff)<=2?'ortalamada':(diff>0?'+'+diff+' dk uzun':(-diff)+' dk kısa'))+'</span>'
-    : 'İlk kez ölçülüyor — birkaç<br>seans sonra ortalama çıkar';
+      (Math.abs(diff)<=2?'aynı sürede':(diff>0?'+'+diff+' dk uzun':(-diff)+' dk kısa'))+'</span>'+
+      (ex.n>1?'<br><span style="opacity:.7">bu gün ort. '+fdur(ex.m)+' ('+ex.n+' seans)</span>':'')
+    : 'Bu günün ilk ölçümü — kıyas<br>için bir seans daha gerekiyor';
   return '<div class="wdrow"><div><b>'+fdur(m)+'</b><i>'+
     (open?'sürüyor · bitir’e basınca kesinleşir':'ilk setten bitir’e kadar')+'</i></div>'+
     '<div class="wdr">'+rightTxt+'</div></div>';
@@ -7324,14 +7478,15 @@ function clockChip(){
     if(wUndoLive())
       return '<span class="gclock" data-a="wreset" title="süreyi geri al">⏱ <b>'+
         fdur(Math.round(((wUndo.we||wUndo.wl||wUndo.ws)-wUndo.ws)/60000))+'</b><i>geri al</i></span>';
-    return ex?'<span class="gclock">⏱ <b>~'+fdur(ex.m)+'</b><i>'+(ex.own?'bu gün ort.':'genel ort.')+'</i></span>'
+    return ex?'<span class="gclock">⏱ <b>'+fdur(ex.last.m)+'</b><i>geçen seans</i></span>'
              :'<span class="gclock"><i>⏱ ilk sette başlar</i></span>';}
   var m=workMin(cur,true);
   if(m==null)return '';
   var done=!!r.we;
-  var over=(!done&&ex&&m>ex.m+10);
+  var refm=(ex&&ex.last)?ex.last.m:null;
+  var over=(!done&&refm!=null&&m>refm+10);
   return '<span class="gclock '+(done?'':(over?'over':'run'))+'" data-a="wreset" title="sıfırlamak için dokun">⏱ <b>'+
-    fdur(m)+'</b>'+(ex?'<i>/ ~'+fdur(ex.m)+'</i>':'')+(done?'<i>bitti</i>':'')+'</span>';
+    fdur(m)+'</b>'+(refm!=null?'<i>/ geçen '+fdur(refm)+'</i>':'')+(done?'<i>bitti</i>':'')+'</span>';
 }
 /* Rozet her set girişinde değil, dakikada bir kendi kendine tazelenir:
    tüm ekranı yeniden çizmek yazarken imleci kaçırıyor. */
@@ -7509,7 +7664,10 @@ var REPOPTS=[['1','Sadece bugün'],['3','Son 3 gün'],['7','Son 7 gün'],['14','
 var repRange='7', repFrom=null, repTo=null;
 function repBounds(){
   var to=today(),from;
-  if(repRange==='all'){var ks0=keys();from=ks0.length?ks0[0]:to;if(ks0.length&&ks0[ks0.length-1]>to)to=ks0[ks0.length-1];}
+  /* v69 — rapor geleceğe taşmıyordu diye değil, taştığı için düzeltildi:
+     ileri tarihli boş bir gün kaydı, raporun sonuna "HAFTA 6 · 0/1 antrenman,
+     0/1 kreatin" diye hiç yaşanmamış bir hafta ekliyordu. */
+  if(repRange==='all'){var ks0=keys();from=ks0.length?ks0[0]:to;}
   else if(repRange==='week'){from=monday(to);}
   else if(repRange==='custom'){from=repFrom||addD(to,-6);to=repTo||today();}
   else from=addD(to,-(parseInt(repRange,10)-1));
@@ -7529,13 +7687,20 @@ function report(){
   var dlR=nextDeload();
   if(dlR)o+=dlR.now?' · BU HAFTA DELOAD':' · sonraki deload: hafta '+dlR.wk;
   o+='\n';
-  var tnR=trendNow(),slR=trendSlope();
-  if(tnR!=null)o+='Trend kilo: '+fx(tnR,1)+' kg'+(slR!=null?' ('+(slR>0?'+':'')+fx(slR,2)+' kg/hafta)':'')+
+  var tnR=trendNow(),siR=slopeInfo();
+  if(tnR!=null)o+='Trend kilo: '+fx(tnR,1)+' kg'+(siR?' ('+(siR.slope>0?'+':'')+fx(siR.slope,2)+' kg/hafta)':'')+
     ' · hedefe '+fx(Math.max(0,tnR-S.goal.weight),1)+' kg\n';
+  if(siR)o+='Hız kaynağı: '+siR.n+' tartı / '+siR.span+' gün'+(siR.gaps?' ('+siR.gaps+' gün tartı yok, denkleme girmedi)':'')+
+    (siR.r2!=null?' · R²='+fx(siR.r2,2):'')+(siR.sd!=null?' · sapma ±'+fx(siR.sd,2)+' kg':'')+'\n';
+  var reqR=reqSlope(),wlR=weeksLeft();
+  if(reqR!=null&&wlR!=null)o+='Gereken hız: '+fx(reqR,2)+' kg/hafta ('+fx(wlR,1)+' hafta kaldı)\n';
   var aR=tdeeAdvice();
-  if(aR)o+='Gerçek bakım: '+aR.t.tdee+' kcal (ölçülen, '+aR.t.logged+'/'+aR.t.days+' gün, güven '+aR.t.conf+
-    ') · ortalama alım '+aR.t.avg+' · günlük açık '+Math.abs(aR.t.deficit)+
-    ' · önerilen hedef '+aR.sug+'\n';
+  if(aR)o+='Bakım (TÜRETİLMİŞ, ölçüm değil): '+aR.t.tdee+' kcal = ortalama alım '+aR.t.avg+
+    ' + hız×1100 · '+aR.t.logged+'/'+aR.t.days+' gün kalori, güven '+aR.t.conf+
+    '\n  → "açık" ile hız aynı denklemin iki yüzü; biri diğerini doğrulamaz. Karar hıza göre verilir.\n'+
+    (aR.type==='ok'
+      ? '  → Öneri: değişiklik yok.\n'
+      : '  → Öneri: '+String(aR.msg).replace(/<[^>]+>/g,'')+'\n');
   if(measOn()){
     var shR=lastOf('sh'),bR=lastOf('b');
     if(shR!=null&&bR)o+='Omuz/bel oranı: '+fx(shR/bR,2)+' (omuz '+fx(shR,1)+' cm, bel '+fx(bR,1)+' cm)';
@@ -7570,10 +7735,20 @@ function report(){
     o+='Antrenman: '+gd+'/'+gp+' | Kreatin: '+krh+'/'+ds.length+' gün | Dinlenme: '+(rl||'yok');
     if(isDeload(ds[0]))o+=' | DELOAD HAFTASI';
     o+='\n';
-    var mwR=musWeek(monday(ds[0])),mtR=musTargets();
+    /* v69 — hedef artık musTargets() değil.
+       musTargets BUGÜNÜN programının tam haftalık hedefini veriyordu:
+       (a) 26 Ağu'dan önceki haftalar bugünün hedefine göre notlanıyordu —
+           tarih kilidinin (v68) tam tersi;
+       (b) 4 günlük ilk hafta ve 5 günü seyahat olan hafta, 7 günlük hedefe
+           bölünüp olmayan bir eksik gösteriyordu ("Sırt 1.5/19").
+       musPlanned o haftada gerçekten planlanmış günleri, musExpected ise
+       bugüne kadarkini sayar; ikisi de deload ve seyahat farkındadır. */
+    var wMon=monday(ds[0]),wEnd=addD(wMon,6);
+    var mwR=musWeek(wMon),partial=(wEnd>today());
+    var mtR=partial?musExpected(wMon):musPlanned(wMon);
     var musLine=MUSORD.filter(function(k){return mtR[k]>0&&mwR[k]>0;}).map(function(k){
       return MUS[k].s+' '+fx(mwR[k],1).replace(/\.0$/,'')+'/'+fx(mtR[k],1).replace(/\.0$/,'');}).join(' | ');
-    if(musLine)o+='Kas seti (efektif): '+musLine+'\n';
+    if(musLine)o+='Kas seti (efektif): '+musLine+(partial?'  [hafta sürüyor — hedef bugüne kadarki]':'')+'\n';
     o+='\n';
     ds.forEach(function(d){
       var r=D(d),b=[];
@@ -7644,18 +7819,23 @@ function report(){
     if(stalls.length)o+='Takıldı:\n'+stalls.map(function(x){return '- '+x+'\n';}).join('');
     o+='\n';
   }
-  /* seans süreleri: plan günü başına ortalama — salonda ne kadar kalındığı */
+  /* v69 — süreler artık GÜN BAZINDA ve son seansa göre.
+     Önceki hal "ort / en kısa / en uzun" üçlüsüydü; hiçbiri sorulan soruyu
+     cevaplamıyordu. Sorulan soru: geçen bacak seansını kaç dakikada
+     bitirmiştim, bu sefer ne oldu. Günler birbirine karıştırılmıyor. */
   var durL=[];
   ORDER.forEach(function(dtx){
-    var a=workDurs(dtx).slice(0,6);
-    if(!a.length)return;
-    var av=Math.round(a.reduce(function(x,o2){return x+o2.m;},0)/a.length);
-    var mn=Math.min.apply(null,a.map(function(o2){return o2.m;}));
-    var mx2=Math.max.apply(null,a.map(function(o2){return o2.m;}));
-    durL.push((PROGRAM[dtx]?PROGRAM[dtx].short:dtx)+': ort '+av+' dk (en kısa '+mn+', en uzun '+mx2+', '+a.length+' seans)');
+    var st=durStat(dtx);
+    if(!st)return;
+    var line=(PROGRAM[dtx]?PROGRAM[dtx].short:dtx)+': son '+fdate(st.last.d)+' '+st.last.m+' dk';
+    if(st.prev)line+=' · önceki '+fdate(st.prev.d)+' '+st.prev.m+' dk ('+
+      (st.delta===0?'aynı':(st.delta>0?'+'+st.delta:''+st.delta)+' dk')+')';
+    else line+=' · önceki seans yok';
+    line+=' · bu günün ort. '+st.avg+' dk ('+st.n+' seans)';
+    durL.push(line);
   });
   if(durL.length){
-    o+='## SEANS SÜRELERİ (ilk setten bitir düğmesine)\n';
+    o+='## SEANS SÜRELERİ (ilk setten bitir düğmesine · her gün kendi içinde)\n';
     durL.forEach(function(x){o+='- '+x+'\n';});
     o+='\n';
   }
@@ -7752,18 +7932,19 @@ function tdeeCardD(){
       '<div style="padding:22px 18px;color:'+THC.c17+';font-size:13.5px;line-height:1.6">'+
       (t0.why==='kalori'?'Kalori kaydın yetersiz — en az 7 gün gerekiyor, şu an '+t0.n+' var.'
         :'Kilo kaydın yetersiz — en az 8 gün gerekiyor, şu an '+t0.n+' var.')+
-      '<div style="margin-top:9px;font-size:12.5px;color:'+THC.c21+'">Formül: ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7). '+
-      'Sabit kalori hedefi kilo düştükçe yanlışlaşır; bu hesap kendi verinden düzeltir.</div></div>');
+      '<div style="margin-top:9px;font-size:12.5px;color:'+THC.c21+'">Bakım = ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7). '+
+      'Bu bir ölçüm değil, iki girdiden türeyen bir kimlik: "açık" ile hız aynı şeyin iki yüzüdür. '+
+      'Karar hıza göre verilir, bakım rakamına göre değil.</div></div>');
   }
   var t=a.t,col=a.type==='ok'?C.green:(a.type==='fast'?C.orange:C.amber);
   var cells=[
-    ['Gerçek bakım',ti(t.tdee),'kcal',''+THC.c6+'','ölçülen, tahmin değil'],
-    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+'',t.logged+' gün kayıtlı'],
-    ['Günlük açık',ti(Math.abs(t.deficit)),'kcal',t.deficit>0?C.green:C.orange,t.deficit>0?'eksi yönde':'fazla yiyorsun'],
-    ['Haftalık değişim',(t.kgWeek>0?'+':'')+fx(t.kgWeek,2),'kg',col,'hedef 0.3–0.7 kayıp'],
-    ['Önerilen hedef',ti(a.sug),'kcal',''+THC.c18+'',(a.delta>0?'+':'')+ti(a.delta)+' fark']
+    ['Gereken hız',fx(a.req,2),'kg/hf',''+THC.c6+'',fx(weeksLeft(),1)+' hafta kaldı'],
+    ['Gerçekleşen',fx(a.act,2),'kg/hf',col,t.si.n+' tartı / '+t.si.span+' gün'],
+    ['Bakım (türetilmiş)',ti(t.tdee),'kcal',''+THC.c21+'','ölçüm değil — alım + hız×1100'],
+    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+'',t.logged+' gün kayıtlı']
   ];
-  return '<div class="card dom dom-nut"><div class="hd"><h2>Gerçek Bakım Kalorisi</h2>'+
+  if(a.sug!=null)cells.push(['Önerilen hedef',ti(a.sug),'kcal',''+THC.c18+'',(a.delta>0?'+':'')+ti(a.delta)+' fark']);
+  return '<div class="card dom dom-nut"><div class="hd"><h2>Hız ve Bakım</h2>'+
     '<span class="meta">'+t.days+' günlük pencere · güven '+t.conf+'</span></div>'+
     '<div class="kpi" style="border:0;margin:0">'+cells.map(function(x){
       return '<div style="border-top:3px solid '+x[3]+'"><div class="eyebrow">'+x[0]+'</div>'+
@@ -7771,7 +7952,7 @@ function tdeeCardD(){
         '<div class="s">'+x[4]+'</div></div>';}).join('')+'</div>'+
     '<div style="padding:0 18px 16px"><div style="border-radius:11px;padding:12px 14px;font-size:13px;font-weight:700;line-height:1.55;background:'+
       hexa(col,.12)+';color:'+col+'">'+a.msg+'</div>'+
-    (Math.abs(a.delta)>=60
+    (a.sug!=null&&Math.abs(a.delta)>=60
       ?'<button class="ghostbtn" data-a="usetdee" data-v="'+a.sug+'" style="margin-top:10px">Kalori hedefini '+ti(a.sug)+' yap</button>'
       :'<div class="mhint" style="margin-top:8px">Mevcut hedefin '+ti(S.targets.kcal)+' kcal — uygun, değiştirmeye gerek yok.</div>')+
     '</div></div>';
@@ -7796,9 +7977,9 @@ function autoCardD(){
         '<div class="v">'+x[1]+'<span style="font-size:14px;color:'+THC.c21+'"> '+x[2]+'</span></div>'+
         '<div class="s" style="color:'+dc+'">'+(x[3]>0?'+':'')+x[3]+' fark</div></div>';}).join('')+'</div>'+
     '<div style="padding:0 18px 16px">'+
-      '<div class="mhint">Trend kilo '+fx(a2.w,1)+' kg · ölçülen bakım '+ti(a2.tdee)+' kcal · '+
+      '<div class="mhint">Trend kilo '+fx(a2.w,1)+' kg · türetilmiş bakım '+ti(a2.tdee)+' kcal · '+
       'protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg · karbonhidrat kalandan. '+
-      'Hedef kayıp hızı haftada '+Math.abs(RATE_TGT)+' kg.</div>'+
+      'Hedef kayıp hızı haftada '+fx(Math.abs(a2.rate),2)+' kg (kalan kilo ÷ kalan hafta).</div>'+
       (on?'':(d.any?'<button class="ghostbtn" data-a="applyauto" style="margin-top:10px">Hedefleri şimdi güncelle</button>'
                    :'<div class="mhint" style="margin-top:6px">Mevcut hedeflerin zaten uygun.</div>'))+
     '</div></div>';
