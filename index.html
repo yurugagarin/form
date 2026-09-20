@@ -2153,6 +2153,16 @@ html.dark .a7b{background:#2a3138}
 html.dark .a7b u{background:#8f979e}
 html.dark .sexp,html.dark .a7note{color:#8f979e}
 
+/* ============ v70 · YENİ KARTLAR ============ */
+.cutstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:10px}
+.cutstats>div{background:#f7f1e4;border:1px solid #ece1cd;border-radius:12px;padding:9px 10px}
+.cutstats .l{font-size:9.5px;letter-spacing:.9px;text-transform:uppercase;font-weight:700;color:#a8987c}
+.cutstats .v{font-family:'Fraunces';font-size:19px;font-weight:600;line-height:1.1;margin-top:3px}
+html.dark .cutstats>div{background:#1e2429;border-color:#333b43}
+html.dark .cutstats .l{color:#8f979e}
+.dwrap70{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:14px;margin-bottom:18px}
+.dwrap70 .scard{margin:0;border:1px solid var(--line);border-radius:18px;padding:16px 16px 12px}
+
 </style>
 </head>
 <body>
@@ -2461,6 +2471,14 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-19',
+  t:'Seans etiketi performansa bağlandı, ağırlık artırma ve güç endeksi düzeltildi, üç yeni gösterge, antrenman ekranı sadeleşti (v70)',
+  y:['SEANS ETİKETİ — HATA: "Güçlü / İyi seans" yalnız tamamlama yüzdesiydi. Geçen seansın birebir kopyası da, her sette 1 tekrar geride kalan seans da "Güçlü seans" çıkıyordu. DÜZELTME: her hareket aynı plan gününün bir önceki (deload olmayan) seansıyla ilk k set üzerinden kıyaslanır: ↑ / = / ↓. Etiket (↑ − ↓) / hareket oranından: Güçlü ≥0.5, İyi ≥0.25, Aynı seviye, Geride; setlerin %80\'i yapılmadıysa Eksik, deload haftasında Deload seansı. Tamamlama yüzdesi gün puanında kaldı.',
+     'AĞIRLIK ARTIRMA — ÜÇ HATA: (1) bugünün yarım girilmiş setleri tam seans sayılıyordu; 1. set girilince "tekrar da artmıyor (30 → 12)" diyordu. "Bugün" önerisi artık yalnız bugünden önceki seanslardan. (2) Deload seansları taban oluyordu; RIR 3-4 "efor düşük" okunup deload sonrası her harekete "artır" denecekti. (3) Rozet RIR kısayoluyla "artır", NE YAPMALI "kal" diyebiliyordu. Artık tek satır, tek karar; RIR kısayolu yalnız bütün setler üst sınıra 2 tekrar kalmışken. Takılma kıyası set başı ortalama tekrarla.',
+     'GÜÇ ENDEKSİ — HATA: haftanın endeksi o hafta yapılan hareketlerin başlangıca oranının ortalamasıydı; her gün farklı sepet kıyaslandığı için hafta içinde oynuyor, yeni hareket ikinci seansına gelince GEÇMİŞ haftalar değişiyordu, deload seansları da giriyordu. DÜZELTME: her hareket kendi önceki seansıyla kıyaslanır, haftanın değişimi bu kıyasların ortalaması, endeks zincirleme (100 = başlangıç). Hafta sonunu beklemek gerekmiyor.',
+     'YENİ: Kesim Kalitesi (güç endeksi ile trend kilo aynı grafikte; göreli güç = güç ÷ kilo; güç iki hafta üst üste düşerse uyarı), Kas Grubu Gücü (her kas için başlangıçtan ve son 2 hafta), Uyku → Performans (eski not uykuyu tamamlama yüzdesiyle kıyaslıyordu, artık gerçek güç değişimiyle).',
+     'ANTRENMAN EKRANI: kart aynı kaldı. Kilo kutusunun yanındaki +/− düğmeleri kaldırıldı. Süre üç yerde yazıyordu (üst çubuk, süre hapı, süre kutusu); artık yalnız üst çubuktaki rozette. Süre kutusu yalnız "set var, süre yok" durumunda elle giriş için çıkıyor. İlerleme rozeti ile NE YAPMALI artık aynı kararı söylüyor. Alttaki seans satırı yarım seansı tam seansla kıyaslamıyor; seans sürerken canlı sayaç: ↑ = ↓.',
+     'Hareket İlerlemesi satırlarında son seansın bir önceki seansa göre durumu da yazıyor. Rapor: seans satırında ↑ = ↓ ve ortalama değişim, hareket satırında geçen seansa göre fark, yeni GÜÇ ENDEKSİ bölümü. Buluttan kayıt gelince eski hesaplar artık temizleniyor.']},
  {d:'2026-09-15',
   t:'Kilo kaybı hızı, seans kalitesi ve seans süreleri düzeltildi (v69)',
   y:['HIZ — EN BÜYÜK HATA: haftalık kayıp hızı EMA (trend) serisine regresyon '+
@@ -3535,7 +3553,7 @@ function toast(m){var t=document.getElementById('toast');t.textContent=m;t.class
   clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on');},1400);}
 function save(d){
   if(d&&S.days[d])S.days[d]._t=Date.now();
-  _pc={};_sc={};_gc={};
+  _pc={};_sc={};_gc={};_lf=null;
   clearTimeout(st);st=setTimeout(function(){
     STORE.set(KEY,JSON.stringify(S)).then(function(){toast('kaydedildi');})
      .catch(function(){toast('kaydedilemedi — tekrar dene');});
@@ -3672,11 +3690,17 @@ function evalEx(sets,tgt,prev){
   else{st='dusuk';label='eksik';color=C.orange;bg='rgba(239,90,30,.13)';}
   return{state:st,vol:vol,done:inRange,perf:perf,up:up,need:need,label:label,color:color,bg:bg};
 }
-var _pc={},_sc={};
+var _pc={},_sc={},_lf=null;
 function prevSession(name,before,dt){
   var ck=name+'|'+before+'|'+(dt||''); if(ck in _pc)return _pc[ck];
   var ks=keys().filter(function(d){return d<before&&(!dt||dtOf(d)===dt);}).reverse(),out=null;
+  /* v70 — DELOAD SEANSI "GEÇEN SEANS" OLMAZ. Deload'da setler yarıya iner ve RIR 3-4
+     bırakılır; deload sonrası ilk seansın hedefi, ön dolgusu ve kıyası o seansa
+     göre kurulunca hem öneri hem kıyas yanlış çıkıyordu. Önce deload olmayan en
+     yakın seans aranır; hiç yoksa (hareket deload'da başlamışsa) deload seansı. */
+  for(var pass=0;pass<2&&!out;pass++)
   for(var i=0;i<ks.length;i++){
+    if(pass===0&&isDeload(ks[i]))continue;
     var sets=(D(ks[i]).ex||{})[name];
     if(sets){var f=sets.filter(function(s){return s.kg!=null&&s.rep!=null;});
       if(f.length){var v=0;f.forEach(function(s){v+=s.kg*s.rep;});
@@ -3698,6 +3722,89 @@ function prevSess(name,before){
      antrenman kartı ve NE YAPMALI penceresi (BAŞKA GÜN rozeti). */
   var dt=dtOf(before)||planOf(before);
   return dt?prevSession(name,before,dt):prevSession(name,before);
+}
+/* ============ v70 · ÖNCEKİ SEANSLA KIYAS — TEK KAYNAK ============
+   Seans etiketi, canlı sayaç, güç endeksi, kas grubu gücü ve uyku analizi buradan
+   beslenir. Kural tek: bir hareket AYNI PLAN GÜNÜNÜN bir önceki (deload olmayan)
+   seansıyla kıyaslanır. Kıyas "ilk k set" üzerinden yapılır (k = bugünün hedef seti,
+   iki seansın ortak set sayısıyla sınırlı): biri 3, diğeri 2 set yapılmışsa eksik
+   yorgunluk seti sahte ilerleme üretmesin.
+   Ölçü setlerin Epley ortalaması. Aynı kiloda toplam 1 tekrar fark bile ≥%0.4 eder,
+   yani "geçen seanstan bir tekrar fazla" ilerlemedir — çift progresyonun kendisi.
+   Kilo artmışsa ve yeni kilodaki en düşük set tabanın (alt sınır − 2) üstündeyse,
+   tekrar düşse de ilerlemedir. */
+function wSets(sets){return (sets||[]).filter(function(s){return s&&s.kg!=null&&s.rep!=null&&s.rep>=1;});}
+function avgE1(f){if(!f.length)return null;var t=0;f.forEach(function(s){t+=e1rm(s.kg,s.rep);});return t/f.length;}
+function exCmp(name,d,dt,need){
+  var cur=wSets((D(d).ex||{})[name]);
+  if(!cur.length)return {st:'none'};
+  if(isDeload(d))return {st:'dl'};
+  if(need&&cur.length<need)return {st:'part',n:cur.length,need:need};
+  var ref=dt?prevSession(name,d,dt):null;
+  if(!ref||!ref.sets.length)return {st:'new'};
+  var k=Math.min(need||cur.length,ref.sets.length,cur.length);
+  var a=cur.slice(0,k),b=wSets(ref.sets).slice(0,k);
+  var ea=avgE1(a),eb=avgE1(b);
+  if(ea==null||!(eb>0))return {st:'new'};
+  var pct=(ea/eb-1)*100;
+  var mxA=Math.max.apply(null,a.map(function(s){return s.kg;}));
+  var mxB=Math.max.apply(null,b.map(function(s){return s.kg;}));
+  var ra=0,rb=0;a.forEach(function(s){ra+=s.rep;});b.forEach(function(s){rb+=s.rep;});
+  var tg=tgtFor(name,d),floor=Math.max(1,(tg?tg.r[0]:1)-2),st;
+  if(mxA>mxB){
+    var low=Math.min.apply(null,a.filter(function(s){return s.kg===mxA;}).map(function(s){return s.rep;}));
+    st=(low>=floor||pct>=0.4)?'up':(pct<=-0.4?'down':'eq');
+  }else st=pct>=0.4?'up':(pct<=-0.4?'down':'eq');
+  return {st:st,pct:pct,ref:ref,k:k,kg:mxA,kgRef:mxB,dKg:mxA-mxB,dRep:ra-rb};
+}
+function fkg(v){return (v%1)?fx(v,1):String(v);}
+function sgp(v){return v==null?'—':((v>0?'+':'')+fx(v,1));}
+/* kıyas sonucunun ekrandaki adı — kısa (sh) hali liste satırları için */
+function cmpTxt(c,sh){
+  if(!c)return {t:'',col:THC.c21};
+  if(c.st==='up')return {t:'↑ '+(c.dKg>0?'+'+fkg(c.dKg)+' kg':(c.dRep>0?'+'+c.dRep+' tekrar':'+'+fx(c.pct,1)+'%')),col:C.green};
+  if(c.st==='eq')return {t:sh?'= aynı':'= geçen seansla aynı',col:THC.c17};
+  if(c.st==='down')return {t:'↓ '+(c.dKg>0?fkg(c.kg)+' kg ağır geldi':(c.dKg<0?fkg(c.dKg)+' kg':(c.dRep<0?c.dRep+' tekrar':fx(c.pct,1)+'%'))),col:C.orange};
+  if(c.st==='part')return {t:c.n+' / '+c.need+' set',col:C.amber};
+  if(c.st==='new')return {t:sh?'ilk seans':'ilk seans · kıyas yok',col:THC.c21};
+  if(c.st==='dl')return {t:'deload',col:C.teal};
+  return {t:'girilmedi',col:THC.c28};
+}
+function tallyH(p){
+  if(!p)return '';
+  return '<b style="color:'+C.green+'">↑'+p.up+'</b> <b style="color:'+THC.c17+'">='+p.eq+'</b> '+
+    '<b style="color:'+(p.dn?C.orange:THC.c21)+'">↓'+p.dn+'</b>';
+}
+/* ---- SEANS PERFORMANSI ----
+   ESKİ ETİKET yalnız tamamlama yüzdesiydi: geçen seansın birebir kopyası da, her sette
+   1 tekrar geride kalan seans da "Güçlü seans" çıkıyordu; 8 hareketin 5'i "İyi seans".
+   Yeni etiket plandaki hareketlerin ↑ / = / ↓ dağılımından çıkar:
+     (↑ − ↓) / kıyaslanan hareket ≥ 0.5 Güçlü · ≥ 0.25 İyi · > −0.25 Aynı seviye · altı Geride
+   Setlerin %80'i yapılmadıysa Eksik; deload haftasında Deload seansı (kıyas yok).
+   Tamamlama yüzdesi (q) gün puanında kalıyor — orada ölçtüğü şey doğru: devamlılık. */
+function sessPerf(d,dt){
+  dt=dt||dtOf(d);var t=dt?PROGRAM[dt]:null;if(!t||!t.ex.length)return null;
+  var o={up:0,eq:0,dn:0,nw:0,part:0,none:0,need:0,done:0,rows:[],dl:isDeload(d)},lg=0,nc=0;
+  planEx(dt,d).forEach(function(e){
+    var te=tgtOn(e,d),f=wSets((D(d).ex||{})[e.n]);
+    o.need+=te.s;o.done+=Math.min(te.s,f.length);
+    var c=exCmp(e.n,d,dt,te.s);c.n=e.n;o.rows.push(c);
+    if(c.st==='up')o.up++;else if(c.st==='eq')o.eq++;else if(c.st==='down')o.dn++;
+    else if(c.st==='new')o.nw++;else if(c.st==='part')o.part++;else if(c.st==='none')o.none++;
+    if(c.pct!=null){lg+=Math.log(1+c.pct/100);nc++;}
+  });
+  o.n=o.up+o.eq+o.dn;o.comp=o.need?o.done/o.need:0;
+  o.avg=nc?(Math.exp(lg/nc)-1)*100:null;
+  if(!o.done){o.key='empty';o.verdict='Başlanmadı';o.vcolor=THC.c21;}
+  else if(o.dl){o.key='dl';o.verdict='Deload seansı';o.vcolor=C.teal;}
+  else if(o.comp<0.8){o.key='eksik';o.verdict='Eksik seans';o.vcolor=C.orange;}
+  else if(!o.n){o.key='yeni';o.verdict='Tamamlandı';o.vcolor=C.teal;}
+  else{var net=(o.up-o.dn)/o.n;o.net=net;
+    if(net>=0.5){o.key='guclu';o.verdict='Güçlü seans';o.vcolor=C.green;}
+    else if(net>=0.25){o.key='iyi';o.verdict='İyi seans';o.vcolor=''+THC.c7+'';}
+    else if(net>-0.25){o.key='ayni';o.verdict='Aynı seviye';o.vcolor=C.amber;}
+    else{o.key='geri';o.verdict='Geride kalan seans';o.vcolor=C.orange;}}
+  return o;
 }
 function sessionEval(d,ov){
   if(ov)return _sessionEval(d,ov);
@@ -3732,13 +3839,11 @@ function _sessionEval(d,dt){
   if(!giren&&!off)return{empty:true,total:planN};
   if(!giren)return{empty:false,vol:vol,tam:0,q:0,total:planN,giren:0,off:off,
     verdict:'Plan dışı seans',vcolor:C.amber,trend:(hasPrev&&prevVol>0)?((vol-prevVol)/prevVol*100):null};
-  var pct=wsum/planN*100;
-  var v,vc;
-  if(pct>=85){v='Güçlü seans';vc=C.green;}
-  else if(pct>=60){v='İyi seans';vc=''+THC.c7+'';}
-  else if(pct>=35){v='Eksik seans';vc=C.amber;}
-  else{v='Zayıf seans';vc=C.orange;}
-  return{empty:false,vol:vol,tam:tam,q:wsum/planN,total:planN,giren:giren,off:off,verdict:v,vcolor:vc,
+  /* v70 — etiket (verdict) performanstan gelir, q tamamlama olarak kalır */
+  var pf=sessPerf(d,dt)||{};
+  return{empty:false,vol:vol,tam:tam,q:wsum/planN,total:planN,giren:giren,off:off,
+    verdict:pf.verdict||'Tamamlandı',vcolor:pf.vcolor||C.teal,perf:pf,
+    qcolor:(wsum/planN>=.85?C.green:(wsum/planN>=.6?''+THC.c7+'':(wsum/planN>=.35?C.amber:C.orange))),
     trend:(hasPrev&&prevVol>0)?((vol-prevVol)/prevVol*100):null};
 }
 /* takvim rengi: antrenman kalitesi */
@@ -4256,22 +4361,30 @@ function isPR(name,d){
      seansa giden uyku = gece uykusu + (o gün antrenmandan ÖNCE uyunduysa) gündüz
    Gündüz uykusu işaretlenmemişse (eski kayıtlar) yalnız gece sayılır — tahmin
    üretmiyoruz, sadece bilineni kullanıyoruz. */
+/* v70 — UYKU → PERFORMANS. Eskiden ölçü tamamlama yüzdesiydi (kaç set girildi):
+   az uykuyla gelip aynı setleri daha zayıf yapmak "aynı kalite" sayılıyordu.
+   Artık ölçü seansın geçen seansa göre ortalama güç değişimi (sessPerf.avg,
+   en az 3 kıyaslı, deload hariç). Seansa giden uyku = gece + antrenmandan ÖNCE
+   uyunan gündüz uykusu. Her grupta en az 3 seans yoksa sonuç yazılmaz. */
 function sleepInsight(){
-  var lo=[],hi=[],nPre=0;
+  var lo=[],hi=[],nPre=0,td=today();
   keys().forEach(function(d){
+    if(d>td)return;
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
-    var e=sessionEval(d,dt);if(!e||e.empty)return;
+    if(isDeload(d))return;
+    var e=sessionEval(d),p=e&&e.perf;
+    if(!p||p.avg==null||p.n<3)return;
     var r=D(d),sl=r.sl;
     if(sl==null)sl=D(addD(d,-1)).sl;
     if(sl==null)return;
     var pre=(r.napp==='o'&&r.nap)?r.nap:0;
     if(pre)nPre++;
-    ((sl+pre)<7?lo:hi).push(e.q);
+    ((sl+pre)<7?lo:hi).push(p.avg);
   });
-  if(lo.length<3||hi.length<3)return null;
-  function av(a){return a.reduce(function(x,y){return x+y;},0)/a.length;}
+  function av(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
   var a=av(lo),b=av(hi);
-  return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,diff:(b-a)*100,pre:nPre};
+  return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,pre:nPre,
+    ok:lo.length>=3&&hi.length>=3,diff:(a!=null&&b!=null)?b-a:null};
 }
 /* Antrenman günlerinde gece uykusu düşükken toplamın gündüz uykusuyla
    tamamlandığı günler: tek başına "uyku tuttu" diye okunmaması gereken günler. */
@@ -4281,7 +4394,7 @@ function napDays(){
     var r=D(d);if(!r.nap)return;
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
     var e=sessionEval(d,dt);if(!e||e.empty)return;
-    out.push({d:d,sl:r.sl,nap:r.nap,tot:slTot(r),q:e.q});
+    out.push({d:d,sl:r.sl,nap:r.nap,tot:slTot(r),q:e.q,pf:(e.perf&&e.perf.n&&e.perf.avg!=null)?e.perf.avg:null});
   });
   return out;
 }
@@ -4852,7 +4965,7 @@ function exRow(e,r){
                '</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
               :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
                'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
-        (function(){var pg=progression(e.n,dtOf(cur)||planOf(cur));if(!pg)return '';
+        (function(){var pg=progression(e.n,dtOf(cur)||planOf(cur),cur);if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
           var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
           return '<div style="margin-top:6px;display:inline-block;font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 9px;background:'+hexa(col,.13)+';color:'+col+'">'+tx+'</div>';})()+
@@ -4866,9 +4979,15 @@ function sessionLine(d,ov){
   var e=sessionEval(d,ov);
   if(!e)return '';
   if(e.empty)return '0 / '+e.total+' hareket girildi';
-  var t=e.trend==null?'':' · geçen seansa göre <b style="color:'+(e.trend>1?C.green:e.trend<-1?C.orange:''+THC.c21+'')+'">'+(e.trend>0?'+':'')+e.trend.toFixed(0)+'%</b>';
-  return '<span style="color:'+e.vcolor+'">'+e.verdict+'</span> · '+e.tam+'/'+e.total+' tamam'+
-    (e.off?' (+'+e.off+' plan dışı)':'')+' · toplam hacim <b>'+ti(e.vol)+' kg</b>'+t;
+  var p=e.perf||{};
+  /* v70 — eskiden "geçen seansa göre %" yarım seansın hacmini geçen seansın TAM
+     hacmiyle kıyaslıyordu; seans ortasında −%60 görünüyordu. Seans sürerken canlı
+     sayaç, bitince etiket. */
+  if(d===today()&&!D(d).we&&e.giren)
+    return 'Bu seans '+tallyH(p)+(p.nw?' <span style="font-weight:600">· '+p.nw+' ilk kez</span>':'');
+  return '<span style="color:'+e.vcolor+'">'+e.verdict+'</span>'+(p.n?' · '+tallyH(p):'')+
+    (p.avg!=null&&p.n?' · ort. <b style="color:'+(p.avg>0.2?C.green:(p.avg<-0.2?C.orange:''+THC.c21+''))+'">'+sgp(p.avg)+'%</b>':'')+
+    ' · '+e.tam+'/'+e.total+' tamam'+(e.off?' (+'+e.off+' plan dışı)':'');
 }
 
 /* ============ HAFTALIK TABLO ============ */
@@ -4921,7 +5040,7 @@ function weekTable(){
       var e=sessionEval(d);
       if(!e||e.empty)return '<div class="'+cls+'" style="color:'+THC.c36+'">·</div>';
       if(e.tam/e.total>=.6)tam++;
-      return '<div class="'+cls+'" style="color:'+e.vcolor+';font-weight:700">'+e.tam+'/'+e.total+'</div>';
+      return '<div class="'+cls+'" style="color:'+(e.qcolor||e.vcolor)+';font-weight:700">'+e.tam+'/'+e.total+'</div>';
     }).join('');
     return '<div class="c l">Antrenman</div>'+cells+'<div class="c avg" style="color:'+(plan&&tam>=plan?C.green:''+THC.c6+'')+'">'+tam+'/'+(plan||0)+'</div>';
   }
@@ -5358,54 +5477,72 @@ function exSessions(name,dt){
     return st&&st.some(function(s){return s.kg!=null&&s.rep!=null;});
   }).sort();
 }
-function progression(name,dt){
-  var ck=name+'|'+(dt||'');
+function progression(name,dt,before){
+  var ck=name+'|'+(dt||'')+'|'+(before||'');
   if(ck in _gc)return _gc[ck];
-  var out=_progression(name,dt);_gc[ck]=out;return out;
+  var out=_progression(name,dt,before);_gc[ck]=out;return out;
 }
-function _progression(name,dt){
-  var ss=exSessions(name,dt);if(!ss.length)return null;
+/* v70 — HANGİ SEANSLAR KARAR TABANI?
+   (1) before verilirse (antrenman ekranı: "BUGÜN ne yapayım") yalnız bugünden ÖNCEKİ
+       seanslar okunur. Eskiden bugünün yarım girilmiş setleri de okunuyordu: 3 setlik
+       harekette 1. seti girer girmez yarım seans tam seans sayılıyor, "4 seanstır 24 kg,
+       tekrar da artmıyor (30 → 12 toplam tekrar)" diyordu; son set girilince uyarı
+       kayboluyordu.
+   (2) before verilmezse (özet, rapor: "SONRAKİ seans") bugünün kaydı ancak hedef set
+       sayısı tamamlandıysa girer.
+   (3) Deload seansları asla taban olmaz. Deload'da RIR 3-4 bırakılıyor; motor bunu
+       "efor düşük" okuyup deload sonrası ilk hafta her harekete "ağırlığı artır" diyordu
+       (tek kol kablo yan kaldırış 5 → 10 kg dahil). */
+function _progression(name,dt,before){
+  var td=today();
+  var ss=exSessions(name,dt).filter(function(d){
+    if(before&&d>=before)return false;
+    if(isDeload(d))return false;
+    if(!before&&d===td){
+      var tg0=tgtFor(name,d);
+      if(tg0&&wSets((D(d).ex||{})[name]).length<tg0.s)return false;
+    }
+    return true;
+  });
+  if(!ss.length)return null;
   var last=ss[ss.length-1];
-  /* hedef, hareketin SON YAPILDIĞI GÜNDEN okunur — EXTGT'den değil.
-     Yoksa Üst gününde yapılan Eğik dambıl press'e İtiş gününün 6-10
-     hedefiyle not verilir ve antrenman sayfasıyla çelişen uyarı çıkar. */
+  /* hedef, hareketin SON YAPILDIĞI GÜNDEN okunur — EXTGT'den değil. */
   var e=tgtFor(name,last);if(!e)return null;
-  var sets=((D(last).ex||{})[name]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
+  var sets=wSets((D(last).ex||{})[name]);
   if(!sets.length)return null;
   var mx=Math.max.apply(null,sets.map(function(s){return s.kg;}));
   var atMax=sets.filter(function(s){return s.kg===mx;});
   var topHit=atMax.filter(function(s){return s.rep>=e.r[1];}).length;
   var rir=avgRir(sets);
 
-  /* aynı ağırlıkta üst üste kaç seans */
+  /* aynı ağırlıkta üst üste kaç seans (deload seansları sayılmaz) */
   var streak=0,firstAt=last;
   for(var i=ss.length-1;i>=0;i--){
-    var st2=((D(ss[i]).ex||{})[name]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
+    var st2=wSets((D(ss[i]).ex||{})[name]);
     if(!st2.length)break;
     if(Math.max.apply(null,st2.map(function(s){return s.kg;}))!==mx)break;
     streak++;firstAt=ss[i];
   }
   var days=dayDiff(firstAt,last),nx=nextWeight(mx,name);
-  var dl=isDeload(today());
+  var dl=isDeload(before||td);
 
-  /* RIR 3+ ise setler yeterince zorlamıyor. AMA tekrar aralığın altındaysa ağırlık
-     artırmak yanlış: 8-12 hedefinde 6 tekrar + RIR 3 demek, seti erken bırakmışsın
-     demek — çözüm daha ağır kilo değil, önce aralığa girmek. O yüzden bu kısayol
-     artık sadece bütün setler en az alt sınırdayken çalışıyor. */
-  var loHit=atMax.filter(function(s){return s.rep>=e.r[0];}).length;
-  if(rir!=null&&rir>=2.6&&!dl&&atMax.length>=e.s&&loHit>=e.s)
-    return {type:'up',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      msg:'Ortalama RIR '+fx(rir,1)+' — setler yetersizliğe uzak, uyarım düşük. <b>'+nx+' kg</b>’a çık.'+
+  /* RIR KISAYOLU (v70'te daraltıldı): ortalama RIR 3+ tek başına artırma sebebi
+     değil — 8-12 hedefinde 8 tekrar + RIR 3 "önce tekrarı artır" demektir. Kısayol
+     artık yalnız bütün setler üst sınıra 2 tekrar kala ya da üstündeyken çalışır.
+     Eskiden aralığın altına yakınken de "artır" deyip aynı ekrandaki NE YAPMALI
+     kutusuyla ("kilonda kal") çelişiyordu. */
+  var nearTop=atMax.filter(function(s){return s.rep>=e.r[1]-2;}).length;
+  if(rir!=null&&rir>=2.6&&!dl&&atMax.length>=e.s&&nearTop>=e.s)
+    return {type:'up',why:'rir',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+      msg:'Ortalama RIR '+fx(rir,1)+' ve bütün setler '+(e.r[1]-2)+'+ tekrar — setler yetersizliğe uzak kaldı. <b>'+nx+' kg</b>’a çık.'+
         stagedNote(mx,nx)};
 
-  /* Ağırlık artırma şartı: hedeflenen set sayısının TAMAMI aynı kiloda
-     yapılmış VE hepsi üst sınıra ulaşmış olmalı.
-     Eski şart min(e.s, atMax.length) idi: 3 setlik hedefte 2. seti girer
-     girmez "çık" diyordu — seans daha bitmemişken. */
+  /* Ağırlık artırma şartı: hedeflenen set sayısının TAMAMI aynı kiloda yapılmış VE
+     hepsi üst sınıra ulaşmış olmalı. */
   if(atMax.length>=e.s&&topHit>=e.s){
-    if(dl)return {type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+    if(dl)return {type:'stall',why:'dl',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
       msg:'Bu hafta deload — ağırlığı koru, artırmayı gelecek haftaya bırak.'};
-    return {type:'up',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
+    return {type:'up',why:'top',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
       msg:'Tüm setlerde '+e.r[1]+' tekrara ulaştın. <b>'+nx+' kg</b>’a çık. '+
           'İlk seansta '+e.r[0]+' tekrarın altında kalman normal — '+
           Math.max(1,e.r[0]-2)+' tekrarın altına düşmediğin sürece devam et, '+
@@ -5413,74 +5550,56 @@ function _progression(name,dt){
           stagedNote(mx,nx)};
   }
 
-  /* ---- TAKILMA MI, İLERLEME Mİ? (v59) ----
-     v58'e kadar takılma kararının tek ölçüsü ağırlıktı: aynı kiloda 3 seans
-     = "takıldın". Ama progresif yüklenmenin iki kolu var, ağırlık VE tekrar.
-     36 kg'da 8/8/6 yapıp sonraki seans 10/10/9 yapmak açık ilerlemedir;
-     uygulama buna "hiç gelişme yok" diyordu — yanlış olan buydu.
-     Artık seri içindeki tekrar hareketi de okunuyor. Takılma uyarısı ancak
-     üç kol birden durduğunda çıkıyor: ağırlık sabit, tekrar sabit, RIR sabit. */
+  /* ---- TAKILMA MI, İLERLEME Mİ? ----
+     v70: kıyas TOPLAM tekrarla değil SET BAŞI ortalamayla. Toplam, set sayısı değişince
+     (yarım seans, fazladan set) yanlış sonuç veriyordu. */
   if(streak>=3||(streak>=2&&days>=14)){
     var run=stallRun(name,ss,streak,mx);
     var r0=run[0],rN=run[run.length-1];
-    var repGain=rN.reps-r0.reps;
-    /* seri içindeki en iyi seans kaç seans geride kaldı — son iki seans da
-       düşüyorsa "tekrar arttı" demek artık doğru değil */
-    var bi=0;for(var bq=1;bq<run.length;bq++)if(run[bq].reps>run[bi].reps)bi=bq;
+    var repGain=rN.avg-r0.avg;
+    var bi=0;for(var bq=1;bq<run.length;bq++)if(run[bq].avg>run[bi].avg)bi=bq;
     var since=run.length-1-bi;
     var tr=rirTrend(name,ss);
 
-    /* 1) TEKRAR ARTIYOR — ağırlık sabit olsa da bu ilerlemedir */
-    if(repGain>0&&since<=1)
+    if(repGain>0.01&&since<=1)
       return {type:'ok',why:'rep',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
         short:'✓ tekrar artıyor — ilerliyorsun',
-        msg:streak+' seanstır '+mx+' kg ama tekrarların artıyor: <b>'+r0.reps+' → '+rN.reps+
-            '</b> toplam tekrar'+
+        msg:streak+' seanstır '+mx+' kg ama tekrarların artıyor: set başı <b>'+fx(r0.avg,1)+' → '+fx(rN.avg,1)+
+            '</b> tekrar'+
             ((r0.e1!=null&&rN.e1!=null&&rN.e1-r0.e1>0.05)?' (tahmini 1RM '+fx(r0.e1,1)+' → '+fx(rN.e1,1)+')':'')+
             '. Aynı kiloda daha çok tekrar da progresif yüklenmedir — takılmadın. '+
             'Bütün setlerde '+e.r[1]+' tekrarı gördüğünde '+nx+' kg’a geçersin.'};
 
-    /* 2) TEKRAR SABİT AMA RIR DÜŞÜYOR — yine takılma değil */
     if(tr!=null&&tr<=-0.5)
       return {type:'ok',why:'rir',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
         short:'✓ RIR düşüyor — ilerliyorsun',
         msg:streak+' seanstır '+mx+' kg ama RIR düşüyor ('+fx(tr,1)+') — takılmadın, aynı yükte güçleniyorsun.'};
     if(dl)return null;
-    /* Tabanın altında takılmak ile aralık içinde takılmak aynı şey değil.
-       38 kg'da 3 seanstır 6 tekrar yapan birine "12 tekrarı yakala" demek
-       çıkmaz sokak — sıçrama fazla, bir kademe geri inmesi gerekiyor. */
     var lowMx=Math.min.apply(null,atMax.map(function(s){return s.rep;}));
     var flr=Math.max(1,e.r[0]-2);
     if(lowMx<flr)
       return {type:'stall',why:'floor',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-        reps:rN.reps,reps0:r0.reps,
+        avg:rN.avg,avg0:r0.avg,
         msg:streak+' seanstır '+mx+' kg ama en düşük set '+lowMx+' tekrar — '+
             e.r[0]+'-'+e.r[1]+' hedefinin '+flr+' tekrarlık tabanının da altı. '+
             'Bir kademe geri in, orada '+e.r[1]+' tekrarı sağlamlaştır.'};
-    /* Buraya gelmek gerçek takılma: kilo da tekrar da RIR da yerinde sayıyor.
-       Mesaj artık bunu açıkça yazıyor, yoksa "ama ben tekrar artırdım" haklı
-       itirazı geliyor ve uyarı güvenilirliğini kaybediyor. */
     return {type:'stall',why:'flat',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      reps:rN.reps,reps0:r0.reps,
+      avg:rN.avg,avg0:r0.avg,
       msg:streak+' seanstır '+mx+' kg'+(days>=7?' ('+days+' gündür)':'')+
-          ' <b>ve tekrarlar da artmıyor</b> ('+r0.reps+' → '+rN.reps+' toplam tekrar). '+
+          ' <b>ve tekrarlar da artmıyor</b> (set başı '+fx(r0.avg,1)+' → '+fx(rN.avg,1)+'). '+
           'Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'};
   }
   return null;
 }
-/* ---- SERİ İÇİ DÖKÜM (v59) ----
-   Aynı kilodaki son N seansın tekrar toplamı ve tahmini 1RM'i. Takılma kararı
-   buradan veriliyor: ağırlık sabitken tekrarların ne yaptığını görmeden
-   "gelişme yok" demek eksik bir okuma. Sayılan setler yalnızca o seansın en
-   ağır kilosundakiler — ısınma ve kademeli çıkış setleri karışmasın. */
+/* ---- SERİ İÇİ DÖKÜM ----
+   Aynı kilodaki son N seansın tekrarları. v70: set başı ortalama da tutuluyor. */
 function stallRun(name,ss,streak,mx){
   var out=[];
   for(var i=Math.max(0,ss.length-streak);i<ss.length;i++){
-    var f=((D(ss[i]).ex||{})[name]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
+    var f=wSets((D(ss[i]).ex||{})[name]);
     var at=f.filter(function(s){return s.kg===mx;});
-    var e1=sessE1(f);
-    out.push({d:ss[i],sets:at.length,
-      reps:at.reduce(function(a,s){return a+s.rep;},0),
+    var e1=sessE1(f),rs=at.reduce(function(a,s){return a+s.rep;},0);
+    out.push({d:ss[i],sets:at.length,reps:rs,avg:at.length?rs/at.length:0,
       minRep:at.length?Math.min.apply(null,at.map(function(s){return s.rep;})):null,
       e1:e1?e1.v:null});
   }
@@ -5673,6 +5792,7 @@ function syncNow(silent){
     return gh('/gists/'+S.sync.gist,{method:'PATCH',body:body}).then(function(){return n;});
   }).then(function(n){
     S.sync.last=Date.now();syncing=false;
+    if(n){_pc={};_sc={};_gc={};_lf=null;}   /* v70: buluttan gelen kayıt eski hesapları geçersiz kılar */
     STORE.set(KEY,JSON.stringify(S));
     setSyncMsg('');
     if(!silent)toast(n?n+' kayıt güncellendi':'senkron tamam');
@@ -5787,7 +5907,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v68 · 13 Eyl 2026';
+var APPVER='v70 · 19 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -5940,11 +6060,15 @@ function gymWorkout(){
   /* Önce aynı plan gününün geçen seansı — aynı sıra, aynı yorgunluk, adil kıyas.
      O gün bu hareket ilk kez yapılıyorsa başka günden yedek alınır ve kart
      bunu açıkça söyler; sessizce yanlış güne kıyaslamaktansa etiketlemek doğru. */
-  var _dt=dtOf(cur);
+  /* v70: gün tipi henüz kaydedilmemişse (ilk set girilmeden) dtOf boş dönüyordu ve kıyas
+     bütün günlere taşıyordu — artık planlanan gün kullanılıyor. */
+  var _dt=dtOf(cur)||dt;
   var prev=prevSession(e.n,cur,_dt),prevX=false;
   if(!prev){prev=prevSession(e.n,cur);prevX=!!prev;}
-  /* v67: karar rozeti başka günün verisiyle üretilmez — o günün hattı yoksa çıkmaz */
-  var ev=evalEx(sets,te,prev),pg=progression(e.n,_dt);
+  /* v67: karar rozeti başka günün verisiyle üretilmez — o günün hattı yoksa çıkmaz.
+     v70: rozet yalnız bugünden ÖNCEKİ seanslara bakar; bugünün yarım girilmiş setleri
+     artık "takıldın" uyarısı üretmez. */
+  var ev=evalEx(sets,te,prev),pg=prevX?null:progression(e.n,_dt,cur);
 
   var rows='',anyFilled=false;
   for(var i=0;i<cnt;i++){
@@ -5959,9 +6083,7 @@ function gymWorkout(){
       opts+='<option value="'+q+'"'+(st2.rep===q?' selected':'')+'>'+q+'</option>';
     rows+='<div class="gset'+(done?' done':'')+'" data-i="'+i+'">'+
       '<span class="num">'+(i+1)+'</span>'+
-      '<button class="gstep" data-a="kgstep" data-i="'+i+'" data-dir="-1" aria-label="Ağırlığı azalt">−</button>'+
       '<input class="gkg" data-s="kg" inputmode="decimal" placeholder="'+(ph&&ph.kg!=null?ph.kg:'kg')+'" value="'+(st2.kg==null?'':st2.kg)+'">'+
-      '<button class="gstep" data-a="kgstep" data-i="'+i+'" data-dir="1" aria-label="Ağırlığı artır">+</button>'+
       '<span class="mul">×</span>'+
       '<div class="grepwrap"><select class="grep'+(st2.rep==null?' ph':'')+'" data-s="rep">'+opts+'</select><span class="chev">▾</span></div>'+
       '<button class="ok" data-a="setdone" data-i="'+i+'" aria-label="Seti bitir">'+(done?'✓':'○')+'</button>'+
@@ -6019,9 +6141,10 @@ function gymWorkout(){
           :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
            'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
     (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
-        var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
+        var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun')
+          :(pg.why==='dl'?'Deload — '+pg.kg+' kg’da kal':(pg.why==='floor'?'↓ Bir kademe geri in':'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor')));
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
-    prevSummary(prev,e,prevX)+
+    prevSummary(prev,e,prevX,pg)+
     '<div class="gsets">'+rows+'</div>'+
     '<div class="ghint">'+hint+'</div>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
@@ -6219,6 +6342,49 @@ function exBaselines(){
   });
   return out;
 }
+/* ============ v70 · GÜÇ ENDEKSİ — ÖNCEKİ SEANSA GÖRE, ZİNCİRLİ ============
+   ESKİ: haftanın endeksi = o hafta yapılan her hareketin 1RM'i ÷ o hareketin ilk
+   seansları, ortalaması. Her hafta farklı bir hareket sepeti ortalanıyordu:
+   hafta içinde hangi günler yapıldıysa endeks ona göre oynuyordu (Pzt +3.4 →
+   Cmt +1.9), yeni bir hareketin ikinci seansı gelince geçmiş haftaların
+   değeri değişiyordu ve deload seansları da giriyordu.
+   YENİ: her hareket kendi bir önceki seansıyla kıyaslanır (exCmp: aynı plan günü,
+   deload hariç, ilk k set). Bir haftanın değişimi o hafta yapılan kıyasların
+   geometrik ortalaması; endeks bu değişimleri zincirler, 100 = başlangıç.
+   Hafta ortasında okunan değer, o ana kadar yapılan günlerin gerçek kıyasıdır —
+   hafta sonunu beklemek gerekmez, gelen yeni gün geçmişi değiştirmez. */
+function lflPairs(){
+  if(_lf)return _lf;
+  var out=[],td=today();
+  keys().forEach(function(d){
+    if(d>td)return;
+    var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
+    if(isDeload(d))return;
+    planEx(dt,d).forEach(function(e){
+      var c=exCmp(e.n,d,dt,tgtOn(e,d).s);
+      if(c.pct==null)return;
+      out.push({d:d,dt:dt,n:e.n,wk:weekIdx(d),lr:Math.log(1+c.pct/100),pct:c.pct,st:c.st});
+    });
+  });
+  _lf=out;return out;
+}
+/* wf verilirse (kas grubu) her kıyas o kasın programdaki ağırlığıyla katılır */
+function strSeries(wf){
+  var P=lflPairs(),m={};
+  P.forEach(function(p){
+    var w=wf?wf(p):1;if(!(w>0))return;
+    var o=m[p.wk]=m[p.wk]||{s:0,w:0,n:0,up:0,eq:0,dn:0};
+    o.s+=w*p.lr;o.w+=w;o.n++;
+    if(p.st==='up')o.up++;else if(p.st==='down')o.dn++;else o.eq++;
+  });
+  var w0=Math.min(1,firstWeek()),w1=weekIdx(today()),idx=100,out=[];
+  for(var w=w0;w<=w1;w++){
+    var o=m[w],chg=null;
+    if(o&&o.w>0){var g=Math.exp(o.s/o.w);idx*=g;chg=(g-1)*100;}
+    out.push({wk:w,idx:idx,chg:chg,n:o?o.n:0,up:o?o.up:0,eq:o?o.eq:0,dn:o?o.dn:0});
+  }
+  return out;
+}
 function weekLoad(){
   var m={};
   function slot(w){return m[w]=m[w]||{wk:w,total:0,reps:0,sets:0,sess:0,by:{},bys:{},idx:null,_r:[]};}
@@ -6233,18 +6399,12 @@ function weekLoad(){
         if(st.kg!=null&&st.rep!=null){o.sets++;o.reps+=st.rep;o.bys[dt]=(o.bys[dt]||0)+1;}});
     });
   });
-  var bl=exBaselines();
-  Object.keys(bl).forEach(function(k){
-    var b=bl[k].base;
-    bl[k].h.forEach(function(z){
-      if(!(z.e1>0))return;
-      var w=weekIdx(z.d);if(!m[w])return;
-      m[w]._r.push(z.e1/b*100);
-    });
-  });
+  var byW={};strSeries().forEach(function(x){byW[x.wk]=x;});
   var rows=Object.keys(m).map(function(k){return m[k];}).sort(function(a,b){return a.wk-b.wk;});
   rows.forEach(function(r){
-    if(r._r.length)r.idx=r._r.reduce(function(a,b){return a+b;},0)/r._r.length;
+    var x=byW[r.wk];
+    r.idx=x?x.idx:null;r.chg=x?x.chg:null;r.nc=x?x.n:0;
+    r.up=x?x.up:0;r.eq=x?x.eq:0;r.dn=x?x.dn:0;
     r.dl=isDeload(monday(addD(S.startDate,(r.wk-1)*7)));
     delete r._r;
   });
@@ -6353,7 +6513,7 @@ function typeAdhList(rows){
   if(!rows.length)return '<div class="sempty">Program başlayınca burası dolacak</div>';
   return '<div class="tadh">'+rows.map(function(o){
     var col=o.pct==null?''+THC.c28+'':(o.pct>=.9?C.green:(o.pct>=.7?C.amber:C.orange));
-    var qt=o.avgQ==null?'—':'%'+Math.round(o.avgQ*100)+' ortalama kalite';
+    var qt=o.avgQ==null?'—':'%'+Math.round(o.avgQ*100)+' ort. tamamlama';
     return '<button class="srow tadhr" data-a="dopen" data-kind="type" data-key="'+o.k+'">'+
       '<span class="sdot" style="background:'+PROGRAM[o.k].color+'"></span>'+
       '<span class="sname"><b>'+esc(PROGRAM[o.k].name)+'</b>'+
@@ -6558,6 +6718,137 @@ function adherenceM(){
         (sub?'<div class="advs">'+sub+'</div>':'')+'</button>';}).join('')+'</div>'+
   '</div>';
 }
+/* ============ v70 · YENİ GÖSTERGELER ============ */
+/* KESİM KALİTESİ — mezura kapalıyken kas korumasının en doğrudan göstergesi:
+   kilo düşerken aynı hareketlerdeki güç ne yapıyor? Güç = zincirli endeks,
+   kilo = trend (EMA), ikisi de başlangıçta 100. Göreli güç = güç ÷ kilo. */
+function cutData(){
+  var ss=strSeries();if(!ss.length)return null;
+  var tw=trendW(),base=null;
+  tw.forEach(function(x){if(base==null&&x.d>=S.startDate)base=x.v;});
+  if(base==null&&tw.length)base=tw[0].v;
+  var m0=monday(S.startDate);
+  var rows=ss.map(function(x){
+    var sun=addD(m0,(x.wk-1)*7+6),tv=null;
+    for(var i=0;i<tw.length;i++){if(tw[i].d<=sun)tv=tw[i].v;else break;}
+    var wi=(tv!=null&&base)?tv/base*100:null;
+    return {wk:x.wk,s:x.idx,w:wi,rel:wi?x.idx/wi*100:null,chg:x.chg,n:x.n};
+  });
+  return {rows:rows,base:base,nc:ss.reduce(function(a,x){return a+x.n;},0)};
+}
+function cutChart(rs){
+  var W=340,H=124,PL=10,PR=44,TP=12,BT=20;
+  var vals=[100];rs.forEach(function(r){vals.push(r.s);if(r.w!=null)vals.push(r.w);});
+  var lo=Math.min.apply(null,vals),hi=Math.max.apply(null,vals),pad=Math.max(0.8,(hi-lo)*0.18);lo-=pad;hi+=pad;
+  var n=rs.length;
+  function X(i){return PL+(n<2?(W-PL-PR)/2:(W-PL-PR)*i/(n-1));}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var g='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(100).toFixed(1)+'" y2="'+Y(100).toFixed(1)+'" stroke="'+THC.c34+'" stroke-width="1" stroke-dasharray="4 4"/>'+
+    '<text x="'+(W-PR+6)+'" y="'+(Y(100)+3).toFixed(1)+'" font-family="Karla" font-size="9" font-weight="700" fill="'+THC.c23+'">100</text>';
+  function line(key,col){
+    var pts=[];rs.forEach(function(r,i){if(r[key]!=null)pts.push([X(i),Y(r[key])]);});
+    if(!pts.length)return '';
+    return '<path d="'+pts.map(function(p,i){return (i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' ')+
+      '" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+
+      pts.map(function(p){return '<circle cx="'+p[0].toFixed(1)+'" cy="'+p[1].toFixed(1)+'" r="2.6" fill="'+col+'"/>';}).join('');
+  }
+  g+=line('w',C.blue)+line('s',C.green);
+  var L=rs[rs.length-1],ys=Y(L.s),yw=L.w!=null?Y(L.w):null;
+  if(yw!=null&&Math.abs(ys-yw)<12){var mid=(ys+yw)/2;if(ys<=yw){ys=mid-6;yw=mid+6;}else{ys=mid+6;yw=mid-6;}}
+  g+='<text x="'+(W-PR+6)+'" y="'+(ys+3.5).toFixed(1)+'" font-family="Karla" font-size="11" font-weight="800" fill="'+C.green+'">'+fx(L.s,1)+'</text>';
+  if(yw!=null)g+='<text x="'+(W-PR+6)+'" y="'+(yw+3.5).toFixed(1)+'" font-family="Karla" font-size="11" font-weight="800" fill="'+C.blue+'">'+fx(L.w,1)+'</text>';
+  rs.forEach(function(r,i){
+    if(n>9&&i%2&&i!==n-1)return;
+    g+='<text x="'+X(i).toFixed(1)+'" y="'+(H-5)+'" text-anchor="middle" font-family="Karla" font-size="9.5" font-weight="700" fill="'+THC.c23+'">H'+r.wk+'</text>';
+  });
+  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:'+H+'px;display:block">'+g+'</svg>';
+}
+function cutCard(){
+  var cd=cutData();
+  var head='<div class="shead"><div><div class="stitle">Kesim Kalitesi</div>'+
+    '<div class="ssub">güç ve trend kilo · başlangıç = 100</div></div></div>';
+  if(!cd||cd.nc<3)return '<div class="scard static dom dom-trn">'+head+
+    '<div class="sempty">Hareketler ikinci seanslarına geldikçe dolacak (en az 3 kıyas)</div></div>';
+  var rs=cd.rows,L=rs[rs.length-1];
+  var sC=L.s-100,wC=L.w!=null?L.w-100:null,rC=L.rel!=null?L.rel-100:null;
+  var wd=rs.filter(function(r){return r.chg!=null;}).slice(-2);
+  var two=wd.length===2&&wd.every(function(r){return r.chg<-0.5;});
+  var msg,mc;
+  if(two){msg='Güç son iki haftadır düşüyor ('+wd.map(function(r){return 'H'+r.wk+' '+sgp(r.chg)+'%';}).join(', ')+
+    '). Açık fazla gelmiş olabilir — önce uyku ve proteine bak.';mc=C.orange;}
+  else if(sC<-2){msg='Güç başlangıcın %'+fx(-sC,1)+' altında. Kalori açığını ve uykuyu kontrol et.';mc=C.orange;}
+  else if(wC!=null&&wC<-0.5&&sC>=-1){msg='Kilo düşerken güç yerinde ya da artıyor — kesim kas kaybettirmiyor.';mc=C.green;}
+  else{msg='Henüz net bir ayrışma yok; birkaç hafta daha veri birikince netleşir.';mc=''+THC.c21+'';}
+  var cells=[['Güç',sgp(sC)+'%',sC>=0?C.green:C.orange],
+             ['Trend kilo',wC==null?'—':sgp(wC)+'%',C.blue],
+             ['Göreli güç',rC==null?'—':sgp(rC)+'%',rC==null?''+THC.c21+'':(rC>=0?C.green:C.orange)]];
+  return '<div class="scard static dom dom-trn">'+head+
+    '<div class="cutstats">'+cells.map(function(c){
+      return '<div><div class="l">'+c[0]+'</div><div class="v" style="color:'+c[2]+'">'+c[1]+'</div></div>';}).join('')+'</div>'+
+    cutChart(rs)+
+    '<div class="sfoot"><span><i style="background:'+C.green+'"></i>güç endeksi</span>'+
+      '<span><i style="background:'+C.blue+'"></i>trend kilo</span></div>'+
+    '<div class="tdmsg" style="background:'+hexa(mc,.12)+';color:'+mc+';margin-top:10px">'+msg+'</div>'+
+    '<div class="sexp">Güç: her hareket kendi bir önceki seansıyla kıyaslanır, haftalar zincirlenir. '+
+      'Göreli güç = güç ÷ kilo — kilo düşerken aynı ağırlıkları kaldırıyorsan yükselir.</div>'+
+  '</div>';
+}
+/* KAS GRUBU GÜCÜ — aynı zincirli endeks, her kas için ayrı. Bir hareket kasa
+   programdaki ağırlığıyla katılır (EXMUS: ana kas 1, yardımcı 0.5). */
+function musStr(){
+  var out=[];
+  MUSORD.forEach(function(k){
+    var ss=strSeries(function(p){var mm=EXMUS[p.n];return (mm&&mm[k])?mm[k]:0;});
+    var nT=ss.reduce(function(a,x){return a+x.n;},0);if(!nT)return;
+    var L=ss[ss.length-1],ref=ss.length>=3?ss[ss.length-3].idx:100;
+    out.push({k:k,ss:ss,n:nT,tot:L.idx-100,rec:(L.idx/ref-1)*100});
+  });
+  return out;
+}
+function musStrCard(){
+  var rows=musStr();
+  var head='<div class="shead"><div><div class="stitle">Kas Grubu Gücü</div>'+
+    '<div class="ssub">başlangıçtan · son 2 hafta</div></div></div>';
+  if(!rows.length)return '<div class="scard static dom dom-trn">'+head+
+    '<div class="sempty">Kıyaslanabilir seans birikince dolacak</div></div>';
+  return '<div class="scard static dom dom-trn">'+head+
+    '<div class="exlist">'+rows.map(function(o){
+      var M=MUS[o.k];
+      var c1=o.tot>0.5?C.green:(o.tot<-0.5?C.orange:''+THC.c21+''),c2=o.rec>0.3?C.green:(o.rec<-0.3?C.orange:''+THC.c21+'');
+      return '<div class="srow" style="pointer-events:none">'+
+        '<span class="sdot" style="background:'+M.c+'"></span>'+
+        '<span class="sname"><b style="font-weight:'+(M.pri?'800':'700')+'">'+M.n+'</b><i>'+o.n+' kıyas'+(M.pri?' · öncelikli':'')+'</i></span>'+
+        miniLine(o.ss.map(function(x){return x.idx;}),M.c)+
+        '<span class="sgain" style="color:'+c1+'">'+sgp(o.tot)+'%</span>'+
+        '<span class="sgain" style="color:'+c2+';min-width:46px">'+sgp(o.rec)+'</span>'+
+      '</div>';}).join('')+'</div>'+
+    '<div class="sexp">İlk sayı başlangıçtan beri, ikincisi son 2 haftadaki değişim. Aynı hareketin önceki seansına göre, '+
+      'deload hariç; bir hareket kasa programdaki ağırlığıyla katılır (ana kas 1, yardımcı 0.5).</div>'+
+  '</div>';
+}
+function sleepCard(){
+  var s=sleepInsight();
+  var head='<div class="shead"><div><div class="stitle">Uyku → Performans</div>'+
+    '<div class="ssub">seansa giden uyku · geçen seansa göre güç</div></div></div>';
+  if(!s.ok)return '<div class="scard static dom dom-rec">'+head+
+    '<div class="sexp" style="margin-top:0">Veri birikiyor: 7 saat altı <b>'+s.nLo+'</b>, 7 saat ve üstü <b>'+s.nHi+
+    '</b> seans. Her grupta en az 3 seans olunca karşılaştırma çıkar.</div></div>';
+  function row(lbl,v,n){
+    var c=v>0.2?C.green:(v<-0.2?C.orange:''+THC.c21+'');
+    return '<div class="srow" style="pointer-events:none"><span class="sname"><b>'+lbl+'</b><i>'+n+' seans</i></span>'+
+      '<span class="sgain" style="color:'+c+';font-size:14px">'+sgp(v)+'%</span></div>';
+  }
+  var d=s.diff,mc=Math.abs(d)<0.3?''+THC.c21+'':(d>0?C.orange:C.green);
+  var msg=Math.abs(d)<0.3?'Şimdilik uyku süresi performansı belirgin etkilemiyor.'
+    :(d>0?'7 saatin altında uyuduğun seanslar ortalama '+fx(d,1)+' puan daha zayıf.'
+         :'Az uykulu seanslar daha iyi çıkmış ('+fx(-d,1)+' puan) — büyük olasılıkla başka bir etken.');
+  return '<div class="scard static dom dom-rec">'+head+
+    '<div class="exlist">'+row('7 saat altı',s.lo,s.nLo)+row('7 saat ve üstü',s.hi,s.nHi)+'</div>'+
+    '<div class="tdmsg" style="background:'+hexa(mc,.12)+';color:'+mc+';margin-top:8px">'+msg+'</div>'+
+    '<div class="sexp">Seansa giden uyku = gece'+(s.pre?' + antrenmandan önce uyunan gündüz uykusu ('+s.pre+' gün)':'')+
+      '. Ölçü seansın geçen seansa göre ortalama güç değişimi; en az 3 kıyaslı, deload hariç seanslar.</div>'+
+  '</div>';
+}
 function gymSum(){
   var lw=lastW(),rem=lw!=null?lw-S.goal.weight:null;
   var m=monday(today()),tam=0,plan=0;
@@ -6568,12 +6859,12 @@ function gymSum(){
   var bp=ds.filter(function(x){return D(x).b!=null;}).map(function(x){return{d:x,v:D(x).b};});
   var wk=weekLoad(),tadh=typeAdherence();
   var lastWk=wk.length?wk[wk.length-1]:null,prevWk=wk.length>1?wk[wk.length-2]:null;
-  var di=(lastWk&&prevWk&&lastWk.idx!=null&&prevWk.idx!=null)?(lastWk.idx-prevWk.idx):null;
+  var di=(lastWk&&lastWk.chg!=null)?lastWk.chg:null;   /* v70: bu haftanın zincir değişimi (%) */
   var tn=trendNow(),tdA=tdeeAdvice();
   var remT=(tn!=null)?tn-S.goal.weight:(lw!=null?lw-S.goal.weight:null);
   var _mon=monday(today());
   var mw=musWeek(_mon),mt=musPlanned(_mon),mex=musExpected(_mon),wp2=weekProgress(_mon);
-  var dl=nextDeload(),sli=sleepInsight();
+  var dl=nextDeload();
   var prToday=prsOn(today());
 
   var big=[
@@ -6598,6 +6889,8 @@ function gymSum(){
       exList.push({n:nm,dt:dt,
         lbl:(dts.length>1&&dt&&PROGRAM[dt])?nm+' · '+PROGRAM[dt].short:nm,
         h:hh,last:last,
+        /* v70: son seansın bir önceki seansa göre durumu (yüzde başlangıçtan beri kalıyor) */
+        lc:(function(){var dd=dt||dtOf(last.d),tg=tgtFor(nm,last.d);return exCmp(nm,last.d,dd,tg?tg.s:0);})(),
         /* v66: iki uç nokta yerine ilk 2 / son 2 seans ortalaması, deload
            seansları dışarıda. Tek kötü seans ilerlemeyi silmiyor. */
         gain:exGain(hh)});
@@ -6619,27 +6912,26 @@ function gymSum(){
       :(dl?'<div class="dlnote">Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)</div>':''))+
     (prToday.length?'<div class="prbanner">🏅 Bugün '+prToday.length+' rekor: '+
       prToday.map(function(x){return esc(x.n)+' '+x.kg+'×'+x.rep;}).join(' · ')+'</div>':'')+
-    (sli?'<div class="sleepnote">Uyku etkisi: <b>seansa giden uykun</b> 7 saatin altındayken seans kalitesi ortalama '+
-      '<b>%'+Math.abs(sli.diff).toFixed(0)+'</b> '+(sli.diff>0?'düşük':'yüksek')+
-      ' ('+sli.nLo+' vs '+sli.nHi+' seans). Seansa giden uyku = gece'+
-      (sli.pre?' + antrenmandan önce uyunan gündüz uykusu ('+sli.pre+' gün)':'')+
-      '. Antrenmandan sonraki gündüz uykusu bu hesaba girmez.</div>':'')+
+    cutCard()+
+    musStrCard()+
 
     '<button class="scard" data-a="dopen" data-kind="week" data-key="">'+
       '<div class="shead"><div><div class="stitle">Haftalık Yüklenme</div>'+
         '<div class="ssub">'+(lastWk
           ?'Hafta '+lastWk.wk+' · '+lastWk.sess+' seans · '+lastWk.sets+' set'+
            (lastWk.idx!=null?' · güç endeksi <b style="color:'+(lastWk.idx>=100?C.green:C.orange)+'">'+lastWk.idx.toFixed(0)+'</b>':'')+
-           (di!=null?' <b style="color:'+(di>=0?C.green:C.orange)+'">'+(di>0?'+':'')+di.toFixed(1)+'</b>':'')
+           (di!=null?' · bu hafta <b style="color:'+(di>=0?C.green:C.orange)+'">'+sgp(di)+'%</b>':'')
           :'veri bekleniyor')+'</div></div>'+
         '<span class="schev">›</span></div>'+
       loadChart(wk)+
       '<div class="sfoot">'+ORDER.map(function(k){
         return '<span><i style="background:'+PROGRAM[k].color+'"></i>'+PROGRAM[k].code+'</span>';}).join('')+
         '<span><i style="background:'+C.green+'"></i>endeks</span></div>'+
-      '<div class="sexp">Sütun = o haftanın çalışma seti · çizgi = güç endeksi (100 = başladığın yer). '+
-        'Kesimde set sayısı düşse bile endeks 100 civarında kalıyorsa kas korunuyor demektir.</div>'+
+      '<div class="sexp">Sütun = o haftanın çalışma seti · çizgi = güç endeksi: her hareket kendi bir önceki seansıyla '+
+        'kıyaslanır, haftalar zincirlenir (100 = başladığın yer). Hafta ortasında da geçerli.</div>'+
     '</button>'+
+
+    sleepCard()+
 
     '<div class="scard static">'+
       '<div class="shead"><div><div class="stitle">Gün Tipi Devamlılığı</div>'+
@@ -6679,7 +6971,8 @@ function gymSum(){
     '<div class="scard static">'+
       '<div class="shead"><div><div class="stitle">Hareket İlerlemesi</div>'+
         '<div class="ssub">'+exList.length+' satır · plan günü ayrı sayılıyor</div></div></div>'+
-      '<div class="sexp" style="margin-bottom:2px">Yüzde = son 2 seansın ortalaması ÷ ilk 2 seansın ortalaması. '+
+      '<div class="sexp" style="margin-bottom:2px">Yüzde = son 2 seansın ortalaması ÷ ilk 2 seansın ortalaması (başlangıçtan beri). '+
+        '"son" = son seansın bir önceki seansa göre durumu. '+
         'Deload seansları hesaba girmez. 3 seanstan az olan hareketlerde yüzde yazılmaz — iki noktadan trend çıkmaz.</div>'+
       (exList.length
         ?'<div class="exlist">'+exList.slice(0,14).map(function(x){
@@ -6688,7 +6981,8 @@ function gymSum(){
               '" data-dt="'+(x.dt||'')+'">'+
             '<span class="exthumb">'+figSVG(x.n)+'</span>'+
             '<span class="sname"><b>'+esc(x.lbl)+'</b><i>'+x.last.e1kg+' kg × '+x.last.e1rep+
-              ' · endeks '+fx(x.last.e1,1)+' · '+x.h.length+' seans</i></span>'+
+              (x.lc&&x.lc.st!=='none'?' · son <span style="color:'+cmpTxt(x.lc,true).col+'">'+cmpTxt(x.lc,true).t+'</span>':'')+
+              ' · '+x.h.length+' seans</i></span>'+
             miniLine(x.h.map(function(z){return z.e1;}),col)+
             '<span class="sgain" style="color:'+col+'">'+
               (x.gain==null?'—':(x.gain>0?'+':'')+x.gain.toFixed(0)+'%')+'</span>'+
@@ -6796,17 +7090,18 @@ function detailLayer(){
     title='Haftalık Yüklenme';sub=wk.length+' hafta kayıtlı';
     body=loadChart(wk)+
       '<div class="tdmsg" style="background:'+hexa(C.green,.1)+';color:'+C.green+';margin:12px 0">'+
-        '<b>Güç endeksi</b> her hareketin o haftaki tahmini 1RM’ini kendi başlangıç değerine oranlar ve ortalar. '+
-        '100 = başladığın yer. Toplam hacim (kg×tekrar) o hafta hangi günlerin denk geldiğine göre oynadığı için '+
-        'tek başına ilerlemenin ölçüsü değil — burada ikinci sırada duruyor.</div>'+
+        '<b>Güç endeksi</b> her hareketi kendi bir önceki seansıyla kıyaslar (aynı plan günü, deload hariç, ilk k set). '+
+        'Haftanın değişimi o hafta yapılan kıyasların ortalaması; endeks haftaları zincirler, 100 = başladığın yer. '+
+        'Hafta ortasında da doğru: o ana kadar yapılan günlerin kıyası, yeni gelen gün geçmişi değiştirmez.</div>'+
       '<div class="dtable">'+wk.slice().reverse().map(function(r){
         var parts=ORDER.filter(function(k){return r.bys[k];});
-        var icol=r.idx==null?''+THC.c21+'':(r.idx>=100?C.green:C.orange);
+        var icol=r.chg==null?''+THC.c21+'':(r.chg>0.2?C.green:(r.chg<-0.2?C.orange:''+THC.c21+''));
         return '<div class="dtrow"><div class="dtw">Hafta '+r.wk+(r.dl?' · DL':'')+'</div>'+
           '<div class="dtbar">'+parts.map(function(k){
             return '<i style="width:'+(r.bys[k]/r.sets*100).toFixed(1)+'%;background:'+PROGRAM[k].color+'" title="'+PROGRAM[k].code+'"></i>';}).join('')+'</div>'+
-          '<div class="dtv" style="color:'+icol+'">'+(r.idx==null?'—':r.idx.toFixed(0))+'</div></div>'+
-          '<div class="dtsub">'+r.sess+' seans · '+r.sets+' set · '+r.reps+' tekrar · '+ti(r.total)+' kg'+
+          '<div class="dtv" style="color:'+icol+'">'+(r.idx==null?'—':fx(r.idx,1))+'</div></div>'+
+          '<div class="dtsub">'+r.sess+' seans · '+r.sets+' set · '+
+            (r.nc?r.nc+' kıyas ↑'+r.up+' ='+r.eq+' ↓'+r.dn+' · <b style="color:'+icol+'">'+sgp(r.chg)+'%</b>':'kıyas yok')+
             (r.dl?' · deload':'')+'</div>';
       }).join('')+'</div>';
   }
@@ -6950,12 +7245,13 @@ function detailLayer(){
       var q4=(ev4&&!ev4.empty)?ev4.q:0,c4=q4>=.85?CH.green:(q4>=.6?''+THC.c11+'':(q4>0?CH.amber:CH.orange));
       body='<div class="sctop" style="background:'+hexa(c4,.1)+'">'+
         ring(92,9,[[q4,c4]],'%'+Math.round(q4*100),'tamam')+
-        '<div class="sctopt"><b style="color:'+c4+'">'+((ev4&&!ev4.empty)?ev4.verdict:'Seans girilmedi')+'</b>'+
-          '<i>'+((ev4&&!ev4.empty)?ev4.tam+' / '+ev4.total+' hareket tam · '+ti(ev4.vol)+' kg hacim':'hiç set yok')+'</i>'+
+        '<div class="sctopt"><b style="color:'+((ev4&&!ev4.empty)?ev4.vcolor:c4)+'">'+((ev4&&!ev4.empty)?ev4.verdict:'Seans girilmedi')+'</b>'+
+          '<i>'+((ev4&&!ev4.empty)?(ev4.perf&&ev4.perf.n?'↑'+ev4.perf.up+' ='+ev4.perf.eq+' ↓'+ev4.perf.dn+' · ':'')+
+            ev4.tam+' / '+ev4.total+' hareket tam':'hiç set yok')+'</i>'+
           '<u>puana katkı: '+Math.round(SCW.trn*q4)+' / '+SCW.trn+'</u></div></div>'+
         '<div class="exlist" style="margin-top:12px">'+dayEx(td3,dt4).map(function(x){
           var sets=(D(td3).ex||{})[x.n]||[];
-          var v=evalEx(sets,tgtOn(x,td3),prevSess(x.n,td3));
+          var ct=x.off?{t:'plan dışı',col:''+THC.c21+''}:cmpTxt(exCmp(x.n,td3,dt4,tgtOn(x,td3).s),true);
           var fl=sets.filter(function(z){return z.kg!=null&&z.rep!=null;});
           var te=tgtOn(x,td3);
           var miss=Math.max(0,te.s-fl.length);
@@ -6964,7 +7260,7 @@ function detailLayer(){
             '<span class="sname"><b>'+esc(x.n)+'</b><i>'+
               (fl.length?fl.map(function(z){return z.kg+'×'+z.rep;}).join(' · '):'girilmedi')+
               (miss?' <b style="color:'+C.orange+'">· '+miss+' set eksik</b>':'')+'</i></span>'+
-            '<span class="sgain" style="color:'+v.color+';min-width:auto;font-size:11px">'+v.label+'</span></div>';
+            '<span class="sgain" style="color:'+ct.col+';min-width:auto;font-size:11px">'+ct.t+'</span></div>';
         }).join('')+'</div>'+
         '<button class="mbtn" data-a="dopen" data-kind="score" data-key="'+td3+'" style="margin-top:14px">‹ Gün puanına dön</button>'+
         '<button class="mbtn dark" data-a="goday" data-d="'+td3+'">Bu güne git</button>';
@@ -6975,23 +7271,26 @@ function detailLayer(){
     title='Antrenman bitti';sub=dayTitle(cur)+' · '+fdate(cur);
     if(!ev3||ev3.empty)body='<div class="sempty">Bu güne hiç set girilmemiş</div>';
     else{
-      var pctv=Math.round(ev3.q*100);
+      var pf3=ev3.perf||{};
       body='<div class="dsum" style="background:'+hexa(ev3.vcolor,.12)+'">'+
-        '<div class="dsumq" style="color:'+ev3.vcolor+'">%'+pctv+'</div>'+
+        '<div class="dsumq" style="color:'+ev3.vcolor+'">'+(pf3.n?'↑'+pf3.up+' ='+pf3.eq+' ↓'+pf3.dn:'%'+Math.round(ev3.q*100))+'</div>'+
         '<div class="dsumv" style="color:'+ev3.vcolor+'">'+ev3.verdict+'</div>'+
-        '<div class="dsumr">'+ev3.tam+' / '+ev3.total+' hareket'+
-        (ev3.off?' · +'+ev3.off+' plan dışı':'')+' · '+ti(ev3.vol)+' kg toplam hacim'+
-        (ev3.trend!=null?' · geçen seansa göre <b style="color:'+(ev3.trend>1?C.green:ev3.trend<-1?C.orange:''+THC.c17+'')+'">'+(ev3.trend>0?'+':'')+ev3.trend.toFixed(0)+'%</b>':'')+
+        '<div class="dsumr">'+(pf3.n
+            ?'geçen seansa göre '+pf3.up+' hareket ileri, '+pf3.eq+' aynı, '+pf3.dn+' geri'+
+              (pf3.avg!=null?' · ort. <b style="color:'+(pf3.avg>0.2?C.green:(pf3.avg<-0.2?C.orange:''+THC.c17+''))+'">'+sgp(pf3.avg)+'%</b>':'')
+            :(pf3.dl?'deload haftası — kıyas yapılmaz':'kıyaslanacak geçen seans yok'))+
+          '<br>'+ev3.tam+' / '+ev3.total+' hareket tamam'+(ev3.off?' · +'+ev3.off+' plan dışı':'')+
+          (pf3.nw?' · '+pf3.nw+' ilk kez':'')+(pf3.part?' · '+pf3.part+' yarım':'')+
         '</div></div>'+
         durBox(cur,dt2)+
         '<div class="exlist" style="margin-top:12px">'+dayEx(cur,dt2).map(function(x){
-          var v=evalEx((D(cur).ex||{})[x.n],tgtOn(x,cur),prevSess(x.n,cur));
+          var fl=wSets((D(cur).ex||{})[x.n]);
+          var ct=x.off?{t:'plan dışı',col:''+THC.c21+''}:cmpTxt(exCmp(x.n,cur,dt2,tgtOn(x,cur).s),true);
           return '<div class="srow" style="pointer-events:none">'+
             '<span class="exthumb">'+figSVG(x.n)+'</span>'+
             '<span class="sname"><b>'+esc(x.n)+'</b><i>'+
-              (v.state==='bos'?'girilmedi':((D(cur).ex||{})[x.n]||[]).filter(function(z){return z.kg!=null&&z.rep!=null;})
-                .map(function(z){return z.kg+'×'+z.rep;}).join(' · '))+'</i></span>'+
-            '<span class="sgain" style="color:'+v.color+';min-width:auto;font-size:11px">'+v.label+'</span></div>';
+              (fl.length?fl.map(function(z){return z.kg+'×'+z.rep;}).join(' · '):'girilmedi')+'</i></span>'+
+            '<span class="sgain" style="color:'+ct.col+';min-width:auto;font-size:11px">'+ct.t+'</span></div>';
         }).join('')+'</div>'+
         '<button class="mbtn dark" data-a="gosum" style="margin-top:14px">Özete git</button>'+
         '<button class="mbtn" data-a="dclose">Antrenmana dön</button>';
@@ -7770,7 +8069,10 @@ function report(){
       if(t&&t.ex.length){
         var e=sessionEval(d);
         var wmR=workMin(d);
-        o+='  '+t.short+(e&&!e.empty?' — '+e.verdict+' ('+e.tam+'/'+e.total+
+        o+='  '+t.short+(e&&!e.empty?' — '+e.verdict+' ('+
+          (e.perf&&e.perf.n?'geçen seansa göre ↑'+e.perf.up+' ='+e.perf.eq+' ↓'+e.perf.dn+
+            (e.perf.avg!=null?', ort. '+sgp(e.perf.avg)+'%':'')+'; ':'')+
+          e.tam+'/'+e.total+' hareket tamam'+
           (e.off?', +'+e.off+' plan dışı':'')+', hacim '+Math.round(e.vol)+' kg'+
           (wmR!=null?', süre '+wmR+' dk'+(D(d).we?'':' [bitir’e basılmamış]'):'')+')':' — kayıt yok')+'\n';
         dayEx(d,dtOf(d)).forEach(function(x){
@@ -7783,6 +8085,8 @@ function report(){
           if(be)o+=' | 1RM~'+fx(be.v,1);
           if(ar!=null)o+=' | ort.RIR '+fx(ar,1);
           if(isPR(x.n,d))o+=' | REKOR';
+          if(!x.off){var cc=exCmp(x.n,d,dtOf(d),tgtOn(x,d).s);
+            if(cc.pct!=null)o+=' | geçen seansa göre '+cmpTxt(cc,true).t+' ('+sgp(cc.pct)+'%)';}
           o+='\n';
         });
       }
@@ -7809,7 +8113,7 @@ function report(){
       if(pg.type==='up')ups.push(lb+': '+pg.kg+' kg → '+pg.next+' kg'+tail);
       else if(pg.type==='ok')okg.push(lb+': '+pg.kg+' kg, '+(pg.why==='rep'?'tekrarlar artıyor':'RIR düşüyor')+' — takılma değil'+tail);
       else stalls.push(lb+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı, tekrar da artmıyor'+
-        (pg.reps0!=null?': '+pg.reps0+' → '+pg.reps+' tekrar':'')+')'+tail);
+        (pg.avg0!=null?': set başı '+fx(pg.avg0,1)+' → '+fx(pg.avg,1)+' tekrar':'')+')'+tail);
     });
   });
   if(ups.length||stalls.length||okg.length){
@@ -7857,11 +8161,25 @@ function report(){
   var gaps=ks.filter(function(d){return d<=today()&&D(d).kcal==null&&!D(d).note;});
   if(gaps.length)o+='## KALORİ GİRİLMEMİŞ VE NOT DA YOK ('+gaps.length+' gün)\n'+
     gaps.map(function(d){return d;}).join(', ')+'\n\n';
+  var ssR=strSeries();
+  if(ssR.some(function(x){return x.n>0;})){
+    o+='## GÜÇ ENDEKSİ (her hareket kendi önceki seansıyla: aynı plan günü, deload hariç, ilk k set; haftalar zincirli, başlangıç = 100)\n';
+    ssR.forEach(function(x){if(!x.n)return;
+      o+='- Hafta '+x.wk+': '+sgp(x.chg)+'% ('+x.n+' kıyas: ↑'+x.up+' ='+x.eq+' ↓'+x.dn+') → endeks '+fx(x.idx,1)+'\n';});
+    var cdR=cutData();
+    if(cdR&&cdR.rows.length){var Lr=cdR.rows[cdR.rows.length-1];
+      o+='Başlangıçtan: güç '+sgp(Lr.s-100)+'%'+(Lr.w!=null?' · trend kilo '+sgp(Lr.w-100)+'% · göreli güç (güç ÷ kilo) '+sgp(Lr.rel-100)+'%':'')+'\n';}
+    var msR=musStr();
+    if(msR.length)o+='Kas grupları (başlangıçtan / son 2 hafta): '+msR.map(function(m){
+      return MUS[m.k].s+' '+sgp(m.tot)+'% / '+sgp(m.rec)+'%';}).join(' | ')+'\n';
+    o+='\n';
+  }
   var slI=sleepInsight();
-  if(slI)o+='## UYKU ETKİSİ (GECE UYKUSUNA GÖRE)\n'+
-    'Ölçü gece uykusudur, toplam değil: antrenman gündüz uykusundan önce yapılıyor.\n'+
-    '7 saat altı ('+slI.nLo+' seans) ort. kalite %'+Math.round(slI.lo*100)+
-    ' | 7 saat üstü ('+slI.nHi+' seans) ort. kalite %'+Math.round(slI.hi*100)+'\n\n';
+  if(slI.nLo||slI.nHi)o+='## UYKU → PERFORMANS (seansa giden uyku: gece + antrenmandan önceki gündüz uykusu)\n'+
+    'Ölçü: seansın geçen seansa göre ortalama güç değişimi (en az 3 kıyaslı, deload hariç).\n'+
+    '7 saat altı ('+slI.nLo+' seans) ort. '+sgp(slI.lo)+(slI.lo!=null?'%':'')+
+    ' | 7 saat ve üstü ('+slI.nHi+' seans) ort. '+sgp(slI.hi)+(slI.hi!=null?'%':'')+
+    (slI.ok?'':' [her grupta en az 3 seans yok — henüz sonuç çıkarılmaz]')+'\n\n';
   /* Gündüz uykusuyla tamamlanan antrenman günleri ayrı listeleniyor: bu günlerde
      toplam iyi görünür ama seans az uykuyla yapılmıştır, ikisi karıştırılmasın. */
   var npD=napDays();
@@ -7871,7 +8189,7 @@ function report(){
     npD.slice(-10).forEach(function(x){
       o+='- '+x.d+': seansa giden uyku '+fx(x.sl||0,1).replace(/\.0$/,'')+' sa, '+
         'gündüz +'+fx(x.nap,1).replace(/\.0$/,'')+' sa (toplam '+fx(x.tot,1).replace(/\.0$/,'')+' sa)'+
-        ' | seans kalitesi %'+Math.round(x.q*100)+'\n';
+        ' | performans '+(x.pf!=null?sgp(x.pf)+'%':'kıyas yok')+' · tamamlama %'+Math.round(x.q*100)+'\n';
     });
     o+='\n';
   }
@@ -9385,7 +9703,7 @@ function heroM(){
 }
 /* geçen seansın ÖZETİ — setlerin tek tek listesi zaten her setin altında var.
    Burada ortalama tekrar ve "ağırlık mı tekrar mı" kararı duruyor. */
-function prevSummary(prev,e,fromOtherDay){
+function prevSummary(prev,e,fromOtherDay,pg){
   if(!prev)
     return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
       e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
@@ -9444,6 +9762,17 @@ function prevSummary(prev,e,fromOtherDay){
       ' tekrarı sağlamlaştır';vc=C.orange;}
   else{
     verdict='Aralığın altında set var — '+kgTxt+' kg’da kal, önce her sette '+lo+' tekrarı tuttur';vc=C.amber;}
+  /* v70 — TEK KARAR. Rozet (motor) ile bu kutu farklı kural kullanıyordu; RIR kısayolunda
+     rozet "artır", kutu "kal" diyordu, deload haftasında kutu "artır" diyordu. Motorun
+     kesin kararı varsa kutu onu söyler. */
+  if(pg&&!fromOtherDay){
+    if(pg.type==='up'&&pg.why==='rir'){
+      verdict='Geçen seans ortalama RIR '+fx(pg.rir,1)+' ve bütün setler '+(hi-2)+'+ tekrar — bugün '+pg.next+' kg’a çık';vc=C.green;}
+    else if(pg.type==='stall'&&pg.why==='dl'){
+      verdict='Deload haftası — '+kgTxt+' kg’da kal, her seti RIR 3-4’te bırak';vc=C.amber;}
+    else if(pg.type==='stall'&&pg.why==='floor'){
+      verdict=pg.streak+' seanstır '+kgTxt+' kg’da en düşük set tabanın ('+floor+') altında — bir kademe geri in, orada '+hi+' tekrarı sağlamlaştır';vc=C.orange;}
+  }
   return '<div class="gprevbox">'+
     '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+
       (prev.dt&&PROGRAM[prev.dt]?' · '+PROGRAM[prev.dt].short.toUpperCase():'')+
@@ -9476,9 +9805,9 @@ function prevSummary(prev,e,fromOtherDay){
    set dökümü. Yeni içerik üretilmiyor — mevcut metinler tek yerde toplanıyor. */
 var nyOpen=null;
 function nyPanel(name){
-  var dt=dtOf(cur),e=tgtFor(name,cur)||EXTGT[name];
+  var dt=dtOf(cur)||planOf(cur),e=tgtFor(name,cur)||EXTGT[name];
   if(!e)return '';
-  var pg=progression(name,dt);   /* v67: yedek günden karar üretilmez */
+  var pg=progression(name,dt,cur);   /* v67: yedek günden karar üretilmez · v70: yalnız bugünden ÖNCEKİ seanslar */
   var prev=prevSession(name,cur,dt),xd=false;
   if(!prev){prev=prevSession(name,cur);xd=!!prev;}
   var lo=e.r[0],hi=e.r[1],floor=Math.max(1,lo-2),inc=incFor(name);
@@ -9501,7 +9830,7 @@ function nyPanel(name){
     var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
     var pmsg=sNote?pg.msg.split(sNote).join(''):pg.msg;
     o+='<div class="nysec"><div class="nyk" style="color:'+pc+'">'+
-      (pg.type==='up'?'AĞIRLIĞI ARTIR':(pg.type==='ok'?'İLERLİYORSUN':'TAKILDIN'))+'</div>'+
+      (pg.type==='up'?'AĞIRLIĞI ARTIR':(pg.type==='ok'?'İLERLİYORSUN':(pg.why==='dl'?'DELOAD':(pg.why==='floor'?'GERİ İN':'TAKILDIN'))))+'</div>'+
       '<div class="nyt">'+pmsg+'</div></div>';
   }
   if(sNote){
@@ -9557,10 +9886,11 @@ function workHero(){
     pills.push([String(setsDone),'set girildi',''+THC.c13+'']);
     pills.push([vol?ti(vol):'—','kg hacim',''+THC.c14+'']);
     pills.push([rirs.length?fx(rirs.reduce(function(a,b){return a+b;},0)/rirs.length,1):'—','ort. RIR',''+THC.c19+'']);
-    var wm=workMin(cur,true),wex=expWork(dt,cur);
-    pills.push([wm!=null?fdur(wm):(wex?'~'+fdur(wex.m):'—'),
-      wm!=null?(D(cur).we?'süre':'süre · sürüyor'):'beklenen süre',''+THC.c29+'']);
+    /* v70: süre hapı kaldırıldı — süre yalnız üst çubuktaki rozette (bu seans / geçen seans) */
   }
+  /* v70: süre kutusu kartta yer kaplıyordu; yalnız "set var, süre yok" durumunda
+     (elle dakika girişi için) çıkıyor. Bitince "Antrenman bitti" penceresinde duruyor. */
+  var lostT=isTr&&workMin(cur,true)==null&&loggedSets(r);
   return '<div class="mhero'+(isTr?' tr':'')+'">'+
     '<div class="mheroTop">'+
       '<div style="flex:1;min-width:0"><div class="mheroKick">'+
@@ -9571,7 +9901,7 @@ function workHero(){
     '</div>'+
     (pills.length?'<div class="mheroPills">'+pills.map(function(p){
       return '<div class="hpill"><b style="color:'+p[2]+'">'+p[0]+'</b><i>'+p[1]+'</i></div>';}).join('')+'</div>':'')+
-    (isTr?durBox(cur,dt):'')+
+    (lostT?durBox(cur,dt):'')+
   '</div>';
 }
 function render(){
@@ -9595,6 +9925,7 @@ function deskBody(){
   if(dTab==='prog')
     return '<div id="z-mus">'+musCardD()+'</div>'+
       '<div id="z-ratio">'+ratioCardD()+'</div>'+
+      '<div class="dwrap70">'+cutCard()+musStrCard()+sleepCard()+'</div>'+
       '<div id="z-prg">'+progressCard()+'</div>'+
       '<div id="z-week">'+weekTable()+'</div>';
   if(dTab==='cal')
