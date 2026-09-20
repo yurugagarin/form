@@ -2508,6 +2508,13 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-20',
+  t:'Rapor: kesim kalitesi, kas grubu ve uyku detayları eklendi (v72)',
+  y:['GÜÇ bölümü "GÜÇ ENDEKSİ VE KESİM KALİTESİ" oldu: her haftanın satırında güç değişimi ve endeksin yanında o haftanın trend kilo endeksi ve göreli gücü de yazıyor; altında Kesim Kalitesi kartının yorumu.',
+     'KAS GRUBU GÜCÜ ayrı bölüm oldu: her kas için başlangıçtan, son 2 hafta, kıyas sayısı ve hafta hafta değişim — kartın detay penceresindekiyle aynı rakamlar.',
+     'UYKU → PERFORMANS bölümüne iki grup arasındaki fark ve kartın yorumu eklendi.',
+     'Rapor başlığına uygulama sürümü eklendi: hesap yöntemleri sürümden sürüme değiştiği için rapor hangi sürümle üretildiğini söylüyor.',
+     'Rapora girmeyenler: büyük kilo grafiği (günlük tartılar zaten her gün satırında), uykuda seans seans liste (her gün satırında uyku ve seansın ortalama değişimi zaten var).']},
+ {d:'2026-09-20',
   t:'Antrenman ekranı sadeleşti, yeni kartlara detay, büyük kilo grafiği, Ölçümler yukarı taşındı (v71)',
   y:['ANTRENMAN EKRANI: üst karttaki hap kutuları (hareket, set girildi, kg hacim, ort. RIR) kaldırıldı — gün adı ve 5/5 halkası duruyor. Hareket adının altındaki "hedef RIR" etiketi kaldırıldı; hedef RIR zaten her setin RIR satırında işaretli. "Aynısını doldur" düğmesi kaldırıldı: amaç geçen seansı tekrar etmek değil, geçmek. Boş set ipucu kaldırıldı.',
      'ÖZET: Ölçümler kartı Son 7 Gün Ortalaması ve Hız ve Bakım kartlarının hemen altına taşındı.',
@@ -5954,7 +5961,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v71 · 20 Eyl 2026';
+var APPVER='v72 · 20 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8235,7 +8242,7 @@ function report(){
   var ks=keys().filter(function(d){return d>=b[0]&&d<=b[1];});
   if(!ks.length)return 'Seçilen aralıkta kayıt yok ('+repLabel()+').';
   var T=S.targets,o='';
-  o+='EMRE — TAKİP RAPORU · '+repLabel()+' ('+ks.length+' kayıtlı gün)\n';
+  o+='EMRE — TAKİP RAPORU · '+repLabel()+' ('+ks.length+' kayıtlı gün) · FORM '+APPVER.split(' ')[0]+'\n';
   o+='Program: '+flong(S.startDate)+' başlangıç · '+S.weeks+' hafta · '+S.base.weight+' → '+S.goal.weight+' kg\n';
   o+='Hedefler: '+T.kcal+' kcal · '+T.protein+'P / '+T.carbs+'K / '+T.fat+'Y g · '+T.steps+' adım\n';
   o+='Bugün: '+flong(today())+' (Hafta '+weekIdx(today())+', '+progDay(today())+'. gün)';
@@ -8419,23 +8426,33 @@ function report(){
     gaps.map(function(d){return d;}).join(', ')+'\n\n';
   var ssR=strSeries();
   if(ssR.some(function(x){return x.n>0;})){
-    o+='## GÜÇ ENDEKSİ (her hareket kendi önceki seansıyla: aynı plan günü, deload hariç, ilk k set; haftalar zincirli, başlangıç = 100)\n';
-    ssR.forEach(function(x){if(!x.n)return;
-      o+='- Hafta '+x.wk+': '+sgp(x.chg)+'% ('+x.n+' kıyas: ↑'+x.up+' ='+x.eq+' ↓'+x.dn+') → endeks '+fx(x.idx,1)+'\n';});
-    var cdR=cutData();
+    var cdR=cutData(),byWR={},m0R=monday(S.startDate);
+    if(cdR)cdR.rows.forEach(function(r){byWR[r.wk]=r;});
+    o+='## GÜÇ ENDEKSİ VE KESİM KALİTESİ (güç: her hareket kendi önceki seansıyla, aynı plan günü, deload hariç, ilk k set; haftalar zincirli · '+
+      'kilo: hafta sonundaki trend ÷ başlangıç trendi · göreli güç = güç ÷ kilo · hepsinde başlangıç = 100)\n';
+    ssR.forEach(function(x){if(!x.n)return;var cr=byWR[x.wk];
+      o+='- Hafta '+x.wk+' ('+fdate(addD(m0R,(x.wk-1)*7))+'): güç '+sgp(x.chg)+'% ('+x.n+' kıyas: ↑'+x.up+' ='+x.eq+' ↓'+x.dn+') → endeks '+fx(x.idx,1)+
+        ((cr&&cr.w!=null)?' · trend kilo '+fx(cr.w,1)+' · göreli güç '+fx(cr.rel,1):'')+'\n';});
     if(cdR&&cdR.rows.length){var Lr=cdR.rows[cdR.rows.length-1];
-      o+='Başlangıçtan: güç '+sgp(Lr.s-100)+'%'+(Lr.w!=null?' · trend kilo '+sgp(Lr.w-100)+'% · göreli güç (güç ÷ kilo) '+sgp(Lr.rel-100)+'%':'')+'\n';}
-    var msR=musStr();
-    if(msR.length)o+='Kas grupları (başlangıçtan / son 2 hafta): '+msR.map(function(m){
-      return MUS[m.k].s+' '+sgp(m.tot)+'% / '+sgp(m.rec)+'%';}).join(' | ')+'\n';
+      o+='Başlangıçtan: güç '+sgp(Lr.s-100)+'%'+(Lr.w!=null?' · trend kilo '+sgp(Lr.w-100)+'% · göreli güç '+sgp(Lr.rel-100)+'%':'')+'\n';
+      if(cdR.nc>=3)o+='Uygulamanın yorumu: '+cutMsg(cdR.rows)[0]+'\n';}
     o+='\n';
+    var msR=musStr();
+    if(msR.length){
+      o+='## KAS GRUBU GÜCÜ (aynı endeks kas kas; hareket kasa programdaki ağırlığıyla katılır: ana kas 1, yardımcı 0.5)\n';
+      msR.forEach(function(m){var M=MUS[m.k];
+        o+='- '+M.s+(M.pri?' [öncelikli]':'')+': başlangıçtan '+sgp(m.tot)+'% · son 2 hafta '+sgp(m.rec)+'% · '+m.n+' kıyas | hafta hafta: '+
+          m.ss.filter(function(x){return x.n>0;}).map(function(x){return 'H'+x.wk+' '+sgp(x.chg)+'%';}).join(', ')+'\n';});
+      o+='\n';
+    }
   }
   var slI=sleepInsight();
   if(slI.nLo||slI.nHi)o+='## UYKU → PERFORMANS (seansa giden uyku: gece + antrenmandan önceki gündüz uykusu)\n'+
     'Ölçü: seansın geçen seansa göre ortalama güç değişimi (en az 3 kıyaslı, deload hariç).\n'+
     '7 saat altı ('+slI.nLo+' seans) ort. '+sgp(slI.lo)+(slI.lo!=null?'%':'')+
     ' | 7 saat ve üstü ('+slI.nHi+' seans) ort. '+sgp(slI.hi)+(slI.hi!=null?'%':'')+
-    (slI.ok?'':' [her grupta en az 3 seans yok — henüz sonuç çıkarılmaz]')+'\n\n';
+    (slI.ok?'':' [her grupta en az 3 seans yok — henüz sonuç çıkarılmaz]')+'\n'+
+    (slI.ok?'Fark: '+sgp(slI.diff)+' puan (7 saat ve üstü − 7 saat altı) · uygulamanın yorumu: '+sleepMsg(slI)[0]+'\n':'')+'\n';
   /* Gündüz uykusuyla tamamlanan antrenman günleri ayrı listeleniyor: bu günlerde
      toplam iyi görünür ama seans az uykuyla yapılmıştır, ikisi karıştırılmasın. */
   var npD=napDays();
