@@ -2199,6 +2199,84 @@ html.dark .wbnote{color:#8f979e}
 .wkd .msblk:first-child{border-top:0;padding-top:2px}
 .wkd .ctrow:nth-child(2){border-top:0}
 .mspri{font-size:9px;font-weight:800;letter-spacing:.7px;text-transform:uppercase;color:#a8987c;margin-left:4px}
+/* ============ v73 · MOTİVASYON SEKMESİ ============
+   Rakamlar yeni değil — hepsi uygulamada zaten hesaplanan değerler (trend kilo,
+   21 günlük hız, zincirli güç endeksi, rekor, devamlılık). Bu sekme onları
+   "ne kadar yol aldım" sorusuna göre bir araya getiriyor. */
+.mjour{padding-bottom:14px}
+.mjhd{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.mjt{font-family:'Fraunces';font-size:30px;font-weight:600;line-height:1.05;letter-spacing:-.4px;
+  color:var(--ink);font-variant-numeric:tabular-nums}
+.mjt small{font-size:15px;font-weight:500;color:var(--ink3);margin:0 2px}
+.mjgone{text-align:right;flex:none}
+.mjgone b{display:block;font-family:'Fraunces';font-size:22px;font-weight:600;line-height:1;font-variant-numeric:tabular-nums}
+.mjgone i{font-style:normal;font-size:10.5px;font-weight:700;color:var(--ink3)}
+.mjsub{font-size:12px;font-weight:600;color:var(--ink2);margin-top:6px;line-height:1.45}
+.mjtrack{margin:12px -4px 2px}
+.mjtrack svg{display:block;width:100%;height:auto;overflow:visible}
+#g-body.anim .mjfill{animation:mjDraw 1.1s var(--ease) .15s both}
+#g-body.anim .mjdot{animation:mjPop .4s var(--ease) 1.05s both}
+@keyframes mjDraw{from{stroke-dashoffset:var(--len)}to{stroke-dashoffset:0}}
+@keyframes mjPop{from{opacity:0;transform:scale(.4)}to{opacity:1;transform:none}}
+.mjdot{transform-box:fill-box;transform-origin:center}
+.mjnext{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;
+  background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 12px;
+  font-size:12px;font-weight:700;color:var(--ink2)}
+.mjnext b{color:var(--ink);font-family:'Fraunces';font-size:16px;font-weight:600;font-variant-numeric:tabular-nums}
+.mjpace{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+.mjpace>div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 9px}
+.mjpace i{display:block;font-style:normal;font-size:10px;font-weight:700;color:var(--ink3);line-height:1.25}
+.mjpace b{display:block;font-family:'Fraunces';font-size:18px;font-weight:600;margin-top:3px;
+  line-height:1.05;font-variant-numeric:tabular-nums;color:var(--ink)}
+.mjpace b span{font-family:'Karla';font-size:10px;font-weight:600;color:var(--ink3);margin-left:2px}
+.mjnote{font-size:11px;font-weight:600;color:var(--ink3);line-height:1.5;margin-top:9px}
+/* güç */
+.mstr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
+.mstrbig{font-family:'Fraunces';font-size:40px;font-weight:600;line-height:.95;letter-spacing:-.8px;
+  font-variant-numeric:tabular-nums}
+.mstrbig span{font-size:18px;margin-left:1px}
+.mstrlbl{font-size:11.5px;font-weight:700;color:var(--ink2);margin-top:5px}
+.mstrside{text-align:right;font-size:12px;font-weight:700;color:var(--ink2);line-height:1.6;flex:none}
+.mstrside b{font-variant-numeric:tabular-nums}
+.mwk{display:flex;align-items:flex-end;gap:6px;height:74px;margin-top:14px;padding-top:4px}
+.mwk>div{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%}
+.mwk .mwb{display:block;width:100%;max-width:34px;border-radius:6px 6px 3px 3px;min-height:3px}
+.mwk .mwp{font-size:10px;font-weight:800;margin-bottom:3px;font-variant-numeric:tabular-nums}
+.mwk .mwl{font-size:9.5px;font-weight:700;color:var(--ink3);margin-top:4px}
+/* rekor + ilerleyenler */
+.mpr{display:flex;align-items:center;gap:14px}
+.mprn{font-family:'Fraunces';font-size:44px;font-weight:600;line-height:.9;color:var(--ink);
+  font-variant-numeric:tabular-nums;min-width:56px}
+.mprt{font-size:12.5px;font-weight:700;color:var(--ink2);line-height:1.5}
+.mprt b{color:var(--ink)}
+.mprlast{margin-top:11px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;
+  font-weight:600;color:var(--ink2);line-height:1.55}
+.mprlast b{color:var(--ink);font-weight:700}
+.mtop{margin-top:4px}
+.mtop>div{display:grid;grid-template-columns:1fr auto;gap:2px 10px;padding:9px 0;border-top:1px solid var(--line2)}
+.mtop>div:first-child{border-top:0}
+.mtop .n{font-size:13px;font-weight:700;color:var(--ink);min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mtop .g{font-family:'Fraunces';font-size:17px;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.mtop .s{grid-column:1/-1;font-size:11.5px;font-weight:600;color:var(--ink3);font-variant-numeric:tabular-nums}
+/* devamlılık */
+.mtiles{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.mtiles>div{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.mtiles b{display:block;font-family:'Fraunces';font-size:21px;font-weight:600;line-height:1.05;
+  font-variant-numeric:tabular-nums}
+.mtiles i{display:block;font-style:normal;font-size:11px;font-weight:700;color:var(--ink2);margin-top:3px;line-height:1.3}
+.mtiles em{display:block;font-style:normal;font-size:10px;font-weight:600;color:var(--ink3);margin-top:1px}
+.mtot{margin-top:11px;font-size:12.5px;font-weight:600;color:var(--ink2);line-height:1.55}
+.mtot b{color:var(--ink);font-weight:800;font-variant-numeric:tabular-nums}
+/* masaüstü */
+.motd{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:18px}
+.motd .scard{margin:0;border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px}
+.motd .mjour{grid-column:1/-1}
+@media(prefers-reduced-motion:reduce){#g-body.anim .mjfill,#g-body.anim .mjdot{animation:none}}
+/* beş sekme: etiketler sığsın diye bir tık küçük */
+.gtabs .gt .lb{font-size:10px;letter-spacing:-.25px}
+@media(max-width:400px){.gtabs .gt .lb{font-size:9.6px;letter-spacing:-.3px}}
+@media(max-width:360px){.gtabs .gt .lb{font-size:9px}}
+.motd .mjtrack{max-width:640px}.motd .mjpace{max-width:640px}
 </style>
 </head>
 <body>
@@ -2507,6 +2585,14 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-22',
+  t:'Yeni sekme: Motivasyon (v73)',
+  y:['YOLCULUK: başlangıç kilosundan hedefe şerit; trend kilonun yeri, geçilen her tam kilo ve tarihi, sonraki durağa kalan. Yolun ve programın yüzde kaçının geçtiği yan yana.',
+     'HIZ: son 21 günün hızı, gereken hız ve bu hızla hedefe varış tarihi; program bitişine göre kaç hafta tampon kaldığı. Hız ölçüsü Özet’teki Hız ve Bakım kartıyla aynı.',
+     'KESİMDEKİ GÜÇ: göreli güç (güç ÷ trend kilo) başlangıçtan, hafta hafta güç değişimi ve kaç haftadır üst üste yükseldiği. Güç düşerse övgü yerine uyarı yazılır.',
+     'REKOR DEFTERİ: programın başından beri toplam rekor, son 7 gün, son rekor seansı ve en çok ilerleyen üç hareket (ilk kayıt → son kayıt). Rekor ve ilerleme ölçüsü mevcut kurallarla aynı: plan günü bazında, deload hariç.',
+     'İSTİKRAR: yapılan/planlanan antrenman, güçlü seans oranı, kreatin serisi, kalori kaydı, protein ve adım hedefi tutulan günler; başlangıçtan bu yana toplam set ve kaldırılan tonaj.',
+     'Alt çubukta beş sekme oldu (Antrenman, Gün, Özet, Motivasyon, Takvim); masaüstünde İlerleme’nin yanında.']},
  {d:'2026-09-20',
   t:'Rapor: kesim kalitesi, kas grubu ve uyku detayları eklendi (v72)',
   y:['GÜÇ bölümü "GÜÇ ENDEKSİ VE KESİM KALİTESİ" oldu: her haftanın satırında güç değişimi ve endeksin yanında o haftanın trend kilo endeksi ve göreli gücü de yazıyor; altında Kesim Kalitesi kartının yorumu.',
@@ -5961,7 +6047,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v72 · 20 Eyl 2026';
+var APPVER='v73 · 22 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8062,7 +8148,218 @@ function startClock(){
     paintClock();
   },20000);
 }
+/* ============ v73 · MOTİVASYON SEKMESİ ============
+   Yeni hesap yok: her rakam uygulamanın zaten kullandığı fonksiyondan geliyor
+   (trendNow, slopeInfo, reqSlope, cutData, strSeries, prsOn, exGain, sessPerf).
+   Böylece bu sekme diğer ekranlarla asla farklı bir sayı söylemez.
+   Mesajlar koşullu: veri kötü giderse övgü yazılmaz, durum dürüstçe söylenir. */
+var AYK=['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+function fshort(s){var d=pd(s);return d.getDate()+' '+AYK[d.getMonth()];}
+function motJourney(){
+  var b0=S.base&&S.base.weight,g0=S.goal&&S.goal.weight,tn=trendNow();
+  if(b0==null||g0==null||tn==null||!(b0>g0))return null;
+  var span=b0-g0,lost=b0-tn,pW=Math.max(0,Math.min(1,lost/span));
+  var totD=S.weeks*7,elD=Math.max(0,Math.min(totD,progDay(today())-1)),pT=elD/totD;
+  var si=slopeInfo(21),act=si?si.slope:null,req=reqSlope();
+  var end=addD(S.startDate,totD-1),proj=null,lead=null;
+  if(si&&act<-0.1&&(si.r2==null||si.r2>=0.5)&&tn>g0){
+    proj=addD(today(),Math.round((tn-g0)/-act*7));
+    lead=dayDiff(proj,end)/7;
+  }
+  /* geçilen tam kilolar: trend o kilonun altına ilk ne zaman indi */
+  var tw=trendW(),stones=[];
+  for(var k=Math.floor(b0);k>=Math.ceil(g0);k--){
+    if(k>=b0)continue;
+    var hit=null;for(var i=0;i<tw.length;i++){if(tw[i].d>=S.startDate&&tw[i].v<=k){hit=tw[i].d;break;}}
+    stones.push({k:k,d:hit});
+  }
+  var next=null;stones.forEach(function(s){if(!s.d&&(next==null||s.k>next.k))next=s;});
+  return {b0:b0,g0:g0,tn:tn,lost:lost,pW:pW,pT:pT,si:si,act:act,req:req,end:end,proj:proj,lead:lead,
+    stones:stones,next:next};
+}
+function motTrack(j){
+  var W=340,H=66,PL=12,PR=22,Y=32,len=W-PL-PR;
+  function X(kg){return PL+(j.b0-kg)/(j.b0-j.g0)*len;}
+  var xn=X(Math.max(j.g0,Math.min(j.b0,j.tn))),fl=Math.max(0.1,xn-PL);
+  var col=C.blue,g='';
+  g+='<line x1="'+PL+'" y1="'+Y+'" x2="'+(W-PR)+'" y2="'+Y+'" style="stroke:var(--line)" stroke-width="7" stroke-linecap="round"/>';
+  g+='<line class="mjfill" x1="'+PL+'" y1="'+Y+'" x2="'+xn.toFixed(1)+'" y2="'+Y+'" stroke="'+col+'" stroke-width="7" '+
+     'stroke-linecap="round" stroke-dasharray="'+fl.toFixed(1)+'" style="--len:'+fl.toFixed(1)+'"/>';
+  j.stones.forEach(function(s){
+    var x=X(s.k),done=!!s.d;
+    g+='<circle cx="'+x.toFixed(1)+'" cy="'+Y+'" r="2.6" '+(done?'fill="#fff" opacity=".9"':'style="fill:var(--card);stroke:var(--ink4)" stroke-width="1.3"')+'/>';
+    g+='<text x="'+x.toFixed(1)+'" y="'+(Y+23)+'" text-anchor="middle" font-family="Karla" font-size="10" font-weight="700" '+
+       'style="fill:'+(done?'var(--ink2)':'var(--ink4)')+'">'+s.k+'</text>';
+  });
+  /* hedef bayrağı */
+  var xg=W-PR;
+  g+='<path d="M'+(xg+3)+' '+(Y+5)+'V'+(Y-15)+'l9 3.5-9 3.5" fill="'+C.green+'" stroke="'+C.green+'" stroke-width="1.6" stroke-linejoin="round"/>';
+  /* bugün */
+  g+='<g class="mjdot"><circle cx="'+xn.toFixed(1)+'" cy="'+Y+'" r="8" fill="'+col+'" opacity=".2"/>'+
+     '<circle cx="'+xn.toFixed(1)+'" cy="'+Y+'" r="5" fill="'+col+'" style="stroke:var(--card)" stroke-width="2"/></g>';
+  var lx=Math.max(PL+14,Math.min(W-PR-14,xn));
+  g+='<text x="'+lx.toFixed(1)+'" y="'+(Y-13)+'" text-anchor="middle" font-family="Karla" font-size="11" font-weight="800" fill="'+col+'">'+fx(j.tn,1)+'</text>';
+  return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+fx(j.b0,1)+' kg’dan '+fx(j.g0,0)+' kg’a, şu an '+fx(j.tn,1)+' kg">'+g+'</svg>';
+}
+function motJourneyCard(){
+  var j=motJourney();
+  var head='<div class="shead"><div><div class="stitle">Yolculuk</div>'+
+    '<div class="ssub">trend kilo · başlangıç → hedef</div></div></div>';
+  if(!j)return '<div class="scard static dom dom-bod mjour">'+head+
+    '<div class="sempty">Başlangıç ve hedef kilo ile birkaç tartı girilince dolacak</div></div>';
+  var ahead=j.pW>=j.pT;
+  var sub='Yolun <b>%'+Math.round(j.pW*100)+'</b>’i geride, programın <b>%'+Math.round(j.pT*100)+'</b>’i geçti'+
+    (ahead?' — kilo takvimin önünde.':'.');
+  var pace='';
+  if(j.act!=null&&j.req!=null){
+    var ok=Math.abs(j.act)>=Math.abs(j.req)-0.05&&j.act<0;
+    pace='<div class="mjpace">'+
+      '<div><i>Hızın</i><b style="color:'+(ok?C.green:C.orange)+'">'+fx(j.act,2)+'<span>kg/hf</span></b></div>'+
+      '<div><i>Gereken</i><b>'+fx(j.req,2)+'<span>kg/hf</span></b></div>'+
+      '<div><i>Bu hızla '+fx(j.g0,0)+' kg</i><b>'+(j.proj?fshort(j.proj):'—')+'</b></div>'+
+    '</div>';
+  }
+  var note='';
+  if(j.proj&&j.lead!=null){
+    note=j.lead>=1
+      ?'Program bitişi '+fshort(j.end)+' — bu hızda yaklaşık <b>'+Math.round(j.lead)+' hafta</b> tampon var. '
+      :(j.lead>-1?'Program bitişi '+fshort(j.end)+' — tam takvimde. ':'Program bitişi '+fshort(j.end)+'. ');
+    note+='Tahmin son 21 günün tartılarından; kesim ilerledikçe hız yavaşlar, tarih her tartıyla yeniden hesaplanır.';
+  }
+  var passed=j.stones.filter(function(s){return s.d;});
+  var nx=j.next?'<div class="mjnext"><span>Sonraki durak <b>'+j.next.k+' kg</b></span>'+
+      '<span><b>'+fx(Math.max(0,j.tn-j.next.k),1)+'</b> kg kaldı</span></div>':'';
+  return '<div class="scard static dom dom-bod mjour">'+head+
+    '<div class="mjhd"><div class="mjt">'+fx(j.b0,1)+'<small>→</small>'+fx(j.g0,0)+'</div>'+
+      '<div class="mjgone"><b style="color:'+(j.lost>0?C.blue:'var(--ink3)')+'">'+(j.lost>0?'−':'')+fx(Math.abs(j.lost),1)+'</b><i>kg geride</i></div></div>'+
+    '<div class="mjsub">'+sub+'</div>'+
+    '<div class="mjtrack">'+motTrack(j)+'</div>'+
+    nx+pace+
+    (passed.length?'<div class="mjnote">Geçilen duraklar: '+passed.map(function(s){return '<b>'+s.k+'</b> ('+fshort(s.d)+')';}).join(' · ')+'</div>':'')+
+    (note?'<div class="mjnote">'+note+'</div>':'')+
+  '</div>';
+}
+function motStrengthCard(){
+  var cd=cutData();
+  var head='<div class="shead"><div><div class="stitle">Kesimdeki Güç</div>'+
+    '<div class="ssub">göreli güç = güç ÷ trend kilo · başlangıç = 100</div></div></div>';
+  if(!cd||cd.nc<3)return '<div class="scard static dom dom-trn">'+head+
+    '<div class="sempty">Hareketler ikinci seanslarına geldikçe dolacak</div></div>';
+  var L=cd.rows[cd.rows.length-1],sC=L.s-100,wC=L.w!=null?L.w-100:null,rC=L.rel!=null?L.rel-100:null;
+  var big=rC!=null?rC:sC;
+  var msg;
+  if(sC>=1&&(wC==null||wC<0))msg='Kalori açığındayken güç normalde korunmaya çalışılır — seninki artıyor.';
+  else if(sC>-1)msg='Kilo düşerken güç yerinde duruyor. Kesimde asıl hedef bu.';
+  else msg='Güç başlangıcın altında. Uyku ve proteine bakmak için iyi bir an.';
+  var wk=strSeries().filter(function(x){return x.n>0;});
+  var streak=0;for(var i=wk.length-1;i>=0;i--){if(wk[i].chg>0)streak++;else break;}
+  var mx=Math.max.apply(null,wk.map(function(x){return Math.abs(x.chg||0);}).concat([1]));
+  var bars=wk.slice(-8).map(function(x){
+    var up=x.chg>=0,h=Math.max(4,Math.abs(x.chg)/mx*44);
+    return '<div><span class="mwp" style="color:'+(up?C.green:C.orange)+'">'+sgp(x.chg)+'</span>'+
+      '<span class="mwb" style="height:'+h.toFixed(0)+'px;background:'+(up?CH.green:CH.orange)+'"></span>'+
+      '<span class="mwl">H'+x.wk+'</span></div>';}).join('');
+  return '<div class="scard static dom dom-trn">'+head+
+    '<div class="mstr"><div><div class="mstrbig" style="color:'+(big>=0?C.green:C.orange)+'">'+
+        (big>0?'+':(big<0?'−':''))+fx(Math.abs(big),1)+'<span>%</span></div>'+
+      '<div class="mstrlbl">'+(rC!=null?'göreli güç':'güç')+' · başlangıçtan</div></div>'+
+      '<div class="mstrside">güç <b style="color:'+(sC>=0?C.green:C.orange)+'">'+sgp(sC)+'%</b><br>'+
+        'trend kilo <b style="color:'+C.blue+'">'+(wC==null?'—':sgp(wC)+'%')+'</b></div></div>'+
+    '<div class="tdmsg" style="background:'+hexa(sC>-1?C.green:C.orange,.12)+';color:'+(sC>-1?C.green:C.orange)+';margin-top:12px">'+msg+
+      (streak>=2?' Güç endeksi <b>'+streak+' haftadır</b> üst üste yükseliyor.':'')+'</div>'+
+    '<div class="mwk">'+bars+'</div>'+
+    '<div class="sexp">Haftalık güç değişimi: her hareket aynı plan gününün bir önceki seansıyla kıyaslanır, deload hariç.</div>'+
+  '</div>';
+}
+function motRecords(){
+  var td=today(),all=[],wk7=addD(td,-6);
+  keys().forEach(function(d){
+    if(d>td)return;var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
+    prsOn(d).forEach(function(p){all.push({d:d,dt:dt,n:p.n,kg:p.kg,rep:p.rep,gain:p.gain});});
+  });
+  var recent=all.filter(function(p){return p.d>=wk7;}).length;
+  var lastD=all.length?all[all.length-1].d:null;
+  var last=lastD?all.filter(function(p){return p.d===lastD;}):[];
+  /* en çok ilerleyenler — Özet'teki hareket listesiyle aynı ölçü (exGain) */
+  var exDay={},mv=[];
+  ORDER.forEach(function(dt){(PROGRAM[dt]?PROGRAM[dt].ex:[]).forEach(function(x){(exDay[x.n]=exDay[x.n]||[]).push(dt);});});
+  Object.keys(exDay).forEach(function(nm){
+    exDay[nm].forEach(function(dt){
+      var hh=exSessionsData(nm,dt).filter(function(z){return z.e1>0&&!isDeload(z.d);});
+      var g=exGain(hh);if(g==null)return;
+      mv.push({lbl:exDay[nm].length>1?nm+' · '+PROGRAM[dt].short:nm,g:g,a:hh[0],b:hh[hh.length-1],n:hh.length});
+    });
+  });
+  mv.sort(function(a,b){return b.g-a.g;});
+  return {total:all.length,recent:recent,lastD:lastD,last:last,top:mv.filter(function(x){return x.g>0;}).slice(0,3)};
+}
+function motRecordCard(){
+  var r=motRecords();
+  var head='<div class="shead"><div><div class="stitle">Rekor Defteri</div>'+
+    '<div class="ssub">seans 1RM’i kendi plan gününün en iyisini geçtiğinde</div></div></div>';
+  if(!r.total&&!r.top.length)return '<div class="scard static dom dom-trn">'+head+
+    '<div class="sempty">İlk rekorlar ikinci seanslarla gelmeye başlar</div></div>';
+  function sk(s){return fkg(s.e1kg)+'×'+s.e1rep;}
+  return '<div class="scard static dom dom-trn">'+head+
+    '<div class="mpr"><div class="mprn">'+r.total+'</div>'+
+      '<div class="mprt">rekor, programın başından beri<br><b>'+r.recent+'</b> tanesi son 7 günde</div></div>'+
+    (r.last.length?'<div class="mprlast"><b>'+fshort(r.lastD)+'</b> · '+
+      esc(PROGRAM[dtOf(r.lastD)]?PROGRAM[dtOf(r.lastD)].short:'')+': '+
+      r.last.slice(0,5).map(function(p){return esc(p.n)+' <b>'+fkg(p.kg)+'×'+p.rep+'</b>';}).join(', ')+
+      (r.last.length>5?' ve '+(r.last.length-5)+' tane daha':'')+'</div>':'')+
+    (r.top.length?'<div class="stitle" style="font-size:15px;margin:14px 0 2px">En çok ilerleyenler</div>'+
+      '<div class="mtop">'+r.top.map(function(x){
+        return '<div><span class="n">'+esc(x.lbl)+'</span><span class="g" style="color:'+C.green+'">+'+fx(x.g,0)+'%</span>'+
+          '<span class="s">'+sk(x.a)+' → '+sk(x.b)+' · '+x.n+' seans</span></div>';}).join('')+'</div>'+
+      '<div class="sexp">Yüzde: ilk 2 seansın ortalama 1RM’inden son 2 seansınkine.</div>':'')+
+  '</div>';
+}
+function motHabits(){
+  var td=today(),T=S.targets,o={plan:0,done:0,strong:0,cmp:0,vol:0,sets:0,days:0,kc:0,pDays:0,pHit:0,sDays:0,sHit:0,kr:0};
+  if(!S.startDate)return o;
+  for(var d=S.startDate;d<=td;d=addD(d,1)){
+    var r=S.days[d];o.days++;
+    if(r){
+      if(r.kcal!=null)o.kc++;
+      if(r.sup&&r.sup.kreatin)o.kr++;
+      if(r.p!=null){o.pDays++;if(r.p>=T.protein*0.95)o.pHit++;}
+      if(r.st!=null){o.sDays++;if(r.st>=T.steps*0.95)o.sHit++;}
+    }
+    var dt=effDt(d);if(ORDER.indexOf(dt)<0)continue;
+    var e=sessionEval(d,dt),did=!!(e&&!e.empty);
+    if(d===td&&!did)continue;          /* bugün henüz bitmedi */
+    o.plan++;if(!did)continue;
+    o.done++;o.vol+=e.vol;
+    planEx(dt,d).forEach(function(x){o.sets+=wSets((r&&r.ex||{})[x.n]).length;});
+    var sp=sessPerf(d,dt);if(sp&&sp.n&&!sp.dl){o.cmp++;if(sp.key==='guclu')o.strong++;}
+  }
+  return o;
+}
+function motHabitCard(){
+  var h=motHabits();
+  var head='<div class="shead"><div><div class="stitle">İstikrar</div>'+
+    '<div class="ssub">programın başından bugüne</div></div></div>';
+  if(!h.days)return '<div class="scard static dom dom-rec">'+head+'<div class="sempty">Kayıt girildikçe dolacak</div></div>';
+  function tile(v,l,sub,col){return '<div><b style="color:'+(col||'var(--ink)')+'">'+v+'</b><i>'+l+'</i>'+(sub?'<em>'+sub+'</em>':'')+'</div>';}
+  var full=h.plan&&h.done===h.plan;
+  return '<div class="scard static dom dom-rec">'+head+
+    '<div class="mtiles">'+
+      tile(h.done+'/'+h.plan,'antrenman yapıldı',full?'planlanan her seans':'planlanan seanslardan',full?C.green:null)+
+      tile(h.strong+'/'+h.cmp,'güçlü seans','kıyaslanabilen seanslardan',h.cmp&&h.strong/h.cmp>=.6?C.green:null)+
+      tile(h.kr+'/'+h.days,'gün kreatin alındı',Math.round(h.kr/h.days*100)+'% gün',h.kr/h.days>=.9?C.teal:null)+
+      tile(h.kc+'/'+h.days,'gün kalori girildi',Math.round(h.kc/h.days*100)+'% kayıt')+
+      tile(h.pHit+'/'+h.pDays,'gün protein hedefte','hedefin %95’i ve üstü')+
+      tile(h.sHit+'/'+h.sDays,'gün adım hedefte','hedefin %95’i ve üstü')+
+    '</div>'+
+    (h.done?'<div class="mtot">Başlangıçtan beri <b>'+h.done+'</b> seansta <b>'+ti(h.sets)+'</b> çalışma seti, toplam <b>'+
+      fx(h.vol/1000,h.vol>=100000?0:1)+' ton</b> kaldırdın.</div>':'')+
+  '</div>';
+}
+function motBody(){
+  return motJourneyCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
+}
 var TABICON={
+ mot:'<path d="M6 21V4"/><path d="M6 4.5h11.5l-2.6 4.2 2.6 4.3H6"/>',
  w:'<path d="M4 9v6M20 9v6M7 6.5v11M17 6.5v11M7 12h10" />',
  d:'<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M9 8.5h6M9 12.5h6M9 16.5h3"/>',
  s:'<path d="M4 19V5M4 19h16M8 15.5l3.5-4 3 2.5L20 8"/>',
@@ -8091,7 +8388,7 @@ function tabIcon(k){
     'stroke-linecap="round" stroke-linejoin="round">'+TABICON[k]+'</svg>';
 }
 function gymTabsInner(){
-  var tabs=[['w','Antrenman'],['d','Gün'],['s','Özet'],['cal','Takvim']];
+  var tabs=[['w','Antrenman'],['d','Gün'],['s','Özet'],['mot','Motivasyon'],['cal','Takvim']];
   return tabs.map(function(x){
     return '<button class="gt'+(gTab===x[0]?' on':'')+'" data-a="gtab" data-k="'+x[0]+'" aria-current="'+(gTab===x[0])+'">'+
       '<span class="ic">'+tabIcon(x[0])+'</span><span class="lb">'+x[1]+'</span></button>';}).join('')+
@@ -8100,7 +8397,7 @@ function gymTabsInner(){
 }
 function gymTabs(){return '<div class="gtabs" id="g-tabs">'+gymTabsInner()+'</div>';}
 function gymBody(){
-  return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():
+  return gTab==='w'?gymWorkout():gTab==='d'?gymDay():gTab==='s'?gymSum():gTab==='mot'?motBody():
          gTab==='cal'?gymCal():gymMore();
 }
 /* Hareket değiştirme çubuğu artık #g-body'nin DIŞINDA.
@@ -10193,7 +10490,7 @@ function render(){
    (yedek, bulut senkronu, program & hareket listesi) günlük görünümü
    kirletiyordu. Artık her sekme kendi işini gösteriyor, ayarlar ayrı. */
 var dTab='today';
-var DTABS=[['today','Bugün'],['prog','İlerleme'],['cal','Takvim'],
+var DTABS=[['today','Bugün'],['prog','İlerleme'],['mot','Motivasyon'],['cal','Takvim'],
            ['photo','Fotoğraf'],['set','Ayarlar']];
 function deskBody(){
   if(dTab==='prog')
@@ -10202,6 +10499,8 @@ function deskBody(){
       '<div class="dwrap70">'+cutCard(1)+musStrCard(1)+sleepCard(1)+'</div>'+
       '<div id="z-prg">'+progressCard()+'</div>'+
       '<div id="z-week">'+weekTable()+'</div>';
+  if(dTab==='mot')
+    return '<div class="motd">'+motBody()+'</div>';
   if(dTab==='cal')
     return '<div id="z-cal">'+calendar()+'</div>'+
       '<div id="z-scal">'+scoreCalendar()+'</div>';
