@@ -1034,6 +1034,10 @@ body.ovlock{position:fixed;left:0;right:0;width:100%}
 .mheroKick{font-size:9.5px;letter-spacing:1px;font-weight:700;color:var(--ink3)}
 .mheroH{font-family:'Fraunces';font-size:24px;font-weight:600;line-height:1.1;margin-top:2px;letter-spacing:-.3px}
 .mheroS{font-size:11.5px;font-weight:600;color:var(--ink2);margin-top:2px}
+.mheroEta{font-size:12px;font-weight:600;color:var(--ink2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mheroEta:empty{display:none}
+.mheroEta b{font-weight:800;color:var(--ink)}
+.mheroEta i{font-style:normal;color:var(--ink3)}
 .mheroPills{display:flex;gap:7px;overflow-x:auto;margin-top:12px;-webkit-overflow-scrolling:touch;padding-bottom:2px}
 .mheroPills .hpill{flex:none;min-width:72px;padding:7px 11px}
 .mheroPills .hpill b{font-size:17px}
@@ -2606,6 +2610,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-26',
+  t:'Bitiş tahmini (v75)',
+  y:['Antrenman kartında gün adının altındaki satır artık kalan süreyi yazıyor: “⏱ ~22 dk kaldı · bitiş ~19:45”. Tahmin set bazında: bugünkü tempon ile aynı günün geçen seans süresi harmanlanıyor; seans ilerledikçe bugünkü tempo ağır basıyor.',
+     'Başlamadan önce “~48 dk sürer”, bitince “52 dk’da bitti”, bütün setler girilince “setler tamam, bitir’e bas” yazar. Satır kronometreyle birlikte kendiliğinden tazelenir.']},
  {d:'2026-09-26',
   t:'Canlı ağırlık kararı, gün gün seans süreleri (v74)',
   y:['KARAR KUTUSU ARTIK SET GİRDİKÇE DEĞİŞİYOR. Kilo girmeden önce BUGÜN (geçen seansa göre bugünün hedefi, somut tekrar hedefiyle: “60 kg’da kal · hedef 9 / 8 / 7”). İlk kiloyu girince ŞU AN (girilen setlere göre ara karar — kilo arttıysa taban tutuyor mu, aynıysa geçen seansın aynı setine göre kaç tekrar fark var). Hedef set sayısı dolunca SONUÇ (bugünün seansına göre sonraki seansın kararı).',
@@ -6075,7 +6083,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v74 · 26 Eyl 2026';
+var APPVER='v75 · 26 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8173,7 +8181,8 @@ function fdurS(m){return m==null?'—':m+' dk';}
 /* Rozet her set girişinde değil, dakikada bir kendi kendine tazelenir:
    tüm ekranı yeniden çizmek yazarken imleci kaçırıyor. */
 var clockIv=null;
-function paintClock(){var el=document.getElementById('g-clock');if(el)el.innerHTML=clockChip();}
+function paintClock(){var el=document.getElementById('g-clock');if(el)el.innerHTML=clockChip();
+  var ea=document.getElementById('g-eta');if(ea)ea.innerHTML=etaLine();}
 function startClock(){
   if(clockIv)return;
   clockIv=setInterval(function(){
@@ -10575,8 +10584,9 @@ function workHero(){
   });
   var pct=totEx?doneEx/totEx:0;
   var head=isTr?(typeName(dt)||t.name):(t?t.label:'Planlanmadı');
-  var line=isTr?(doneEx?doneEx+' / '+totEx+' hareket tamam':'henüz başlamadın')
+  var line=isTr?(doneEx?doneEx+' / '+totEx+' hareket tamam':(setsDone?setsDone+' set girildi':'henüz başlamadın'))
                :'Bugün antrenman yok — toparlanma günü';
+  var eta=isTr?etaLine():'';
   var pills=[];
   if(isTr){
     pills.push([doneEx+'/'+totEx,'hareket',pct>=1?C.green:''+THC.c40+'']);
@@ -10593,12 +10603,59 @@ function workHero(){
       '<div style="flex:1;min-width:0"><div class="mheroKick">'+
         (ord?ord+'. GÜN · ':'')+'HAFTA '+wkLabel(weekIdx(cur))+(isDeload(cur)?' · DELOAD':'')+'</div>'+
         '<div class="mheroH">'+esc(head)+'</div>'+
-        '<div class="mheroS">'+esc(line)+'</div></div>'+
+        '<div class="mheroS">'+esc(line)+'</div>'+
+        (isTr?'<div class="mheroEta" id="g-eta">'+eta+'</div>':'')+'</div>'+
       (isTr?ringSVG(pct,pct>=1?C.green:''+THC.c40+'',62,doneEx+'/'+totEx):'')+
     '</div>'+
     durStrip(dt)+
     (lostT?durBox(cur,dt):'')+
   '</div>';
+}
+/* v75 — BİTİŞ TAHMİNİ.
+   Salonda sorulan soru "ne kadar kaldı, kaçta çıkarım". Rozet yalnız geçen süreyi
+   ve geçen seansı söylüyordu; kalan süreyi kafadan hesaplamak gerekiyordu.
+   İlerleme HAREKET değil SET üzerinden ölçülür (8 hareketli günde 1 hareket
+   bitmeden oran 0 kalıyordu): girilen set / o günün hedef set toplamı.
+   Kalan süre iki kaynaktan harmanlanır:
+     hız    = geçen süre ÷ girilen set × kalan set (bugünkü tempo)
+     geçmiş = geçen seansın süresi − geçen süre (aynı plan günü, durStat)
+   Seans başında hız gürültülü (ilk sette ısınma, makine bekleme), sonuna doğru
+   geçmişten daha doğru. Ağırlık = biten setlerin oranı: yarıda %50-%50, sonda
+   neredeyse tamamen bugünkü tempo. Geçmiş yoksa yalnız hız, ilk 2 set girilene
+   kadar tahmin yazılmaz. Kalan 0'a inmez: son set ve bitir'e basma arası ~2 dk. */
+function etaInfo(){
+  var dt=planOf(cur),TEX=planEx(dt,cur),r=D(cur);
+  if(!TEX.length)return null;
+  var tot=0,done=0;
+  TEX.forEach(function(e){
+    var need=tgtOn(e,cur).s;tot+=need;
+    done+=Math.min(need,wSets((r.ex||{})[e.n]).length);
+  });
+  var ex=expWork(dt,cur),ref=(ex&&ex.last)?ex.last.m:null;
+  if(!r.ws)return {state:'pre',ref:ref};
+  var m=workMin(cur,true);if(m==null)return null;
+  if(r.we)return {state:'done',m:m};
+  if(cur!==today())return null;
+  var left=tot-done;
+  if(left<=0)return {state:'last',m:m};
+  var rate=done>=2?m/done*left:null;
+  var hist=ref!=null?Math.max(2,ref-m):null;
+  var est;
+  if(rate!=null&&hist!=null){var w=done/tot;est=w*rate+(1-w)*hist;}
+  else est=(rate!=null)?rate:hist;
+  if(est==null)return {state:'run',m:m,done:done,tot:tot};
+  est=Math.max(2,Math.round(est));
+  var fin=new Date(Date.now()+est*60000);
+  return {state:'run',m:m,done:done,tot:tot,left:est,
+    at:String(fin.getHours()).padStart(2,'0')+':'+String(fin.getMinutes()).padStart(2,'0')};
+}
+function etaLine(){
+  var t=etaInfo();if(!t)return '';
+  if(t.state==='pre')return t.ref!=null?'⏱ ~'+fdurS(t.ref)+' sürer':'';
+  if(t.state==='done')return '✓ '+fdurS(t.m)+'’da bitti';
+  if(t.state==='last')return '✓ setler tamam — bitir’e bas';
+  if(t.left==null)return t.done+' / '+t.tot+' set · tahmin için 2 set gerekli';
+  return '⏱ ~<b>'+t.left+' dk</b> kaldı · bitiş <b>~'+t.at+'</b>';
 }
 /* v74 — BÜTÜN GÜNLERİN SÜRESİ TEK BAKIŞTA.
    Rozet yalnız bugünün geçen seansını söylüyordu; "yarın bacak mı omuz mu,
