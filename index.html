@@ -518,17 +518,34 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   .gtabs .gmore{width:38px}}
 
 .gtop.slim{padding:calc(7px + env(safe-area-inset-top)) 14px 7px}
-.gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.gsync2{font-size:10.5px;color:#b3a488;font-weight:700}
+.gtoprow2{display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0}
+.gtoprow2 .gdate{display:inline-flex;align-items:center;gap:8px;white-space:nowrap;min-width:0;flex:0 1 auto}
+.gtoprow2 .gdate>span{overflow:hidden;text-overflow:ellipsis}
+.gtoprow2 .gdate svg{flex:none}
+#g-clock{flex:none}
+.gsync2{font-size:10.5px;color:#b3a488;font-weight:700;white-space:nowrap;flex:none}
 /* antrenman kronometresi — üst çubukta, tam ekran boyunca görünür */
 .gclock{display:inline-flex;align-items:center;gap:5px;border:1px solid #e4d9c2;background:#f7f1e4;
-  border-radius:9px;padding:4px 9px;font-size:11px;font-weight:700;color:#6b5f4d;
+  border-radius:9px;padding:4px 9px;font-size:11px;font-weight:700;color:#6b5f4d;white-space:nowrap;line-height:1.2;
   -webkit-tap-highlight-color:transparent;cursor:pointer}
 .gclock.run{background:rgba(122,143,110,.14);border-color:rgba(122,143,110,.32);color:#5d7a52}
 .gclock b{font-weight:800}
 .gclock i{font-style:normal;color:#a8987c;font-weight:700}
 .gclock.over{background:rgba(200,124,60,.13);border-color:rgba(200,124,60,.3);color:#a5541f}
 .gclock.over i{color:#c08a5e}
+/* v74 — antrenman kartındaki gün gün süre şeridi */
+.dstrip{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.dstk{font-size:9.5px;letter-spacing:1px;font-weight:700;color:var(--ink3);margin-bottom:7px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dstk span{letter-spacing:.2px;font-weight:600;opacity:.8}
+.dstrow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}
+.dstc{border:1px solid var(--line);border-radius:10px;padding:6px 2px 5px;text-align:center;min-width:0;
+  display:flex;flex-direction:column;align-items:center;gap:1px}
+.dstc i{font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.6px;color:var(--dc)}
+.dstc b{font-size:14px;font-weight:800;color:var(--ink);white-space:nowrap;line-height:1.2}
+.dstc em{font-style:normal;font-size:9.5px;font-weight:600;color:var(--ink3);white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.dstc.on{border:1.5px solid var(--dc);background:color-mix(in srgb,var(--dc) 11%,transparent)}
 .wdrow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px;
   background:#f7f1e4;border:1px solid #e4d9c2;border-radius:12px;padding:10px 12px}
 .wdrow b{font-family:'Fraunces';font-size:19px;font-weight:600}
@@ -570,6 +587,10 @@ body.gym .card{border-radius:0;border-left:0;border-right:0;margin-bottom:10px;b
   font-size:8.5px;letter-spacing:1.3px;font-weight:800;margin-bottom:8px}
 .gpk i{font-style:normal;color:#fdfaf4}
 .gpt{font-size:12.5px;font-weight:700;line-height:1.5}
+.gpsub{display:inline-block;margin-left:8px;font-size:10.5px;font-weight:600;color:var(--ink3);vertical-align:middle}
+.gpsub b{font-weight:800}
+.gpfoot{margin-top:7px;padding-top:7px;border-top:1px dashed currentColor;font-size:11px;font-weight:600;color:var(--ink3)}
+.gpfoot b{font-weight:800}
 .gprevv u{text-decoration:none;color:#b3a488;font-weight:600}
 .gdue{background:#ef5a1e;color:#fff;border-radius:999px;padding:2px 8px;font-size:9px;letter-spacing:.8px}
 .gduebanner{margin:0 14px;background:#fff3e6;border:1px solid #f2d3b4;border-radius:11px;
@@ -2585,6 +2606,13 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-26',
+  t:'Canlı ağırlık kararı, gün gün seans süreleri (v74)',
+  y:['KARAR KUTUSU ARTIK SET GİRDİKÇE DEĞİŞİYOR. Kilo girmeden önce BUGÜN (geçen seansa göre bugünün hedefi, somut tekrar hedefiyle: “60 kg’da kal · hedef 9 / 8 / 7”). İlk kiloyu girince ŞU AN (girilen setlere göre ara karar — kilo arttıysa taban tutuyor mu, aynıysa geçen seansın aynı setine göre kaç tekrar fark var). Hedef set sayısı dolunca SONUÇ (bugünün seansına göre sonraki seansın kararı).',
+     'Geçen haftaki artışı yeniden anlatan metin (“Ağırlığı yeni artırmıştın 55 → 60 kg…”) kalktı; kutu yalnız bugün ne yapacağını söylüyor.',
+     '“Ağırlık arttı” şeridi ve “↑ Bugün 65 kg dene” rozeti set girildikten sonra kayboluyor — tek söz sahibi karar kutusu.',
+     'Antrenman kartında SEANS SÜRELERİ şeridi: beş plan gününün son seans süresi ve ortalaması tek satırda, bugünün günü çerçeveli.',
+     'Üst çubuk tek satır: kısa gün adı, tek satırlık süre rozeti (“geçen 48 dk”, antrenmanda “23 dk / 48 dk”), bulut yalnız “☁ 12 dk”. Rozet artık alt alta kırılmıyor.']},
  {d:'2026-09-22',
   t:'Yeni sekme: Motivasyon (v73)',
   y:['YOLCULUK: başlangıç kilosundan hedefe şerit; trend kilonun yeri, geçilen her tam kilo ve tarihi, sonraki durağa kalan. Yolun ve programın yüzde kaçının geçtiği yan yana.',
@@ -6047,7 +6075,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v73 · 22 Eyl 2026';
+var APPVER='v74 · 26 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6264,24 +6292,15 @@ function gymWorkout(){
        fotoğrafa dokununca açılan kipte var, RIR hedefi de her setin altında
        kesik çerçeveyle işaretli. İkisi de ekranı uzatıp asıl karar kutusunu
        aşağı itiyordu. Metinler duruyor, sadece bu ekranda basılmıyor. */
-    (function(){var ju=justUp(e.n,cur,te);if(!ju)return '';
-      var jc=(ju.bad&&!ju.staged)?C.orange:C.teal;
-      return '<div class="jumpb" style="background:'+hexa(jc,.12)+';color:'+jc+'">'+
-        '<b>Ağırlık arttı: '+ju.from+' → '+ju.to+' kg.</b> '+
-        ((ju.staged
-              ?'Kademeli geçiştesin — '+ju.staged.need+' setin <b>'+ju.staged.done+'</b> tanesi '+
-               ju.to+' kg’da, kalanı '+ju.from+' kg’da. Doğru yoldasın: sonraki seans '+
-               Math.min(ju.staged.need,ju.staged.done+1)+' set '+ju.to+', sonra hepsi.'
-              :ju.bad
-          ?'Ama '+ju.low+' tekrarda kaldın — hedefin ('+ju.lo+'-'+ju.hi+') 2 altı olan '+
-           '<b>'+ju.floor+'</b> tekrarın da altı. Yük fazla, bir kademe geri in.'
-          :'Tekrarların düşecek, normal. <b>'+ju.floor+'</b> tekrarın altına inmediğin sürece sorun yok — '+
-           'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
-    (pg?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
+    /* v74: "Ağırlık arttı" şeridi ve "↑ Bugün 40 kg dene" rozeti yalnız set girilmeden
+       önce anlamlıydı; set girildikten sonra da aynen kalıyor, karar kutusuyla üç ayrı
+       yerde aynı şeyi (bazen eskisini) söylüyordu. Artık kilo girilince tek söz
+       sahibi karar kutusu (ŞU AN / SONUÇ). Rozet yalnız BUGÜN aşamasında. */
+    (pg&&!sets.some(function(s){return s&&s.kg!=null;})?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun')
           :(pg.why==='dl'?'Deload — '+pg.kg+' kg’da kal':(pg.why==='floor'?'↓ Bir kademe geri in':'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor')));
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
-    prevSummary(prev,e,prevX,pg)+
+    prevSummary(prev,e,prevX,pg,te,_dt)+
     '<div class="gsets">'+rows+'</div>'+
     '<div class="gfoot"><span>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
       '<span style="color:'+ev.color+'">'+ev.label+'</span></div>'+
@@ -8093,14 +8112,26 @@ function mfld(g,lbl,v){
   return '<div class="mfield"><label>'+lbl+'</label><input class="ginp" data-g="'+g+'" inputmode="decimal" value="'+v+'"></div>';
 }
 
+/* v74 — ÜST ÇUBUK TEK SATIR. Tarih, kronometre rozeti ve "☁ 12 dk önce eşitlendi ·
+   v73 · 22 Eyl 2026" aynı satıra sığmıyordu; telefonda rozet "48 dk / geçen seans"
+   dört satıra kırılıyor, yazılar üst üste biniyordu. Artık hiçbir parça satır
+   kırmıyor: gün kısaltılmış (CMT · 26 EYL), rozet tek satır, bulut yalnız kaç
+   dakika önce eşitlendiğini yazıyor. Sürüm Daha → Uygulama'da duruyor. */
+var GUNK=['PAZ','PZT','SAL','ÇAR','PER','CUM','CMT'];
+function syncShort(){
+  if(!S.sync.last)return '☁';
+  var m=Math.round((Date.now()-S.sync.last)/60000);
+  return '☁ '+(m<1?'✓':(m<60?m+' dk':Math.round(m/60)+' sa'));
+}
 function gymTop(){
+  var on=!!(S.sync.token&&S.sync.gist);
   return '<div class="gtop slim">'+
     '<div class="gtoprow2">'+
-      '<span class="gdate" style="display:inline-flex;align-items:center;gap:8px">'+mark(19)+
-        GUNU[pd(cur).getDay()].toUpperCase()+' · '+fdate(cur)+'</span>'+
+      '<span class="gdate">'+mark(19)+
+        '<span>'+GUNK[pd(cur).getDay()]+' · '+fdate(cur).toUpperCase()+'</span></span>'+
       '<span id="g-clock">'+clockChip()+'</span>'+
-      '<span class="gsync2"'+(S.sync.token&&S.sync.gist?' data-a="syncnow"':'')+'>'+
-        (S.sync.token&&S.sync.gist?'☁ '+syncLabel()+' · ':'')+APPVER+'</span>'+
+      (on?'<span class="gsync2" data-a="syncnow" title="'+esc(syncLabel())+'">'+syncShort()+'</span>'
+         :'<span class="gsync2">'+APPVER.split(' ')[0]+'</span>')+
     '</div>'+
   '</div>';
 }
@@ -8126,7 +8157,7 @@ function clockChip(){
     if(wUndoLive())
       return '<span class="gclock" data-a="wreset" title="süreyi geri al">⏱ <b>'+
         fdur(Math.round(((wUndo.we||wUndo.wl||wUndo.ws)-wUndo.ws)/60000))+'</b><i>geri al</i></span>';
-    return ex?'<span class="gclock">⏱ <b>'+fdur(ex.last.m)+'</b><i>geçen seans</i></span>'
+    return ex?'<span class="gclock" title="geçen seans '+fdur(ex.last.m)+'">⏱ <i>geçen</i> <b>'+fdurS(ex.last.m)+'</b></span>'
              :'<span class="gclock"><i>⏱ ilk sette başlar</i></span>';}
   var m=workMin(cur,true);
   if(m==null)return '';
@@ -8134,8 +8165,11 @@ function clockChip(){
   var refm=(ex&&ex.last)?ex.last.m:null;
   var over=(!done&&refm!=null&&m>refm+10);
   return '<span class="gclock '+(done?'':(over?'over':'run'))+'" data-a="wreset" title="sıfırlamak için dokun">⏱ <b>'+
-    fdur(m)+'</b>'+(refm!=null?'<i>/ geçen '+fdur(refm)+'</i>':'')+(done?'<i>bitti</i>':'')+'</span>';
+    fdurS(m)+'</b>'+(refm!=null&&!done?'<i>/ '+fdurS(refm)+'</i>':'')+(done?'<i>✓ bitti</i>':'')+'</span>';
 }
+/* rozet için kısa süre: hep dakika (68 dk). "1 sa 05 dk" rozeti iki satıra itiyordu;
+   "1:08" ise dinlenme sayacındaki 2:00 (dakika:saniye) ile karışıyordu. */
+function fdurS(m){return m==null?'—':m+' dk';}
 /* Rozet her set girişinde değil, dakikada bir kendi kendine tazelenir:
    tüm ekranı yeniden çizmek yazarken imleci kaçırıyor. */
 var clockIv=null;
@@ -10276,97 +10310,187 @@ function heroM(){
 }
 /* geçen seansın ÖZETİ — setlerin tek tek listesi zaten her setin altında var.
    Burada ortalama tekrar ve "ağırlık mı tekrar mı" kararı duruyor. */
-function prevSummary(prev,e,fromOtherDay,pg){
-  if(!prev)
-    return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
-      e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
-  var kgs=prev.sets.map(function(s){return s.kg;});
-  var kgMax=Math.max.apply(null,kgs);
+/* ============ v74 · KARAR KUTUSU ÜÇ AŞAMALI ============
+   ESKİ HATA: kutu (ve üstündeki rozet) yalnız GEÇEN seansa bakıyordu. Bugün set
+   girdikçe hiçbir şey değişmiyordu; geçen hafta 55 → 60 kg'a çıkmışsan bu hafta
+   da "Ağırlığı yeni artırmıştın (55 → 60 kg)…" yazıyordu — bunu zaten geçen hafta
+   görmüştün, bugün için bilgi değil.
+   ŞİMDİ kutu bugünün kaydına göre üç aşamadan birini gösterir:
+     BUGÜN      — henüz kilo girilmedi. Geçen seansa göre bugünün hedefi; ileriye
+                  dönük yazılır ("60 kg'da kal · hedef 9 / 8 / 7"), geçmişi anlatmaz.
+     ŞU AN      — ilk kilo girildiği an. Girilen setlere göre ara karar: kilo arttıysa
+                  tabanın üstünde mi, aynıysa geçen seansın aynı setine göre +/- kaç
+                  tekrar. "Karar son sette kesinleşir" yazar.
+     SONUÇ      — hedef set sayısı tamamlanınca. Bugünün seansı aynı kuralla
+                  değerlendirilir ve SONRAKİ seansın kararı yazılır.
+   Kural tek: sessVerdict() hem geçen seansa (BUGÜN) hem bugüne (SONUÇ) uygulanır. */
+
+/* Aynı kiloda kalırken somut hedef: her set geçen seansın +1 tekrarı, tavan hi. */
+function goalRow(atMax,hi){
+  return atMax.map(function(s){return Math.min(hi,s.rep+1);}).join(' / ');
+}
+/* Bir seansın ardından ne yapılmalı. W = 'Bugün' | 'Sonraki seans'.
+   Hedef o seansın KENDİ gününden okunur (bkz. eski not aşağıda). */
+function sessVerdict(name,sets0,date,W,eFb){
+  var sets=wSets(sets0);if(!sets.length)return null;
   /* KARAR O SEANSIN KENDİ GÜNÜNÜN HEDEFİNE göre verilir — bugünün hedefine göre DEĞİL.
-     ESKİ HATA: lo/hi bugünkü hareketin aralığından (e.r) okunuyordu. Eğik dambıl press
-     Üst gününde 8-12, İtiş gününde 6-10. 26 Ağu (Üst) seansındaki 11/11/8 kaydı,
-     29 Ağu (İtiş) açılınca 6-10 aralığıyla kıyaslandı; ortalama 10.0 ≥ 10 çıkınca
-     "üst sınırdaydın, ağırlığı artır" dedi. Halbuki o gün hedef 8-12'ydi ve 12'ye
-     ulaşılmamıştı. İki farklı günün hedefi birbirine karışıyordu.
-     İKİNCİ HATA: karar ORTALAMA tekrara bakıyordu. _progression() ise "tüm setler aynı
-     kiloda VE hepsi üst sınırda" şartını arıyor. Kart motora "artır" derken motor
-     susuyordu. Artık ikisi aynı kuralı kullanıyor. */
-  var pt=tgtFor(e.n,prev.date)||e;
-  var lo=pt.r[0],hi=pt.r[1],needSets=pt.s||prev.sets.length;
-  var atMax=prev.sets.filter(function(s){return s.kg===kgMax;});
+     Eğik dambıl press Üst gününde 8-12, İtiş gününde 6-10; 26 Ağu (Üst) seansının
+     11/11/8'i İtiş'in 6-10'uyla okununca "üst sınırdaydın, artır" deniyordu.
+     Karar ortalama tekrara değil _progression() ile aynı kurala bakar:
+     "tüm setler aynı kiloda VE hepsi üst sınırda". */
+  var pt=tgtFor(name,date)||eFb;if(!pt)return null;
+  var lo=pt.r[0],hi=pt.r[1],needSets=pt.s||sets.length;
+  var kgMax=Math.max.apply(null,sets.map(function(s){return s.kg;}));
+  var atMax=sets.filter(function(s){return s.kg===kgMax;});
   var topHit=atMax.filter(function(s){return s.rep>=hi;}).length;
   var loHit=atMax.filter(function(s){return s.rep>=lo;}).length;
-  var kgTxt=fx(kgMax,kgMax%1?1:0);
-  /* eksik set: 3 setlik hedefte 2 set girilmişse hepsi üst sınırda olsa bile
-     "artır" denmez, ama "aralığın altındasın" da denmez — eksik olduğu yazılır. */
+  var K=fkg(kgMax)+' kg';
   var miss=atMax.length<needSets?' ('+atMax.length+'/'+needSets+' set girilmiş)':'';
-  /* O seansta ağırlık YENİ mi artmıştı? Artmışsa aralığın altına düşmek beklenen
-     durumdur, hata değil. justUp() bunu bugünkü seans için zaten yapıyordu ama
-     kart geçmiş seansa bakarken bilmiyordu ve "aralığın altında set var" diye
-     sarı uyarı basıyordu — 36→38 çıkıp 7 tekrar yapmak başarısızlık değil.
-     Eşik justUp() ile aynı: alt sınır - 2. Altına inilirse sıçrama fazladır. */
-  var pp=prevSess(e.n,prev.date);
+  /* Ağırlık o seansta YENİ mi artmıştı? Artmışsa aralığın altına düşmek beklenen
+     durumdur, hata değil. Eşik justUp() ile aynı: alt sınır − 2. */
+  var pp=prevSess(name,date);
   var pk=(pp&&pp.sets.length)?Math.max.apply(null,pp.sets.map(function(s){return s.kg;})):null;
   var fresh=(pk!=null&&kgMax>pk),floor=Math.max(1,lo-2);
   var lowRep=atMax.length?Math.min.apply(null,atMax.map(function(s){return s.rep;})):null;
-  /* Kademeli geçiş: karışık kilolu seans "yarım kaldı" değil, planlı bir aşama. */
-  var stg=(pk!=null)?stagedOf(prev.sets,pk,needSets):null;
-  var verdict,vc;
+  var stg=(pk!=null)?stagedOf(sets,pk,needSets):null;
+  var t,c;
   if(stg&&!stg.complete){
-    var nextN=Math.min(stg.need,stg.done+1);
-    var lowS=Math.min.apply(null,stg.reps);
-    verdict=(lowS<floor
-      ?'Kademeli geçiştesin ama '+stg.to+' kg’da '+lowS+' tekrar — '+floor+
-        ' tabanının altı. '+stg.from+' kg’da kalıp '+hi+' tekrarı sağlamlaştır'
-      :'Kademeli geçiştesin — '+stg.need+' setin '+stg.done+' tanesi '+stg.to+' kg’da, kalanı '+
-        stg.from+' kg’da. Bu seans '+nextN+' set '+stg.to+' kg yap, sonra hepsi');
-    vc=(lowS<floor)?C.orange:C.teal;}
-  else if(atMax.length>=needSets&&topHit>=needSets){
-    verdict='Tüm setlerde '+hi+' tekrara ulaştın — bugün ağırlığı artır';vc=C.green;}
-  else if(atMax.length&&loHit>=atMax.length){
-    verdict='Aralık içindeydin — '+kgTxt+' kg’da kal, her sette '+hi+' tekrarı yakala'+miss;vc=C.teal;}
-  else if(fresh&&lowRep!=null&&lowRep>=floor){
-    verdict='Ağırlığı yeni artırmıştın ('+fx(pk,pk%1?1:0)+' → '+kgTxt+' kg) — '+lo+
-      ' tekrarın altında olman normal. '+kgTxt+' kg’da kal, tekrarları '+lo+'-'+hi+
-      ' aralığına tırmandır';vc=C.teal;}
-  else if(fresh){
-    verdict='Sıçrama fazla gelmiş — '+kgTxt+' kg’da '+lowRep+' tekrar, '+floor+
-      ' tekrar tabanının da altı. '+fx(pk,pk%1?1:0)+' kg’a geri dön, orada '+hi+
-      ' tekrarı sağlamlaştır';vc=C.orange;}
-  else{
-    verdict='Aralığın altında set var — '+kgTxt+' kg’da kal, önce her sette '+lo+' tekrarı tuttur';vc=C.amber;}
-  /* v70 — TEK KARAR. Rozet (motor) ile bu kutu farklı kural kullanıyordu; RIR kısayolunda
-     rozet "artır", kutu "kal" diyordu, deload haftasında kutu "artır" diyordu. Motorun
-     kesin kararı varsa kutu onu söyler. */
-  if(pg&&!fromOtherDay){
-    if(pg.type==='up'&&pg.why==='rir'){
-      verdict='Geçen seans ortalama RIR '+fx(pg.rir,1)+' ve bütün setler '+(hi-2)+'+ tekrar — bugün '+pg.next+' kg’a çık';vc=C.green;}
-    else if(pg.type==='stall'&&pg.why==='dl'){
-      verdict='Deload haftası — '+kgTxt+' kg’da kal, her seti RIR 3-4’te bırak';vc=C.amber;}
-    else if(pg.type==='stall'&&pg.why==='floor'){
-      verdict=pg.streak+' seanstır '+kgTxt+' kg’da en düşük set tabanın ('+floor+') altında — bir kademe geri in, orada '+hi+' tekrarı sağlamlaştır';vc=C.orange;}
+    var nextN=Math.min(stg.need,stg.done+1),lowS=Math.min.apply(null,stg.reps);
+    if(lowS<floor){t=fkg(stg.to)+' kg’da '+lowS+' tekrar, '+floor+' tabanının altı — '+W.toLowerCase()+' '+
+      fkg(stg.from)+' kg’da kal, '+hi+' tekrarı sağlamlaştır';c=C.orange;}
+    else{t='Kademeli geçiş — '+W.toLowerCase()+' '+nextN+' set '+fkg(stg.to)+' kg, kalanı '+fkg(stg.from)+' kg'+
+      (nextN>=stg.need?' (yani hepsi)':'');c=C.teal;}
   }
+  else if(atMax.length>=needSets&&topHit>=needSets){
+    var nx=nextWeight(kgMax,name);
+    t='Tüm setlerde '+hi+' tekrar ✓ — '+W.toLowerCase()+' <b>'+fkg(nx)+' kg</b>’a çık'+
+      (stagedNote(kgMax,nx)?' (sıçrama büyük: ilk sette '+fkg(nx)+', kalanlarda '+K+')':'');c=C.green;}
+  else if(atMax.length&&loHit>=atMax.length){
+    t=W+' '+K+'’da kal · hedef <b>'+goalRow(atMax,hi)+'</b> tekrar (her sette +1, tavan '+hi+')'+miss;c=C.teal;}
+  else if(fresh&&lowRep!=null&&lowRep>=floor){
+    t=W+' '+K+'’da kal · hedef <b>'+goalRow(atMax,hi)+'</b> tekrar — '+lo+'-'+hi+' aralığına tırman';c=C.teal;}
+  else if(fresh){
+    t=K+' ağır geldi ('+lowRep+' tekrar, taban '+floor+') — '+W.toLowerCase()+' '+fkg(pk)+' kg’a dön, orada '+
+      hi+' tekrarı sağlamlaştır';c=C.orange;}
+  else{
+    t=W+' '+K+'’da kal · önce her sette '+lo+' tekrar: hedef <b>'+goalRow(atMax,hi)+'</b>';c=C.amber;}
+  return {t:t,c:c,lo:lo,hi:hi,kg:kgMax,floor:floor};
+}
+/* v70 — TEK KARAR: motorun (progression) kesin kararı varsa kutu onu söyler;
+   yoksa RIR kısayolunda rozet "artır", kutu "kal" diyordu. */
+function pgOverride(v,pg,W){
+  if(!v||!pg)return v;
+  var K=fkg(v.kg)+' kg';
+  if(pg.type==='up'&&pg.why==='rir'){
+    v.t='Ortalama RIR '+fx(pg.rir,1)+' ve bütün setler '+(v.hi-2)+'+ tekrar — '+W.toLowerCase()+' <b>'+fkg(pg.next)+' kg</b>’a çık';v.c=C.green;}
+  else if(pg.type==='stall'&&pg.why==='dl'){
+    v.t='Deload haftası — '+K+'’da kal, her seti RIR 3-4’te bırak';v.c=C.amber;}
+  else if(pg.type==='stall'&&pg.why==='floor'){
+    v.t=pg.streak+' seanstır '+K+'’da en düşük set tabanın ('+v.floor+') altında — '+W.toLowerCase()+
+      ' bir kademe geri in, orada '+v.hi+' tekrarı sağlamlaştır';v.c=C.orange;}
+  return v;
+}
+/* ŞU AN — hedef set sayısı dolmadan, girilen setlere göre ara karar. */
+function liveVerdict(name,te,prev,pg){
+  var all=(D(cur).ex||{})[name]||[];
+  var fk=all.filter(function(s){return s&&s.kg!=null;}),f=wSets(all);
+  var lo=te.r[0],hi=te.r[1],floor=Math.max(1,lo-2),need=te.s,left=need-f.length;
+  var mx=Math.max.apply(null,fk.map(function(s){return s.kg;}));
+  var atMx=f.filter(function(s){return s.kg===mx;});
+  var low=atMx.length?Math.min.apply(null,atMx.map(function(s){return s.rep;})):null;
+  var pk=(prev&&prev.sets.length)?Math.max.apply(null,prev.sets.map(function(s){return s.kg;})):null;
+  /* bugün için önerilen kilo: motor "artır" dediyse bir kademe üstü, "geri in" dediyse altı */
+  var plan=pk;
+  if(pg&&pg.type==='up')plan=pg.next;
+  else if(pg&&pg.why==='floor')plan=Math.max(0,pg.kg-incFor(name));
+  function K(v){return fkg(v)+' kg';}
+  var t,c;
+  if(te.dl){t='Deload — '+K(mx)+', her seti RIR 3-4’te bırak. Bu hafta ağırlık kararı yok.';c=C.teal;}
+  else if(pk==null){t='İlk kayıt: '+K(mx)+(low!=null?' × '+low:'')+'. Kalan setlerde aynı kiloyu koru — bu seans sonraki kararların ölçüsü olacak.';c=C.teal;}
+  else if(mx>pk){
+    var stg=stagedOf(f,pk,need);
+    if(low==null){t=K(mx)+' (geçen '+K(pk)+') — en az '+floor+' tekrar yapabiliyorsan yük uygun.';c=C.teal;}
+    else if(low<floor){t=K(mx)+'’da '+low+' tekrar — '+floor+' tabanının altı. '+(left>0?'Kalan setlerde '+K(pk)+'’a dön.':'Sonraki seans '+K(pk)+'’a dön.');c=C.orange;}
+    else if(stg){t='Kademeli geçiş: '+stg.done+' set '+K(stg.to)+'’da, en düşük '+low+' tekrar (taban '+floor+') — iyi gidiyor.';c=C.teal;}
+    else{t='✓ '+K(pk)+' → <b>'+K(mx)+'</b>. En düşük set '+low+' tekrar, taban '+floor+' — yük uygun'+(left>0?', kalan setlerde de '+K(mx):'')+'.';c=C.green;
+      if(plan!=null&&mx>plan){t+=' (Önerilen '+K(plan)+' idi — büyük sıçradın, tekrarları izle.)';c=C.amber;}}
+  }
+  else if(mx<pk){
+    if(plan!=null&&plan<pk&&mx<=plan){t='✓ '+K(mx)+'’a indin — burada her sette '+hi+' tekrarı sağlamlaştır.';c=C.teal;}
+    else{t='Geçen seanstan hafif ('+K(pk)+' → '+K(mx)+').'+(left>0?' Zorlanmıyorsan kalan setlerde '+K(pk)+'’a dön.':'');c=C.amber;}
+  }
+  else{
+    /* aynı kilo — set set geçen seansla: 2. set 2. setle */
+    var d=0,cn=0,a=[],b=[];
+    all.forEach(function(s,i){
+      if(!s||s.kg==null||s.rep==null||s.kg!==mx)return;
+      var ps=prev.sets[i];if(!ps||ps.kg!==mx)return;
+      d+=s.rep-ps.rep;cn++;a.push(s.rep);b.push(ps.rep);});
+    var allTop=atMx.length&&atMx.every(function(s){return s.rep>=hi;});
+    var rows=cn?' ('+a.join('/')+' tekrar · geçen '+b.join('/')+')':'';
+    if(plan!=null&&plan>pk&&!allTop){t='Bugün <b>'+K(plan)+'</b> önerilmişti, '+K(mx)+'’dasın'+rows+'.'+(left>0?' Sonraki sette '+K(plan)+' dene.':'');c=C.amber;}
+    else if(allTop){t='✓ '+atMx.length+' sette de '+hi+' tekrar — böyle biterse sonraki seans '+K(nextWeight(mx,name))+'’a çıkarsın.';c=C.green;}
+    else if(cn&&d>0){t='↑ Geçen seansa göre +'+d+' tekrar'+rows+' — ilerliyorsun.';c=C.green;}
+    else if(cn&&d===0){t='= Geçen seansla aynı'+rows+'.'+(left>0?' Kalan setlerde +1 tekrar zorla.':'');c=C.teal;}
+    else if(cn){t='↓ Geçen seansa göre '+d+' tekrar'+rows+'.'+(left>0?' Dinlenmeyi biraz uzat, kalan setlerde geçen seansın tekrarını hedefle.':'');c=C.amber;}
+    else{t=K(mx)+' — geçen seansla aynı kilo, hedef '+lo+'-'+hi+' tekrar.';c=C.teal;}
+  }
+  return {t:t,c:c};
+}
+/* Kutunun kendisi. Aşama bugünkü kayıttan okunur:
+   hiç kilo yok → BUGÜN · biraz var → ŞU AN · hedef set dolu → SONUÇ. */
+function prevSummary(prev,e,fromOtherDay,pg,te,dt){
+  te=te||e;
+  var all=(D(cur).ex||{})[e.n]||[];
+  var nk=all.filter(function(s){return s&&s.kg!=null;}).length,nf=wSets(all).length;
+  var phase=!nk?0:(nf>=te.s?2:1);
+  if(!prev&&!phase)
+    return '<div class="gprev"><span>İlk kez yapıyorsun — rahat bir ağırlıkla başla, '+
+      e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
+  var v,kick,sub='';
+  if(phase===0){
+    v=sessVerdict(e.n,prev.sets,prev.date,'Bugün',e);
+    if(!fromOtherDay)v=pgOverride(v,pg,'Bugün');
+    kick='BUGÜN NE YAPMALI';
+  }else if(phase===1){
+    v=liveVerdict(e.n,te,prev,fromOtherDay?null:pg);
+    kick='ŞU AN · '+nf+' / '+te.s+' SET';sub='karar son sette kesinleşir';
+  }else{
+    kick='SONUÇ · SONRAKİ SEANS';
+    if(te.dl){v={t:'Deload seansı tamam. Ağırlık kararı deload sonrası ilk seansta — o gün '+
+      (prev?fkg(Math.max.apply(null,prev.sets.map(function(s){return s.kg;}))):'bu')+' kg ile başla.',c:C.teal};}
+    else{
+      v=sessVerdict(e.n,all,cur,'Sonraki seans',e);
+      /* motor bugünü de görsün diye before = yarın */
+      var pgN=progression(e.n,dt||dtOf(cur)||planOf(cur),addD(cur,1));
+      if(pgN&&pgN.last===cur)v=pgOverride(v,pgN,'Sonraki seans');
+    }
+    var cm=exCmp(e.n,cur,dt||dtOf(cur)||planOf(cur),te.s);
+    if(cm&&cm.st!=='none'&&cm.st!=='part'){var ct=cmpTxt(cm);
+      sub='bugün geçen seansa göre <b style="color:'+ct.col+'">'+ct.t+'</b>';}
+  }
+  if(!v)return '';
+  var lo=v.lo||te.r[0],hi=v.hi||te.r[1];
   return '<div class="gprevbox">'+
-    '<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+
+    (prev?'<div class="gprevhd"><span>GEÇEN SEANS · '+fdate(prev.date).toUpperCase()+
       (prev.dt&&PROGRAM[prev.dt]?' · '+PROGRAM[prev.dt].short.toUpperCase():'')+
       (fromOtherDay?' <b style="color:'+C.amber+'">· BAŞKA GÜN</b>':'')+'</span>'+
-      '</div>'+
-    /* Dörtlü istatistik kutusu kaldırıldı — ortalama tekrar, kilo, set sayısı ve
-       ortalama RIR zaten her set satırının altında "geçen sefer 36 kg × 11 · RIR 2"
-       olarak duruyor. Aynı bilgiyi iki kez göstermek ekranı uzatıyordu.
-       "GEÇEN SEANS · 26 AĞU" başlığı duruyor: bir hareketin geçen seansı başka bir
-       programda olabiliyor, tarih o yüzden gerekli. */
-    '<button class="gprevv" data-a="nyopen" data-x="'+esc(e.n)+'" style="color:'+vc+'">'+
+      '</div>':'')+
+    /* Dörtlü istatistik kutusu v70'te kaldırıldı — aynı bilgi her set satırının
+       altında "geçen sefer 36 kg × 11 · RIR 2" olarak duruyor. */
+    '<button class="gprevv ph'+phase+'" data-a="nyopen" data-x="'+esc(e.n)+'" style="color:'+v.c+'">'+
       '<span class="gpmore">›</span>'+
-      '<div class="gpk"><i>NE YAPMALI</i></div>'+
-      '<div class="gpt">'+verdict+' <u>(hedef '+lo+'-'+hi+')</u>'+
-        ((e.r[0]!==lo||e.r[1]!==hi)
+      '<div class="gpk"><i>'+kick+'</i></div>'+
+      (sub&&phase===1?'<span class="gpsub">'+sub+'</span>':'')+
+      '<div class="gpt">'+v.t+(phase===0?' <u>(hedef '+lo+'-'+hi+')</u>':'')+
+        (phase===0&&(e.r[0]!==lo||e.r[1]!==hi)
           ?'<span style="color:'+THC.c21+';font-weight:400"> · o seansta hedef '+lo+'-'+hi+
             ' idi, bugün '+e.r[0]+'-'+e.r[1]+'</span>':'')+
-        (fromOtherDay
+        (fromOtherDay&&phase<2
           ?'<span style="color:'+C.amber+';font-weight:400"> · bu kayıt başka bir '+
             'programdan, o gün hareket sıran farklıydı — rakamı birebir ölçü alma</span>':'')+
       '</div>'+
+      (sub&&phase===2?'<div class="gpfoot">'+sub+'</div>':'')+
     '</button>'+
   '</div>';
 }
@@ -10472,8 +10596,34 @@ function workHero(){
         '<div class="mheroS">'+esc(line)+'</div></div>'+
       (isTr?ringSVG(pct,pct>=1?C.green:''+THC.c40+'',62,doneEx+'/'+totEx):'')+
     '</div>'+
+    durStrip(dt)+
     (lostT?durBox(cur,dt):'')+
   '</div>';
+}
+/* v74 — BÜTÜN GÜNLERİN SÜRESİ TEK BAKIŞTA.
+   Rozet yalnız bugünün geçen seansını söylüyordu; "yarın bacak mı omuz mu,
+   hangisine ne kadar vakit ayırmalıyım" sorusu için Rapor'a gitmek gerekiyordu.
+   Özet zaten kalabalık, bu yüzden antrenman kartının altına tek satır olarak
+   girdi. Her hücre o plan gününün SON bitirilmiş seansı (durStat ile aynı
+   kaynak: ilk setten bitir'e); bugünün günü çerçeveli. Ortalama altta küçük,
+   yalnız 2+ seans varsa. */
+function durStrip(dtNow){
+  var cells=[],any=false;
+  ORDER.forEach(function(k){
+    var st=durStat(k),t=PROGRAM[k];if(!t)return;
+    if(st)any=true;
+    var on=(k===dtNow);
+    cells.push('<div class="dstc'+(on?' on':'')+'" style="--dc:'+t.color+'"'+
+      (st?' title="'+esc(t.short)+' · son '+fdate(st.last.d)+' '+fdur(st.last.m)+
+        (st.n>1?' · ort. '+fdur(st.avg)+' ('+st.n+' seans)':'')+'"':'')+'>'+
+      '<i>'+esc(t.code)+'</i>'+
+      '<b>'+(st?fdurS(st.last.m):'—')+'</b>'+
+      '<em>'+(st&&st.n>1?'ort '+fdurS(st.avg):(st?'1 seans':'kayıt yok'))+'</em>'+
+    '</div>');
+  });
+  if(!any)return '';
+  return '<div class="dstrip"><div class="dstk">SEANS SÜRELERİ <span>· son seans, ilk setten bitir’e</span></div>'+
+    '<div class="dstrow">'+cells.join('')+'</div></div>';
 }
 function render(){
   if(S.autoTargets&&syncAutoTargets())save();
