@@ -2298,6 +2298,23 @@ html.dark .wbnote{color:#a49889}
 .motd{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;margin-bottom:18px}
 .motd .scard{margin:0;border:1px solid var(--line);border-radius:18px;padding:16px 16px 14px}
 .motd .mjour{grid-column:1/-1}
+.motd .mcal{grid-column:1/-1}
+/* v77 · kilo takvimi — Takvim sekmesinin ızgarası (.ncalrow/.nc/.nmonth) */
+.mcal .ncalhd{margin-top:10px}
+.mcal .nmonth em{font-style:normal;font-size:10.5px;font-weight:700;color:var(--ink3);flex:none}
+.mcal .nmonth em b{font-family:'Karla';font-size:11.5px;font-weight:800;color:var(--ink)}
+.mcc{background:var(--card2);min-height:40px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.mcc .kv{font-size:11px;font-weight:800;color:var(--ink);line-height:1.15;margin-top:2px;
+  font-variant-numeric:tabular-nums;letter-spacing:-.2px}
+.mcc.past{background:transparent;border:1px dashed var(--line)}
+.mcc.past .kv{color:var(--ink3);font-weight:700}
+.mcalsum{display:flex;gap:6px;overflow-x:auto;margin-top:10px;padding-bottom:2px;-webkit-overflow-scrolling:touch}
+.mcalsum>div{flex:1 0 auto;min-width:74px;background:var(--card2);border:1px solid var(--line);
+  border-radius:12px;padding:7px 9px}
+.mcalsum i{display:block;font-style:normal;font-size:10px;font-weight:700;color:var(--ink3)}
+.mcalsum b{display:block;font-family:'Fraunces';font-size:18px;font-weight:600;margin-top:2px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.mcalsum .goal{border-color:var(--trn)}
 @media(prefers-reduced-motion:reduce){#g-body.anim .mjfill,#g-body.anim .mjdot{animation:none}}
 /* beş sekme: etiketler sığsın diye bir tık küçük */
 .gtabs .gt .lb{font-size:10px;letter-spacing:-.25px}
@@ -2612,6 +2629,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-27',
+  t:'Motivasyon: Kilo Takvimi (v77)',
+  y:['Yolculuk kartının altında yeni Kilo Takvimi: Takvim sekmesindeki ızgarayla aynı, her günde o günün beklenen trend kilosu. Hedefe yaklaştıkça hücre koyulaşıyor, hedef günü 🏁 ile işaretli.',
+     'En üstte ay sonu özetleri (Eki sonu ~80.1, Kas sonu ~78.0 …), her ay başlığında da o ayın sonunda beklenen kilo.',
+     'Takvim hedef gününün haftasında biter. Hesap Yolculuk kartıyla aynı: son 21 günün hızı, doğrusal. Hız henüz güvenilir değilse programın gereken hızı kullanılır ve kart bunu yazar. Geçmiş günlerde tahmin değil gerçek tartı görünür.']},
  {d:'2026-09-26',
   t:'Koyu tema yeniden renklendirildi (v76)',
   y:['Koyu tema soğuk mavi-gri zemin ve neon limon vurgu kullanıyordu; açık temanın sıcak krem kimliğiyle ilgisi yoktu. Zeminler, kartlar, çizgiler ve yazılar artık sıcak kömür/espresso tonlarında.',
@@ -6091,7 +6113,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v76 · 26 Eyl 2026';
+var APPVER='v77 · 27 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8290,6 +8312,91 @@ function motJourneyCard(){
     (note?'<div class="mjnote">'+note+'</div>':'')+
   '</div>';
 }
+/* ============ v77 · KİLO TAKVİMİ ============
+   Yolculuk kartı "bu hızla 75 kg'a 24 Ara'da" diyordu ama ara durakları
+   söylemiyordu: Ekim sonunda kaç kilo olurum, Kasım'ın ortasında? Takvim
+   sekmesiyle aynı ızgara (Pzt–Paz satırları, ay çizgileri): her günde o günün
+   BEKLENEN trend kilosu, her ay başlığında o ayın son günü.
+   Hesap Yolculuk kartıyla aynı: son 21 günün eğimi (slopeInfo), başlangıç son
+   trend değeri (trendNow, son tartı günü). Doğrusal — kesim ilerledikçe hız
+   yavaşlar, bu yüzden uzak aylar iyimserdir; her tartıyla yeniden hesaplanır.
+   Kendi hızın güvenilir değilse (eğim yok ya da r² < 0.5) programın GEREKEN
+   hızı kullanılır ve kart bunu açıkça söyler. Hedefe varınca takvim hedefte
+   durur; bugünden önceki günlerde tahmin değil, girdiğin tartı yazar. */
+function motForecast(){
+  var j=motJourney();if(!j)return null;
+  var tw=trendW();if(!tw.length)return null;
+  var base=tw[tw.length-1].d,rate=null,own=false;
+  if(j.si&&j.act<-0.1&&(j.si.r2==null||j.si.r2>=0.5)){rate=j.act;own=true;}
+  else if(j.req!=null&&j.req<0)rate=j.req;
+  if(rate==null)return null;
+  var perDay=rate/7;
+  function exp(d){return Math.max(j.g0,j.tn+perDay*dayDiff(base,d));}
+  var gd=(j.tn>j.g0)?addD(base,Math.ceil((j.tn-j.g0)/-perDay)):today();
+  /* takvim: bu haftadan hedef gününün haftasına kadar (hedeften sonrası hep
+     aynı sayı, gösterilmez); en az gelecek ayın sonu, en çok 30 hafta */
+  var tod=today(),from=monday(tod);
+  var nm=pd(tod);nm=new Date(nm.getFullYear(),nm.getMonth()+2,0);
+  var last=[gd,iso(nm)].sort()[1];
+  var cap=addD(from,30*7-1);if(last>cap)last=cap;
+  return {j:j,rate:rate,own:own,base:base,exp:exp,gd:gd,from:from,to:addD(monday(last),6)};
+}
+function motCalCard(){
+  var head='<div class="shead"><div><div class="stitle">Kilo Takvimi</div>'+
+    '<div class="ssub">bu hızla beklenen trend kilo · gün gün</div></div></div>';
+  var f=motForecast();
+  if(!f)return '<div class="scard static dom dom-bod mcal">'+head+
+    '<div class="sempty">Hız hesaplanınca dolacak — en az 10 günlük tartı gerekiyor</div></div>';
+  var j=f.j,tod=today(),WL=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'];
+  var span=j.b0-j.g0;
+  /* ay sonu özetleri — kartın en üstünde, asıl soru bu */
+  var ms=[],m=pd(tod);
+  for(var k=0;k<8;k++){
+    var me=iso(new Date(m.getFullYear(),m.getMonth()+k+1,0));
+    if(me>addD(f.to,31)&&k>0)break;
+    var v=f.exp(me);
+    ms.push('<div'+(v<=j.g0+0.05?' class="goal"':'')+'><i>'+AY[pd(me).getMonth()]+' sonu</i>'+
+      '<b>'+(v<=j.g0+0.05?'🏁 ':'~')+fx(v,1)+'</b></div>');
+    if(v<=j.g0+0.05)break;
+  }
+  var g='<div class="mcalsum">'+ms.join('')+'</div>'+
+    '<div class="ncalhd"><span></span>'+WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
+  var lastMon=-1,nW=Math.round((dayDiff(f.from,f.to)+1)/7);
+  for(var w=0;w<nW;w++){
+    var rs=addD(f.from,w*7);
+    for(var mi=0;mi<7;mi++){
+      var md=pd(addD(rs,mi));
+      if(md.getMonth()!==lastMon&&(mi===0||md.getDate()===1)){
+        var mEnd=iso(new Date(md.getFullYear(),md.getMonth()+1,0));
+        var mv=f.exp(mEnd<tod?tod:mEnd),mg=mv<=j.g0+0.05;
+        g+='<div class="nmonth"><b>'+AYU[md.getMonth()]+'</b><i></i>'+
+          '<em>ay sonu <b>'+(mg?'🏁 ':'~')+fx(mv,1)+'</b></em></div>';
+        lastMon=md.getMonth();break;
+      }
+    }
+    var cells='';
+    for(var i=0;i<7;i++){
+      var d=addD(rs,i),past=d<tod,isT=d===tod;
+      var raw=D(d).w,v=past?raw:f.exp(d);
+      var goal=!past&&d>=f.gd,first=(d===f.gd);
+      var pr=(v!=null&&span>0)?Math.max(0,Math.min(1,(j.b0-v)/span)):0;
+      var bg=goal?hexa(C.green,first?.32:.14):(past?'':hexa(C.blue,.07+.28*pr));
+      cells+='<div class="nc mcc'+(isT?' today':'')+(past?' past':'')+(goal?' goal':'')+'"'+
+        (bg?' style="background:'+bg+'"':'')+'>'+
+        '<span class="dn">'+pd(d).getDate()+'</span>'+
+        '<span class="kv">'+(v==null?'·':(first?'🏁':fx(v,1)))+'</span></div>';
+    }
+    var wn=weekIdx(rs);
+    g+='<div class="ncalrow'+(w===0?' now':'')+'"><span class="nwk">'+(wn>0&&wn<=S.weeks?wkLabel(wn):'')+'</span>'+cells+'</div>';
+  }
+  var note=(f.own
+      ?'Hız: son 21 günün eğimi <b>'+fx(f.rate,2)+' kg/hf</b>. '
+      :'<b style="color:'+C.amber+'">Kendi hızın henüz ölçülemedi</b> — programın gereken hızı (<b>'+fx(f.rate,2)+' kg/hf</b>) kullanıldı. ')+
+    (f.gd<=f.to?'Bu hızla <b>'+fx(j.g0,0)+' kg</b> → <b>'+flong(f.gd)+'</b>. ':'')+
+    'Geçmiş günlerde tartın, bugünden sonra beklenen trend kilo yazar. Doğrusal tahmin: kesim ilerledikçe hız '+
+    'yavaşlar, uzak aylar iyimser kalır — her tartıyla yeniden hesaplanır.';
+  return '<div class="scard static dom dom-bod mcal">'+head+g+'<div class="mjnote">'+note+'</div></div>';
+}
 function motStrengthCard(){
   var cd=cutData();
   var head='<div class="shead"><div><div class="stitle">Kesimdeki Güç</div>'+
@@ -8407,7 +8514,7 @@ function motHabitCard(){
   '</div>';
 }
 function motBody(){
-  return motJourneyCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
+  return motJourneyCard()+motCalCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
 }
 var TABICON={
  mot:'<path d="M6 21V4"/><path d="M6 4.5h11.5l-2.6 4.2 2.6 4.3H6"/>',
