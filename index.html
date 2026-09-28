@@ -2691,6 +2691,10 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-29',
+  t:'Gerçek ağırlık adımları, İtiş’te kafa üstü ekstansiyon dinlenmesi (v80)',
+  y:['Ağırlık adımları salondaki gerçek adımlara göre düzeltildi: Squat / Hack squat 2 kg, Leg press 8 kg, Ayakta calf raise 8 kg, Makine omuz press 2.5 kg. Uygulama “26 → 31 kg”, “101 → 106 kg” gibi salonda olmayan ağırlıklar öneriyordu; kg +/- düğmeleri de aynı tabloyu kullanıyor.',
+     'Kafa üstü triceps ekstansiyon İtiş gününde 90 sn → 2 dk dinlenme (üç presten sonra 3. set 5 seanstır çöküyordu). Omuz & Kol’de 90 sn kaldı. Dinlenme artık güne özel olabiliyor.']},
+ {d:'2026-09-29',
   t:'Yan kaldırış ve face pull aralıkları, karar motoru düzeltmesi (v79)',
   y:['Program: yan kaldırışlar 10-15 (tek kol kablo 12-15), face pull 12-15. Gerekçe Program Değişiklikleri kaydında.',
      'Karar motoru: aynı plan gününde tekrar aralığı değiştiyse ağırlık kararı güncel aralığa göre verilir; ilk seansta kutu “aralık değişti: 15-20 → 12-15” yazar.']},
@@ -3626,7 +3630,15 @@ var EXMETA={
  'Cable crunch':['crunch','cable crunch abs','Diz üstü, halat başının arkasında. Karnını kıvırarak yere yaklaş, kalçadan bükülme.',60]
 };
 function descOf(name){var m=EXMETA[name];return m&&m[2]?m[2]:'';}
-function restSec(name){var m=EXMETA[name];return (m&&m[3])||90;}
+/* v80 — GÜNE ÖZEL DİNLENME. Dinlenme hareket adına bağlıydı; aynı hareket iki günde
+   farklı yorgunlukla geliyor. Kafa üstü triceps ekstansiyon İtiş'te üç presten sonra
+   geliyor ve 5 seanstır 3. set çöküyordu (50×15/15/8-11); Omuz & Kol'de aynı kilo
+   15/15/15. Güç değil toparlanma eksik — yalnız İtiş'te 2 dk. dt verilmezse bugünün günü. */
+var RESTDAY={'gun1|Kafa üstü triceps ekstansiyon':120};
+function restSec(name,dt){
+  var d=dt||(cur?planOf(cur):null),o=d?RESTDAY[d+'|'+name]:null;
+  if(o)return o;
+  var m=EXMETA[name];return (m&&m[3])||90;}
 function mmss(x){var m=Math.floor(x/60),sc=x%60;return m+':'+(sc<10?'0':'')+sc;}
 function figSVG(name){
   var m=EXMETA[name],f=m&&FIG[m[0]];
@@ -5597,10 +5609,14 @@ var EXINC={
   'Kablo yan kaldırış':5,'Tek kol kablo yan kaldırış':5,'Kablo curl':5,
   'Kablo fly':5,'Halat pushdown':5,'Kafa üstü triceps ekstansiyon':5,
   'Face pull':5,'Oturarak kablo row':5,'Makine row':5,'Lat pulldown / Barfiks':5,
-  'Makine omuz press':5,'Leg curl':5,'Leg extension':5,'Preacher curl':5,
-  'Leg press':5,'Ayakta calf raise':5,
-  'Squat / Hack squat':5,'Romanian deadlift':5,'Dar tutuş bench / Dips':5
+  'Makine omuz press':2.5,'Leg curl':5,'Leg extension':5,'Preacher curl':5,
+  'Leg press':8,'Ayakta calf raise':8,
+  'Squat / Hack squat':2,'Romanian deadlift':5,'Dar tutuş bench / Dips':5
 };
+/* v80 — kademeler kullanıcının GERÇEK adımlarından düzeltildi (raporda 40 gün):
+   Squat / Hack squat 16→18→…→26 (2), Leg press 77→85→93→101 (8), Ayakta calf raise
+   45→53→61 (8), Makine omuz press 12.5→15 (2.5). Motor "26 → 31 kg'a çık", "101 → 106"
+   diyordu; salonda olmayan ya da %19'luk sıçramalar. */
 function incFor(name){var v=EXINC[name];return v||2.5;}
 /* Kademe sabit olduğu için hafif ağırlıklarda sıçrama oransal olarak devleşiyor:
    36 kg dambılda 4 kg artış %11, 20 kg kabloda 5 kg artış %25. Bu tek seferde
@@ -6191,7 +6207,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v79 · 29 Eyl 2026';
+var APPVER='v80 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8130,7 +8146,7 @@ function secProg(){
     '<div class="mexlist">'+t.ex.map(function(e){
       return '<button class="mexrow" data-a="fig" data-n="'+esc(e.n)+'">'+
         '<span class="exthumb big">'+figSVG(e.n)+'</span>'+
-        '<span class="mextx"><b>'+esc(e.n)+'</b><i>'+e.s+' × '+e.r[0]+'-'+e.r[1]+' · '+mmss(restSec(e.n))+' dinlenme</i>'+
+        '<span class="mextx"><b>'+esc(e.n)+'</b><i>'+e.s+' × '+e.r[0]+'-'+e.r[1]+' · '+mmss(restSec(e.n,pTab))+' dinlenme</i>'+
         '<u>'+esc(descOf(e.n))+'</u></span></button>';}).join('')+'</div>';
 }
 function secRep(){
