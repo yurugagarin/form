@@ -2429,6 +2429,8 @@ var C={green:'#16a85a',amber:'#f4ad15',orange:'#ef5a1e',red:'#dc2626',blue:'#3b8
 var CH={green:'#5f9e78',amber:'#cf9a3c',orange:'#d1794e',red:'#c2695a',blue:'#7c9ec4',
         violet:'#9b8fc0',teal:'#5f9e96',pink:'#c48098',track:'#eee5d3'};
 
+/* v79 · 29 Eyl: yan kaldırışlar 12-20/15-20 → 10-15 ve 12-15, face pull 15-20 → 12-15.
+   Gerekçe CHANGES'te. Eski aralıklar PROGHIST'te — 28 Eyl dahil öncesi eski hedefle. */
 var PROGRAM={
   rest:{label:'Dinlenme',name:'Dinlenme',short:'Dinlenme',code:'',color:''+THC.c28+'',ex:[]},
   cardio:{label:'Kardiyo / yürüyüş',name:'Kardiyo',short:'Kardiyo',code:'KAR',color:C.teal,ex:[]},
@@ -2437,14 +2439,14 @@ var PROGRAM={
     {n:'Eğik dambıl press',s:3,r:[8,12]},
     {n:'Düz dambıl press',s:3,r:[8,12]},
     {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
-    {n:'Kablo yan kaldırış',s:4,r:[12,20]},
+    {n:'Kablo yan kaldırış',s:4,r:[10,15]},
     {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
     {n:'Halat pushdown',s:3,r:[12,15]}]},
   gun2:{label:'Çekiş · Sırt / Biceps',name:'Çekiş',short:'Çekiş',code:'ÇEK',color:C.blue,ex:[
     {n:'Lat pulldown / Barfiks',s:4,r:[8,12]},
     {n:'Makine row',s:3,r:[8,12]},
     {n:'Oturarak kablo row',s:3,r:[10,12]},
-    {n:'Face pull',s:3,r:[15,20]},
+    {n:'Face pull',s:3,r:[12,15]},
     {n:'Kablo curl',s:3,r:[10,15]},
     {n:'Eğik dambıl curl',s:3,r:[10,12]}]},
   /* v66 · 8 Eyl: Romanian deadlift çıkarıldı (bel ağrısı). Kaybedilen 3 set
@@ -2460,10 +2462,10 @@ var PROGRAM={
      İtiş'tekiyle aynı (10-15). Sıra da değişti: hareket 2. sıradan kablo bloğunun sonuna
      alındı, böylece kablo istasyonundaki üç hareket arka arkaya geliyor. */
   gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
-    {n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
+    {n:'Oturarak dambıl yan kaldırış',s:4,r:[10,15]},
     {n:'Hammer curl',s:3,r:[10,15]},
-    {n:'Face pull',s:3,r:[15,20]},
-    {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
+    {n:'Face pull',s:3,r:[12,15]},
+    {n:'Tek kol kablo yan kaldırış',s:3,r:[12,15]},
     {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
     {n:'Makine omuz press',s:3,r:[8,12]},
     {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
@@ -2472,7 +2474,7 @@ var PROGRAM={
     {n:'Lat pulldown / Barfiks',s:3,r:[8,12]},
     {n:'Makine row',s:3,r:[8,12]},
     {n:'Eğik dambıl press',s:3,r:[8,12]},
-    {n:'Oturarak dambıl yan kaldırış',s:3,r:[12,20]},
+    {n:'Oturarak dambıl yan kaldırış',s:3,r:[10,15]},
     {n:'Kablo fly',s:3,r:[12,15]}]}
 };
 /* 26 Ağu 2026 — Üst Vücut gününden Halat pushdown, Kablo curl ve Cable crunch
@@ -2534,7 +2536,34 @@ var PROGHIST=[
           {n:'Face pull',s:3,r:[15,20]},
           {n:'Makine omuz press',s:3,r:[8,12]},
           {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
-          {n:'Preacher curl',s:3,r:[10,12]}]}}
+          {n:'Preacher curl',s:3,r:[10,12]}]}},
+  /* 29 Eyl öncesi — yan kaldırışlar 12-20 / 15-20, face pull 15-20 */
+  {to:'2026-09-29',days:{
+    gun1:[{n:'Eğik dambıl press',s:3,r:[8,12]},
+          {n:'Düz dambıl press',s:3,r:[8,12]},
+          {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
+          {n:'Kablo yan kaldırış',s:4,r:[12,20]},
+          {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
+          {n:'Halat pushdown',s:3,r:[12,15]}],
+    gun2:[{n:'Lat pulldown / Barfiks',s:4,r:[8,12]},
+          {n:'Makine row',s:3,r:[8,12]},
+          {n:'Oturarak kablo row',s:3,r:[10,12]},
+          {n:'Face pull',s:3,r:[15,20]},
+          {n:'Kablo curl',s:3,r:[10,15]},
+          {n:'Eğik dambıl curl',s:3,r:[10,12]}],
+    gun4:[{n:'Oturarak dambıl yan kaldırış',s:4,r:[12,20]},
+          {n:'Hammer curl',s:3,r:[10,15]},
+          {n:'Face pull',s:3,r:[15,20]},
+          {n:'Tek kol kablo yan kaldırış',s:3,r:[15,20]},
+          {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
+          {n:'Makine omuz press',s:3,r:[8,12]},
+          {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
+          {n:'Preacher curl',s:3,r:[10,12]}],
+    gun5:[{n:'Lat pulldown / Barfiks',s:3,r:[8,12]},
+          {n:'Makine row',s:3,r:[8,12]},
+          {n:'Eğik dambıl press',s:3,r:[8,12]},
+          {n:'Oturarak dambıl yan kaldırış',s:3,r:[12,20]},
+          {n:'Kablo fly',s:3,r:[12,15]}]}}
 ];
 /* d tarihinde o plan gününde yürürlükte olan hareket listesi.
    d verilmezse bugünkü (yani PROGRAM'daki) liste döner. */
@@ -2558,6 +2587,24 @@ function planLen(dt,d){return planEx(dt,d).length;}
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-09-29',
+  t:'Yan kaldırışlar ve face pull: tekrar aralığı 12-20 / 15-20 → 10-15 ve 12-15',
+  y:['SEBEP: 20 tekrarlık setleri kas değil yanma ve genel yorgunluk bitiriyordu, form da sonlara doğru bozuluyordu. '+
+     'Kas büyümesi 6-30 tekrar arasında benzer — şart, seti tükenmeye yakın bitirmek. 15-20 aralığı bu şartı sağlamıyordu.',
+     'VERİ: Oturarak dambıl yan kaldırış 4 hafta 8 kg’da 20 tekrara yaklaştı, 26 Eyl’de 12 kg’a geçince dört sette de 12 tekrar '+
+     'RIR 2 çıktı — kas 8 kg’ın gösterdiğinden çok güçlüydü, 20 tekrarı sınırlayan kas değildi. Kas grubu gücünde yan delt (öncelikli kas) '+
+     'başlangıçtan +1.9% ile en geride; biceps +35%, bacak +40%.',
+     'KURAL ÇELİŞKİSİ: ağırlık ancak BÜTÜN setler üst sınıra ulaşınca artıyor, yan kaldırışlarda ise her set RIR 2’de bırakılıyor '+
+     '(korumalı sınıf). 4. sette 20 tekrarı 2 yedekle yapmak pratikte imkânsızdı: Kablo yan kaldırış 5 seanstır 20 kg’da 12→14 tekrar. '+
+     'Face pull’da ağırlık kullanıcı tarafından 16-18 tekrarda zaten elle artırılıyordu. 15 üst sınırda RIR 2 gerçekçi.',
+     'YENİ: Kablo yan kaldırış 4×10-15, Oturarak dambıl yan kaldırış 4×10-15 (Omuz & Kol) ve 3×10-15 (Üst), Tek kol kablo yan '+
+     'kaldırış 3×12-15, Face pull 3×12-15 (Çekiş ve Omuz & Kol). Set sayıları ve haftalık hacim aynı; korumalı RIR kuralı aynı.',
+     'KADEMELER BÜYÜK: dambılda el başına 2 kg, kabloda 5 kg (makara oranı yüzünden gerçek yük daha az olabilir; önemli olan göreli sıçrama). '+
+     '15→20 kg %33, 8→12 kg %50. Artış sonrası tekrarın 8-9’a düşmesi normal; uygulamanın kademeli geçişi (ilk sette yeni kilo, kalanlarda eski) devrede.',
+     'GEÇMİŞ VERİ BOZULMADI: 28 Eyl dahil öncesi eski aralıklarla (PROGHIST) değerlendiriliyor. Kıyaslar tahmini 1RM üzerinden olduğu için güç '+
+     'endeksi, kas grubu gücü ve rekorlar kesintisiz devam ediyor.',
+     'MOTOR DÜZELTMESİ (v79): “sonraki seans ne yapayım” kararı hedefi son seansın gününden okuyordu; aralık değişince ilk seansta eski üst sınıra '+
+     '(20) göre “kal” diyecekti. Artık aynı plan gününde güncel aralık kullanılıyor, kutu “aralık değişti” diye belirtiyor.']},
  {d:'2026-09-12',
   t:'Omuz & Kol günü: Skullcrusher çıkarıldı, yerine Kafa üstü triceps ekstansiyon geldi',
   y:['SEBEP: Skullcrusher\'da form oturmadı. Barı alnın üzerinde sabit bir yolda tutmak '+
@@ -2643,6 +2690,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-29',
+  t:'Yan kaldırış ve face pull aralıkları, karar motoru düzeltmesi (v79)',
+  y:['Program: yan kaldırışlar 10-15 (tek kol kablo 12-15), face pull 12-15. Gerekçe Program Değişiklikleri kaydında.',
+     'Karar motoru: aynı plan gününde tekrar aralığı değiştiyse ağırlık kararı güncel aralığa göre verilir; ilk seansta kutu “aralık değişti: 15-20 → 12-15” yazar.']},
  {d:'2026-09-28',
   t:'Motivasyon: haftalık kayıp (v78)',
   y:['Yolculuk kartında Hız kutularının altına Haftalık şeridi: son altı haftanın her biri için o haftanın ortalama tartısı eksi bir önceki haftanın ortalaması. Hafta bitince kesinleşir, bir daha değişmez.',
@@ -5733,6 +5784,14 @@ function _progression(name,dt,before){
   var last=ss[ss.length-1];
   /* hedef, hareketin SON YAPILDIĞI GÜNDEN okunur — EXTGT'den değil. */
   var e=tgtFor(name,last);if(!e)return null;
+  /* v79 — AYNI GÜNDE ARALIK DEĞİŞTİYSE GÜNCEL ARALIK. Karar "sonraki seans ne
+     yapayım" sorusu; cevabı bugünkü programın hedefi verir. 29 Eyl'de face pull
+     15-20 → 12-15 oldu: son seans 35×18/18/16 iken eski aralıkla "20'yi yakala,
+     kal" diyordu, oysa yeni üst sınır (15) çoktan geçilmişti. Set sayısı son
+     seansın gününden kalır (o seans o sayıyla yapıldı). Farklı plan günleri
+     karışmaz: dt verilmişse seanslar zaten yalnız o günden. */
+  if(dt){var ce=null;planEx(dt,before||td).forEach(function(x){if(x.n===name)ce=x;});
+    if(ce&&(ce.r[0]!==e.r[0]||ce.r[1]!==e.r[1]))e={n:e.n,s:e.s,r:ce.r,dl:e.dl,off:e.off};}
   var sets=wSets((D(last).ex||{})[name]);
   if(!sets.length)return null;
   var mx=Math.max.apply(null,sets.map(function(s){return s.kg;}));
@@ -6132,7 +6191,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v78 · 28 Eyl 2026';
+var APPVER='v79 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -10512,7 +10571,7 @@ function goalRow(atMax,hi){
 }
 /* Bir seansın ardından ne yapılmalı. W = 'Bugün' | 'Sonraki seans'.
    Hedef o seansın KENDİ gününden okunur (bkz. eski not aşağıda). */
-function sessVerdict(name,sets0,date,W,eFb){
+function sessVerdict(name,sets0,date,W,eFb,curRange){
   var sets=wSets(sets0);if(!sets.length)return null;
   /* KARAR O SEANSIN KENDİ GÜNÜNÜN HEDEFİNE göre verilir — bugünün hedefine göre DEĞİL.
      Eğik dambıl press Üst gününde 8-12, İtiş gününde 6-10; 26 Ağu (Üst) seansının
@@ -10520,6 +10579,9 @@ function sessVerdict(name,sets0,date,W,eFb){
      Karar ortalama tekrara değil _progression() ile aynı kurala bakar:
      "tüm setler aynı kiloda VE hepsi üst sınırda". */
   var pt=tgtFor(name,date)||eFb;if(!pt)return null;
+  /* v79: aynı plan gününün seansıysa aralık BUGÜNKÜ programdan (bkz. _progression);
+     set sayısı o seansın gününden kalır. */
+  if(curRange&&eFb&&(eFb.r[0]!==pt.r[0]||eFb.r[1]!==pt.r[1]))pt={n:pt.n,s:pt.s,r:eFb.r};
   var lo=pt.r[0],hi=pt.r[1],needSets=pt.s||sets.length;
   var kgMax=Math.max.apply(null,sets.map(function(s){return s.kg;}));
   var atMax=sets.filter(function(s){return s.kg===kgMax;});
@@ -10630,7 +10692,7 @@ function prevSummary(prev,e,fromOtherDay,pg,te,dt){
       e.r[0]+'-'+e.r[1]+' tekrar hedefle.</span></div>';
   var v,kick,sub='';
   if(phase===0){
-    v=sessVerdict(e.n,prev.sets,prev.date,'Bugün',e);
+    v=sessVerdict(e.n,prev.sets,prev.date,'Bugün',e,!fromOtherDay);
     if(!fromOtherDay)v=pgOverride(v,pg,'Bugün');
     kick='BUGÜN NE YAPMALI';
   }else if(phase===1){
@@ -10667,6 +10729,12 @@ function prevSummary(prev,e,fromOtherDay,pg,te,dt){
         (phase===0&&(e.r[0]!==lo||e.r[1]!==hi)
           ?'<span style="color:'+THC.c21+';font-weight:400"> · o seansta hedef '+lo+'-'+hi+
             ' idi, bugün '+e.r[0]+'-'+e.r[1]+'</span>':'')+
+        /* v79: aynı günde program aralığı değiştiyse karar yeni aralıkla verilir — söylenir */
+        (function(){if(phase!==0||fromOtherDay||!prev)return '';
+          var op=tgtFor(e.n,prev.date);
+          if(!op||(op.r[0]===e.r[0]&&op.r[1]===e.r[1]))return '';
+          return '<span style="color:'+THC.c21+';font-weight:400"> · aralık değişti: '+
+            op.r[0]+'-'+op.r[1]+' → '+e.r[0]+'-'+e.r[1]+'</span>';})()+
         (fromOtherDay&&phase<2
           ?'<span style="color:'+C.amber+';font-weight:400"> · bu kayıt başka bir '+
             'programdan, o gün hareket sıran farklıydı — rakamı birebir ölçü alma</span>':'')+
