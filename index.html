@@ -2692,6 +2692,11 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-29',
+  t:'Bildirim sunucusu açıldı, hareketler arası geçiş süresi (v83)',
+  y:['Dinlenme bildirimi artık çalışıyor: Daha → Uygulama → “Bildirimleri aç”.',
+     'HAREKET GEÇİŞİ: bir hareketin son seti bitince kronometre o hareketin dinlenmesini değil geçiş süresini sayar: iki hareketin dinlenmesinden uzun olanı + 30 sn kurulum. Örnek: Kablo yan kaldırış → Kafa üstü ekstansiyon (İtiş) 1:00 yerine 2:30; Eğik dambıl press → Düz dambıl press 2:00 yerine 3:00. Ekranda “Sıradaki: …” ve “geçiş” yazar, bildirim de sıradaki hareketi söyler.',
+     'Neden: sıradaki hareketin ilk seti taze yapılmalı, arada makine, kablo aparatı ya da dambıl değişiyor. Eskiden bu süre de kısa dinlenmenin içinden gidiyordu.']},
+ {d:'2026-09-29',
   t:'Dinlenme bildirimi (v82)',
   y:['Kronometre bitince uygulama kapalıyken ya da ekran kilitliyken de telefona bildirim geliyor. Bildirim sesi Spotify’ı durdurmaz.',
      'Açmak için: Daha → Uygulama → “Bildirimleri aç”, iPhone izin sorunca “İzin Ver”. “Test bildirimi” 10 sn sonra bildirim gönderir.',
@@ -6219,7 +6224,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v82 · 29 Eyl 2026';
+var APPVER='v83 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6232,7 +6237,7 @@ var RESTKEY='emre:form:rest';
    ekran kilitli olsa da. Bildirim sesi Spotify'ı durdurmaz, bir an kısar.
    Abonelik CİHAZA özeldir: S'e (buluta) değil, bu cihazın localStorage'ına yazılır.
    PUSHURL boşsa hiçbir şey gönderilmez; kronometre eskisi gibi çalışır. */
-var PUSHURL='';
+var PUSHURL='https://form-timer.yurugagarin.workers.dev';
 var PUSHKEY='emre:form:push', pushMsg='';
 function pushSub(){try{var v=localStorage.getItem(PUSHKEY);return v?JSON.parse(v):null;}catch(e){return null;}}
 function pushOn(){return !!(PUSHURL&&pushSub());}
@@ -6250,7 +6255,8 @@ function pushPost(path,body){
 function pushSchedule(){
   var sb=pushSub();if(!sb||!PUSHURL||!timer.endAt)return;
   var d=Math.max(1,Math.round((timer.endAt-Date.now())/1000));
-  pushPost('/schedule',{sub:sb,delay:d,title:'Dinlenme bitti',body:(timer.name||'')+' — sıradaki set'});
+  pushPost('/schedule',{sub:sb,delay:d,title:'Dinlenme bitti',
+    body:timer.tr?'Sıradaki hareket: '+(timer.name||''):(timer.name||'')+' — sıradaki set'});
 }
 function pushCancel(){var sb=pushSub();if(sb&&PUSHURL)pushPost('/cancel',{sub:sb});}
 function b64uBytes(s){
@@ -6339,15 +6345,22 @@ function wakeOff(){try{if(wl){wl.release();wl=null;}}catch(e){}}
 var titleSaved='';
 function restLeft(){return Math.max(0,Math.ceil((timer.endAt-Date.now())/1000));}
 function saveRest(){
-  try{STORE.set(RESTKEY,JSON.stringify({endAt:timer.endAt,total:timer.total,name:timer.name}));}catch(e){}
+  try{STORE.set(RESTKEY,JSON.stringify({endAt:timer.endAt,total:timer.total,name:timer.name,tr:!!timer.tr}));}catch(e){}
 }
 function dropRest(){try{STORE.set(RESTKEY,'');}catch(e){}}
 
-function startRest(name){
+/* v83 — HAREKET GEÇİŞİ. Son setten sonra kronometre o hareketin kendi dinlenmesini
+   sayıyordu: Kablo yan kaldırış (60 sn) bitince 60 sn sonra kafa üstü ekstansiyona
+   (İtiş'te 2 dk) geçiliyordu; Eğik dambıl press → Düz dambıl press aynı kasları
+   2 dk arayla yüklüyordu. Oysa sıradaki hareketin ilk seti taze yapılmalı ve arada
+   makine/aparat/dambıl değişiyor. Geçiş = iki hareketin dinlenmesinden uzunu
+   + 30 sn kurulum. next verilirse geçiş sayılır. */
+var TRANS=30;
+function startRest(name,next){
   clearRest();
-  timer.total=restSec(name);
+  timer.total=next?Math.max(restSec(name),restSec(next))+TRANS:restSec(name);
   timer.endAt=Date.now()+timer.total*1000;
-  timer.name=name;timer.done=false;timer.mini=false;
+  timer.name=next||name;timer.tr=!!next;timer.done=false;timer.mini=false;
   saveRest();wakeOn();pushSchedule();
   timer.iv=setInterval(tickRest,250);
   paintRest();
@@ -6392,7 +6405,7 @@ function restoreRest(){
     var d=JSON.parse(r.value);
     if(!d||!d.endAt)return;
     var left=Math.ceil((d.endAt-Date.now())/1000);
-    timer.name=d.name;timer.total=d.total;
+    timer.name=d.name;timer.total=d.total;timer.tr=!!d.tr;
     if(left>0){timer.endAt=d.endAt;timer.done=false;
       timer.iv=setInterval(tickRest,250);paintRest();}
     else if(left>-600){timer.endAt=0;timer.done=true;paintRest();}
@@ -6408,11 +6421,11 @@ function restBar(){
   if(mini)
     return '<div id="restbar" class="rmini'+(timer.done?' done':'')+'" data-a="restmax">'+
       '<span class="rmdot"></span><span class="rmtime">'+(timer.done?'BİTTİ':mmss(L))+'</span>'+
-      '<span class="rmex">'+esc(timer.name)+'</span></div>';
+      '<span class="rmex">'+(timer.tr?'Sıradaki: ':'')+esc(timer.name)+'</span></div>';
   return '<div id="restbar" class="rwrap'+(timer.done?' done':'')+'">'+
     '<div class="rback" data-a="restmin"></div>'+
     '<div class="rcard">'+
-      '<div class="rex">'+esc(timer.name)+'</div>'+
+      '<div class="rex">'+(timer.tr?'Sıradaki: ':'')+esc(timer.name)+'</div>'+
       '<div class="rring">'+
         '<svg viewBox="0 0 180 180">'+
           '<circle cx="90" cy="90" r="'+R+'" fill="none" stroke="rgba(58,52,44,.12)" stroke-width="9"/>'+
@@ -6421,8 +6434,8 @@ function restBar(){
         '</svg>'+
         '<div class="rmid">'+
           (timer.done
-            ?'<div class="rdone">BİTTİ</div><div class="rsub">sıradaki sete geç</div>'
-            :'<div id="restclock" class="rtime">'+mmss(L)+'</div><div class="rsub">dinlenme</div>')+
+            ?'<div class="rdone">BİTTİ</div><div class="rsub">'+(timer.tr?'sıradaki harekete geç':'sıradaki sete geç')+'</div>'
+            :'<div id="restclock" class="rtime">'+mmss(L)+'</div><div class="rsub">'+(timer.tr?'geçiş':'dinlenme')+'</div>')+
         '</div>'+
       '</div>'+
       '<div class="rbtns">'+
@@ -11634,7 +11647,10 @@ app.addEventListener('click',function(ev){
     if(arr[ix3].kg==null||arr[ix3].rep==null){toast('önce kg ve tekrar gir');return;}
     arr[ix3].d=!arr[ix3].d;
     save(cur);gymPaint();
-    if(arr[ix3].d)startRest(ex2.n);
+    /* hedef set sayısı bu setle doldu ve sırada hareket varsa: geçiş süresi */
+    if(arr[ix3].d){
+      var nDone=arr.filter(function(z){return z&&z.d;}).length,nx3=tp2[exIdx+1];
+      startRest(ex2.n,(nx3&&nDone>=tgtOn(ex2,cur).s)?nx3.n:null);}
   }
   else if(a==='linkcode'){
     var code=makeCode();
