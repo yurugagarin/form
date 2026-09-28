@@ -2691,6 +2691,10 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-29',
+  t:'Sürüm numarası üst çubukta, Hammer curl adımı (v81)',
+  y:['Salon ekranının sağ üstünde sürüm numarası bulut açıkken de görünüyor: “☁ 12 dk · v81”. Güncellemenin telefona gelip gelmediği buradan anlaşılır.',
+     'Hammer curl her elin ağırlığıyla yazılıyor (10 = her elde 10 kg); sonraki adım 12 kg (önceden 14 öneriyordu).']},
+ {d:'2026-09-29',
   t:'Gerçek ağırlık adımları, İtiş’te kafa üstü ekstansiyon dinlenmesi (v80)',
   y:['Ağırlık adımları salondaki gerçek adımlara göre düzeltildi: Squat / Hack squat 2 kg, Leg press 8 kg, Ayakta calf raise 8 kg, Makine omuz press 2.5 kg. Uygulama “26 → 31 kg”, “101 → 106 kg” gibi salonda olmayan ağırlıklar öneriyordu; kg +/- düğmeleri de aynı tabloyu kullanıyor.',
      'Kafa üstü triceps ekstansiyon İtiş gününde 90 sn → 2 dk dinlenme (üç presten sonra 3. set 5 seanstır çöküyordu). Omuz & Kol’de 90 sn kaldı. Dinlenme artık güne özel olabiliyor.']},
@@ -5604,7 +5608,7 @@ var _gc={};
    barbell/plaka kabul edilir. */
 var EXINC={
   'Eğik dambıl press':4,'Düz dambıl press':4,'Oturarak dambıl omuz press':4,
-  'Eğik dambıl curl':4,'Hammer curl':4,'Oturarak dambıl yan kaldırış':4,
+  'Eğik dambıl curl':4,'Hammer curl':2,'Oturarak dambıl yan kaldırış':4,
   'Skullcrusher':4,
   'Kablo yan kaldırış':5,'Tek kol kablo yan kaldırış':5,'Kablo curl':5,
   'Kablo fly':5,'Halat pushdown':5,'Kafa üstü triceps ekstansiyon':5,
@@ -5616,7 +5620,9 @@ var EXINC={
 /* v80 — kademeler kullanıcının GERÇEK adımlarından düzeltildi (raporda 40 gün):
    Squat / Hack squat 16→18→…→26 (2), Leg press 77→85→93→101 (8), Ayakta calf raise
    45→53→61 (8), Makine omuz press 12.5→15 (2.5). Motor "26 → 31 kg'a çık", "101 → 106"
-   diyordu; salonda olmayan ya da %19'luk sıçramalar. */
+   diyordu; salonda olmayan ya da %19'luk sıçramalar.
+   v81: Hammer curl EL BAŞINA yazılıyor (10 = her elde 10 kg), sonraki dambıl 12 → adım 2.
+   Diğer dambıl hareketleri iki elin toplamı (36 = 2×18), adım 4 kalıyor. */
 function incFor(name){var v=EXINC[name];return v||2.5;}
 /* Kademe sabit olduğu için hafif ağırlıklarda sıçrama oransal olarak devleşiyor:
    36 kg dambılda 4 kg artış %11, 20 kg kabloda 5 kg artış %25. Bu tek seferde
@@ -6207,7 +6213,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v80 · 29 Eyl 2026';
+var APPVER='v81 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8262,7 +8268,8 @@ function gymTop(){
       '<span class="gdate">'+mark(19)+
         '<span>'+GUNK[pd(cur).getDay()]+' · '+fdate(cur).toUpperCase()+'</span></span>'+
       '<span id="g-clock">'+clockChip()+'</span>'+
-      (on?'<span class="gsync2" data-a="syncnow" title="'+esc(syncLabel())+'">'+syncShort()+'</span>'
+      /* v81: sürüm bulut açıkken de görünür — güncellemenin telefona gelip gelmediği buradan anlaşılıyor */
+      (on?'<span class="gsync2" data-a="syncnow" title="'+esc(syncLabel())+'">'+syncShort()+' · '+APPVER.split(' ')[0]+'</span>'
          :'<span class="gsync2">'+APPVER.split(' ')[0]+'</span>')+
     '</div>'+
   '</div>';
