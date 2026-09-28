@@ -2257,6 +2257,20 @@ html.dark .wbnote{color:#a49889}
   line-height:1.05;font-variant-numeric:tabular-nums;color:var(--ink)}
 .mjpace b span{font-family:'Karla';font-size:10px;font-weight:600;color:var(--ink3);margin-left:2px}
 .mjnote{font-size:11px;font-weight:600;color:var(--ink3);line-height:1.5;margin-top:9px}
+/* v78 · haftalık kayıp şeridi */
+.mjwk{margin-top:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 9px 9px}
+.mjwkh{display:flex;align-items:baseline;gap:7px;white-space:nowrap;overflow:hidden}
+.mjwkh b{font-size:10px;font-weight:800;color:var(--ink2);letter-spacing:.3px}
+.mjwkh span{font-size:10px;font-weight:600;color:var(--ink3);overflow:hidden;text-overflow:ellipsis}
+.mjwkrow{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;margin-top:7px}
+.mjwkrow>div{text-align:center;border-radius:9px;padding:5px 1px 4px;background:var(--card)}
+.mjwkrow>div.now{background:transparent;border:1px dashed var(--line)}
+.mjwkrow i{display:block;font-style:normal;font-size:9.5px;font-weight:700;color:var(--ink3);white-space:nowrap}
+.mjwkrow b{display:block;font-family:'Fraunces';font-size:15px;font-weight:600;margin-top:1px;
+  font-variant-numeric:tabular-nums;white-space:nowrap}
+.mjwkrow em{display:block;font-style:normal;font-size:8.5px;font-weight:700;color:var(--ink4)}
+.mjwkf{font-size:10.5px;font-weight:600;color:var(--ink3);margin-top:7px}
+.mjwkf b{font-weight:800}
 /* güç */
 .mstr{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}
 .mstrbig{font-family:'Fraunces';font-size:40px;font-weight:600;line-height:.95;letter-spacing:-.8px;
@@ -2629,6 +2643,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-28',
+  t:'Motivasyon: haftalık kayıp (v78)',
+  y:['Yolculuk kartında Hız kutularının altına Haftalık şeridi: son altı haftanın her biri için o haftanın ortalama tartısı eksi bir önceki haftanın ortalaması. Hafta bitince kesinleşir, bir daha değişmez.',
+     'Hız (son 21 günün eğimi) her tartıyla biraz oynar; haftalık rakam oynamaz. Yeşil = gereken hızda ya da daha iyi, sarı = veriyorsun ama yavaş, turuncu = arttı. Altında son 4 tamamlanmış haftanın ortalaması ve gereken hız.',
+     'İçinde bulunulan hafta “sürüyor” diye ayrı; bir haftada 2’den az tartı varsa o hafta “—” (içinde bulunulan haftada tek tartı yeter).']},
  {d:'2026-09-27',
   t:'Motivasyon: Kilo Takvimi (v77)',
   y:['Yolculuk kartının altında yeni Kilo Takvimi: Takvim sekmesindeki ızgarayla aynı, her günde o günün beklenen trend kilosu. Hedefe yaklaştıkça hücre koyulaşıyor, hedef günü 🏁 ile işaretli.',
@@ -6113,7 +6132,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v77 · 27 Eyl 2026';
+var APPVER='v78 · 28 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8274,6 +8293,44 @@ function motTrack(j){
   g+='<text x="'+lx.toFixed(1)+'" y="'+(Y-13)+'" text-anchor="middle" font-family="Karla" font-size="11" font-weight="800" fill="'+col+'">'+fx(j.tn,1)+'</text>';
   return '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+fx(j.b0,1)+' kg’dan '+fx(j.g0,0)+' kg’a, şu an '+fx(j.tn,1)+' kg">'+g+'</svg>';
 }
+/* ============ v78 · HAFTALIK KAYIP ============
+   "Hız" son 21 günün eğimi — her tartıyla yeniden hesaplanır, 450 / 480 / 500 g
+   diye her gün biraz oynar (bir günlük su dalgalanması eğimi ~50 g/hf iter).
+   Bu satır onun yanına KESİNLEŞMİŞ rakamı koyar: haftanın (Pzt–Paz) ortalama
+   tartısı − bir önceki haftanın ortalaması. Hafta bitince bir daha değişmez.
+   Ortalama, tek tartıya göre dalgalanmayı söndürür; iki haftada da en az 2
+   tartı yoksa o hafta "—". İçinde bulunulan hafta "sürüyor" diye ayrı durur;
+   onda tek tartı da yeter (ara değer, hafta bitince kesinleşir). */
+function motWeekly(){
+  var by={};
+  weightSeries().forEach(function(p){var m=monday(p.d);(by[m]=by[m]||[]).push(p.v);});
+  function avg(m,min){var a=by[m];return (a&&a.length>=(min||2))?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  var mNow=monday(today()),out=[];
+  for(var i=5;i>=0;i--){
+    var m=addD(mNow,-7*i),a=avg(m,i===0?1:2),b=avg(addD(m,-7));
+    out.push({m:m,wk:weekIdx(m),now:i===0,d:(a!=null&&b!=null)?a-b:null});
+  }
+  var done=out.filter(function(x){return !x.now&&x.d!=null;}).slice(-4);
+  var mean=done.length?done.reduce(function(x,y){return x+y.d;},0)/done.length:null;
+  return {weeks:out,mean:mean,n:done.length};
+}
+function motWeeklyHTML(req){
+  var w=motWeekly();
+  if(!w.weeks.some(function(x){return x.d!=null;}))return '';
+  function col(d){
+    if(d==null)return 'var(--ink4)';
+    if(d>0.05)return C.orange;
+    return (req!=null&&-d>=Math.abs(req)-0.05)?C.green:C.amber;}
+  return '<div class="mjwk"><div class="mjwkh"><b>Haftalık</b><span>ortalama kilonun değişimi</span></div>'+
+    '<div class="mjwkrow">'+w.weeks.map(function(x){
+      return '<div'+(x.now?' class="now"':'')+'><i>'+(x.now?'bu hf':'Hf '+wkLabel(x.wk))+'</i>'+
+        '<b style="color:'+col(x.d)+'">'+(x.d==null?'—':(x.d>0?'+':'−')+fx(Math.abs(x.d),2))+'</b>'+
+        (x.now?'<em>sürüyor</em>':'')+'</div>';}).join('')+'</div>'+
+    (w.mean!=null?'<div class="mjwkf">Son '+w.n+' haftanın ortalaması <b style="color:'+col(w.mean)+'">'+
+      (w.mean>0?'+':'−')+fx(Math.abs(w.mean),2)+' kg/hf</b>'+
+      (req!=null?' · gereken −'+fx(Math.abs(req),2):'')+'</div>':'')+
+  '</div>';
+}
 function motJourneyCard(){
   var j=motJourney();
   var head='<div class="shead"><div><div class="stitle">Yolculuk</div>'+
@@ -8307,7 +8364,7 @@ function motJourneyCard(){
       '<div class="mjgone"><b style="color:'+(j.lost>0?C.blue:'var(--ink3)')+'">'+(j.lost>0?'−':'')+fx(Math.abs(j.lost),1)+'</b><i>kg geride</i></div></div>'+
     '<div class="mjsub">'+sub+'</div>'+
     '<div class="mjtrack">'+motTrack(j)+'</div>'+
-    nx+pace+
+    nx+pace+motWeeklyHTML(j.req)+
     (passed.length?'<div class="mjnote">Geçilen duraklar: '+passed.map(function(s){return '<b>'+s.k+'</b> ('+fshort(s.d)+')';}).join(' · ')+'</div>':'')+
     (note?'<div class="mjnote">'+note+'</div>':'')+
   '</div>';
