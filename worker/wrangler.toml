@@ -1,0 +1,15 @@
+# FORM · dinlenme bildirimi sunucusu
+# GitHub Actions (.github/workflows/deploy-worker.yml) bu klasörü Cloudflare'a yükler.
+name = "form-timer"
+main = "index.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[[durable_objects.bindings]]
+name = "TIMER"
+class_name = "Timer"
+
+# SQLite tabanlı Durable Object — ücretsiz planda çalışır
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["Timer"]

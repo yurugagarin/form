@@ -6,6 +6,7 @@
 <title>FORM · Antrenman &amp; Beslenme Takibi</title>
 <link rel="icon" type="image/svg+xml" href='data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20100%20100%22%3E%3Crect%20width%3D%22100%22%20height%3D%22100%22%20rx%3D%2222%22%20fill%3D%22%2326262a%22%2F%3E%3Crect%20x%3D%2224%22%20y%3D%2244.5%22%20width%3D%2252%22%20height%3D%2211%22%20fill%3D%22%23d6e64b%22%2F%3E%3Crect%20x%3D%2221%22%20y%3D%2233%22%20width%3D%2213%22%20height%3D%2234%22%20rx%3D%226.5%22%20fill%3D%22%23d6e64b%22%2F%3E%3Crect%20x%3D%2266%22%20y%3D%2233%22%20width%3D%2213%22%20height%3D%2234%22%20rx%3D%226.5%22%20fill%3D%22%23d6e64b%22%2F%3E%3Crect%20x%3D%2211%22%20y%3D%2241%22%20width%3D%227%22%20height%3D%2218%22%20rx%3D%223.5%22%20fill%3D%22%23d6e64b%22%2F%3E%3Crect%20x%3D%2282%22%20y%3D%2241%22%20width%3D%227%22%20height%3D%2218%22%20rx%3D%223.5%22%20fill%3D%22%23d6e64b%22%2F%3E%3C%2Fsvg%3E'>
 <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAYAAAA9zQYyAAADXElEQVR42u3czW0bQQyAUQ2hRnLZg6pICSk1JaQKHfaSUpwGLMNSNLtD8r1jgADemc8U5b9xWcS23T4upLXv97HCxzHES6XAh4ipFPcQMpXiHkKmUthDyFQKewiZSlEPMVMp7BAzq3hHS0PIVJrWIWYqTesQM5WiDjFTKeoQM5WiDjFTKepwVFQS7/rMgBWmdIiZSlGHmKkUtR2a+ju06UzWKW1CU3tCm85kntImNHUntOlM9iltQlNzQpvOVJjSJjR1d2goEbR1gyprhwmNlQMEDYKG5wxvCDGhQdAgaBA0ggZBg6BB0CBoBA2CBkGDoEHQCBoEDYIGQYOgETQIGgQNggZBU9s18wf/+8+PT//918+/brbpGab7y0mPLuARcfc6w6h8Ea/+HzHnPcOofBGi7neGUf0iRN3rDKPDRXSPutMZRpeL6Bp1tzP0dWhKETSCzvpS2W3t6HiGJjQmNAgaBA2CprHpPz762bthPwHXx9H3H0c/zFf/Tv2YZ99/HP0wou4d8+z7jzMeRtS9Y555/3HWw4i6d8yz7t9XOSjl2vXBvTLUZEIjaBA0CBoEjaBB0CBoEDQIGkGDoEHQIGgQNIIGQYOgQdDwUNvfKezw15s6/t6kCY2goU3Qz76U+8ONvVe5d99/nPlQYu4d9Yz7j7MeSsy9o551/3HGQ4m5d9Qz7/969mcq1o80ExqOJmgEDYIGQUORoGe+O+7ylZeOZ2hCY0KDoBd5Wev2jZ5uZxidLqTrdy07nWF0uZDu34LvcobR4UL8PEmfM4zqFyLmXmc4tu32kfVyHv0SqIj7nmHqoCH1ygGCRtAgaBA0CBoEjaBB0CBoEDQIGkGDoEHQIGgQNIIGQYOgQdAgaAQNSwe97/fhGKhg3+/DhMbKAYKGo4K2R1NhfzahsXJAiqCtHWRfN0xorByQJmhrB5nXDROa+iuHKU3W6WxC0+NNoSlNxun85YQWNdlitnLQY+Uwpck4nb81oUVNlpitHJSK+dtBm9KU2KFFTabp/PTKIWpWjvmlHVrUrBrz5XK5vBzntt0+HDmrhPzfQQub1WJ+aeWwgrBqzG+Z0CY1Kw3Ft09XYXPmK/y0dUHYnLGqTt9/hc2R77kOe0MnbBEf4ZSvUIhbxKWCFrmAZ/kHTb1Wr3o/LOMAAAAASUVORK5CYII=">
+<link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#26262a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
@@ -2690,6 +2691,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-09-29',
+  t:'Dinlenme bildirimi (v82)',
+  y:['Kronometre bitince uygulama kapalıyken ya da ekran kilitliyken de telefona bildirim geliyor. Bildirim sesi Spotify’ı durdurmaz.',
+     'Açmak için: Daha → Uygulama → “Bildirimleri aç”, iPhone izin sorunca “İzin Ver”. “Test bildirimi” 10 sn sonra bildirim gönderir.',
+     'Bildirimi Cloudflare’daki küçük bir sunucu gönderiyor; +30 sn eklenince süre güncellenir, Atla ya da Antrenmanı bitir’de iptal edilir.']},
  {d:'2026-09-29',
   t:'Sürüm numarası üst çubukta, Hammer curl adımı (v81)',
   y:['Salon ekranının sağ üstünde sürüm numarası bulut açıkken de görünüyor: “☁ 12 dk · v81”. Güncellemenin telefona gelip gelmediği buradan anlaşılır.',
@@ -6213,10 +6219,100 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v81 · 29 Eyl 2026';
+var APPVER='v82 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
+
+/* ============ v82 · DİNLENME BİLDİRİMİ (push) ============
+   iPhone ekran kilitlenince sayfayı dondurur: kronometre durur, ses çalamaz; sayfadan
+   ses çalmak da Spotify'ı kesiyordu. Çözüm gerçek bir push bildirimi: dinlenme
+   başlayınca Cloudflare'daki küçük sunucuya (worker/) "N saniye sonra haber ver"
+   denir, süre dolunca Apple'ın servisi telefona bildirim gönderir — uygulama kapalı,
+   ekran kilitli olsa da. Bildirim sesi Spotify'ı durdurmaz, bir an kısar.
+   Abonelik CİHAZA özeldir: S'e (buluta) değil, bu cihazın localStorage'ına yazılır.
+   PUSHURL boşsa hiçbir şey gönderilmez; kronometre eskisi gibi çalışır. */
+var PUSHURL='';
+var PUSHKEY='emre:form:push', pushMsg='';
+function pushSub(){try{var v=localStorage.getItem(PUSHKEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+function pushOn(){return !!(PUSHURL&&pushSub());}
+function pushCan(){return ('serviceWorker' in navigator)&&('PushManager' in window)&&('Notification' in window);}
+function pushStandalone(){
+  try{return navigator.standalone===true||window.matchMedia('(display-mode: standalone)').matches;}catch(e){return false;}}
+function pushPost(path,body){
+  if(!PUSHURL)return Promise.resolve(null);
+  return fetch(PUSHURL+path,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(body),keepalive:true})
+    .then(function(r){return r.json();}).catch(function(){return null;});
+}
+/* kronometre başladığında ya da +30 sn eklendiğinde: kalan süre kadar sonra bildirim.
+   Aynı cihazın bekleyen bildirimi sunucuda bununla değiştirilir. */
+function pushSchedule(){
+  var sb=pushSub();if(!sb||!PUSHURL||!timer.endAt)return;
+  var d=Math.max(1,Math.round((timer.endAt-Date.now())/1000));
+  pushPost('/schedule',{sub:sb,delay:d,title:'Dinlenme bitti',body:(timer.name||'')+' — sıradaki set'});
+}
+function pushCancel(){var sb=pushSub();if(sb&&PUSHURL)pushPost('/cancel',{sub:sb});}
+function b64uBytes(s){
+  s=s.replace(/-/g,'+').replace(/_/g,'/');while(s.length%4)s+='=';
+  var b=atob(s),u=new Uint8Array(b.length);for(var i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return u;}
+function pushEnable(){
+  if(!PUSHURL){pushMsg='Sunucu henüz kurulmadı.';return Promise.resolve(false);}
+  if(!pushCan()){pushMsg='Bu ekranda bildirim desteklenmiyor.';return Promise.resolve(false);}
+  var key=null;
+  /* iOS izni yalnız düğmeye dokunuşun içinde sorar — ilk çağrı bu olmalı */
+  return Notification.requestPermission().then(function(p){
+    if(p!=='granted')throw new Error('Bildirim izni verilmedi. Ayarlar → Bildirimler → FORM’dan açabilirsin.');
+    return fetch(PUSHURL+'/vapid').then(function(r){return r.json();});
+  }).then(function(k){
+    key=b64uBytes(k.key);
+    return navigator.serviceWorker.register('sw.js').then(function(){return navigator.serviceWorker.ready;});
+  }).then(function(reg){
+    return reg.pushManager.getSubscription().then(function(old){
+      /* sunucunun anahtarıyla yapılmamış eski abonelik varsa yenile */
+      var same=false;
+      try{var ok=old&&old.options&&old.options.applicationServerKey;
+        if(ok){var a=new Uint8Array(ok);same=a.length===key.length&&a.every(function(x,i){return x===key[i];});}}catch(e){}
+      if(old&&same)return old;
+      return (old?old.unsubscribe():Promise.resolve()).then(function(){
+        return reg.pushManager.subscribe({userVisibleOnly:true,applicationServerKey:key});});
+    });
+  }).then(function(sub){
+    localStorage.setItem(PUSHKEY,JSON.stringify(sub.toJSON()));
+    pushMsg='Açık ✓ — dinlenme bitince telefon bildirim gönderecek.';
+    return true;
+  }).catch(function(e){pushMsg=(e&&e.message)||'Açılamadı';return false;});
+}
+function pushDisable(){
+  pushCancel();
+  try{localStorage.removeItem(PUSHKEY);}catch(e){}
+  pushMsg='Kapatıldı.';
+  if(pushCan())navigator.serviceWorker.getRegistration().then(function(reg){
+    if(reg)reg.pushManager.getSubscription().then(function(s2){if(s2)s2.unsubscribe();});}).catch(function(){});
+}
+function pushTest(){
+  var sb=pushSub();if(!sb)return;
+  pushPost('/schedule',{sub:sb,delay:10,title:'Test bildirimi',
+    body:'Bildirimler çalışıyor. Dinlenme bitince böyle haber gelecek.'}).then(function(r){
+      toast(r&&r.ok?'10 sn içinde bildirim gelecek — ekranı kilitleyebilirsin':'sunucuya ulaşılamadı');});
+}
+function pushCard(){
+  var st,btns='';
+  if(!PUSHURL){st='Sunucu henüz kurulmadı.';}
+  else if(!pushCan()){
+    st=pushStandalone()
+      ?'Bu ekranda bildirim desteklenmiyor. Uygulamayı ana ekrandan silip Safari’den yeniden “Ana Ekrana Ekle” ile eklemek gerekiyor (önce yedek al).'
+      :'Bildirim yalnız ana ekrana eklenmiş uygulamada çalışır. Safari’de paylaş düğmesi → “Ana Ekrana Ekle”, sonra uygulamayı ana ekrandaki simgeden aç.';}
+  else if(pushOn()){
+    st='Açık ✓ — kronometre bitince uygulama kapalıyken de bildirim gelir.';
+    btns='<button class="mbtn dark" data-a="pushtest">Test bildirimi gönder (10 sn)</button>'+
+      '<button class="mbtn" data-a="pushoff">Bildirimleri kapat</button>';}
+  else{
+    st='Kapalı. Aç’a basınca iPhone izin soracak — “İzin Ver” de.';
+    btns='<button class="mbtn dark" data-a="pushon">Bildirimleri aç</button>';}
+  return '<div class="mfield" style="margin-bottom:14px"><label>Dinlenme bildirimi</label>'+
+    '<div class="mhint2" style="margin:0 0 8px">'+esc(pushMsg||st)+'</div>'+btns+'</div>';
+}
 
 function phone(){return forceMode===null?(window.innerWidth<760):(forceMode==='gym');}
 function setMode(m){forceMode=m;try{STORE.set(MODEKEY,m||'auto');}catch(e){}exIdx=0;render();}
@@ -6252,7 +6348,7 @@ function startRest(name){
   timer.total=restSec(name);
   timer.endAt=Date.now()+timer.total*1000;
   timer.name=name;timer.done=false;timer.mini=false;
-  saveRest();wakeOn();
+  saveRest();wakeOn();pushSchedule();
   timer.iv=setInterval(tickRest,250);
   paintRest();
 }
@@ -8199,7 +8295,7 @@ var relOpen=null;
 function secApp(){
   var list=RELEASES.slice().sort(function(a,b){return a.d<b.d?1:-1;});
   var _th=[['auto','Otomatik'],['light','Açık'],['dark','Koyu']];
-  return '<div class="mfield" style="margin-bottom:14px"><label>Görünüm</label>'+
+  return pushCard()+'<div class="mfield" style="margin-bottom:14px"><label>Görünüm</label>'+
     '<div class="thsel">'+_th.map(function(x){
       return '<button class="'+(themePref===x[0]?'on':'')+'" data-a="theme" data-k="'+x[0]+'">'+x[1]+'</button>';
     }).join('')+'</div>'+
@@ -11265,7 +11361,7 @@ app.addEventListener('click',function(ev){
     if(dOpen&&dOpen.kind==='mbig')setTimeout(wbScroll,0);}
   else if(a==='wpick'){wbPick(t,ev);}
   else if(a==='finish'){
-    clearRest();
+    clearRest();pushCancel();
     var rf=S.days[cur];if(rf&&rf.ws){endWork(rf);save(cur);paintClock();}
     dOpen={kind:'done',key:''};dClosing=false;
     var dlf=document.getElementById('dlayer');if(dlf)dlf.outerHTML=detailLayer();else render();}
@@ -11500,8 +11596,12 @@ app.addEventListener('click',function(ev){
       try{if(titleSaved){document.title=titleSaved;titleSaved='';}}catch(e){}
       wakeOn();timer.iv=setInterval(tickRest,250);}
     else{timer.endAt+=30000;timer.total+=30;}
-    saveRest();paintRest();}
-  else if(a==='restskip'){clearRest();paintRest();}
+    saveRest();paintRest();pushSchedule();}
+  else if(a==='restskip'){clearRest();pushCancel();paintRest();}
+  else if(a==='pushon'){pushMsg='izin isteniyor…';
+    pushEnable().then(function(){if(phone())gymPaint();else render();});}
+  else if(a==='pushoff'){pushDisable();if(phone())gymPaint();else render();}
+  else if(a==='pushtest'){pushTest();}
   else if(a==='restmin'){timer.mini=true;paintRest();}
   else if(a==='restmax'){timer.mini=false;paintRest();}
   else if(a==='samelast'){
@@ -11647,6 +11747,7 @@ STORE.get(KEY).then(function(res){
   if(!S.startDate)S.startDate=today();
   cur=today();
   applyTheme();
+  try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
   try{
     var pl=loadPhotos();
     /* poz etiketleri de bu zincirde iniyor; ilk çizim onları bekler,
