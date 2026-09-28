@@ -2692,6 +2692,10 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-09-29',
+  t:'Dinlenme süreleri kayıtlara göre ayarlandı (v84)',
+  y:['Hammer curl 60 → 90 sn (3. set her seferinde %40 düşüyordu). Eğik dambıl press 2:00 → 2:30, iki günde de.',
+     'Hareketler arası geçiş kas bazlı: sıradaki hareket aynı ana kası çalıştırıyorsa ikisinin dinlenmesinden uzunu + 30 sn, farklı kassa sıradakinin kendi dinlenmesi + 30 sn. Örnek: Oturarak kablo row → Face pull 2:15 → 1:30, Dar tutuş bench → Preacher curl 2:30 → 2:00. Aynı kastaki geçişler (Eğik → Düz dambıl press 3:00, Squat → Leg press 3:00) değişmedi.']},
+ {d:'2026-09-29',
   t:'Bildirim sunucusu açıldı, hareketler arası geçiş süresi (v83)',
   y:['Dinlenme bildirimi artık çalışıyor: Daha → Uygulama → “Bildirimleri aç”.',
      'HAREKET GEÇİŞİ: bir hareketin son seti bitince kronometre o hareketin dinlenmesini değil geçiş süresini sayar: iki hareketin dinlenmesinden uzun olanı + 30 sn kurulum. Örnek: Kablo yan kaldırış → Kafa üstü ekstansiyon (İtiş) 1:00 yerine 2:30; Eğik dambıl press → Düz dambıl press 2:00 yerine 3:00. Ekranda “Sıradaki: …” ve “geçiş” yazar, bildirim de sıradaki hareketi söyler.',
@@ -3616,7 +3620,7 @@ var FIG={
 };
 /* hareket → çizim + İngilizce arama adı */
 var EXMETA={
- 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.',120],
+ 'Eğik dambıl press':['incline','incline dumbbell press','Sedye 30° eğik. Dambılları göğsün üst kısmından dikey yukarı it.',150],
  'Düz dambıl press':['dbBench','flat dumbbell bench press','Dambılları göğüs hizasından yukarı it. Barbelle göre omuza daha nazik, hareket açıklığı daha geniş.',150],
  'Oturarak dambıl omuz press':['ohp','seated dumbbell shoulder press','Sırt dik. Dambıllar kulak hizasından baş üstüne çıkar.',120],
  'Kablo yan kaldırış':['cableLat','cable lateral raise','Kabloyu vücudunun önünden çaprazla, kolu yana omuz hizasına aç. Omzunu yukarı kaldırma.',60],
@@ -3640,7 +3644,7 @@ var EXMETA={
  'Dar tutuş bench / Dips':['dips','triceps dips','Eller omuz genişliğinde, dirsekler gövdeye yakın. Dips yaparsan dik dur, öne eğilme.',120],
  'Skullcrusher':['skull','ez bar skullcrusher','Sırtüstü yat. Sadece dirsekten bükerek barı alnına indir; üst kolun sabit ve dik kalır.',90],
  'Preacher curl':['preacher','preacher curl','Kolları eğik pede yasla. Gövdeyle hile yapmanı fiziksel olarak engeller.',90],
- 'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.',60],
+ 'Hammer curl':['hammer','hammer curl','Avuç içleri birbirine bakar. Kolu yandan kalın gösteren kası çalıştırır.',90],
  'Kablo fly':['fly','cable chest fly','Kucaklar gibi kabloları önde birleştir. Dirsek bükümü sabit kalır.',90],
  'Cable crunch':['crunch','cable crunch abs','Diz üstü, halat başının arkasında. Karnını kıvırarak yere yaklaş, kalçadan bükülme.',60]
 };
@@ -3650,6 +3654,11 @@ function descOf(name){var m=EXMETA[name];return m&&m[2]?m[2]:'';}
    geliyor ve 5 seanstır 3. set çöküyordu (50×15/15/8-11); Omuz & Kol'de aynı kilo
    15/15/15. Güç değil toparlanma eksik — yalnız İtiş'te 2 dk. dt verilmezse bugünün günü. */
 var RESTDAY={'gun1|Kafa üstü triceps ekstansiyon':120};
+/* v84 — kayıtlarda setten sete tekrar düşüşüne göre (aynı kiloda ilk → son set):
+   Hammer curl 60 → 90 sn: 15/11/8 · 15/12/9 · 15/15/10 (%40 düşüş); diğer biceps
+   hareketleri 60-90 sn'de düşmüyor. Eğik dambıl press 120 → 150 sn (iki gün): Üst'te
+   iki çekişten sonra 10/8/8 · 11/9/8 (%21); kullanıcı da uzun dinlenmede daha güçlü
+   kaldırdığını söylüyor. İkisi EXMETA'da değişti. */
 function restSec(name,dt){
   var d=dt||(cur?planOf(cur):null),o=d?RESTDAY[d+'|'+name]:null;
   if(o)return o;
@@ -6224,7 +6233,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v83 · 29 Eyl 2026';
+var APPVER='v84 · 29 Eyl 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6354,11 +6363,24 @@ function dropRest(){try{STORE.set(RESTKEY,'');}catch(e){}}
    (İtiş'te 2 dk) geçiliyordu; Eğik dambıl press → Düz dambıl press aynı kasları
    2 dk arayla yüklüyordu. Oysa sıradaki hareketin ilk seti taze yapılmalı ve arada
    makine/aparat/dambıl değişiyor. Geçiş = iki hareketin dinlenmesinden uzunu
-   + 30 sn kurulum. next verilirse geçiş sayılır. */
+   + 30 sn kurulum. next verilirse geçiş sayılır.
+   v84 — KAS BAZLI: uzun olanı almak, ağır bir hareketten FARKLI kası çalıştıran
+   hafif bir harekete geçerken gereksiz bekletiyordu (Oturarak kablo row → Face pull
+   2:15, Dar tutuş → Preacher 2:30). Önceki hareket sıradakinin ana kasını (EXMUS 1)
+   ana ya da yardımcı olarak (≥0.5) çalıştırdıysa uzun olanı + 30; değilse
+   sıradakinin kendi dinlenmesi + 30. */
 var TRANS=30;
+function sharesPrime(prev,next){
+  var a=EXMUS[prev]||{},b=EXMUS[next]||{};
+  for(var k in b)if(b[k]>=1&&(a[k]||0)>=0.5)return true;
+  return false;
+}
+function transSec(name,next){
+  return (sharesPrime(name,next)?Math.max(restSec(name),restSec(next)):restSec(next))+TRANS;
+}
 function startRest(name,next){
   clearRest();
-  timer.total=next?Math.max(restSec(name),restSec(next))+TRANS:restSec(name);
+  timer.total=next?transSec(name,next):restSec(name);
   timer.endAt=Date.now()+timer.total*1000;
   timer.name=next||name;timer.tr=!!next;timer.done=false;timer.mini=false;
   saveRest();wakeOn();pushSchedule();
