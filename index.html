@@ -2691,6 +2691,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-03',
+  t:'Telefon değişince bildirim (v85)',
+  y:['Bildirim aboneliği telefona özeldir. Yeni telefon eskisinin yedeğinden kurulunca eski telefonun kaydı da taşınıyor, uygulama “Açık ✓” dediği halde bildirimler eski telefona gidiyordu.',
+     'Artık açılışta kayıt bu telefonun gerçek aboneliğiyle karşılaştırılıyor; uymuyorsa silinip “yeniden aç” yazıyor. Yeni telefonda bir kez Daha → Uygulama → “Bildirimleri aç” demek yeterli.']},
  {d:'2026-09-29',
   t:'Dinlenme süreleri kayıtlara göre ayarlandı (v84)',
   y:['Hammer curl 60 → 90 sn (3. set her seferinde %40 düşüyordu). Eğik dambıl press 2:00 → 2:30, iki günde de.',
@@ -6233,7 +6237,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v84 · 29 Eyl 2026';
+var APPVER='v85 · 3 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6310,6 +6314,25 @@ function pushTest(){
   pushPost('/schedule',{sub:sb,delay:10,title:'Test bildirimi',
     body:'Bildirimler çalışıyor. Dinlenme bitince böyle haber gelecek.'}).then(function(r){
       toast(r&&r.ok?'10 sn içinde bildirim gelecek — ekranı kilitleyebilirsin':'sunucuya ulaşılamadı');});
+}
+/* v85 — ABONELİK BU TELEFONUN MU? Abonelik cihaza özeldir ama localStorage'da durur;
+   yeni telefon eskisinin yedeğinden kurulunca kayıt da taşınıyor. Kart "Açık ✓" diyor,
+   bildirimler ise eski telefonun adresine gidiyordu. Açılışta tarayıcının gerçek
+   aboneliğiyle karşılaştırılır: yoksa ya da farklıysa kayıt silinir, kart "kapalı,
+   yeniden aç" der; tarayıcıda abonelik var ama kayıt yoksa sessizce geri bağlanır. */
+function pushVerify(){
+  if(!pushCan())return;
+  navigator.serviceWorker.getRegistration().then(function(reg){
+    return reg?reg.pushManager.getSubscription():null;
+  }).then(function(real){
+    var st=pushSub();
+    if(st&&(!real||real.endpoint!==st.endpoint)){
+      try{localStorage.removeItem(PUSHKEY);}catch(e){}
+      pushMsg='Bu telefonda bildirim kapalı (başka telefondan taşınmış kayıt silindi). Aşağıdan yeniden aç.';
+    }else if(!st&&real&&Notification.permission==='granted'){
+      try{localStorage.setItem(PUSHKEY,JSON.stringify(real.toJSON()));}catch(e){}
+    }
+  }).catch(function(){});
 }
 function pushCard(){
   var st,btns='';
@@ -11785,7 +11808,7 @@ STORE.get(KEY).then(function(res){
   if(!S.startDate)S.startDate=today();
   cur=today();
   applyTheme();
-  try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(function(){});}catch(e){}
+  try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').then(pushVerify,function(){});}catch(e){}
   try{
     var pl=loadPhotos();
     /* poz etiketleri de bu zincirde iniyor; ilk çizim onları bekler,
