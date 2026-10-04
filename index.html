@@ -2283,8 +2283,14 @@ html.dark .wbnote{color:#a49889}
 .wsnav .mbtn{flex:1;margin:0}
 .wsfin{width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--card2);border:1px solid var(--line);
   border-radius:12px;padding:10px 12px;margin-bottom:10px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);text-align:left}
-.wsbtn{display:flex;align-items:center;gap:12px;text-align:left}
-.wsbtn .sname{flex:1;min-width:0}
+.wslist{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.wsli{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;
+  background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:7px 10px;cursor:pointer}
+.wsli .sname{flex:1;min-width:0;display:flex;flex-direction:column}
+.wsli .sname b{font-size:13px;font-weight:800;color:var(--ink)}
+.wsli .sname b em{font-style:normal;font-size:10px;font-weight:700;color:var(--ink3);margin-left:4px}
+.wsli .sname i{font-style:normal;font-size:11px;font-weight:600;color:var(--ink3);margin-top:1px}
+.nwk.tap{cursor:pointer;text-decoration:underline dotted;text-underline-offset:2px}
 .mjwk{margin-top:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 9px 9px}
 .mjwkh{display:flex;align-items:baseline;gap:7px;white-space:nowrap;overflow:hidden}
 .mjwkh b{font-size:10px;font-weight:800;color:var(--ink2);letter-spacing:.3px}
@@ -2717,6 +2723,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-04',
+  t:'Haftalık özetlere her zaman ulaş (v88)',
+  y:['Motivasyon’un en üstünde “Haftalık özetler”: bu hafta (sürüyor) ve önceki üç hafta puanlarıyla; dokununca haftanın kartı açılır, kartın içinden daha eski haftalara geçilir.',
+     'Takvim’de soldaki hafta numarasına dokunmak da o haftanın özetini açar.']},
  {d:'2026-10-04',
   t:'Haftalık özet kartı (v87)',
   y:['Pazar günü (ya da haftanın son antrenman günü) “Antrenmanı bitir”e basınca haftalık özet açılır; Motivasyon’un en üstünden her hafta için açılabilir, oklarla önceki haftalara geçilir.',
@@ -6284,7 +6294,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v87 · 4 Eki 2026';
+var APPVER='v88 · 4 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8264,7 +8274,9 @@ function calGrid(){
       cells+='<button class="'+o.cls+extra+'" style="'+o.st+'" '+act+'>'+o.inner+'</button>';
     }
     g+='<div class="ncalrow'+(wkNow===wn?' now':'')+(preW?' pre':'')+'">'+
-      '<span class="nwk">'+wkLabel(wn)+(wdl?'<i>DL</i>':'')+'</span>'+cells+'</div>';
+      (wn>=1&&rowStart<=tod
+        ?'<span class="nwk tap" data-a="dopen" data-kind="wsum" data-key="'+rowStart+'" title="haftalık özet">'
+        :'<span class="nwk">')+wkLabel(wn)+(wdl?'<i>DL</i>':'')+'</span>'+cells+'</div>';
   }
   return g+'</div>';
 }
@@ -8650,7 +8662,7 @@ function weekEndDay(d){
   for(var x=addD(d,1);x<=sun;x=addD(x,1)){var dt=effDt(x),t=dt?PROGRAM[dt]:null;if(t&&t.ex.length)return false;}
   return true;
 }
-function weekSummary(mon){
+function weekSummary(mon,wlRows){
   var td=today(),days=[];
   for(var i=0;i<7;i++){var d=addD(mon,i);if(d<=td&&(!S.startDate||d>=S.startDate))days.push(d);}
   if(!days.length)return null;
@@ -8679,7 +8691,7 @@ function weekSummary(mon){
   Object.keys(W).forEach(function(k){if(cats[k]!=null){tw+=W[k];tp+=W[k]*cats[k];}});
   var total=tw?Math.round(tp/tw):null;
   /* güç */
-  var wk=weekIdx(mon),wl=null;weekLoad().forEach(function(r){if(r.wk===wk)wl=r;});
+  var wk=weekIdx(mon),wl=null;(wlRows||weekLoad()).forEach(function(r){if(r.wk===wk)wl=r;});
   var ups=[],prs=[],seen={};
   days.forEach(function(d){
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
@@ -8719,7 +8731,7 @@ function wsumHTML(mon,fin){
       '<span>Bugünkü seans: <b style="color:'+e3.vcolor+'">'+esc(e3.verdict)+'</b></span><span class="schev">›</span></button>';}
   o+='<div class="wshero">'+ringSVG((w.total||0)/100,sColor(w.total),96,w.total==null?'—':String(w.total),'/ 100')+
     '<div><div class="wsk">HAFTA '+wkLabel(w.wk)+(w.done?'':' · SÜRÜYOR')+'</div>'+
-      '<div class="wsh">'+(w.total==null?'Veri az':wWord(w.total))+'</div>'+
+      '<div class="wsh">'+(w.total==null?'Veri az':(w.done?wWord(w.total):'Hafta sürüyor'))+'</div>'+
       '<div class="wss">'+fdate(w.mon)+' – '+fdate(addD(w.mon,6))+' · '+w.str.sess.done+'/'+w.str.sess.plan+' antrenman</div></div></div>';
   o+='<div class="wsgrid">'+
     tile('Antrenman',c.trn,w.str.sess.done+'/'+w.str.sess.plan+' seans')+
@@ -8765,15 +8777,29 @@ function wsumHTML(mon,fin){
     'Antrenman, beslenme, adım ve düzen günlük puanın kalemlerinden; kilo gereken hıza göre; uyku 7.5 saat = 100.</div>';
   return o;
 }
-/* Motivasyon'un en üstünde: son biten haftanın (pazarsa bu haftanın) özeti */
-function motWeekBtn(){
-  var td=today(),e0=sessionEval(td);
-  var mon=(pd(td).getDay()===0||(weekEndDay(td)&&e0&&!e0.empty))?monday(td):addD(monday(td),-7);
-  var w=weekSummary(mon);if(!w||w.total==null)return '';
-  return '<button class="scard wsbtn" data-a="dopen" data-kind="wsum" data-key="'+mon+'">'+
-    ringSVG(w.total/100,sColor(w.total),46,String(w.total))+
-    '<span class="sname"><b>Haftalık özet · Hafta '+wkLabel(w.wk)+'</b><i>'+wWord(w.total)+' · '+fdate(mon)+' – '+fdate(addD(mon,6))+'</i></span>'+
-    '<span class="schev">›</span></button>';
+/* v88 — HAFTALIK ÖZETLER LİSTESİ (Motivasyon'un en üstü). Kart yalnız pazar
+   "bitir"de açılıyordu ve Motivasyon'daki tek satır yalnız geçen haftayı
+   gösteriyordu, gözden kaçıyordu. Artık bu hafta (sürüyor) ve önceki üç hafta
+   puanlarıyla alt alta; dokununca o haftanın kartı açılır, kartın içinde oklarla
+   daha eskiye gidilir. Takvim'de de hafta numarasına dokunmak aynı kartı açar. */
+function motWeekCard(){
+  var wl=weekLoad(),m0=monday(today()),rows='',n=0;
+  for(var i=0;i<4;i++){
+    var mon=addD(m0,-7*i);
+    if(S.startDate&&addD(mon,6)<S.startDate)break;
+    var w=weekSummary(mon,wl);if(!w||w.total==null)continue;n++;
+    rows+='<button class="wsli" data-a="dopen" data-kind="wsum" data-key="'+mon+'">'+
+      ringSVG(w.total/100,sColor(w.total),42,String(w.total))+
+      '<span class="sname"><b>'+(i===0?'Bu hafta':'Hafta '+wkLabel(w.wk))+
+        (w.done?'':' <em>sürüyor</em>')+'</b>'+
+        '<i>'+(w.done?wWord(w.total):'şu ana kadar')+' · '+fdate(mon)+' – '+fdate(addD(mon,6))+'</i></span>'+
+      '<span class="schev">›</span></button>';
+  }
+  if(!n)return '';
+  return '<div class="scard static">'+
+    '<div class="shead"><div><div class="stitle">Haftalık özetler</div>'+
+      '<div class="ssub">dokun, haftanın kartını aç · eski haftalar kartın içinde</div></div></div>'+
+    '<div class="wslist">'+rows+'</div></div>';
 }
 function motJourneyCard(){
   var j=motJourney();
@@ -9015,7 +9041,7 @@ function motHabitCard(){
   '</div>';
 }
 function motBody(){
-  return motWeekBtn()+motJourneyCard()+motCalCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
+  return motWeekCard()+motJourneyCard()+motCalCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
 }
 var TABICON={
  mot:'<path d="M6 21V4"/><path d="M6 4.5h11.5l-2.6 4.2 2.6 4.3H6"/>',
