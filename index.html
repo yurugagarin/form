@@ -2259,6 +2259,32 @@ html.dark .wbnote{color:#a49889}
 .mjpace b span{font-family:'Karla';font-size:10px;font-weight:600;color:var(--ink3);margin-left:2px}
 .mjnote{font-size:11px;font-weight:600;color:var(--ink3);line-height:1.5;margin-top:9px}
 /* v78 · haftalık kayıp şeridi */
+.wshero{display:flex;align-items:center;gap:14px;padding:4px 2px 12px}
+.wsk{font-size:9.5px;letter-spacing:1px;font-weight:800;color:var(--ink3)}
+.wsh{font-family:'Fraunces';font-size:22px;font-weight:600;line-height:1.15;margin-top:2px}
+.wss{font-size:11.5px;font-weight:600;color:var(--ink2);margin-top:3px}
+.wsgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.wst{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 9px 8px;min-width:0}
+.wst i{display:block;font-style:normal;font-size:10px;font-weight:800;color:var(--ink3);letter-spacing:.3px}
+.wst b{display:block;font-family:'Fraunces';font-size:22px;font-weight:600;line-height:1.1;margin-top:2px}
+.wsbar{display:block;height:4px;border-radius:2px;background:var(--line);margin:5px 0 4px;overflow:hidden}
+.wsbar span{display:block;height:100%;border-radius:2px}
+.wst em{display:block;font-style:normal;font-size:10px;font-weight:600;color:var(--ink3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.wsec{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line)}
+.wsech{font-size:9.5px;letter-spacing:1px;font-weight:800;color:var(--ink3);margin-bottom:4px}
+.wsrow{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;font-weight:600;color:var(--ink2);padding:3px 0}
+.wsrow b{color:var(--ink);font-weight:800;white-space:nowrap}
+.wsups{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px}
+.wsups span{font-size:11px;font-weight:600;color:var(--ink2);background:var(--card2);border:1px solid var(--line);border-radius:8px;padding:4px 7px}
+.wsups b{color:var(--ink);font-weight:800}
+.wsnote{margin-top:12px;font-size:12px;font-weight:600;color:var(--ink2)}
+.wsnote b{color:var(--ink)}
+.wsnav{display:flex;gap:6px;margin-top:12px}
+.wsnav .mbtn{flex:1;margin:0}
+.wsfin{width:100%;display:flex;justify-content:space-between;align-items:center;background:var(--card2);border:1px solid var(--line);
+  border-radius:12px;padding:10px 12px;margin-bottom:10px;font:inherit;font-size:12.5px;font-weight:600;color:var(--ink2);text-align:left}
+.wsbtn{display:flex;align-items:center;gap:12px;text-align:left}
+.wsbtn .sname{flex:1;min-width:0}
 .mjwk{margin-top:10px;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:8px 9px 9px}
 .mjwkh{display:flex;align-items:baseline;gap:7px;white-space:nowrap;overflow:hidden}
 .mjwkh b{font-size:10px;font-weight:800;color:var(--ink2);letter-spacing:.3px}
@@ -2691,6 +2717,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-04',
+  t:'Haftalık özet kartı (v87)',
+  y:['Pazar günü (ya da haftanın son antrenman günü) “Antrenmanı bitir”e basınca haftalık özet açılır; Motivasyon’un en üstünden her hafta için açılabilir, oklarla önceki haftalara geçilir.',
+     'Haftanın puanı (100 üzerinden) ve altı kategori: antrenman, beslenme, kilo, adım, uyku, düzen. Altında kilo değişimi, güç değişimi ve hangi hareketlerde ağırlık artırıldığı, kalori ve protein ortalamaları.',
+     'Ağırlıklar: antrenman 30 · beslenme 25 · kilo 20 · adım 10 · uyku 10 · düzen 5. Sayılar uygulamanın diğer ekranlarındakiyle aynı hesaplardan geliyor.']},
  {d:'2026-10-04',
   t:'PR etiketi hareket bitince (v86)',
   y:['PR etiketi ilk set girilir girilmez çıkıyordu: rekor seansın ortalamasına bakıyor ve tek girilmiş set en dinç set olduğu için ortalama şişiyordu; sonraki setler girilince PR kayboluyordu.',
@@ -6253,7 +6284,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v86 · 4 Eki 2026';
+var APPVER='v87 · 4 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7942,6 +7973,11 @@ function detailLayer(){
         '<button class="mbtn dark" data-a="goday" data-d="'+td3+'">Bu güne git</button>';
     }
   }
+  else if(dOpen.kind==='wsum'){
+    var wm=dOpen.key||monday(today());
+    title='Haftalık özet';sub='Hafta '+wkLabel(weekIdx(wm))+' · '+fdate(wm)+' – '+fdate(addD(wm,6));
+    body=wsumHTML(wm,!!dOpen.fin);
+  }
   else if(dOpen.kind==='done'){
     var dt2=planOf(cur),t2=PROGRAM[dt2],ev3=sessionEval(cur,dt2);
     title='Antrenman bitti';sub=dayTitle(cur)+' · '+fdate(cur);
@@ -8583,6 +8619,162 @@ function motWeeklyHTML(req){
       (req!=null?' · gereken −'+fx(Math.abs(req),2):'')+'</div>':'')+
   '</div>';
 }
+/* ============ v87 · HAFTALIK ÖZET KARTI ============
+   Pazar (ya da haftanın son antrenman günü) "Antrenmanı bitir"e basınca açılır;
+   Motivasyon'dan her hafta için açılabilir. Yeni ölçü yok — her sayı uygulamanın
+   zaten kullandığı fonksiyondan:
+     antrenman / kalori / protein / adım / tartı / kreatin → dayScore() kalemleri
+       (Takvim'deki gün puanıyla aynı), hafta boyunca toplanmış puan ÷ en yüksek puan
+     kilo   → haftanın ortalama tartısı − önceki haftanın ortalaması (Motivasyon'daki
+              Haftalık şeridiyle aynı), gereken hıza (reqSlope) göre puanlanır
+     güç    → weekLoad() güç endeksi değişimi; ağırlık artışları exCmp ile
+     uyku   → gece + gündüz ortalaması, 7.5 saat = 100, 5 saat = 0
+   Haftanın puanı ağırlıklı ortalama: antrenman 30 · beslenme 25 · kilo 20 ·
+   adım 10 · uyku 10 · düzen (tartı + kreatin) 5. Verisi olmayan kategori dışarıda
+   kalır, ağırlıklar yeniden dağıtılır. */
+function wkAvgW(mon,min){
+  var a=[];for(var i=0;i<7;i++){var v=D(addD(mon,i)).w;if(v!=null)a.push(v);}
+  return a.length>=(min||2)?{v:a.reduce(function(x,y){return x+y;},0)/a.length,n:a.length}:null;
+}
+function wWord(v){
+  if(v>=90)return 'Mükemmel hafta';
+  if(v>=75)return 'İyi hafta';
+  if(v>=55)return 'Orta hafta';
+  if(v>=35)return 'Zayıf hafta';
+  return 'Kayıp hafta';
+}
+/* bu gün haftanın son antrenmanı mı — sonrasında bu hafta planlı antrenman yok */
+function weekEndDay(d){
+  if(pd(d).getDay()===0)return true;
+  var sun=addD(monday(d),6);
+  for(var x=addD(d,1);x<=sun;x=addD(x,1)){var dt=effDt(x),t=dt?PROGRAM[dt]:null;if(t&&t.ex.length)return false;}
+  return true;
+}
+function weekSummary(mon){
+  var td=today(),days=[];
+  for(var i=0;i<7;i++){var d=addD(mon,i);if(d<=td&&(!S.startDate||d>=S.startDate))days.push(d);}
+  if(!days.length)return null;
+  /* dayScore kalemleri */
+  var agg={};
+  days.forEach(function(d){var sc=dayScore(d);if(!sc)return;
+    sc.items.forEach(function(it){var a=agg[it.k]=agg[it.k]||{p:0,m:0};a.p+=it.p;a.m+=it.max;});});
+  function pct(ks){var p=0,m=0;ks.forEach(function(k){if(agg[k]){p+=agg[k].p;m+=agg[k].m;}});
+    return m?Math.round(p/m*100):null;}
+  var cats={trn:pct(['trn']),bes:pct(['kcal','prot']),step:pct(['step']),duz:pct(['weigh','krea'])};
+  /* kilo */
+  var wNow=wkAvgW(mon,1),wPrev=wkAvgW(addD(mon,-7),2),req=reqSlope(),dW=null;
+  if(wNow&&wPrev)dW=wNow.v-wPrev.v;
+  if(dW!=null&&req!=null&&req<0){
+    var loss=-dW,need=-req,ks;
+    if(loss<=0)ks=Math.max(0,Math.round(30+loss*60));          /* arttıysa düşük */
+    else if(loss>RATE_MAX+0.1)ks=75;                             /* fazla hızlı */
+    else ks=Math.min(100,Math.round(loss/(need*0.9)*100));
+    cats.kilo=ks;
+  }else cats.kilo=null;
+  /* uyku */
+  var sl=days.map(function(d){return slTot(D(d));}).filter(function(v){return v!=null;});
+  var slAvg=sl.length?sl.reduce(function(a,b){return a+b;},0)/sl.length:null;
+  cats.uyku=slAvg!=null?Math.max(0,Math.min(100,Math.round((slAvg-5)/2.5*100))):null;
+  var W={trn:30,bes:25,kilo:20,step:10,uyku:10,duz:5},tw=0,tp=0;
+  Object.keys(W).forEach(function(k){if(cats[k]!=null){tw+=W[k];tp+=W[k]*cats[k];}});
+  var total=tw?Math.round(tp/tw):null;
+  /* güç */
+  var wk=weekIdx(mon),wl=null;weekLoad().forEach(function(r){if(r.wk===wk)wl=r;});
+  var ups=[],prs=[],seen={};
+  days.forEach(function(d){
+    var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
+    prsOn(d).forEach(function(x){prs.push(x.n);});
+    dayEx(d,dt).forEach(function(x){
+      if(x.off)return;
+      var c=exCmp(x.n,d,dt,tgtOn(x,d).s);
+      if(c&&c.dKg>0&&!seen[x.n+dt]){seen[x.n+dt]=1;ups.push({n:x.n,from:c.kgRef,to:c.kg});}
+    });
+  });
+  /* beslenme ve adım ayrıntısı */
+  var T=S.targets;
+  function col(k){return days.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});}
+  function avg(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  var kc=col('kcal'),pr=col('p'),st=col('st');
+  return {mon:mon,wk:wk,days:days,total:total,cats:cats,
+    w:{now:wNow,prev:wPrev,d:dW,req:req},
+    str:{chg:wl?wl.chg:null,up:wl?wl.up:0,eq:wl?wl.eq:0,dn:wl?wl.dn:0,sess:weekProgress(mon),ups:ups,prs:prs},
+    nut:{kcal:avg(kc),kn:kc.length,kIn:kc.filter(function(v){return v>=T.kcal*.92&&v<=T.kcal*1.08;}).length,
+      p:avg(pr),pIn:pr.filter(function(v){return v>=T.protein*.97;}).length,pn:pr.length},
+    step:{avg:avg(st),hit:st.filter(function(v){return v>=T.steps*.97;}).length,n:st.length},
+    sleep:{avg:slAvg,n:sl.length},
+    done:days.length===7};
+}
+function wsumHTML(mon,fin){
+  var w=weekSummary(mon);
+  if(!w)return '<div class="sempty">Bu hafta için kayıt yok</div>';
+  var T=S.targets,c=w.cats;
+  function tile(lbl,v,sub){
+    return '<div class="wst"><i>'+lbl+'</i><b style="color:'+(v==null?'var(--ink4)':(v>=75?C.green:(v>=55?C.amber:C.orange)))+'">'+(v==null?'—':v)+'</b>'+
+      '<span class="wsbar"><span style="width:'+(v||0)+'%;background:'+sColor(v)+'"></span></span>'+
+      '<em>'+sub+'</em></div>';}
+  function sg(v,dg){return (v>0?'+':(v<0?'−':''))+fx(Math.abs(v),dg==null?1:dg);}
+  var o='';
+  if(fin){var e3=sessionEval(cur,planOf(cur));
+    if(e3&&!e3.empty)o+='<button class="wsfin" data-a="dopen" data-kind="done" data-key="">'+
+      '<span>Bugünkü seans: <b style="color:'+e3.vcolor+'">'+esc(e3.verdict)+'</b></span><span class="schev">›</span></button>';}
+  o+='<div class="wshero">'+ringSVG((w.total||0)/100,sColor(w.total),96,w.total==null?'—':String(w.total),'/ 100')+
+    '<div><div class="wsk">HAFTA '+wkLabel(w.wk)+(w.done?'':' · SÜRÜYOR')+'</div>'+
+      '<div class="wsh">'+(w.total==null?'Veri az':wWord(w.total))+'</div>'+
+      '<div class="wss">'+fdate(w.mon)+' – '+fdate(addD(w.mon,6))+' · '+w.str.sess.done+'/'+w.str.sess.plan+' antrenman</div></div></div>';
+  o+='<div class="wsgrid">'+
+    tile('Antrenman',c.trn,w.str.sess.done+'/'+w.str.sess.plan+' seans')+
+    tile('Beslenme',c.bes,w.nut.kcal!=null?ti(w.nut.kcal)+' kcal ort.':'girilmedi')+
+    tile('Kilo',c.kilo,w.w.d!=null?sg(w.w.d,2)+' kg':'karşılaştırma yok')+
+    tile('Adım',c.step,w.step.avg!=null?ti(w.step.avg)+' ort.':'girilmedi')+
+    tile('Uyku',c.uyku,w.sleep.avg!=null?fx(w.sleep.avg,1)+' sa ort.':'girilmedi')+
+    tile('Düzen',c.duz,'tartı + kreatin')+
+  '</div>';
+  /* kilo */
+  o+='<div class="wsec"><div class="wsech">KİLO</div>';
+  if(w.w.now){
+    o+='<div class="wsrow"><span>Haftanın ortalaması</span><b>'+fx(w.w.now.v,1)+' kg</b></div>';
+    if(w.w.d!=null)o+='<div class="wsrow"><span>Önceki haftaya göre</span><b style="color:'+(w.w.d<=-0.05?C.green:(w.w.d>0.05?C.orange:'var(--ink)'))+'">'+sg(w.w.d,2)+' kg</b></div>';
+    if(w.w.req!=null)o+='<div class="wsrow"><span>Gereken hız</span><b>'+sg(w.w.req,2)+' kg/hf</b></div>';
+  }else o+='<div class="wsrow"><span>Bu hafta tartı yok</span></div>';
+  o+='</div>';
+  /* güç */
+  o+='<div class="wsec"><div class="wsech">GÜÇ</div>';
+  if(w.str.chg!=null)o+='<div class="wsrow"><span>Güç değişimi</span><b style="color:'+(w.str.chg>=0?C.green:C.orange)+'">'+sg(w.str.chg,1)+'%</b></div>'+
+    '<div class="wsrow"><span>Hareketler</span><b>↑'+w.str.up+' &nbsp;='+w.str.eq+' &nbsp;↓'+w.str.dn+'</b></div>';
+  if(w.str.prs.length)o+='<div class="wsrow"><span>Rekor kıran hareket</span><b style="color:'+C.amber+'">'+w.str.prs.length+'</b></div>';
+  if(w.str.ups.length)o+='<div class="wsups">'+w.str.ups.map(function(u){
+      return '<span>'+esc(u.n.split(' / ')[0])+' <b>'+fkg(u.from)+' → '+fkg(u.to)+'</b></span>';}).join('')+'</div>';
+  else o+='<div class="wsrow"><span>Bu hafta ağırlık artışı yok</span></div>';
+  o+='</div>';
+  /* beslenme */
+  o+='<div class="wsec"><div class="wsech">BESLENME</div>'+
+    (w.nut.kcal!=null?'<div class="wsrow"><span>Kalori ort. (hedef '+ti(T.kcal)+')</span><b>'+ti(w.nut.kcal)+'</b></div>'+
+      '<div class="wsrow"><span>Hedefte geçen gün</span><b>'+w.nut.kIn+' / '+w.nut.kn+'</b></div>':'<div class="wsrow"><span>Kalori girilmedi</span></div>')+
+    (w.nut.p!=null?'<div class="wsrow"><span>Protein ort. (hedef '+T.protein+' g)</span><b>'+Math.round(w.nut.p)+' g</b></div>'+
+      '<div class="wsrow"><span>Protein tamam gün</span><b>'+w.nut.pIn+' / '+w.nut.pn+'</b></div>':'')+
+  '</div>';
+  /* en iyi / en zayıf */
+  var names={trn:'Antrenman',bes:'Beslenme',kilo:'Kilo',step:'Adım',uyku:'Uyku',duz:'Düzen'};
+  var ks=Object.keys(names).filter(function(k){return c[k]!=null;}).sort(function(a,b){return c[b]-c[a];});
+  if(ks.length>1)o+='<div class="wsnote">En iyi: <b>'+names[ks[0]]+' '+c[ks[0]]+'</b> · En zayıf: <b>'+names[ks[ks.length-1]]+' '+c[ks[ks.length-1]]+'</b></div>';
+  o+='<div class="wsnav">'+
+    '<button class="mbtn" data-a="dopen" data-kind="wsum" data-key="'+addD(mon,-7)+'">‹ Önceki hafta</button>'+
+    (addD(mon,7)<=today()?'<button class="mbtn" data-a="dopen" data-kind="wsum" data-key="'+addD(mon,7)+'">Sonraki hafta ›</button>':'')+
+  '</div>'+
+  '<div class="mhint2" style="margin-top:8px">Puan: antrenman 30 · beslenme 25 · kilo 20 · adım 10 · uyku 10 · düzen 5. '+
+    'Antrenman, beslenme, adım ve düzen günlük puanın kalemlerinden; kilo gereken hıza göre; uyku 7.5 saat = 100.</div>';
+  return o;
+}
+/* Motivasyon'un en üstünde: son biten haftanın (pazarsa bu haftanın) özeti */
+function motWeekBtn(){
+  var td=today(),e0=sessionEval(td);
+  var mon=(pd(td).getDay()===0||(weekEndDay(td)&&e0&&!e0.empty))?monday(td):addD(monday(td),-7);
+  var w=weekSummary(mon);if(!w||w.total==null)return '';
+  return '<button class="scard wsbtn" data-a="dopen" data-kind="wsum" data-key="'+mon+'">'+
+    ringSVG(w.total/100,sColor(w.total),46,String(w.total))+
+    '<span class="sname"><b>Haftalık özet · Hafta '+wkLabel(w.wk)+'</b><i>'+wWord(w.total)+' · '+fdate(mon)+' – '+fdate(addD(mon,6))+'</i></span>'+
+    '<span class="schev">›</span></button>';
+}
 function motJourneyCard(){
   var j=motJourney();
   var head='<div class="shead"><div><div class="stitle">Yolculuk</div>'+
@@ -8823,7 +9015,7 @@ function motHabitCard(){
   '</div>';
 }
 function motBody(){
-  return motJourneyCard()+motCalCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
+  return motWeekBtn()+motJourneyCard()+motCalCard()+motStrengthCard()+motRecordCard()+motHabitCard()+'<div style="height:14px"></div>';
 }
 var TABICON={
  mot:'<path d="M6 21V4"/><path d="M6 4.5h11.5l-2.6 4.2 2.6 4.3H6"/>',
@@ -11437,7 +11629,8 @@ app.addEventListener('click',function(ev){
   else if(a==='finish'){
     clearRest();pushCancel();
     var rf=S.days[cur];if(rf&&rf.ws){endWork(rf);save(cur);paintClock();}
-    dOpen={kind:'done',key:''};dClosing=false;
+    /* v87: haftanın son antrenmanıysa önce haftalık özet */
+    dOpen=weekEndDay(cur)?{kind:'wsum',key:monday(cur),fin:true}:{kind:'done',key:''};dClosing=false;
     var dlf=document.getElementById('dlayer');if(dlf)dlf.outerHTML=detailLayer();else render();}
   else if(a==='wreset'){
     var rz=S.days[cur];
