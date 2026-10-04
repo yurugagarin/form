@@ -2691,6 +2691,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-04',
+  t:'PR etiketi hareket bitince (v86)',
+  y:['PR etiketi ilk set girilir girilmez çıkıyordu: rekor seansın ortalamasına bakıyor ve tek girilmiş set en dinç set olduğu için ortalama şişiyordu; sonraki setler girilince PR kayboluyordu.',
+     'Artık rekor ancak hareketin hedef set sayısı tamamlanınca değerlendiriliyor. Eksik setli seanslar rekor sayılmıyor.']},
  {d:'2026-10-03',
   t:'Telefon değişince bildirim (v85)',
   y:['Bildirim aboneliği telefona özeldir. Yeni telefon eskisinin yedeğinden kurulunca eski telefonun kaydı da taşınıyor, uygulama “Açık ✓” dediği halde bildirimler eski telefona gidiyordu.',
@@ -4648,9 +4652,20 @@ function prBase(name,d,dt){
   });
   return prevBest;
 }
+/* v86 — REKOR ANCAK HAREKET BİTİNCE. Antrenman sırasında rekor ilk set girilir
+   girilmez hesaplanıyordu: seans ölçüsü girilen setlerin ortalaması olduğu için
+   tek (en dinç) set ortalamanın tamamıydı, kilo da artmışsa hemen "PR" yazıyordu;
+   sonraki setler yorgunlukla düşünce PR kayboluyordu. Artık o günün hedef set
+   sayısı tamamlanmadan rekor sayılmaz — eksik setli seanslar da (az ve dinç
+   setlerin ortalaması şişik çıkar). Plan dışı hareketin hedefi yoksa şart yok. */
+function prReady(name,d){
+  var t=tgtFor(name,d);
+  return !t||wSets((D(d).ex||{})[name]).length>=t.s;
+}
 function prsOn(d){
   var r=D(d),out=[],dt=dtOf(d);
   Object.keys(r.ex||{}).forEach(function(nm){
+    if(!prReady(nm,d))return;
     var cur1=sessE1(r.ex[nm]);if(!cur1)return;
     var prevBest=prBase(nm,d,dt);
     if(prevBest>0&&cur1.v>prevBest*1.005)
@@ -4660,6 +4675,7 @@ function prsOn(d){
 }
 function isPR(name,d){
   /* rekor ölçüsü seans 1RM — tek iyi set değil (bkz. sessE1) */
+  if(!prReady(name,d))return false;
   var b=sessE1((D(d).ex||{})[name]);if(!b)return false;
   var prevBest=prBase(name,d,dtOf(d));
   return prevBest>0&&b.v>prevBest*1.005;
@@ -6237,7 +6253,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v85 · 3 Eki 2026';
+var APPVER='v86 · 4 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
