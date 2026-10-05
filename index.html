@@ -2723,6 +2723,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-05',
+  t:'Fotoğraf özelliği kaldırıldı (v89)',
+  y:['Fotoğraf sekmesi, masaüstündeki Fotoğraf sekmesi ve fotoğraf yedek panelleri kaldırıldı. Uygulama artık fotoğraf yüklemiyor, senkronlamıyor.',
+     'Her cihazda ilk açılışta o cihazdaki fotoğraflar silinir. Özel fotoğraf deposu bağlıysa içindeki bütün fotoğraflar GitHub’dan silinir ve depo bağlantısı kaldırılır.']},
  {d:'2026-10-04',
   t:'Haftalık özetlere her zaman ulaş (v88)',
   y:['Motivasyon’un en üstünde “Haftalık özetler”: bu hafta (sürüyor) ve önceki üç hafta puanlarıyla; dokununca haftanın kartı açılır, kartın içinden daha eski haftalara geçilir.',
@@ -6106,10 +6110,9 @@ function gh(path,opts,tryN){
 /* buluta gidecek gövde — anahtar asla gönderilmez */
 function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
-    startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,photoRepo:(S.sync&&S.sync.repo)||'',
+    startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
     base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
-    meas:!!S.meas,
-    phDel:_phDel,phPose:_phPose};
+    meas:!!S.meas};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -6132,23 +6135,9 @@ function mergeRemote(rm){
       S._pt=rm._pt;
     }
   }
-  if(rm.photoRepo&&!S.sync.repo){S.sync.repo=rm.photoRepo;ch++;}
-  /* silme listesi birleşir (hiç geri alınmaz): bir cihazda silinen her yerde silinir */
-  if(rm.phDel&&typeof rm.phDel==='object'){
-    var pdn=0;
-    Object.keys(rm.phDel).forEach(function(k){if(!_phDel[k]){_phDel[k]=rm.phDel[k];pdn++;}});
-    if(pdn){savePhDel();phApplyDeletes();ch++;}
-  }
-  /* poz etiketleri: fotoğraf başına en son yapılan etiketleme kazanır */
-  if(rm.phPose&&typeof rm.phPose==='object'){
-    var ppn=0;
-    Object.keys(rm.phPose).forEach(function(k){
-      var rp=rm.phPose[k];if(!rp||typeof rp!=='object')return;
-      var lp=_phPose[k];
-      if(!lp||(rp.t||0)>(lp.t||0)){_phPose[k]=rp;ppn++;}
-    });
-    if(ppn){savePhPose();ch++;}
-  }
+  /* v89: fotoğraf özelliği kaldırıldı — eski cihazlardan gelen photoRepo / phDel /
+     phPose alanları bilerek okunmuyor (depo bağlantısını geri getirmesin, fotoğraf
+     veritabanını yeniden açmasın). */
   if((rm._st||0)>(S._st||0)){
     ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
@@ -6294,7 +6283,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v88 · 4 Eki 2026';
+var APPVER='v89 · 5 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8315,7 +8304,6 @@ var mSect=null, mDrawer=false;
 /* Takvim ve Fotoğraf buradan çıktı — ikisi de artık alt çubukta kendi
    sekmesi. Menü yediden beşe indi, tabaka tek ekrana sığıyor. */
 var MENU=[
-  ['pho','pho','Fotoğraf'],
   ['prog','prog','Program & Hareketler'],
   ['rep','rep','Rapor'],
   ['tgt','tgt','Hedefler'],
@@ -8324,11 +8312,10 @@ var MENU=[
 ];
 function menuTitle(k){for(var i=0;i<MENU.length;i++)if(MENU[i][0]===k)return MENU[i][2];return '';}
 function menuSub(k){
-  if(k==='pho')return photoCount()+' kare · '+photoDates().length+' gün';
   if(k==='prog')return PROGRAM[pTab].ex.length+' hareket · '+PROGRAM[pTab].short;
   if(k==='rep')return keys().length+' gün kayıtlı';
   if(k==='tgt')return S.targets.kcal+' kcal · '+S.targets.protein+'g P';
-  if(k==='sync')return ((S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil')+(repoOK()?'':' · depo yok');
+  if(k==='sync')return ((S.sync.token&&S.sync.gist)?syncLabel():'bağlı değil')+'';
   if(k==='app')return APPVER;
   return '';
 }
@@ -8442,11 +8429,10 @@ function secApp(){
       'onlar rapora basılıyor.</div>';
 }
 function secBody(k){
-  if(k==='pho')return phBody();
   if(k==='prog')return secProg();
   if(k==='rep')return secRep();
   if(k==='tgt')return secTgt();
-  if(k==='sync')return secSync()+'<div style="margin-top:18px;border-top:1px solid '+THC.c44+'"></div>'+phBackupPanel()+migPanel();
+  if(k==='sync')return secSync()+phPurgeNote();
   if(k==='app')return secApp();
   return '';
 }
@@ -10485,6 +10471,55 @@ function phImportFile(file){
 /* ---- 2) özel GitHub deposu ---- */
 var phSyncing=false, phMsg='';
 function repoOK(){return !!(S.sync.token&&S.sync.repo);}
+/* ============ v89 · FOTOĞRAF ÖZELLİĞİ KALDIRILDI ============
+   Kullanıcı isteği: fotoğraflar uygulamada durmasın, telefonda zaten var. Sekme,
+   masaüstü sekmesi ve yedek panelleri kaldırıldı; açılışta fotoğraf yüklenmiyor,
+   senkron fotoğrafa dokunmuyor. Fotoğraf fonksiyonları ortak açılır pencere
+   koduyla iç içe olduğu için yerinde duruyor ama hiçbir yerden çağrılmıyor.
+   phPurge() her cihazda açılışta çalışır (iş bitince bir daha çalışmaz):
+     1. bu cihazdaki fotoğraf veritabanı (IndexedDB 'form-photos') ve eski
+        localStorage kaydı silinir;
+     2. özel fotoğraf deposu bağlıysa photos/ klasöründeki her dosya silinir
+        (GitHub API, sırayla); bitince depo bağlantısı kaldırılır ve depo adı,
+        deponun kendisini silmek için not olarak saklanır (git geçmişinde
+        dosyalar kalır — tamamen yok etmek için depo silinmeli). */
+var PHPURGEKEY='emre:form:phpurged',PHREPOKEY='emre:form:phrepo',phPurging=false;
+function phPurge(){
+  try{localStorage.removeItem(PKEY);}catch(e){}
+  try{_ph={};_phPose={};_phDel={};}catch(e){}
+  try{if(typeof indexedDB!=='undefined'&&localStorage.getItem(PHPURGEKEY)!=='1'){
+    indexedDB.deleteDatabase('form-photos');localStorage.setItem(PHPURGEKEY,'1');}}catch(e){}
+  var repo=S.sync.repo;
+  if(!repo||phPurging)return;
+  if(!S.sync.token){S.sync.repo='';save();return;}
+  phPurging=true;
+  var base='/repos/'+repo+'/contents/photos',n=0;
+  ghRepo(base).then(function(list){
+    if(list&&list.__missing)return;
+    if(!Array.isArray(list))throw new Error('depo okunamadı');
+    return list.filter(function(f){return f&&f.type==='file'&&f.sha;}).reduce(function(pr,f){
+      return pr.then(function(){
+        return ghRepo(base+'/'+encodeURIComponent(f.name),{method:'DELETE',body:{message:'fotoğraf özelliği kaldırıldı',sha:f.sha}})
+          .then(function(){n++;});});
+    },Promise.resolve());
+  }).then(function(){
+    try{localStorage.setItem(PHREPOKEY,repo);}catch(e){}
+    S.sync.repo='';S._st=Date.now();save();
+    phPurging=false;
+    toast(n?n+' fotoğraf GitHub deposundan silindi':'fotoğraf deposu zaten boş');
+    if(mSect==='sync'){if(phone())gymPaint();else render();}
+  }).catch(function(e){phPurging=false;/* sonraki açılışta tekrar dener */});
+}
+/* Senkron & Yedek'te: depo boşaltıldı, depoyu tamamen silmek için not */
+function phPurgeNote(){
+  var r='';try{r=localStorage.getItem(PHREPOKEY)||'';}catch(e){}
+  if(!r)return '';
+  return '<div class="mhint2" style="margin-top:16px;padding-top:12px;border-top:1px solid var(--line)">'+
+    'Fotoğraflar uygulamadan ve <b>'+esc(r)+'</b> deposundan silindi. Git geçmişinden de tamamen '+
+    'silinmesi için depoyu GitHub’da silebilirsin: <b>github.com/'+esc(r)+'/settings</b> → en alttaki '+
+    '“Delete this repository”.</div>'+
+    '<button class="mbtn" data-a="phnoteok" style="margin-top:8px">Tamam, bu notu gizle</button>';
+}
 function ghWait(ms){return new Promise(function(r){setTimeout(r,ms);});}
 /* GitHub, aynı depoya arka arkaya yazınca 409 (Conflict) veriyor.
    Bu yüzden her yazma sırayla, aralıklı ve gerekirse tekrar denenerek yapılır. */
@@ -10548,6 +10583,8 @@ function phCreateRepo(name){
   }).catch(function(e){phSetMsg('');toast('depo hatası: '+e.message);});
 }
 function phSync(silent){
+  /* v89: fotoğraf özelliği kaldırıldı — hiçbir koşulda fotoğraf indirmez/yüklemez */
+  return Promise.resolve();
   if(phSyncing)return Promise.resolve();
   if(!repoOK()){if(!silent)toast('önce özel depoyu bağla');return Promise.resolve();}
   phEnsureIds();
@@ -11349,7 +11386,7 @@ function render(){
    kirletiyordu. Artık her sekme kendi işini gösteriyor, ayarlar ayrı. */
 var dTab='today';
 var DTABS=[['today','Bugün'],['prog','İlerleme'],['mot','Motivasyon'],['cal','Takvim'],
-           ['photo','Fotoğraf'],['set','Ayarlar']];
+           ['set','Ayarlar']];
 function deskBody(){
   if(dTab==='prog')
     return '<div id="z-mus">'+musCardD()+'</div>'+
@@ -11362,14 +11399,10 @@ function deskBody(){
   if(dTab==='cal')
     return '<div id="z-cal">'+calendar()+'</div>'+
       '<div id="z-scal">'+scoreCalendar()+'</div>';
-  if(dTab==='photo')
-    return '<div id="z-photo">'+photoCard()+'</div>';
   if(dTab==='set')
     return '<div id="z-set">'+settings()+'</div>'+
       '<div id="z-prog">'+programCard()+'</div>'+
-      '<div id="z-bak"><div class="card dom dom-bod"><div class="hd"><h2>Yedek &amp; Depo</h2>'+
-        '<span class="meta">fotoğraf deposu, yedekler, geçiş kontrolü</span></div>'+
-        '<div style="padding:6px 18px 16px">'+phBackupPanel()+migPanel()+'</div></div></div>'+
+      (phPurgeNote()?'<div class="card"><div style="padding:6px 18px 16px">'+phPurgeNote()+'</div></div>':'')+
       '<div id="z-sync">'+syncCard()+'</div>';
   return '<div id="z-hero">'+heroD()+'</div>'+
     '<div id="z-kpi">'+kpi()+'</div>'+
@@ -11729,7 +11762,7 @@ app.addEventListener('click',function(ev){
     if(!tv){toast('anahtar boş');return;}
     S.sync.token=tv;STORE.set(KEY,JSON.stringify(S));
     toast('anahtar güncellendi');
-    syncNow().then(function(){if(repoOK())phSync(true);});
+    syncNow().then(function(){phPurge();});
     render();}
   else if(a==='daytype'){
     var dk=t.getAttribute('data-k');
@@ -11890,6 +11923,7 @@ app.addEventListener('click',function(ev){
       wakeOn();timer.iv=setInterval(tickRest,250);}
     else{timer.endAt+=30000;timer.total+=30;}
     saveRest();paintRest();pushSchedule();}
+  else if(a==='phnoteok'){try{localStorage.removeItem(PHREPOKEY);}catch(e){}if(phone())gymPaint();else render();}
   else if(a==='restskip'){clearRest();pushCancel();paintRest();}
   else if(a==='pushon'){pushMsg='izin isteniyor…';
     pushEnable().then(function(){if(phone())gymPaint();else render();});}
@@ -12045,20 +12079,12 @@ STORE.get(KEY).then(function(res){
   applyTheme();
   try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').then(pushVerify,function(){});}catch(e){}
   try{
-    var pl=loadPhotos();
-    /* poz etiketleri de bu zincirde iniyor; ilk çizim onları bekler,
-       yoksa galeri bir an etiketsiz görünüp sonra yerine oturuyor */
-    var pchain=(pl&&pl.then)
-      ? pl.then(function(){return loadPhSkip();}).then(function(){return loadPhDel();})
-          .then(function(){return loadPhPose();})
-          .then(function(){try{phApplyDeletes();phDedupe();phEnsureIds();}catch(e){}})
-          .catch(function(){})
-      : Promise.resolve();
-    pchain.then(function(){
+    /* v89: fotoğraflar artık yüklenmiyor; açılışta bir kez temizlik (phPurge) */
+    Promise.resolve().then(function(){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
     }).then(function(){render();}).catch(function(){render();})
-      .then(function(){restoreRest();});
+      .then(function(){restoreRest();phPurge();});
     /* kayıt 450ms gecikmeli yazılıyor; o aralıkta uygulama kapanırsa son giriş uçmasın */
     function flushSave(){
       try{clearTimeout(st);}catch(e){}
@@ -12072,16 +12098,10 @@ STORE.get(KEY).then(function(res){
     window.addEventListener('focus',function(){resumeRest();});
     if(S.sync.token&&S.sync.gist){
       syncNow(true);
-      /* fotoğraflar ayrı depoda — açılışta ve sekmeye dönüşte onları da çek,
-         yoksa telefonda çekilen fotoğraf webde hiç görünmez */
-      if(repoOK())setTimeout(function(){
-        if(Date.now()-(S.sync.phCool||0)>600000)phSync(true);},1500);
       document.addEventListener('visibilitychange',function(){
         if(document.hidden)return;
         resumeRest();
         if(S.sync.token&&S.sync.gist)syncNow(true);
-        if(repoOK()&&Date.now()-(S.sync.phLast||0)>300000&&
-           Date.now()-(S.sync.phCool||0)>600000)phSync(true);
       });
     }
   }
