@@ -2723,6 +2723,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-06',
+  t:'Geçmiş günler kendi hedefleriyle (v90)',
+  y:['Hedefler değişince geçmiş günlerin puanı, takvim, haftalık özetler, son 7 gün ve hafta tablosu bugünkü hedefe göre yeniden hesaplanıyordu. Artık her gün o gün geçerli olan hedefle değerlendiriliyor.',
+     'Kalori, makrolar, adım, hedef kilo ve program süresi tarih kilidinde. 6 Eki’ye kadar eski hedefler (2150 kcal · 177P/215K/64Y · 10.000 adım · 73 kg · 25 hafta) geçerli. Haftalık özetteki kilo puanı da o haftanın gereken hızıyla hesaplanıyor.',
+     'Rapor başlığında hedef geçmişi yazıyor.']},
  {d:'2026-10-05',
   t:'Fotoğraf özelliği kaldırıldı (v89)',
   y:['Fotoğraf sekmesi, masaüstündeki Fotoğraf sekmesi ve fotoğraf yedek panelleri kaldırıldı. Uygulama artık fotoğraf yüklemiyor, senkronlamıyor.',
@@ -3912,8 +3917,69 @@ var STORE=(function(){
 var st=null,tt=null;
 function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');
   clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on');},1400);}
+/* ============ v90 · HEDEF GEÇMİŞİ (tarih kilidi) ============
+   HATA: S.targets tek bir "bugünkü hedef" tutuyordu; geçmiş günler de onunla
+   puanlanıyordu. 6 Eki'de kalori/makro/adım hedefi ve hedef kilo değişince geçmiş
+   günlerin puanı, haftalık özetler, takvim, son 7 gün ve hafta tablosu geriye dönük
+   değişti — o günlerde geçerli olmayan bir hedefe göre. Programdaki PROGHIST'in
+   aynısı: S.tgtHist = [{from:'YYYY-MM-DD', t:{steps,kcal,protein,carbs,fat,goalW,weeks}}],
+   from'a göre sıralı; bir günün hedefi = from'u o güne eşit ya da önce olan son kayıt.
+   Hedef hangi yoldan değişirse değişsin (ayar, otomatik hedef, yedek yükleme,
+   senkron) save() son kaydı günceller: aynı gün içindeki değişiklikler o günün
+   kaydının üstüne yazılır, yeni gün yeni kayıt açar. */
+function tgtSnap(){
+  var T=S.targets||{};
+  return {steps:T.steps,kcal:T.kcal,protein:T.protein,carbs:T.carbs,fat:T.fat,
+    goalW:S.goal?S.goal.weight:null,weeks:S.weeks};
+}
+function TG(d){
+  var h=S.tgtHist;
+  if(!h||!h.length||!d)return tgtSnap();
+  for(var i=h.length-1;i>=0;i--)if(d>=h[i].from)return h[i].t;
+  return h[0].t;
+}
+function tgtTrack(){
+  var h=S.tgtHist=Array.isArray(S.tgtHist)?S.tgtHist:[];
+  var now=tgtSnap(),js=JSON.stringify(now),last=h[h.length-1];
+  if(last&&JSON.stringify(last.t)===js)return;
+  var td=today();
+  if(!last)h.push({from:S.startDate||td,t:now});
+  else if(last.from>=td)last.t=now;
+  else h.push({from:td,t:now});
+}
+/* İlk kurulum. Geçmiş tutulmaya başlamadan önce hedefler bir kez değişmişti
+   (6 Eki): o tarihe kadar geçerli olanlar 28 Eyl raporunda yazıyor —
+   2150 kcal · 177P / 215K / 64Y · 10.000 adım · 25 hafta · 73 kg. Bugünkü hedefler
+   bunlardan farklıysa değişiklik günü ayarların son değiştiği gün (S._st) sayılır. */
+/* bir gün listesinin hedeflerinin ortalaması — "son 7 gün" kıyasları için */
+function TGavg(ds){
+  var o=tgtSnap();if(!ds||!ds.length)return o;
+  ['kcal','protein','carbs','fat','steps'].forEach(function(k){
+    o[k]=ds.reduce(function(a,d){return a+(TG(d)[k]||0);},0)/ds.length;});
+  return o;
+}
+function tgtInit(){
+  if(Array.isArray(S.tgtHist)&&S.tgtHist.length)return;
+  var OLD={steps:10000,kcal:2150,protein:177,carbs:215,fat:64,goalW:73,weeks:25};
+  var now=tgtSnap(),st0=S.startDate||today();
+  if(JSON.stringify(now)===JSON.stringify(OLD)){S.tgtHist=[{from:st0,t:now}];return;}
+  var ch=S._st?iso(new Date(S._st)):today();
+  if(ch<'2026-10-01'||ch>today())ch=today();
+  S.tgtHist=[{from:st0,t:OLD},{from:ch,t:now}];
+}
+/* belirli bir gün itibarıyla gereken hız (o günkü hedef kilo ve program süresiyle) */
+function reqSlopeAt(d){
+  var tw=trendW(),w=null;
+  for(var i=0;i<tw.length;i++){if(tw[i].d<=d)w=tw[i].v;else break;}
+  var g=TG(d);
+  if(w==null||g.goalW==null||!S.startDate)return null;
+  var wl=Math.max(0.5,(g.weeks||S.weeks)-dayDiff(S.startDate,d)/7);
+  var gap=w-g.goalW;
+  return gap<=0?0:-(gap/wl);
+}
 function save(d){
   if(d&&S.days[d])S.days[d]._t=Date.now();
+  try{tgtTrack();}catch(e){}
   _pc={};_sc={};_gc={};_lf=null;
   clearTimeout(st);st=setTimeout(function(){
     STORE.set(KEY,JSON.stringify(S)).then(function(){toast('kaydedildi');})
@@ -4242,7 +4308,7 @@ function measDueOn(d){
 function dayScore(d){
   if(d>today())return null;
   if(S.startDate&&d<S.startDate)return null;
-  var r=D(d),T=S.targets,it=[];
+  var r=D(d),T=TG(d),it=[];   /* v90: o günün hedefi */
   var dt=effDt(d),t=dt?PROGRAM[dt]:null,trav=(dt==='trav');
 
   /* 1 · antrenman */
@@ -4957,9 +5023,9 @@ function ring(size,stroke,segs,mid,sub,track){
 }
 /* son 7 günün küçük halkaları — hangi gün tuttu, hangi gün kaçtı */
 function weekRings(ds,mode){
-  var T=S.targets,last=ds.slice(-7),g='';
+  var last=ds.slice(-7),g='';
   last.forEach(function(d){
-    var r=D(d),segs=[],has=false,lbl=GUN[pd(d).getDay()].slice(0,1);
+    var T=TG(d),r=D(d),segs=[],has=false,lbl=GUN[pd(d).getDay()].slice(0,1);
     if(mode==='kcal'){
       if(r.kcal!=null){has=true;
         var f=r.kcal/T.kcal;
@@ -5003,7 +5069,7 @@ function statPanel(label,unit,col,pts,goal,mkey){
 
 /* ---------- gelişim kartı ---------- */
 function trendChart(){
-  var ds=chartDays(),T=S.targets;
+  var ds=chartDays(),T=TGavg(ds.slice(-7));   /* v90: son 7 günün kendi hedefleri */
   var head='<div class="card dom dom-bod"><div class="hd"><h2>Gelişim</h2><span class="meta">'+
     (ds.length?fdate(ds[0])+' – '+fdate(ds[ds.length-1]):'veri bekleniyor')+'</span></div>';
   if(!ds.length)
@@ -5099,7 +5165,7 @@ function trendChart(){
 }
 
 function adherence(){
-  var T=S.targets,ks=keys().filter(function(d){return d<=today();}).slice(-7);
+  var ks=keys().filter(function(d){return d<=today();}).slice(-7),T=TGavg(ks);   /* v90 */
   if(!ks.length)return card('Son 7 Gün Uyum','—','<div style="padding:40px 20px;text-align:center;color:'+THC.c23+';font-size:13.5px">Henüz kayıt yok.</div>');
   function avg(k){var a=ks.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});
     return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
@@ -5133,7 +5199,7 @@ function card(title,meta,body,cls,body2){
 
 /* ============ GÜN KARTI ============ */
 function dayCard(){
-  var r=D(cur),T=S.targets,dt=planOf(cur),t=PROGRAM[dt],chosen=!!dtOf(cur);
+  var r=D(cur),T=TG(cur),dt=planOf(cur),t=PROGRAM[dt],chosen=!!dtOf(cur);
   var isT=cur===today(), wk=weekIdx(cur), pdn=progDay(cur);
   var macroKcal=(r.p||0)*4+(r.c||0)*4+(r.f||0)*9;
 
@@ -5370,7 +5436,7 @@ function sessionLine(d,ov){
 /* ============ HAFTALIK TABLO ============ */
 var wkOffset=0;
 function weekTable(){
-  var m=addD(monday(today()),wkOffset*7),T=S.targets;
+  var m=addD(monday(today()),wkOffset*7),T=TG(addD(m,6)>today()?today():addD(m,6));
   var days=[];for(var i=0;i<7;i++)days.push(addD(m,i));
   var GRIDW='150px repeat(7,minmax(0,1fr)) 92px';
   function avg(vals){var a=vals.filter(function(v){return v!=null;});return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
@@ -5386,14 +5452,14 @@ function weekTable(){
       }).join('')+
       '<div class="c avg">'+(av==null?'·':fmtf(av))+'</div>';
   }
-  function tgtRow(label,key,tgt,unit,inv){
+  function tgtRow(label,key,tgt,unit,inv,tk){
     var vals=days.map(function(d){return D(d)[key];});
     var a=vals.filter(function(v){return v!=null;});
     var av=a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;
     return '<div class="c l">'+label+'<span style="color:'+THC.c28+';font-weight:600;margin-left:5px">'+ti(tgt)+unit+'</span></div>'+
       days.map(function(d,i){
-        var v=vals[i],col=''+THC.c36+'';
-        if(v!=null)col=inv?(v<=tgt*1.08?C.green:C.red):(v>=tgt?C.green:v>=tgt*.75?''+THC.c32+'':C.orange);
+        var v=vals[i],col=''+THC.c36+'',tg=tk?(TG(d)[tk]||tgt):tgt;   /* v90: o günün hedefi */
+        if(v!=null)col=inv?(v<=tg*1.08?C.green:C.red):(v>=tg?C.green:v>=tg*.75?''+THC.c32+'':C.orange);
         return '<div class="c'+(d===today()?' today':'')+'" style="color:'+col+';font-weight:'+(v!=null?700:400)+'">'+(v==null?'·':ti(v))+'</div>';
       }).join('')+
       '<div class="c avg">'+(av==null?'·':ti(av))+'</div>';
@@ -5454,11 +5520,11 @@ function weekTable(){
     row('Kilo <span style="color:'+THC.c28+';font-weight:600">kg</span>',function(d){return D(d).w;},function(v){return v.toFixed(1);},'avg',C.blue)+
     row('Bel <span style="color:'+THC.c28+';font-weight:600">cm</span>',function(d){return D(d).b;},function(v){return v.toFixed(1);},'avg',C.teal)+
     '<div class="sec">Beslenme &amp; hareket</div>'+
-    tgtRow('Adım','st',S.targets.steps,'')+
-    tgtRow('Kalori','kcal',S.targets.kcal,'',true)+
-    tgtRow('Protein','p',S.targets.protein,'g')+
-    tgtRow('Karbonhidrat','c',S.targets.carbs,'g')+
-    tgtRow('Yağ','f',S.targets.fat,'g')+
+    tgtRow('Adım','st',T.steps,'',false,'steps')+
+    tgtRow('Kalori','kcal',T.kcal,'',true,'kcal')+
+    tgtRow('Protein','p',T.protein,'g',false,'protein')+
+    tgtRow('Karbonhidrat','c',T.carbs,'g',false,'carbs')+
+    tgtRow('Yağ','f',T.fat,'g',false,'fat')+
     supTblRow()+
     '<div class="sec">Antrenman</div>'+
     gymRow()+volRow()+
@@ -6111,7 +6177,7 @@ function gh(path,opts,tryN){
 function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
-    base:S.base,goal:S.goal,targets:S.targets,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
+    base:S.base,goal:S.goal,targets:S.targets,tgtHist:S.tgtHist,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
     meas:!!S.meas};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
@@ -6139,7 +6205,7 @@ function mergeRemote(rm){
      phPose alanları bilerek okunmuyor (depo bağlantısını geri getirmesin, fotoğraf
      veritabanını yeniden açmasın). */
   if((rm._st||0)>(S._st||0)){
-    ['startDate','weeks','restDays','restWeeks','base','goal','targets','deloadEvery','autoTargets'].forEach(function(k){
+    ['startDate','weeks','restDays','restWeeks','base','goal','targets','tgtHist','deloadEvery','autoTargets'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
     S._st=rm._st;ch++;
   }
@@ -6283,7 +6349,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v89 · 5 Eki 2026';
+var APPVER='v90 · 6 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6654,7 +6720,7 @@ function gymWorkout(){
 
 /* --- gün sekmesi --- */
 function gymDay(){
-  var r=D(cur),T=S.targets;
+  var r=D(cur),T=TG(cur);
   function fld(k,lbl,unit,tgt,col,inv){
     var v=r[k],p=(v==null||!tgt)?0:clamp(v/tgt*100);
     var c2=v==null?''+THC.c39+'':(inv?(v<=tgt*1.08?col:C.red):(p>=100?col:p>=75?C.amber:C.orange));
@@ -7171,10 +7237,13 @@ function musCard(mw,mt,wp,mex){
 /* Web'deki "Son 7 Gün Ortalaması" kartının telefon sürümü.
    Aynı hesap, salon moduna uygun tek sütun düzeni. */
 function adherenceM(){
-  var T=S.targets,ks=keys().filter(function(d){return d<=today();}).slice(-7);
+  var ks=keys().filter(function(d){return d<=today();}).slice(-7);
   if(!ks.length)return '';
   function avg(k){var a=ks.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});
     return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  /* v90: kıyas hedefi, bu yedi günün KENDİ hedeflerinin ortalaması */
+  var T={};['kcal','protein','carbs','fat','steps'].forEach(function(k){
+    T[k]=ks.reduce(function(a,d){return a+(TG(d)[k]||0);},0)/ks.length;});
   var gymPlan=0,gymDone=0;
   ks.forEach(function(d){var t=PROGRAM[dtOf(d)];
     if(t&&t.ex.length){gymPlan++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gymDone++;}});
@@ -7612,11 +7681,11 @@ function gymSum(){
 function AVG7META(k){
   var T=S.targets;
   var M={
-    kcal:{l:'Kalori',u:'kcal',t:T.kcal,c:C.blue,inv:true},
-    p:{l:'Protein',u:'g',t:T.protein,c:C.green},
-    c:{l:'Karbonhidrat',u:'g',t:T.carbs,c:C.amber},
-    f:{l:'Yağ',u:'g',t:T.fat,c:C.violet},
-    st:{l:'Adım',u:'',t:T.steps,c:C.orange},
+    kcal:{l:'Kalori',u:'kcal',t:T.kcal,tk:'kcal',c:C.blue,inv:true},
+    p:{l:'Protein',u:'g',t:T.protein,tk:'protein',c:C.green},
+    c:{l:'Karbonhidrat',u:'g',t:T.carbs,tk:'carbs',c:C.amber},
+    f:{l:'Yağ',u:'g',t:T.fat,tk:'fat',c:C.violet},
+    st:{l:'Adım',u:'',t:T.steps,tk:'steps',c:C.orange},
     slt:{l:'Uyku',u:'sa',t:7.5,c:C.violet,dec:1},
     trn:{l:'Antrenman',u:'',t:1,c:C.pink,kind:'trn'},
     krea:{l:'Kreatin',u:'',t:1,c:C.teal,kind:'sup',sup:'kreatin'}
@@ -7646,7 +7715,8 @@ function avg7Body(k,m){
     rows.push({d:d,v:v});
     if(v==null)return;
     n++;vals.push(v);
-    var ok=m.inv?(v<=m.t*1.08&&v>=m.t*0.85):(m.kind==='trn'?v>=0.6:(m.kind==='sup'?v>0:v/m.t>=0.95));
+    var mt=m.tk?(TG(d)[m.tk]||m.t):m.t;   /* v90: o günün hedefi */
+    var ok=m.inv?(v<=mt*1.08&&v>=mt*0.85):(m.kind==='trn'?v>=0.6:(m.kind==='sup'?v>0:v/mt>=0.95));
     if(ok)hit++;
   });
   var avg=vals.length?vals.reduce(function(a,b){return a+b;},0)/vals.length:null;
@@ -8660,7 +8730,8 @@ function weekSummary(mon,wlRows){
     return m?Math.round(p/m*100):null;}
   var cats={trn:pct(['trn']),bes:pct(['kcal','prot']),step:pct(['step']),duz:pct(['weigh','krea'])};
   /* kilo */
-  var wNow=wkAvgW(mon,1),wPrev=wkAvgW(addD(mon,-7),2),req=reqSlope(),dW=null;
+  var wEnd=addD(mon,6)>td?td:addD(mon,6);
+  var wNow=wkAvgW(mon,1),wPrev=wkAvgW(addD(mon,-7),2),req=reqSlopeAt(wEnd),dW=null;   /* v90: o haftanın hedefiyle */
   if(wNow&&wPrev)dW=wNow.v-wPrev.v;
   if(dW!=null&&req!=null&&req<0){
     var loss=-dW,need=-req,ks;
@@ -8689,23 +8760,26 @@ function weekSummary(mon,wlRows){
     });
   });
   /* beslenme ve adım ayrıntısı */
-  var T=S.targets;
   function col(k){return days.map(function(d){return D(d)[k];}).filter(function(v){return v!=null;});}
   function avg(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
+  /* v90: "hedefte gün" her günün kendi hedefiyle */
+  function hits(k,tk,lo,hi){return days.filter(function(d){var v=D(d)[k],t=TG(d)[tk];
+    return v!=null&&v>=t*lo&&(hi==null||v<=t*hi);}).length;}
   var kc=col('kcal'),pr=col('p'),st=col('st');
   return {mon:mon,wk:wk,days:days,total:total,cats:cats,
     w:{now:wNow,prev:wPrev,d:dW,req:req},
     str:{chg:wl?wl.chg:null,up:wl?wl.up:0,eq:wl?wl.eq:0,dn:wl?wl.dn:0,sess:weekProgress(mon),ups:ups,prs:prs},
-    nut:{kcal:avg(kc),kn:kc.length,kIn:kc.filter(function(v){return v>=T.kcal*.92&&v<=T.kcal*1.08;}).length,
-      p:avg(pr),pIn:pr.filter(function(v){return v>=T.protein*.97;}).length,pn:pr.length},
-    step:{avg:avg(st),hit:st.filter(function(v){return v>=T.steps*.97;}).length,n:st.length},
+    nut:{kcal:avg(kc),kn:kc.length,kIn:hits('kcal','kcal',.92,1.08),
+      p:avg(pr),pIn:hits('p','protein',.97),pn:pr.length},
+    step:{avg:avg(st),hit:hits('st','steps',.97),n:st.length},
+    T:TG(wEnd),
     sleep:{avg:slAvg,n:sl.length},
     done:days.length===7};
 }
 function wsumHTML(mon,fin){
   var w=weekSummary(mon);
   if(!w)return '<div class="sempty">Bu hafta için kayıt yok</div>';
-  var T=S.targets,c=w.cats;
+  var T=w.T,c=w.cats;   /* v90: o haftanın hedefleri */
   function tile(lbl,v,sub){
     return '<div class="wst"><i>'+lbl+'</i><b style="color:'+(v==null?'var(--ink4)':(v>=75?C.green:(v>=55?C.amber:C.orange)))+'">'+(v==null?'—':v)+'</b>'+
       '<span class="wsbar"><span style="width:'+(v||0)+'%;background:'+sColor(v)+'"></span></span>'+
@@ -8993,8 +9067,9 @@ function motHabits(){
     if(r){
       if(r.kcal!=null)o.kc++;
       if(r.sup&&r.sup.kreatin)o.kr++;
-      if(r.p!=null){o.pDays++;if(r.p>=T.protein*0.95)o.pHit++;}
-      if(r.st!=null){o.sDays++;if(r.st>=T.steps*0.95)o.sHit++;}
+      var Td=TG(d);   /* v90: o günün hedefi */
+      if(r.p!=null){o.pDays++;if(r.p>=Td.protein*0.95)o.pHit++;}
+      if(r.st!=null){o.sDays++;if(r.st>=Td.steps*0.95)o.sHit++;}
     }
     var dt=effDt(d);if(ORDER.indexOf(dt)<0)continue;
     var e=sessionEval(d,dt),did=!!(e&&!e.empty);
@@ -9213,6 +9288,13 @@ function report(){
   o+='EMRE — TAKİP RAPORU · '+repLabel()+' ('+ks.length+' kayıtlı gün) · FORM '+APPVER.split(' ')[0]+'\n';
   o+='Program: '+flong(S.startDate)+' başlangıç · '+S.weeks+' hafta · '+S.base.weight+' → '+S.goal.weight+' kg\n';
   o+='Hedefler: '+T.kcal+' kcal · '+T.protein+'P / '+T.carbs+'K / '+T.fat+'Y g · '+T.steps+' adım\n';
+  /* v90: hedef değişiklikleri — geçmiş günler kendi hedefleriyle değerlendirilir */
+  if(S.tgtHist&&S.tgtHist.length>1){
+    o+='Hedef geçmişi (her gün kendi hedefiyle puanlanır):\n';
+    S.tgtHist.forEach(function(h,i){var t=h.t,nx=S.tgtHist[i+1];
+      o+='  '+fdate(h.from)+(nx?' – '+fdate(addD(nx.from,-1)):' → bugün')+': '+t.kcal+' kcal · '+t.protein+'P / '+
+        t.carbs+'K / '+t.fat+'Y g · '+t.steps+' adım · hedef '+t.goalW+' kg · '+t.weeks+' hafta\n';});
+  }
   o+='Bugün: '+flong(today())+' (Hafta '+weekIdx(today())+', '+progDay(today())+'. gün)';
   var dlR=nextDeload();
   if(dlR)o+=dlR.now?' · BU HAFTA DELOAD':' · sonraki deload: hafta '+dlR.wk;
@@ -11460,7 +11542,7 @@ function markFilled(t,val){
   if(val!=null&&val!=='')box.classList.add('on');else box.classList.remove('on');
 }
 function refreshDayMetrics(){
-  var r=D(cur),T=S.targets;
+  var r=D(cur),T=TG(cur);
   var map={st:[T.steps,C.orange,false,''],kcal:[T.kcal,C.blue,true,''],p:[T.protein,C.green,false,'g'],
            c:[T.carbs,C.amber,false,'g'],f:[T.fat,C.violet,false,'g']};
   Object.keys(map).forEach(function(k){
@@ -11604,7 +11686,7 @@ app.addEventListener('change',function(ev){
     var fr=new FileReader();
     fr.onload=function(){try{var d=JSON.parse(fr.result);
       if(!d||!d.days)throw 0;
-      S.days=d.days;if(d.targets)S.targets=Object.assign(S.targets,d.targets);
+      S.days=d.days;if(d.targets)S.targets=Object.assign(S.targets,d.targets);if(Array.isArray(d.tgtHist))S.tgtHist=d.tgtHist;
       if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;if(d.meas!=null)S.meas=!!d.meas;
       save();render();toast('yedek yüklendi');}catch(e){toast('yedek okunamadı');}};
     fr.readAsText(file);ev.target.value='';}
@@ -12062,6 +12144,7 @@ STORE.get(KEY).then(function(res){
     if(p.autoTargets!=null)S.autoTargets=!!p.autoTargets;
     if(p.meas!=null)S.meas=!!p.meas;
     if(p.targets)S.targets=Object.assign(S.targets,p.targets);
+    if(Array.isArray(p.tgtHist))S.tgtHist=p.tgtHist;
     if(p.base)S.base=Object.assign(S.base,p.base);
     if(p.goal)S.goal=Object.assign(S.goal,p.goal);
     if(Array.isArray(p.restDays))S.restDays=p.restDays;
@@ -12072,6 +12155,7 @@ STORE.get(KEY).then(function(res){
   /* Başlangıç tarihi SADECE hiç kayıt yoksa bugüne çekilir.
      Kayıtlı bir tarih varsa asla üzerine yazma. */
   if(!had)S.startDate=today();
+  try{tgtInit();tgtTrack();}catch(e){}
   if(migrateNames())STORE.set(KEY,JSON.stringify(S));
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
