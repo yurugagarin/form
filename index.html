@@ -1035,6 +1035,8 @@ body.ovlock{position:fixed;left:0;right:0;width:100%}
 .mheroKick{font-size:9.5px;letter-spacing:1px;font-weight:700;color:var(--ink3)}
 .mheroH{font-family:'Fraunces';font-size:24px;font-weight:600;line-height:1.1;margin-top:2px;letter-spacing:-.3px}
 .mheroS{font-size:11.5px;font-weight:600;color:var(--ink2);margin-top:2px}
+.gord{color:#c98b2e;letter-spacing:.2px}
+.mheroOrd{font-size:11px;font-weight:700;color:#c98b2e;margin-top:4px}
 .mheroEta{font-size:12px;font-weight:600;color:var(--ink2);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .mheroEta:empty{display:none}
 .mheroEta b{font-weight:800;color:var(--ink)}
@@ -2723,6 +2725,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-10',
+  t:'Yapılış sırası kaydı (v91)',
+  y:['Uygulama her hareketin o gün kaçıncı yapıldığını ilk set girişinden kaydediyor. Plandan farklıysa antrenman ekranında “↕ Sıra değişti” ve hareket başlığında “bugün N. yapıldı” yazıyor.',
+     'Raporda o seansın altına yapılış sırası ve “öne alınanlarda sıçrama, geriye kalanlarda düşüş beklenir” notu, hareket satırına “SIRA: plan 8. → yapılan 1.”, güç endeksi satırına sıra değişen seanslar ekleniyor. Haftalık özette de görünüyor.',
+     'Kıyaslar, puanlar ve güç endeksi değişmiyor — yalnız okurken bilinsin diye not düşülüyor.']},
  {d:'2026-10-06',
   t:'Geçmiş günler kendi hedefleriyle (v90)',
   y:['Hedefler değişince geçmiş günlerin puanı, takvim, haftalık özetler, son 7 gün ve hafta tablosu bugünkü hedefe göre yeniden hesaplanıyordu. Artık her gün o gün geçerli olan hedefle değerlendiriliyor.',
@@ -4624,6 +4631,36 @@ function markWork(r){
   if(r.we)delete r.we;
   r.wl=now;
 }
+/* ============ v91 · YAPILIŞ SIRASI ============
+   Salon doluyken hareketler plandaki sırayla yapılamıyor (ör. 8. hareketle
+   başlamak). Öne alınan hareket daha dinç yapıldığı için sıçrar, geriye kalanlar
+   yorgunlukla düşer — rapor bunu "güç düştü" gibi okutuyordu. Her hareketin
+   bugünkü İLK dokunuşu sırayla r.ord'a yazılır (markWork gibi yalnız bugünün
+   kaydında; geçmiş günü sonradan düzeltmek sırayı değiştirmez). Kıyaslar, puanlar
+   ve güç endeksi DEĞİŞMEZ — yalnız raporda, antrenman ekranında ve haftalık özette
+   not düşülür. */
+function markOrd(r,name){
+  if(!r||!name||cur!==today())return;
+  r.ord=r.ord||[];
+  if(r.ord.indexOf(name)<0)r.ord.push(name);
+}
+/* sıra değişti mi; hareket başına plan sırası → yapılış sırası.
+   Değişti sayılır: plana göre önce gelen bir hareketten önce yapılan hareket
+   varsa ya da gün planın ilk hareketi dışında bir hareketle başladıysa. */
+function ordInfo(d){
+  var r=D(d),ord=(r&&r.ord)||[];if(!ord.length)return null;
+  var dt=dtOf(d)||planOf(d),plan=planEx(dt,d).map(function(x){return x.n;});
+  if(!plan.length)return null;
+  var seq=ord.filter(function(n){return plan.indexOf(n)>=0;});if(!seq.length)return null;
+  var inv=false;
+  for(var i=1;i<seq.length;i++)if(plan.indexOf(seq[i])<plan.indexOf(seq[i-1]))inv=true;
+  var lateStart=plan.indexOf(seq[0])>0;
+  if(!inv&&!lateStart)return null;
+  var by={},early=[],late=[];
+  seq.forEach(function(n,i){var pp=plan.indexOf(n)+1,ap=i+1;by[n]={plan:pp,act:ap,d:ap-pp};
+    if(ap<pp)early.push(n);else if(ap>pp)late.push(n);});
+  return {seq:seq,plan:plan,by:by,early:early,late:late};
+}
 function endWork(r){
   if(!r||!r.ws)return;
   var now=Date.now();
@@ -6349,7 +6386,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v90 · 6 Eki 2026';
+var APPVER='v91 · 10 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6687,7 +6724,9 @@ function gymWorkout(){
     '<div class="ghead">'+
       '<button class="gfig" data-a="fig" data-n="'+esc(e.n)+'">'+figSVG(e.n)+'</button>'+
       '<div style="flex:1;min-width:0">'+
-        '<div class="gnum">'+(exIdx+1)+' / '+TEX.length+' · HAREKET</div>'+
+        '<div class="gnum">'+(exIdx+1)+' / '+TEX.length+' · HAREKET'+
+          (function(){var oi=ordInfo(cur),b=oi&&oi.by[e.n];if(!b||b.d===0)return '';
+            return ' <span class="gord">↕ bugün '+b.act+'. yapıldı</span>';})()+'</div>'+
         '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+
         '<div class="gtgt">'+te.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme'+
           (te.dl?' <b style="color:'+C.amber+'">· DELOAD ('+e.s+'→'+te.s+' set)</b>':'')+'</div>'+
@@ -8813,6 +8852,9 @@ function wsumHTML(mon,fin){
   o+='<div class="wsec"><div class="wsech">GÜÇ</div>';
   if(w.str.chg!=null)o+='<div class="wsrow"><span>Güç değişimi</span><b style="color:'+(w.str.chg>=0?C.green:C.orange)+'">'+sg(w.str.chg,1)+'%</b></div>'+
     '<div class="wsrow"><span>Hareketler</span><b>↑'+w.str.up+' &nbsp;='+w.str.eq+' &nbsp;↓'+w.str.dn+'</b></div>';
+  var odW=w.days.filter(function(d){return ordInfo(d);});
+  if(odW.length)o+='<div class="wsrow"><span>Sıra değişen seans</span><b style="color:#c98b2e">'+
+    odW.map(function(d){return fdate(d);}).join(', ')+'</b></div>';
   if(w.str.prs.length)o+='<div class="wsrow"><span>Rekor kıran hareket</span><b style="color:'+C.amber+'">'+w.str.prs.length+'</b></div>';
   if(w.str.ups.length)o+='<div class="wsups">'+w.str.ups.map(function(u){
       return '<span>'+esc(u.n.split(' / ')[0])+' <b>'+fkg(u.from)+' → '+fkg(u.to)+'</b></span>';}).join('')+'</div>';
@@ -9388,6 +9430,13 @@ function report(){
           e.tam+'/'+e.total+' hareket tamam'+
           (e.off?', +'+e.off+' plan dışı':'')+', hacim '+Math.round(e.vol)+' kg'+
           (wmR!=null?', süre '+wmR+' dk'+(D(d).we?'':' [bitir’e basılmamış]'):'')+')':' — kayıt yok')+'\n';
+        /* v91: sıra değiştiyse analiz notu — kıyaslar değişmez, okuma şekli değişir */
+        var oiR=ordInfo(d);
+        if(oiR)o+='  >> SIRA DEĞİŞTİ (uygulamanın kaydı, ilk set girişlerinin sırası): '+
+          oiR.seq.map(function(n,i){return (i+1)+'. '+n+' (plan '+oiR.by[n].plan+'.)';}).join(' → ')+'.'+
+          (oiR.early.length?' Öne alınanlar ('+oiR.early.join(', ')+') daha dinç yapıldı — bu seansta sıçrama beklenir.':'')+
+          (oiR.late.length?' Geriye kalanlar ('+oiR.late.join(', ')+') daha yorgun yapıldı — bu seansta düşüş beklenir, güç kaybı sayma.':'')+
+          ' Bir sonraki seans plan sırasıyla yapılırsa öne alınanlarda geri düşüş de normal.\n';
         dayEx(d,dtOf(d)).forEach(function(x){
           var f=((r.ex||{})[x.n]||[]).filter(function(s){return s.kg!=null&&s.rep!=null;});
           if(!f.length)return;
@@ -9400,6 +9449,8 @@ function report(){
           if(isPR(x.n,d))o+=' | REKOR';
           if(!x.off){var cc=exCmp(x.n,d,dtOf(d),tgtOn(x,d).s);
             if(cc.pct!=null)o+=' | geçen seansa göre '+cmpTxt(cc,true).t+' ('+sgp(cc.pct)+'%)';}
+          if(oiR&&oiR.by[x.n]&&oiR.by[x.n].d!==0)
+            o+=' | SIRA: plan '+oiR.by[x.n].plan+'. → yapılan '+oiR.by[x.n].act+'. ('+(oiR.by[x.n].d<0?'öne alındı':'geriye kaldı')+')';
           o+='\n';
         });
       }
@@ -9481,8 +9532,11 @@ function report(){
     o+='## GÜÇ ENDEKSİ VE KESİM KALİTESİ (güç: her hareket kendi önceki seansıyla, aynı plan günü, deload hariç, ilk k set; haftalar zincirli · '+
       'kilo: hafta sonundaki trend ÷ başlangıç trendi · göreli güç = güç ÷ kilo · hepsinde başlangıç = 100)\n';
     ssR.forEach(function(x){if(!x.n)return;var cr=byWR[x.wk];
-      o+='- Hafta '+x.wk+' ('+fdate(addD(m0R,(x.wk-1)*7))+'): güç '+sgp(x.chg)+'% ('+x.n+' kıyas: ↑'+x.up+' ='+x.eq+' ↓'+x.dn+') → endeks '+fx(x.idx,1)+
-        ((cr&&cr.w!=null)?' · trend kilo '+fx(cr.w,1)+' · göreli güç '+fx(cr.rel,1):'')+'\n';});
+      var wsR=addD(m0R,(x.wk-1)*7),odR=[];
+      for(var qi=0;qi<7;qi++){var dq=addD(wsR,qi);if(ordInfo(dq))odR.push(fdate(dq)+' '+(PROGRAM[dtOf(dq)]?PROGRAM[dtOf(dq)].short:''));}
+      o+='- Hafta '+x.wk+' ('+fdate(wsR)+'): güç '+sgp(x.chg)+'% ('+x.n+' kıyas: ↑'+x.up+' ='+x.eq+' ↓'+x.dn+') → endeks '+fx(x.idx,1)+
+        ((cr&&cr.w!=null)?' · trend kilo '+fx(cr.w,1)+' · göreli güç '+fx(cr.rel,1):'')+
+        (odR.length?' · SIRA DEĞİŞEN SEANS: '+odR.join(', ')+' (bu haftanın güç değişimini buna göre oku)':'')+'\n';});
     if(cdR&&cdR.rows.length){var Lr=cdR.rows[cdR.rows.length-1];
       o+='Başlangıçtan: güç '+sgp(Lr.s-100)+'%'+(Lr.w!=null?' · trend kilo '+sgp(Lr.w-100)+'% · göreli güç '+sgp(Lr.rel-100)+'%':'')+'\n';
       if(cdR.nc>=3)o+='Uygulamanın yorumu: '+cutMsg(cdR.rows)[0]+'\n';}
@@ -11374,6 +11428,8 @@ function workHero(){
         (ord?ord+'. GÜN · ':'')+'HAFTA '+wkLabel(weekIdx(cur))+(isDeload(cur)?' · DELOAD':'')+'</div>'+
         '<div class="mheroH">'+esc(head)+'</div>'+
         '<div class="mheroS">'+esc(line)+'</div>'+
+        (function(){var oi=isTr?ordInfo(cur):null;if(!oi)return '';
+          return '<div class="mheroOrd">↕ Sıra değişti · '+esc(oi.seq[0].split(' / ')[0])+' ile başladın — rapora not düşülüyor</div>';})()+
         (isTr?'<div class="mheroEta" id="g-eta">'+eta+'</div>':'')+'</div>'+
       (isTr?ringSVG(pct,pct>=1?C.green:''+THC.c40+'',62,doneEx+'/'+totEx):'')+
     '</div>'+
@@ -11584,7 +11640,7 @@ function applySet(t){
   var name=row.getAttribute('data-ex'),i=+box.getAttribute('data-i');
   var r=touch(cur);r.ex=r.ex||{};
   if(!r.dt)r.dt=planOf(cur);
-  markWork(r);
+  markWork(r);markOrd(r,name);
   r.ex[name]=r.ex[name]||[];
   while(r.ex[name].length<=i)r.ex[name].push({kg:null,rep:null});
   r.ex[name][i][sk]=(sk==='rir'&&t.value==='')?null:n(t.value);
@@ -11969,14 +12025,14 @@ app.addEventListener('click',function(ev){
       toast('kalori hedefi '+ti(nv2)+' yapıldı');render();}}
   else if(a==='rir'){
     var trp=planEx(planOf(cur),cur),exr=trp[exIdx],ixr=+t.getAttribute('data-i'),vr=+t.getAttribute('data-v');
-    var rr5=touch(cur);if(!rr5.dt)rr5.dt=planOf(cur);rr5.ex=rr5.ex||{};markWork(rr5);
+    var rr5=touch(cur);if(!rr5.dt)rr5.dt=planOf(cur);rr5.ex=rr5.ex||{};markWork(rr5);markOrd(rr5,exr.n);
     var ar=rr5.ex[exr.n]=rr5.ex[exr.n]||[];
     while(ar.length<=ixr)ar.push({kg:null,rep:null});
     ar[ixr].rir=(ar[ixr].rir===vr)?null:vr;
     save(cur);gymPaint();}
   else if(a==='kgstep'){
     var tks=planEx(planOf(cur),cur),exk=tks[exIdx],ixk=+t.getAttribute('data-i'),dir=+t.getAttribute('data-dir');
-    var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};markWork(rk);
+    var rk=touch(cur);if(!rk.dt)rk.dt=planOf(cur);rk.ex=rk.ex||{};markWork(rk);markOrd(rk,exk.n);
     var ak=rk.ex[exk.n]=rk.ex[exk.n]||[];
     while(ak.length<=ixk)ak.push({kg:null,rep:null});
     var base=ak[ixk].kg;
@@ -12015,7 +12071,7 @@ app.addEventListener('click',function(ev){
   else if(a==='restmax'){timer.mini=false;paintRest();}
   else if(a==='samelast'){
     var tp=planEx(planOf(cur),cur),ex=tp[exIdx],pv=prevSess(ex.n,cur);
-    if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};markWork(rr2);
+    if(pv){var rr2=touch(cur);if(!rr2.dt)rr2.dt=planOf(cur);rr2.ex=rr2.ex||{};markWork(rr2);markOrd(rr2,ex.n);
       rr2.ex[ex.n]=pv.sets.map(function(x){return {kg:x.kg,rep:x.rep,rir:null};});
       save(cur);gymPaint();}}
   else if(a==='setwipe'){
@@ -12032,7 +12088,7 @@ app.addEventListener('click',function(ev){
     }}
   else if(a==='setdone'){
     var tp2=planEx(planOf(cur),cur),ex2=tp2[exIdx],ix3=+t.getAttribute('data-i');
-    var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};markWork(rr3);
+    var rr3=touch(cur);if(!rr3.dt)rr3.dt=planOf(cur);rr3.ex=rr3.ex||{};markWork(rr3);markOrd(rr3,ex2.n);
     var arr=rr3.ex[ex2.n]=rr3.ex[ex2.n]||[];
     while(arr.length<=ix3)arr.push({kg:null,rep:null});
     if(arr[ix3].kg==null||arr[ix3].rep==null){
