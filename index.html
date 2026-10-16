@@ -2208,6 +2208,73 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+/* v93 · hız kartı, açıklamalar, grafik lejantı */
+.pqstat{border-radius:12px;padding:11px 13px;margin:2px 0 10px;font-size:12.5px;font-weight:600;line-height:1.5}
+.pqstat b{display:block;font-size:14px;font-weight:800;margin-bottom:2px}
+.pqstat span{color:#3a342c}
+html.dark .pqstat span{color:#eae4dd}
+.pqrow{padding:10px 0;border-top:1px solid #ece1cd}
+html.dark .pqrow{border-color:#36322c}
+.pqrow .pql{font-size:10px;letter-spacing:.9px;text-transform:uppercase;font-weight:800;color:#a8987c}
+.pqrow .pqv{font-family:'Fraunces';font-size:20px;font-weight:600;line-height:1.25;margin-top:2px;color:#3a342c}
+.pqrow .pqv span{font-family:Karla,system-ui,sans-serif;font-size:12px;font-weight:700;color:#8a7f6f}
+.pqrow .pqs{font-size:11.5px;font-weight:600;color:#8a7f6f;margin-top:2px;line-height:1.45}
+.pqrow .pqs b{color:#3a342c}
+.pqwarn{margin-top:6px;font-size:12px;font-weight:800;color:#a15c00;background:#fdf1d6;border-radius:9px;padding:6px 9px}
+html.dark .pqrow .pql{color:#a49889}
+html.dark .pqrow .pqv{color:#f7f5f2}
+html.dark .pqrow .pqv span,html.dark .pqrow .pqs{color:#bbb2a7}
+html.dark .pqrow .pqs b{color:#eae4dd}
+html.dark .pqwarn{color:#e3b75e;background:#2c2519}
+.xp{margin-top:6px}
+.xp summary{cursor:pointer;list-style:none;font-size:11.5px;font-weight:800;color:#8a7f6f;display:inline-flex;align-items:center;gap:5px;padding:3px 0}
+.xp summary::-webkit-details-marker{display:none}
+.xp summary::before{content:'?';display:inline-grid;place-items:center;width:15px;height:15px;border-radius:50%;border:1.5px solid currentColor;font-size:9.5px}
+.xp[open] summary::before{content:'−'}
+.xpb{font-size:12px;line-height:1.6;font-weight:500;color:#5a5044;background:#f7f1e4;border-radius:10px;padding:9px 11px;margin-top:4px}
+.xpb b{font-weight:800;color:#3a342c}
+html.dark .xp summary{color:#bbb2a7}
+html.dark .xpb{background:#1d1b18;color:#d6cec4}
+html.dark .xpb b{color:#f7f5f2}
+.clg{display:flex;flex-wrap:wrap;gap:4px 12px;margin:7px 2px 4px;font-size:11px;font-weight:700;color:#8a7f6f}
+.clg span{display:inline-flex;align-items:center;gap:5px}
+.clg svg{flex:none}
+html.dark .clg{color:#bbb2a7}
+.ctip{min-height:46px}
+.stallch{margin-top:8px}
+/* v93: dar ekranda (320 px) yatay kaydırma olmasın — kart satırlarındaki mini çizgi ve
+   yüzde sütunları daralır; planlı ara formundaki tarih kutuları alt alta iner */
+.brk2 .ginp,.brk2 .inp{min-width:0;width:100%}
+body.gym button.scard{max-width:calc(100% - 28px);min-width:0}   /* düğme kart = içerik genişliği; 14+14 kenar boşluğu düşülür */
+@media (max-width:360px){
+  .scard .srow svg{width:52px!important}
+  .scard .sgain{min-width:30px!important}
+  .brk2{grid-template-columns:minmax(0,1fr)}
+}
+.pdesk{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px;margin-top:12px}
+/* v93 · planlı aralar */
+.brkbox{margin-top:16px}
+.brkh{font-size:11px;letter-spacing:1.1px;text-transform:uppercase;color:#a8987c;font-weight:800;margin-bottom:8px}
+.brkrow{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid #e8dcc6;border-radius:12px;margin-bottom:8px;background:#fbf8f2}
+.brkrow.past{opacity:.6}
+.brktx{flex:1;min-width:0;display:block}
+.brktx b{display:block;font-size:13.5px;font-weight:800;color:#3a342c}
+.brktx i{display:block;font-style:normal;font-size:11.5px;font-weight:600;color:#a8987c;margin-top:2px}
+.brktx u{display:block;text-decoration:none;font-size:11.5px;color:#8a7f6f;margin-top:2px}
+.brkdel{flex:none;min-width:44px;height:36px;border-radius:10px;border:1px solid #e4d9c2;background:#fff;color:#8a7f6f;font:inherit;font-weight:800;cursor:pointer}
+.brkdel.arm{background:#dc2626;border-color:#dc2626;color:#fff}
+.brkform{border:1px dashed #d8c9ad;border-radius:12px;padding:12px;margin-bottom:8px}
+.brk2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px}
+.brkchk{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;margin:4px 0 10px;color:#3a342c}
+.brkchk input{width:20px;height:20px}
+html.dark .brkh{color:#a49889}
+html.dark .brkrow{background:#211e1b;border-color:#3a342d}
+html.dark .brktx b,html.dark .brkchk{color:#eae4dd}
+html.dark .brktx i{color:#a49889}
+html.dark .brktx u{color:#bbb2a7}
+html.dark .brkdel{background:#292521;border-color:#3a342d;color:#bbb2a7}
+html.dark .brkdel.arm{background:#b8463c;border-color:#b8463c;color:#fff}
+html.dark .brkform{border-color:#49433b}
 .wbtip small{font-size:11.5px;font-weight:700;opacity:.75}
 /* v92: aralık seçimi — grafik hep ekrana sığar, yakından bakmak için kısa aralık */
 .mbrng{display:flex;gap:4px;margin-top:8px;padding:3px;border-radius:11px;background:#f3ecdd}
@@ -2735,6 +2802,15 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-16',
+  t:'Hız, projeksiyon ve planlı aralar (v93)',
+  y:['Gereken hız artık iki şeyi hesaba katıyor: kilo düştükçe bakımın da düşmesi (k = 30 kcal/gün/kg, Hedefler’den değişir) ve takipsiz planlı aralar. Bugün gereken −0.52, ortalama −0.42, hedefe yakın −0.34 kg/hf. 16 Eki öncesi günler eski yöntemle kalır, geçmiş değerlendirmeler değişmez.',
+     'Planlı aralar: Daha → Hedefler’den eklenip silinir. İlk kayıt 26 Kas – 6 Ara (seyahat, takip yok, antrenman yok). Antrenmansız ara günleri takvimde Seyahat görünür, takipsiz günler gün puanına girmez. Ara bitince 21 gün hız “güvenilir değil” işaretlenir ve öneri verilmez.',
+     '21 günlük hızın yanında %95 bandı var (bugün −0.58 ±0.24). Karar bu banda değil, 42 günlük projeksiyona göre: bakım ≈ 2599 kcal, beklenen −0.50 ±0.08, 73 kg ≈ 17 Şub 2027 (bant 29 Oca – 18 Mar). Gereken hız bandın içindeyse “Yolunda”; yavaşsa önce adım, sonra kalori önerilir; hızlıysa yalnız bilgi.',
+     'Uyku → performans: her seans kendi plan gününün ortalamasıyla kıyaslanıyor (sıra değişen, az kıyaslı ve deload seansları hariç). Sonuç: uyku +1 saat → −0.5 puan (bant −1.5 … +0.5) — veri etkiyi ayırt edemiyor. Eski “1.5 puan daha zayıf” yorumu kaldırıldı.',
+     'Takıldı mesajı kuralın baktığı pencereyi gösteriyor: “50 kg · son 3 seans set başı 10.0 / 10.0 / 10.7* · en iyi 10.7 (23 Eyl) aşılamadı · *14 Eki sıra değişti”. “Tekrar artmıyor” yalnız pencerede artış yoksa yazılıyor; kartta küçük grafik var.',
+     'Güç endeksi yorumu: “kesim kas kaybettirmiyor” yerine “güç artıyor; iyi bir işaret, ama kasın korunduğunu tek başına kanıtlamaz”.',
+     'Yeni grafikler: kilo ve projeksiyon, hız geçmişi, uyku → performans. Her yeni sayının yanında “Nasıl hesaplanıyor?”. Dönüşümden önce verinin tam yedeği alındı (Uygulama → Dönüşüm öncesi yedeği indir).']},
  {d:'2026-10-14',
   t:'Grafikler ekrana sığıyor (v92)',
   y:['Kilo, uyku ve diğer ölçümlerin detayında grafik artık en üstte ve tüm aralık ekrana sığıyor — yana kaydırmak yok. En yüksek, en düşük ve son değer üzerinde yazılı; parmağını grafikte gezdirince o günün değeri üstte çıkıyor.',
@@ -3836,7 +3912,9 @@ function preSleep(r){
 function D(d){return S.days[d]||blank();}
 function keys(){return Object.keys(S.days).sort();}
 function dtOf(d){var r=S.days[d];return (r&&r.dt)||null;}
-function planned(d){return (S.plan&&S.plan[d])||null;}
+/* v93: antrenmansız planlı aranın günleri "Seyahat" — S.plan'a yazılmadan (ara silinince
+   eski plan geri gelir). Gün içinde elle seçilen tür (dtOf) yine önce gelir. */
+function planned(d){var b=brkOn(d);if(b&&!b.train)return 'trav';return (S.plan&&S.plan[d])||null;}
 /* o gün fiilen ne: kayıtlı tür → takvim planı → haftalık dinlenme kuralı */
 function effDt(d){return dtOf(d)||planned(d)||(restOf(d).indexOf(pd(d).getDay())>=0?'rest':null);}
 function setPlan(d,val){
@@ -3851,6 +3929,7 @@ function autoFill(){
     var d=addD(m0,k);
     if(d<S.startDate)continue;
     if(S.plan[d]==='trav'||dtOf(d)==='trav')continue;
+    var bk=brkOn(d);if(bk&&!bk.train)continue;          /* v93: planlı ara */
     if(restOf(d).indexOf(pd(d).getDay())>=0)S.plan[d]='rest';
     else{S.plan[d]=ORDER[i%5];i++;}
   }
@@ -3980,6 +4059,23 @@ function TGavg(ds){
     o[k]=ds.reduce(function(a,d){return a+(TG(d)[k]||0);},0)/ds.length;});
   return o;
 }
+/* ============ v93 · ŞEMA GÖÇÜ 2 → 3 (bir kez) ============
+   Yeni alanlar: schema, breaks, _bt, kDecay. Mevcut hiçbir alan değişmez ya da silinmez.
+   Önce o anki verinin tam kopyası yedeklenir (Uygulama → "Dönüşüm öncesi yedeği indir").
+   Tohum aranın _bt'si 1: yeni bir cihaz kendi tohumuyla Gist'teki düzenlenmiş listeyi ezemez.
+   schema 3'e çıkınca bir daha çalışmaz. */
+var BAKKEY='emre:form:yedek-v92';
+function migrate93(raw){
+  if((S.schema||2)>=3)return false;
+  try{if(Object.keys(S.days||{}).length&&!localStorage.getItem(BAKKEY))      /* boş cihazda yedeklenecek bir şey yok */
+    localStorage.setItem(BAKKEY,JSON.stringify({t:Date.now(),from:'v92',data:raw||JSON.stringify(S)}));}catch(e){}
+  if(!Array.isArray(S.breaks)){
+    S.breaks=[{from:'2026-11-26',to:'2026-12-06',kind:'seyahat',track:false,train:false,note:''}];S._bt=1;}
+  if(S.kDecay==null)S.kDecay=30;
+  S.schema=3;
+  return true;
+}
+function bakInfo(){try{var v=localStorage.getItem(BAKKEY);if(!v)return null;var o=JSON.parse(v);return {t:o.t,size:v.length,o:o};}catch(e){return null;}}
 function tgtInit(){
   if(Array.isArray(S.tgtHist)&&S.tgtHist.length)return;
   var OLD={steps:10000,kcal:2150,protein:177,carbs:215,fat:64,goalW:73,weeks:25};
@@ -3988,16 +4084,6 @@ function tgtInit(){
   var ch=S._st?iso(new Date(S._st)):today();
   if(ch<'2026-10-01'||ch>today())ch=today();
   S.tgtHist=[{from:st0,t:OLD},{from:ch,t:now}];
-}
-/* belirli bir gün itibarıyla gereken hız (o günkü hedef kilo ve program süresiyle) */
-function reqSlopeAt(d){
-  var tw=trendW(),w=null;
-  for(var i=0;i<tw.length;i++){if(tw[i].d<=d)w=tw[i].v;else break;}
-  var g=TG(d);
-  if(w==null||g.goalW==null||!S.startDate)return null;
-  var wl=Math.max(0.5,(g.weeks||S.weeks)-dayDiff(S.startDate,d)/7);
-  var gap=w-g.goalW;
-  return gap<=0?0:-(gap/wl);
 }
 function save(d){
   if(d&&S.days[d])S.days[d]._t=Date.now();
@@ -4330,6 +4416,7 @@ function measDueOn(d){
 function dayScore(d){
   if(d>today())return null;
   if(S.startDate&&d<S.startDate)return null;
+  if(brkNoTrack(d))return null;          /* v93: takipsiz planlı ara — bilerek kayıt yok */
   var r=D(d),T=TG(d),it=[];   /* v90: o günün hedefi */
   var dt=effDt(d),t=dt?PROGRAM[dt]:null,trav=(dt==='trav');
 
@@ -4482,11 +4569,12 @@ function trendNow(){var t=trendW();return t.length?t[t.length-1].v:null;}
    uygulanır. Tartılmayan gün denkleme hiç girmez — uydurulmuş veri yok.
    Pencere her yerde 21 gün: rapor başlığı ile TDEE farklı pencere kullanıp
    yan yana iki farklı hız yazmasın. */
-function slopeInfo(days){
-  var ws=weightSeries();if(ws.length<4)return null;
-  var end=ws[ws.length-1].d,from=addD(end,-((days||21)-1));
-  var w=ws.filter(function(x){return x.d>=from;});
-  if(w.length<4)return null;
+/* v93 — eğim artık bir aralık için de çıkıyor (slopeRange) ve %95 bant taşıyor.
+   bant = ±1.96 · s / √Σ(x−x̄)², haftalığa çevrilmiş; s = artıkların standart sapması
+   (n−2 serbestlik, rapordaki "sapma"). Bant, tek bir okumanın ne kadar oynayabileceğini
+   gösterir; karar buna göre değil, projeksiyona (paceStatus) göre verilir. */
+function slopeFit(w){
+  if(!w||w.length<4)return null;
   var span=dayDiff(w[0].d,w[w.length-1].d)+1;
   if(span<10)return null;                       /* 10 günden kısa aralıktan hız çıkmaz */
   var n=w.length,sx=0,sy=0,sxy=0,sxx=0;
@@ -4494,90 +4582,190 @@ function slopeInfo(days){
   var den=n*sxx-sx*sx;if(!den)return null;
   var b=(n*sxy-sx*sy)/den,a0=(sy-b*sx)/n,my=sy/n,ssr=0,sst=0;
   w.forEach(function(p){var x=dayDiff(w[0].d,p.d),f=a0+b*x;ssr+=(p.v-f)*(p.v-f);sst+=(p.v-my)*(p.v-my);});
-  return {slope:b*7,n:n,span:span,gaps:span-n,first:w[0].d,last:w[w.length-1].d,
-    r2:(sst>0?1-ssr/sst:null),sd:(n>2?Math.sqrt(ssr/(n-2)):null)};
+  var sd=n>2?Math.sqrt(ssr/(n-2)):null,sxc=sxx-sx*sx/n;
+  var band=(sd!=null&&sxc>0)?1.96*sd/Math.sqrt(sxc)*7:null;
+  var d0=w[0].d;
+  return {slope:b*7,band:band,n:n,span:span,gaps:span-n,first:d0,last:w[w.length-1].d,
+    r2:(sst>0?1-ssr/sst:null),sd:sd,ybar:my,at:function(d){return a0+b*dayDiff(d0,d);}};
+}
+/* son N gün; end verilirse o güne kadar (grafik için her gün ayrı), yoksa son tartıya kadar */
+function slopeInfo(days,end){
+  var ws=weightSeries();
+  if(end)ws=ws.filter(function(x){return x.d<=end;});
+  if(ws.length<4)return null;
+  var e=end||ws[ws.length-1].d,from=addD(e,-((days||21)-1));
+  var s=slopeFit(ws.filter(function(x){return x.d>=from;}));
+  if(s){s.from=from;s.to=e;}
+  return s;
+}
+function slopeRange(from,to){
+  var s=slopeFit(weightSeries().filter(function(x){return x.d>=from&&x.d<=to;}));
+  if(s){s.from=from;s.to=to;}
+  return s;
 }
 function trendSlope(days){var s=slopeInfo(days);return s?s.slope:null;}
 
-/* ============ BAKIM KALORİSİ (türetilmiş) ============
-   TDEE = ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7)
-   DİKKAT — bu bir ÖLÇÜM DEĞİL, KİMLİKTİR. İçine giren iki şey var:
-   girdiğin kaloriler ve tartının gösterdiği hız. "Açık" diye yazılan sayı
-   da aynı denklemin ikinci kez yazılmış hali: açık = hız × 7700/7. Yani
-   TDEE, hızı doğrulamaz — hızdan türer. Doğrulama sanıp ikisini yan yana
-   koymak, sağlamanın sağlamasını yapmaktır.
-   Ayrıca bütün rakam Lifesum girişlerinin doğruluğuna bağlı: girişlerde
-   sistematik %10 eksik sayım varsa TDEE de o kadar düşük çıkar.
-   KARAR VERİRKEN KULLANILMAZ. Karar verecek tek veri kilo trendidir. */
-var KCAL_PER_KG=7700;
-function tdee(win){
-  win=win||21;
-  var si=slopeInfo(win);
-  if(!si)return {ok:false,why:'kilo',n:weightSeries().length};
-  var ws=weightSeries(),end=ws[ws.length-1].d,from=addD(end,-(win-1));
+/* ============ v93 · PLANLI ARALAR ============
+   S.breaks = [{from,to,kind,track,train,note}] — takvimdeki "Seyahat" gün türüyle
+   aynı mantık: antrenmansız aranın günleri planned()'dan 'trav' döner (takvimde SYH,
+   antrenman beklenmez, tartı beklenmez). S.plan'a yazılmaz: ara silinince eski plan
+   kendiliğinden geri gelir. Takipsiz (track:false) ara günleri:
+     · gereken hızda kalan haftadan düşülür (o günlerde kayıp olmuyor sayılır),
+     · projeksiyonun takvime çevrilmesinde kayıp 0 sayılır,
+     · gün puanına girmez,
+     · ara bitince 21 gün hız "güvenilir değil" işaretlenir, öneri verilmez,
+     · 42 günlük projeksiyon penceresi aradan sonraki günlerle sınırlanır. */
+var BRK_KIND=[['seyahat','Seyahat'],['tatil','Tatil'],['hastalik','Hastalık'],['diger','Diğer']];
+function brkKind(k){for(var i=0;i<BRK_KIND.length;i++)if(BRK_KIND[i][0]===k)return BRK_KIND[i][1];return 'Ara';}
+function brkList(){return Array.isArray(S.breaks)?S.breaks.filter(function(b){return b&&b.from&&b.to&&b.to>=b.from;}):[];}
+function brkOn(d){var b=brkList();for(var i=0;i<b.length;i++)if(d>=b[i].from&&d<=b[i].to)return b[i];return null;}
+function brkNoTrack(d){var b=brkOn(d);return !!(b&&!b.track);}
+/* [a, b) aralığındaki takipsiz ara günü sayısı */
+function brkDays(a,b){
+  var n=0,last=addD(b,-1);
+  brkList().forEach(function(x){if(x.track)return;
+    var s=x.from>a?x.from:a,e=x.to<last?x.to:last;if(e>=s)n+=dayDiff(s,e)+1;});
+  return n;
+}
+/* d günü takipsiz bir aranın içinde ya da bitişinden sonraki 21 gün içindeyse o ara */
+var BRK_SETTLE=21;
+function brkRecent(d){
+  var r=null;
+  brkList().forEach(function(x){if(x.track)return;
+    if(d>=x.from&&dayDiff(x.to,d)<=BRK_SETTLE&&(!r||x.to>r.to))r=x;});
+  return r;
+}
+function brkLabel(b,yr){
+  return fdate(b.from)+' – '+(yr?flong(b.to):fdate(b.to))+' ('+brkKind(b.kind).toLowerCase()+' · '+
+    (b.track?'takip var':'takip yok')+' · '+(b.train?'antrenman var':'antrenman yok')+')';
+}
+/* d'den sonra n diyet günü (takipsiz ara günleri sayılmaz) ilerle */
+function dietAdd(d,n){
+  var x=d,c=0,guard=0;n=Math.max(0,Math.round(n));
+  while(c<n&&guard<4000){x=addD(x,1);guard++;if(!brkNoTrack(x))c++;}
+  return x;
+}
+function dietDays(a,b){return Math.max(0,dayDiff(a,b)-brkDays(addD(a,1),addD(b,1)));}
+
+/* ============ v93 · GEREKEN HIZ ============
+   Kilo düştükçe bakım da düşer (k kcal/gün/kg). Aynı alımla kayıp hızı kendiliğinden
+   yavaşlar: hız(w) = c·(w − w*), c = k·7/7700. Hedefe T diyet haftasında varmak için
+     bugün gereken = c·Δw / (1 − e^(−c·T))     ortalama = Δw / T     sonda = bugün − c·Δw
+   Δw = trend − hedef, T = (kalan gün − kalan takipsiz ara günü) / 7. k = 0 iken eski formül.
+   TARİH KİLİDİ: 16 Eki öncesi günler o gün geçerli olan yöntemle (k=0, ara yok) hesaplanır;
+   haftalık özet puanları ve hız geçmişindeki "gereken" çizgisi geriye dönük değişmez. */
+var PACE_V93='2026-10-16';
+function kDecay(){var k=+S.kDecay;return (S.kDecay==null||!isFinite(k)||k<0)?30:k;}
+function trendAt(d){var tw=trendW(),w=null;for(var i=0;i<tw.length;i++){if(tw[i].d<=d)w=tw[i].v;else break;}return w;}
+function planEndAt(d){var g=TG(d);return S.startDate?addD(S.startDate,Math.round((g.weeks||S.weeks)*7)):null;}
+function reqInfo(d){
+  d=d||today();
+  var w=trendAt(d),g=TG(d);
+  if(w==null||g.goalW==null||!S.startDate)return null;
+  var nm=(d>=PACE_V93),end=planEndAt(d),left=Math.max(0,dayDiff(d,end));
+  var bd=nm?brkDays(d,end):0,k=nm?kDecay():0,c=k*7/KCAL_PER_KG;
+  var T=Math.max(0.5,(left-bd)/7),dw=w-g.goalW;
+  var o={d:d,w:w,goal:g.goalW,end:end,left:left,brk:bd,T:T,dw:dw,k:k,c:c,v93:nm};
+  if(dw<=0){o.done=true;o.today=0;o.avg=0;o.fin=0;return o;}
+  var rt=c>0?c*dw/(1-Math.exp(-c*T)):dw/T;
+  o.today=-rt;o.avg=-dw/T;o.fin=-(rt-c*dw);
+  return o;
+}
+function reqSlopeAt(d){var r=reqInfo(d);return r?r.today:null;}
+function reqSlope(){return reqSlopeAt(today());}
+
+/* ============ v93 · PROJEKSİYON (42 gün) ============
+   bakım_pencere = pencerenin ortalama alımı − hız·1100   (hız negatif → alım + |hız|·1100)
+   bakım_bugün   = bakım_pencere − k·(pencere ortasındaki regresyon değeri − bugünkü trend)
+                   (orta = tartıların ağırlık merkezi; regresyon orada tartı ortalamasından geçer)
+   beklenen hız r0 = (bakım_bugün − kalori hedefi) · 7/7700
+   varış: diyet haftası = ln(r0 / (r0 − c·Δw)) / c; r0 ≤ c·Δw ise bu kaloriyle varılmaz.
+   bant = r0 ± 42 günlük hızın %95 bandı. Takipsiz ara pencereye giriyorsa pencere aradan
+   sonraki günlerle sınırlanır (en az 14 gün). */
+var PROJ_WIN=42;
+function projInfo(d){
+  d=d||today();
+  var ws=weightSeries().filter(function(x){return x.d<=d;});
+  if(ws.length<4)return {ok:false,why:'kilo'};
+  var end=ws[ws.length-1].d,from=addD(end,-(PROJ_WIN-1)),cut=null;
+  brkList().forEach(function(x){if(x.track)return;if(x.to>=from&&x.to<end&&(!cut||x.to>cut.to))cut=x;});
+  if(cut)from=addD(cut.to,1);
+  if(dayDiff(from,end)+1<14)return {ok:false,why:'ara',cut:cut};
+  var si=slopeRange(from,end);if(!si)return {ok:false,why:'kilo'};
   var kd=[];
-  for(var i=0;i<=dayDiff(from,end);i++){
-    var d=addD(from,i),v=D(d).kcal;if(v!=null)kd.push(v);
-  }
-  var nDays=dayDiff(from,end)+1,cov=kd.length/nDays;
+  for(var i=0;i<=dayDiff(from,end);i++){var dd=addD(from,i),v=D(dd).kcal;if(v!=null&&!brkNoTrack(dd))kd.push(v);}
   if(kd.length<7)return {ok:false,why:'kalori',n:kd.length};
-  var avg=kd.reduce(function(a,b){return a+b;},0)/kd.length;
-  var val=avg-(si.slope*KCAL_PER_KG/7);
-  /* güven artık tartı sıklığını da içeriyor: 21 günün 16'sında tartılmak ile
-     hepsinde tartılmak aynı şey değil */
-  var conf=(kd.length>=17&&cov>=.8&&si.n>=15)?'yüksek':((kd.length>=11&&cov>=.6&&si.n>=10)?'orta':'düşük');
-  return {ok:true,tdee:Math.round(val),avg:Math.round(avg),kgWeek:si.slope,
-    days:nDays,logged:kd.length,cov:cov,conf:conf,si:si,derived:true,
-    deficit:Math.round(val-avg)};
-}
-/* ============ ÖNERİ (v69) ============
-   ESKİ HATA: öneri TDEE'den üretiliyordu (sug = TDEE − 0.55×1100). TDEE'nin
-   kendisi hızdan türediği için bu, kendi çıktısını girdi sanmak demekti.
-   Üstelik eşik sabitti (0.3-0.7 kg/hafta) — programın gerçekten neye ihtiyacı
-   olduğuna bakmıyordu.
-   YENİSİ: GEREKEN hız ile GERÇEKLEŞEN hız karşılaştırılır.
-     gereken = (trend kilo − hedef kilo) ÷ kalan hafta
-   Fark kcal'e çevrilir, önce ADIM olarak önerilir (1000 adım ≈ 35 kcal),
-   yetmezse kalori. Hedefin önündeyken hiçbir sayı önerilmez. */
-var RATE_MAX=0.7;            /* haftada bundan hızlısı kas maliyeti getirir */
-var KCAL_PER_1000_STEPS=35;
-function weeksLeft(){
-  if(!S.startDate||!S.weeks)return null;
-  var done=dayDiff(S.startDate,today())/7;
-  return Math.max(0.5,S.weeks-done);
-}
-function reqSlope(){
-  var w=trendNow(),wl=weeksLeft();
-  if(w==null||wl==null||S.goal.weight==null)return null;
-  var gap=w-S.goal.weight;
-  return gap<=0?0:-(gap/wl);
-}
-function tdeeAdvice(){
-  var t=tdee();if(!t.ok)return null;
-  var req=reqSlope();if(req==null)return null;
-  var act=t.kgWeek;
-  if(req===0)
-    return {t:t,req:req,act:act,type:'ok',sug:null,delta:0,
-      msg:'Hedef kiloya ulaşıldı — açığı kapat, bakıma geç.'};
-  var need=Math.min(Math.abs(req),RATE_MAX);
-  if(act<-RATE_MAX-0.15){
-    var back=Math.round((Math.abs(act)-RATE_MAX)*KCAL_PER_KG/7);
-    return {t:t,req:req,act:act,type:'fast',sug:Math.round((S.targets.kcal+back)/10)*10,delta:back,
-      msg:'Haftada '+fx(Math.abs(act),2)+' kg — '+RATE_MAX+' sınırının üstünde, bu hızda kas da gider. '+
-        'Kaloriyi <b>'+ti(Math.round((S.targets.kcal+back)/10)*10)+'</b>’a çıkar.'};
+  var nDays=dayDiff(from,end)+1,avg=kd.reduce(function(a,b){return a+b;},0)/kd.length;
+  var mPen=avg-si.slope*KCAL_PER_KG/7;
+  /* pencere ortası = regresyonun tartıların ağırlık merkezindeki değeri (= tartı ortalaması) */
+  var mid=si.ybar;
+  var tNow=trendAt(d),k=kDecay(),c=k*7/KCAL_PER_KG;
+  var mToday=mPen-k*(mid-tNow);
+  var kcalT=TG(d).kcal,r0=(mToday-kcalT)*7/KCAL_PER_KG,band=si.band||0;
+  var goal=TG(d).goalW,dw=tNow-goal;
+  function arr(r){
+    if(dw<=0)return {d:d,wk:0};
+    /* kesirli gün yukarı yuvarlanır: 141.5. günde varılıyorsa varış 142. gün */
+    if(c>0){if(r<=c*dw)return null;var wk=Math.log(r/(r-c*dw))/c;return {wk:wk,d:dietAdd(d,Math.ceil(wk*7-1e-9))};}
+    if(r<=0)return null;return {wk:dw/r,d:dietAdd(d,Math.ceil(dw/r*7-1e-9))};
   }
-  if(Math.abs(act)>=need-0.05)
-    return {t:t,req:req,act:act,type:'ok',sug:null,delta:0,
-      msg:'Gereken hız '+fx(need,2)+' kg/hafta, gerçekleşen '+fx(Math.abs(act),2)+
-        ' — plandasın. Kalori de adım da değişmiyor.'};
-  var gapK=Math.round((need-Math.abs(act))*KCAL_PER_KG/7);
-  var stepAdd=Math.round(gapK/KCAL_PER_1000_STEPS)*1000;
-  var sug=Math.round((S.targets.kcal-gapK)/10)*10;
-  return {t:t,req:req,act:act,type:'slow',sug:sug,delta:sug-S.targets.kcal,gapK:gapK,steps:stepAdd,
-    msg:'Gereken '+fx(need,2)+', gerçekleşen '+fx(Math.abs(act),2)+' kg/hafta — günde ~<b>'+gapK+
-      ' kcal</b> eksik. Önce adım: günlük <b>+'+ti(stepAdd)+'</b>. Yetmezse kaloriyi <b>'+ti(sug)+'</b>’a çek.'};
+  return {ok:true,from:from,end:end,cut:cut,si:si,avg:avg,logged:kd.length,days:nDays,cov:kd.length/nDays,
+    mPen:mPen,mid:mid,tNow:tNow,k:k,c:c,mToday:mToday,kcalT:kcalT,r0:r0,band:band,
+    goal:goal,dw:dw,eta:arr(r0),etaFast:arr(r0+band),etaSlow:arr(r0-band),planEnd:planEndAt(d),arr:arr};
+}
+/* projeksiyon eğrisi: bugünden x gününe beklenen trend kilo (takipsiz ara günlerinde düz) */
+function projAt(pj,r,x){
+  var t=dietDays(today(),x)/7;
+  if(pj.c>0){var ws=pj.tNow-r/pj.c;return ws+(pj.tNow-ws)*Math.exp(-pj.c*t);}
+  return pj.tNow-r*t;
 }
 
+/* ============ v93 · DURUM VE ÖNERİ — tek kaynak ============
+   gereken_bugün beklenen hızın bandı içindeyse → yolunda, değişiklik yok.
+   yavaş tarafta → açık = (gereken − beklenen)·1100 kcal/gün: önce adım, sonra kalori.
+   hızlı tarafta → yalnız bilgi. Takipsiz aranın içinde ve bitişinden sonraki 21 gün → öneri yok.
+   Özet kartı, masaüstü kartı, otomatik hedef, Motivasyon ve rapor bunu okur. */
+function paceStatus(){
+  var td=today(),rq=reqInfo(td);if(!rq)return null;
+  var pj=projInfo(td),hold=brkRecent(td),si=slopeInfo(21);
+  var o={rq:rq,pj:pj,hold:hold,si:si,type:'nodata'};
+  if(rq.done){o.type='goal';o.title='Hedefe ulaşıldı';o.msg='Hedef kiloya ulaşıldı — açığı kapat, bakıma geç.';return o;}
+  if(hold){o.type='hold';o.title='Planlı ara — öneri yok';
+    o.msg=(td<=hold.to?'Planlı aradasın':'Planlı ara '+fdate(hold.to)+'’de bitti')+'. Tartılar oturana kadar ('+
+      fdate(addD(hold.to,BRK_SETTLE))+'’e kadar) değişiklik önerilmez.';return o;}
+  if(!pj.ok){o.title='Veri bekleniyor';
+    o.msg=pj.why==='kalori'?'Projeksiyon için son 42 günde en az 7 gün kalori kaydı gerekiyor.'
+      :(pj.why==='ara'?'Planlı aradan sonra en az 14 günlük veri gerekiyor.':'Projeksiyon için en az 10 günlük tartı gerekiyor.');
+    return o;}
+  var need=-rq.today,lo=pj.r0-pj.band,hi=pj.r0+pj.band;
+  o.need=need;o.lo=lo;o.hi=hi;
+  if(need>=lo-1e-9&&need<=hi+1e-9){o.type='ok';o.title='Yolunda, değişiklik yok';
+    o.msg='Gereken '+sgn2(-need)+' kg/hf, beklenen '+sgn2(-pj.r0)+' ±'+fx(pj.band,2)+' — gereken hız bandın içinde. Kalori de adım da aynı kalıyor.';}
+  else if(need>hi){
+    var gapK=Math.round((need-pj.r0)*KCAL_PER_KG/7),stp=Math.max(1000,Math.round(gapK/KCAL_PER_1000_STEPS/1000)*1000);
+    var sug=Math.round((pj.kcalT-gapK)/10)*10;
+    o.type='slow';o.title='Yavaş — açık gerekiyor';o.gapK=gapK;o.steps=stp;o.sug=sug;o.delta=sug-pj.kcalT;
+    o.msg='Gereken '+sgn2(-need)+' kg/hf, beklenen '+sgn2(-pj.r0)+' ±'+fx(pj.band,2)+' — günde ~<b>'+gapK+' kcal</b> açık eksik. '+
+      'Önce adım: günlük <b>+'+ti(stp)+'</b> (1000 adım ≈ '+KCAL_PER_1000_STEPS+' kcal). Yetmezse kaloriyi <b>'+ti(sug)+'</b>’a çek.';}
+  else{o.type='fast';o.title='Plandan hızlı';
+    o.msg='Beklenen '+sgn2(-pj.r0)+' ±'+fx(pj.band,2)+' kg/hf, gereken '+sgn2(-need)+' — hedefe plandan önce varırsın. Değişiklik gerekmiyor.'+
+      (pj.r0>RATE_MAX?' Bilgi: haftada '+RATE_MAX+' kg’ın üstü kas kaybı riskini artırır.':'');}
+  return o;
+}
+function hashS(t){var h=0;t=String(t);for(var i=0;i<t.length;i++)h=(h*31+t.charCodeAt(i))|0;return h;}
+function sgn2(v){return v==null?'—':((v>0?'+':(v<0?'−':''))+fx(Math.abs(v),2));}
+
+/* ============ BAKIM KALORİSİ (türetilmiş) ============
+   bakım = ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7). Bu bir ölçüm değil, kimlik:
+   girdiğin kalorilerle tartının gösterdiği hızdan türer, hızı doğrulamaz. Lifesum
+   girişlerinde sistematik eksik sayım varsa bakım da o kadar düşük çıkar.
+   v93: 21 günlük tdee() kalktı; bakım artık yalnız projInfo'da, 42 günlük pencereden ve
+   bugünkü kiloya düzeltilmiş olarak hesaplanıyor (tek kaynak). */
+var KCAL_PER_KG=7700;
+/* v93: öneri paceStatus'ta — gereken hız projeksiyon bandıyla kıyaslanır,
+   açık önce ADIM (1000 adım ≈ 35 kcal), yetmezse kalori olarak önerilir. */
+var RATE_MAX=0.7;            /* haftada bundan hızlısı kas maliyeti getirir (yalnız bilgi) */
+var KCAL_PER_1000_STEPS=35;
 /* ============ DELOAD ============ */
 function deloadEvery(){return (S.deloadEvery==null)?7:S.deloadEvery;}
 function isDeload(d){var w=weekIdx(d);return w>0&&deloadEvery()>0&&w%deloadEvery()===0;}
@@ -4857,29 +5045,50 @@ function isPR(name,d){
    Artık ölçü seansın geçen seansa göre ortalama güç değişimi (sessPerf.avg,
    en az 3 kıyaslı, deload hariç). Seansa giden uyku = gece + antrenmandan ÖNCE
    uyunan gündüz uykusu. Her grupta en az 3 seans yoksa sonuç yazılmaz. */
-function sleepRows(){
+/* v93 — PLAN GÜNÜ ETKİSİ ÇIKARILDI. Eski kıyas (7 saat altı / üstü ortalaması) karışıktı:
+   bacak seanslarının çoğu 7+ saate denk geliyordu ve bacak zaten en hızlı ilerleyen gün;
+   fark uykudan değil günden geliyordu. Şimdi en az 3 seansı olan her plan gününde uyku ve
+   performans o günün kendi ortalamasından çıkarılır, hepsi birleştirilir:
+     eğim b = Σxy / Σx²,  SE = √(Σ(y − b·x)² / (n − 1 − G) / Σx²),  bant ±1.96·SE
+   (G = plan günü sayısı). Hariç: sıra değişen seanslar, 3'ten az kıyaslı seanslar, deload. */
+function sleepRowsAll(){
   var out=[],td=today();
   keys().forEach(function(d){
     if(d>td)return;
     var dt=dtOf(d);if(ORDER.indexOf(dt)<0)return;
-    if(isDeload(d))return;
     var e=sessionEval(d),p=e&&e.perf;
-    if(!p||p.avg==null||p.n<3)return;
+    if(!p||p.avg==null)return;
     var r=D(d),sl=r.sl;
     if(sl==null)sl=D(addD(d,-1)).sl;
     if(sl==null)return;
     var pre=(r.napp==='o'&&r.nap)?r.nap:0;
-    out.push({d:d,dt:dt,sl:sl,pre:pre,tot:sl+pre,pf:p.avg,n:p.n});
+    var ex=isDeload(d)?'deload':(p.n<3?'az':(ordInfo(d)?'sira':null));
+    out.push({d:d,dt:dt,sl:sl,pre:pre,tot:sl+pre,pf:p.avg,n:p.n,ex:ex});
   });
   return out;
 }
+function sleepRows(){return sleepRowsAll().filter(function(r){return !r.ex;});}
 function sleepInsight(){
-  var rows=sleepRows(),lo=[],hi=[],nPre=0;
-  rows.forEach(function(x){if(x.pre)nPre++;(x.tot<7?lo:hi).push(x.pf);});
-  function av(a){return a.length?a.reduce(function(x,y){return x+y;},0)/a.length:null;}
-  var a=av(lo),b=av(hi);
-  return {lo:a,hi:b,nLo:lo.length,nHi:hi.length,pre:nPre,
-    ok:lo.length>=3&&hi.length>=3,diff:(a!=null&&b!=null)?b-a:null};
+  var all=sleepRowsAll(),rows=all.filter(function(r){return !r.ex;}),by={},used=[],G=0,few=[],nPre=0;
+  rows.forEach(function(r){(by[r.dt]=by[r.dt]||[]).push(r);});
+  ORDER.forEach(function(dt){var a=by[dt];if(!a)return;
+    if(a.length<3){few.push(dt);return;}
+    G++;
+    var mx=a.reduce(function(s,r){return s+r.tot;},0)/a.length,my=a.reduce(function(s,r){return s+r.pf;},0)/a.length;
+    a.forEach(function(r){r.xd=r.tot-mx;r.yd=r.pf-my;r.mx=mx;r.my=my;if(r.pre)nPre++;used.push(r);});
+  });
+  var n=used.length,sxx=0,sxy=0;
+  used.forEach(function(r){sxx+=r.xd*r.xd;sxy+=r.xd*r.yd;});
+  var o={n:n,G:G,rows:used,all:all,few:few,pre:nPre,
+    exSira:all.filter(function(r){return r.ex==='sira';}),exAz:all.filter(function(r){return r.ex==='az';}).length,
+    exDl:all.filter(function(r){return r.ex==='deload';}).length,ok:false};
+  var df=n-1-G;o.df=df;
+  if(n<6||G<1||sxx<=0||df<2)return o;
+  var b=sxy/sxx,sse=0;used.forEach(function(r){var e=r.yd-b*r.xd;sse+=e*e;});
+  var se=Math.sqrt(sse/df/sxx),band=1.96*se;
+  o.ok=true;o.b=b;o.se=se;o.band=band;o.lo=b-band;o.hi=b+band;o.cross0=(o.lo<=0&&o.hi>=0);
+  o.xbar=used.reduce(function(s,r){return s+r.tot;},0)/n;
+  return o;
 }
 /* Antrenman günlerinde gece uykusu düşükken toplamın gündüz uykusuyla
    tamamlandığı günler: tek başına "uyku tuttu" diye okunmaması gereken günler. */
@@ -5500,7 +5709,7 @@ function exRow(e,r){
                'birkaç hafta içinde '+ju.lo+'-'+ju.hi+' aralığına tırmanacaksın.'))+'</div>';})()+
         (function(){var pg=progression(e.n,dtOf(cur)||planOf(cur),cur);if(!pg)return '';
           var col=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
-          var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor');
+          var tx=pg.type==='up'?'↑ ağırlığı '+pg.next+' kg yap':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun'):(pg.short||'≡ '+pg.kg+' kg · takıldı'));
           return '<div style="margin-top:6px;display:inline-block;font-size:11.5px;font-weight:700;border-radius:7px;padding:4px 9px;background:'+hexa(col,.13)+';color:'+col+'">'+tx+'</div>';})()+
         '<div class="sets">'+boxes+'</div>'+
         '<div class="exft"><span data-vol>hacim <b>'+ti(ev.vol)+'</b> kg</span>'+
@@ -6124,17 +6333,28 @@ function _progression(name,dt,before){
     if(dl)return null;
     var lowMx=Math.min.apply(null,atMax.map(function(s){return s.rep;}));
     var flr=Math.max(1,e.r[0]-2);
+    /* v93 — MESAJ KURALIN BAKTIĞI PENCEREYİ GÖSTERİR. Kural: bu kilodaki en iyi set başı
+       tekrar (run[bi]) son 2 seans içinde değilse takıldı sayılır. Pencere = en iyiden
+       SONRAKİ seanslar. Eskiden "set başı 7.3 → 10.7" yazıp yanına "tekrar artmıyor"
+       diyordu: 7.3 ilk seans, 10.7 son seans — bir artış. Artık yalnız pencerede net
+       artış yoksa "tekrar artmıyor" yazılır; sıra değişen seans * ile işaretlenir. */
+    var bst=run[bi],win=run.slice(bi+1);
+    win.forEach(function(r){r.ord=!!ordInfo(r.d);});
+    run.forEach(function(r){if(r.ord==null)r.ord=!!ordInfo(r.d);});
+    var rising=win.length>=2&&win[win.length-1].avg>win[0].avg+0.01;
+    var stars=win.filter(function(r){return r.ord;}).map(function(r){return fdate(r.d);});
+    var wtxt=mx+' kg · son '+win.length+' seans set başı '+win.map(function(r){return fx(r.avg,1)+(r.ord?'*':'');}).join(' / ')+
+      ' · bu kilodaki en iyi '+fx(bst.avg,1)+' ('+fdate(bst.d)+') aşılamadı'+(stars.length?' · *'+stars.join(', ')+' sıra değişti':'');
+    var base={type:'stall',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,avg:rN.avg,avg0:r0.avg,
+      run:run,bi:bi,win:win,best:bst,rising:rising,wtxt:wtxt};
     if(lowMx<flr)
-      return {type:'stall',why:'floor',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-        avg:rN.avg,avg0:r0.avg,
-        msg:streak+' seanstır '+mx+' kg ama en düşük set '+lowMx+' tekrar — '+
-            e.r[0]+'-'+e.r[1]+' hedefinin '+flr+' tekrarlık tabanının da altı. '+
-            'Bir kademe geri in, orada '+e.r[1]+' tekrarı sağlamlaştır.'};
-    return {type:'stall',why:'flat',kg:mx,next:nx,streak:streak,days:days,last:last,rir:rir,
-      avg:rN.avg,avg0:r0.avg,
-      msg:streak+' seanstır '+mx+' kg'+(days>=7?' ('+days+' gündür)':'')+
-          ' <b>ve tekrarlar da artmıyor</b> (set başı '+fx(r0.avg,1)+' → '+fx(rN.avg,1)+'). '+
-          'Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'};
+      return Object.assign(base,{why:'floor',short:'↓ '+mx+' kg’da en düşük set '+lowMx+' — bir kademe geri in',
+        msg:wtxt+'. En düşük set '+lowMx+' tekrar — '+e.r[0]+'-'+e.r[1]+' hedefinin '+flr+' tekrarlık tabanının da altı. '+
+            'Bir kademe geri in, orada '+e.r[1]+' tekrarı sağlamlaştır.'});
+    return Object.assign(base,{why:'flat',
+      short:rising?'≡ '+mx+' kg · en iyi '+fx(bst.avg,1)+' aşılamadı':'≡ '+win.length+' seanstır '+mx+' kg, tekrar artmıyor',
+      msg:wtxt+'. '+(rising?'Son seansta toparladın ama en iyiyi geçemedin. ':'<b>Bu pencerede tekrar artmıyor.</b> ')+
+          'Önce her sette '+e.r[1]+' tekrarı yakala, sonra '+nx+' kg’a geç.'});
   }
   return null;
 }
@@ -6202,7 +6422,8 @@ function progressCard(){
         ';font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center">'+(up?'↑':(okp?'✓':'≡'))+'</span>'+
       '<div style="flex:1;min-width:0"><div style="font-weight:700;font-size:13.5px">'+esc(n)+
         '<span style="font-weight:600;color:'+THC.c28+';margin-left:7px">'+p.kg+' kg</span></div>'+
-      '<div style="font-size:12px;color:'+THC.c17+';line-height:1.45;margin-top:2px">'+p.msg+'</div></div>'+
+      '<div style="font-size:12px;color:'+THC.c17+';line-height:1.45;margin-top:2px">'+p.msg+'</div>'+
+      (p.type==='stall'?'<div style="max-width:420px">'+stallChart(p,'spc'+Math.abs(hashS(n)))+'</div>':'')+'</div>'+
       (up?'<span class="chip" style="background:'+hexa(C.green,.14)+';color:'+C.green+';flex:none">'+p.next+' kg</span>':'')+
     '</div>';
   }
@@ -6268,7 +6489,7 @@ function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
     base:S.base,goal:S.goal,targets:S.targets,tgtHist:S.tgtHist,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
-    meas:!!S.meas};
+    meas:!!S.meas,schema:S.schema||2,breaks:S.breaks,_bt:S._bt||0,kDecay:S.kDecay};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -6295,10 +6516,13 @@ function mergeRemote(rm){
      phPose alanları bilerek okunmuyor (depo bağlantısını geri getirmesin, fotoğraf
      veritabanını yeniden açmasın). */
   if((rm._st||0)>(S._st||0)){
-    ['startDate','weeks','restDays','restWeeks','base','goal','targets','tgtHist','deloadEvery','autoTargets'].forEach(function(k){
+    ['startDate','weeks','restDays','restWeeks','base','goal','targets','tgtHist','deloadEvery','autoTargets','kDecay'].forEach(function(k){
       if(rm[k]!=null)S[k]=rm[k];});
     S._st=rm._st;ch++;
   }
+  /* v93: planlı aralar liste olarak birleşir — _bt'si yeni olan kazanır. Eski biçimli
+     Gist'te (breaks yok) yereldeki liste korunur. */
+  if(Array.isArray(rm.breaks)&&(rm._bt||0)>(S._bt||0)){S.breaks=rm.breaks;S._bt=rm._bt;ch++;}
   return ch;
 }
 function syncNow(silent){
@@ -6439,7 +6663,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v92 · 14 Eki 2026';
+var APPVER='v93 · 16 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -6794,7 +7018,7 @@ function gymWorkout(){
        sahibi karar kutusu (ŞU AN / SONUÇ). Rozet yalnız BUGÜN aşamasında. */
     (pg&&!sets.some(function(s){return s&&s.kg!=null;})?(function(){var pc=pg.type==='up'?C.green:(pg.type==='ok'?C.teal:C.amber);
         var pt=pg.type==='up'?'↑ Bugün '+pg.next+' kg dene':(pg.type==='ok'?(pg.short||'✓ ilerliyorsun')
-          :(pg.why==='dl'?'Deload — '+pg.kg+' kg’da kal':(pg.why==='floor'?'↓ Bir kademe geri in':'≡ '+pg.streak+' seanstır '+pg.kg+' kg, tekrar da artmıyor')));
+          :(pg.why==='dl'?'Deload — '+pg.kg+' kg’da kal':(pg.why==='floor'?'↓ Bir kademe geri in':(pg.short||'≡ '+pg.kg+' kg · takıldı'))));
         return '<div class="gprog" style="background:'+hexa(pc,.13)+';color:'+pc+'">'+pt+'</div>';})():'')+
     prevSummary(prev,e,prevX,pg,te,_dt)+
     '<div class="gsets">'+rows+'</div>'+
@@ -7217,17 +7441,19 @@ var PROT_PER_KG=2.1, FAT_PER_KG=0.8;
    kalmışken de 1 kg kalmışken de aynı açığı öneriyordu. Artık gereken hız
    (kalan kilo ÷ kalan hafta) kullanılıyor, kas maliyeti sınırıyla (0.7)
    tavanlanarak. */
+/* v93 — kalori artık burada hesaplanmıyor: durum ve öneri tek yerden (paceStatus) çıkar,
+   o da önce adım, sonra kalori der. Otomatik mod yalnız makroları trend kiloya göre
+   ayarlar; kalori hedefi Hız kartındaki öneriyle (düğmeyle) değişir. */
 function autoTargets(){
-  var t=tdee();if(!t.ok)return null;
   var w=trendNow();if(w==null)return null;
-  var rq=reqSlope();if(rq==null)return null;
-  var rate=-Math.min(Math.abs(rq),RATE_MAX);
-  var kcal=Math.round((t.tdee+rate*KCAL_PER_KG/7)/10)*10;
+  var st=paceStatus(),pj=st&&st.pj;if(!pj||!pj.ok)return null;
+  var rate=-pj.r0;
+  var kcal=S.targets.kcal;
   var prot=Math.round(w*PROT_PER_KG/5)*5;
   var fat=Math.round(w*FAT_PER_KG/5)*5;
   var rest=kcal-(prot*4+fat*9);
   var carb=Math.max(60,Math.round(rest/4/5)*5);
-  return {kcal:kcal,protein:prot,fat:fat,carbs:carb,w:w,tdee:t.tdee,conf:t.conf,rate:rate};
+  return {kcal:kcal,protein:prot,fat:fat,carbs:carb,w:w,tdee:Math.round(pj.mToday),rate:rate};
 }
 function autoDiff(){
   var a=autoTargets();if(!a)return null;
@@ -7262,41 +7488,283 @@ function autoCard(){
       var dc=x[3]===0?''+THC.c21+'':(x[3]>0?C.green:C.orange);
       return '<div><div class="l">'+x[0]+'</div><div class="v">'+ti(x[1])+'<span>'+x[2]+'</span></div>'+
         '<div class="s" style="color:'+dc+'">'+(x[3]>0?'+':'')+x[3]+' fark</div></div>';}).join('')+'</div>'+
-    '<div class="sfoot">'+fx(a.w,1)+' kg trend · bakım '+ti(a.tdee)+' kcal · protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg</div>'+
+    '<div class="sfoot">'+fx(a.w,1)+' kg trend · bakım ≈'+ti(a.tdee)+' kcal (42 gün) · protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg · kalori Hız kartından</div>'+
     (on?'':(d.any?'<button class="mbtn dark" data-a="applyauto" style="margin-top:9px">Hedefleri şimdi güncelle</button>'
                  :'<div class="sfoot" style="margin-top:6px">Mevcut hedeflerin zaten uygun.</div>'))+
   '</div>';
 }
-function tdeeCard(a){
-  if(!a){
-    var t0=tdee();
-    return '<div class="scard static dom dom-nut"><div class="shead"><div>'+
-      '<div class="stitle">Gerçek Bakım Kalorisi</div>'+
-      '<div class="ssub">kendi verinden hesaplanır</div></div></div>'+
-      '<div class="sempty" style="padding:18px 10px">'+
-      (t0.why==='kalori'?'Kalori kaydın yetersiz — en az 7 gün gerekiyor ('+t0.n+' var).'
-        :'Kilo kaydın yetersiz — en az 8 gün gerekiyor ('+t0.n+' var).')+
-      '</div></div>';
+/* ============ v93 · AÇIKLAMA KUTUSU ("Nasıl hesaplanıyor?") ============
+   <details> — açık/kapalı durumu ekran yeniden çizilince kaybolmasın diye XPO'da tutulur. */
+var XPO={};
+function xp(key,html,title){
+  return '<details class="xp" data-xp="'+key+'"'+(XPO[key]?' open':'')+'><summary>'+(title||'Nasıl hesaplanıyor?')+'</summary>'+
+    '<div class="xpb">'+html+'</div></details>';
+}
+document.addEventListener('toggle',function(ev){
+  var t=ev.target;if(t&&t.getAttribute&&t.getAttribute('data-xp'))XPO[t.getAttribute('data-xp')]=t.open;},true);
+
+/* ============ v93 · GRAFİK DOKUNMA KATMANI ============
+   Her grafik CHP[anahtar] = {W,H,pts:[{x,y,tip}],xy} bırakır. Dokununca / parmak gezince
+   en yakın nokta (çizgide x'e göre, saçılımda iki boyutta) üstteki satıra yazılır. */
+var CHP={};
+function cpick(svg,ev){
+  var k=svg.getAttribute('data-c'),P=CHP[k];if(!P||!P.pts.length||!svg.getBoundingClientRect)return;
+  var r=svg.getBoundingClientRect();if(!r.width)return;
+  var x=(ev.clientX-r.left)*(P.W/r.width),y=(ev.clientY-r.top)*(P.H/r.height),bi=0,bd=1e9;
+  P.pts.forEach(function(p,i){var dd=P.xy?Math.pow(p.x-x,2)+Math.pow(p.y-y,2):Math.abs(p.x-x);if(dd<bd){bd=dd;bi=i;}});
+  var b=P.pts[bi],tip=document.getElementById('ct-'+k);if(tip)tip.innerHTML=b.tip;
+  var hl=document.getElementById('ch-'+k);
+  if(hl){hl.style.display='';hl.setAttribute('transform','translate('+b.x.toFixed(1)+',0)');
+    var ci=hl.querySelector('circle');if(ci){if(b.y!=null){ci.style.display='';ci.setAttribute('cy',b.y.toFixed(1));}else ci.style.display='none';}}
+}
+document.addEventListener('pointermove',function(ev){
+  if(ev.pointerType==='mouse'&&!ev.buttons)return;
+  var t=ev.target&&ev.target.closest&&ev.target.closest('[data-a="cpick"]');
+  if(t)cpick(t,ev);
+});
+/* #app dışındaki katmanlar (hareket bilgi kutusu) için dokunma */
+document.addEventListener('click',function(ev){
+  var t=ev.target&&ev.target.closest&&ev.target.closest('[data-a="cpick"]');
+  if(t&&!(app&&app.contains(t)))cpick(t,ev);
+});
+function chWrap(k,svgInner,W,H,tip0,legend){
+  return '<div class="wbtip ctip" id="ct-'+k+'">'+tip0+'</div>'+
+    '<div class="wbwrap wbsc"><svg data-a="cpick" data-c="'+k+'" viewBox="0 0 '+W+' '+H+'" role="img" '+
+    'style="width:100%;height:auto;display:block;cursor:pointer;touch-action:pan-y">'+svgInner+'</svg></div>'+
+    (legend?'<div class="clg">'+legend+'</div>':'');
+}
+function lgI(sw,txt){return '<span>'+sw+txt+'</span>';}
+function swLine(col,dash,w){return '<svg width="22" height="10" aria-hidden="true"><line x1="1" x2="21" y1="5" y2="5" stroke="'+col+'" stroke-width="'+(w||2.4)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+' stroke-linecap="round"/></svg>';}
+function swBox(fill,hatch){return '<svg width="16" height="12" aria-hidden="true"><rect x="1" y="1" width="14" height="10" rx="2" fill="'+fill+'"/>'+
+  (hatch?'<path d="M1 11L11 1M6 11L15 2" stroke="'+hatch+'" stroke-width="1"/>':'')+'</svg>';}
+function swDot(col,shape){return '<svg width="14" height="14" aria-hidden="true">'+shapeAt(shape||'c',7,7,4.2,col,true)+'</svg>';}
+/* plan günü şekilleri — renk tek başına anlam taşımasın */
+var DTSHAPE={gun1:'c',gun2:'s',gun3:'t',gun4:'d',gun5:'x'};
+function shapeAt(sh,x,y,r,col,fill){
+  var st=fill?'fill="'+col+'" stroke="'+THC.c53+'" stroke-width="1.2"':'fill="'+THC.c53+'" stroke="'+col+'" stroke-width="2"';
+  if(sh==='s')return '<rect x="'+(x-r*.9).toFixed(1)+'" y="'+(y-r*.9).toFixed(1)+'" width="'+(r*1.8).toFixed(1)+'" height="'+(r*1.8).toFixed(1)+'" rx="1" '+st+'/>';
+  if(sh==='t')return '<path d="M'+x.toFixed(1)+' '+(y-r*1.15).toFixed(1)+'L'+(x+r*1.05).toFixed(1)+' '+(y+r*.75).toFixed(1)+'L'+(x-r*1.05).toFixed(1)+' '+(y+r*.75).toFixed(1)+'Z" '+st+'/>';
+  if(sh==='d')return '<path d="M'+x.toFixed(1)+' '+(y-r*1.2).toFixed(1)+'L'+(x+r*1.1).toFixed(1)+' '+y.toFixed(1)+'L'+x.toFixed(1)+' '+(y+r*1.2).toFixed(1)+'L'+(x-r*1.1).toFixed(1)+' '+y.toFixed(1)+'Z" '+st+'/>';
+  if(sh==='x')return '<path d="M'+(x-r).toFixed(1)+' '+(y-r).toFixed(1)+'L'+(x+r).toFixed(1)+' '+(y+r).toFixed(1)+'M'+(x+r).toFixed(1)+' '+(y-r).toFixed(1)+'L'+(x-r).toFixed(1)+' '+(y+r).toFixed(1)+'" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round" fill="none"/>';
+  return '<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+r+'" '+st+'/>';
+}
+function hatchDef(id){return '<pattern id="'+id+'" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">'+
+  '<rect width="6" height="6" fill="'+THC.c44+'" opacity=".55"/><line x1="0" y1="0" x2="0" y2="6" stroke="'+THC.c34+'" stroke-width="1.4"/></pattern>';}
+function axTxt(x,y,t,anc,col){return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'"'+(anc?' text-anchor="'+anc+'"':'')+
+  ' font-family="Karla" font-size="10" font-weight="700" fill="'+(col||THC.c23)+'">'+t+'</text>';}
+function lblTxt(x,y,t,anc,col){return '<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'"'+(anc?' text-anchor="'+anc+'"':'')+
+  ' font-family="Karla" font-size="10.5" font-weight="800" fill="'+(col||THC.c6)+'" paint-order="stroke" stroke="'+THC.c53+'" stroke-width="3" stroke-linejoin="round">'+t+'</text>';}
+/* tarih ekseni: aralığa göre ay başları ya da pazartesiler */
+function dateTicks(d0,d1,X,minPx){
+  var out=[],span=dayDiff(d0,d1),px=(X(d1)-X(d0))/Math.max(1,span),last=-99,mode=px*7>=(minPx||38)?'w':(px*14>=(minPx||38)?'w2':'m');
+  var gap=mode==='m'?26:(minPx||38);          /* ay adları kısa: daha sık sığar */
+  for(var i=0;i<=span;i++){var d=addD(d0,i),dy=pd(d),on=false;
+    if(mode==='m')on=dy.getDate()===1;
+    else on=dy.getDay()===1&&(mode==='w'||Math.floor(dayDiff(monday(d0),d)/7)%2===0);
+    if(!on)continue;var x=X(d);if(x-last<gap||x<X(d0)+8)continue;last=x;out.push({d:d,x:x,m:mode==='m'});}
+  return out;
+}
+
+/* ---- Grafik 1 · Kilo ve projeksiyon ---- */
+function paceChart1(st){
+  var ws=weightSeries(),tw=trendW(),pj=st.pj,rq=st.rq;if(ws.length<2)return '';
+  var td=today(),goal=rq.goal,pe=rq.end,d0=ws[0].d;
+  var d1=pe;if(pj&&pj.ok){[pj.eta,pj.etaSlow].forEach(function(a){if(a&&a.d>d1)d1=a.d;});}
+  d1=addD(d1,4);
+  var W=340,H=250,PL=34,PR=12,TP=18,BT=24,span=Math.max(1,dayDiff(d0,d1));
+  var vs=ws.map(function(p){return p.v;}),hi=Math.max.apply(null,vs)+0.3,lo=goal-0.7;
+  function X(d){return PL+dayDiff(d0,d)/span*(W-PL-PR);}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var g='<defs>'+hatchDef('ht1')+'</defs>';
+  /* ızgara */
+  var step=(hi-lo)>8?2:1;
+  for(var v=Math.ceil(lo/step)*step;v<=hi;v+=step)
+    g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="'+THC.c44+'"/>'+axTxt(PL-6,Y(v)+3.5,v,'end');
+  dateTicks(d0,d1,X,42).forEach(function(t){g+=axTxt(t.x,H-7,t.m?AY[pd(t.d).getMonth()]:fdate(t.d),'middle');
+    g+='<line x1="'+t.x.toFixed(1)+'" x2="'+t.x.toFixed(1)+'" y1="'+(H-BT)+'" y2="'+(H-BT+4)+'" stroke="'+THC.c34+'"/>';});
+  /* planlı aralar */
+  brkList().forEach(function(b){if(b.to<d0||b.from>d1)return;var x1=X(b.from),x2=X(addD(b.to,1));
+    g+='<rect x="'+x1.toFixed(1)+'" y="'+TP+'" width="'+Math.max(2,x2-x1).toFixed(1)+'" height="'+(H-TP-BT)+'" fill="url(#ht1)"/>'+
+      axTxt((x1+x2)/2,TP-5,'ara','middle',THC.c21);});
+  /* hedef ve plan bitişi */
+  g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(goal).toFixed(1)+'" y2="'+Y(goal).toFixed(1)+'" stroke="'+C.green+'" stroke-width="1.6" stroke-dasharray="6 4"/>'+
+    lblTxt(PL+4,Y(goal)+14,'hedef '+fx(goal,0)+' kg','start',THC.c6);
+  var xe=X(pe);
+  g+='<line x1="'+xe.toFixed(1)+'" x2="'+xe.toFixed(1)+'" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c6+'" stroke-width="1.3" stroke-dasharray="2 3"/>'+
+    lblTxt(xe-4,TP+10,'plan bitişi '+fdate(pe),'end');
+  var xt=X(td);
+  g+='<line x1="'+xt.toFixed(1)+'" x2="'+xt.toFixed(1)+'" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c34+'" stroke-width="1"/>';
+  /* projeksiyon bandı + çizgi (hedefe inince durur) */
+  var col=C.blue,tips=[];
+  if(pj&&pj.ok){
+    var up=[],dn=[],mid=[],endD=d1;
+    for(var i=0;i<=dayDiff(td,endD);i+=2){
+      var d=addD(td,i),a=projAt(pj,pj.r0+pj.band,d),b=projAt(pj,Math.max(0,pj.r0-pj.band),d),m=projAt(pj,pj.r0,d);
+      up.push([X(d),Y(Math.max(goal,b))]);dn.push([X(d),Y(Math.max(goal,a))]);
+      if(m>=goal-0.02)mid.push([X(d),Y(Math.max(goal,m))]);
+    }
+    g+='<path d="M'+up.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' L'+
+      dn.slice().reverse().map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.14)+'"/>';
+    if(mid.length>1)g+='<path d="M'+mid.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="5 4"/>';
+    if(pj.eta){var xa=X(pj.eta.d);g+=shapeAt('c',xa,Y(goal),4.5,col,true)+lblTxt(xa,Y(goal)-9,'≈ '+fdate(pj.eta.d),xa>W-40?'end':'middle');}
   }
-  var t=a.t,col=a.type==='ok'?C.green:(a.type==='fast'?C.orange:C.amber);
-  var cells=[
-    ['Gereken hız',fx(a.req,2),'kg/hf',''+THC.c6+''],
-    ['Gerçekleşen',fx(a.act,2),'kg/hf',col],
-    ['Bakım (türetilmiş)',ti(t.tdee),'kcal',''+THC.c21+''],
-    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+'']
-  ];
-  return '<div class="scard static dom dom-nut"><div class="shead"><div>'+
-    '<div class="stitle">Hız ve Bakım</div>'+
-    '<div class="ssub">'+t.logged+'/'+t.days+' gün kalori · '+t.si.n+' tartı · güven '+t.conf+'</div></div></div>'+
-    '<div class="mstats" style="margin-bottom:10px">'+cells.map(function(x){
-      return '<div><div class="l">'+x[0]+'</div><div class="v" style="color:'+x[3]+'">'+x[1]+
-        '<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
-    '<div class="tdmsg" style="background:'+hexa(col,.12)+';color:'+col+'">'+a.msg+'</div>'+
-    (a.sug!=null&&Math.abs(a.delta)>=60
-      ?'<button class="mbtn dark" data-a="usetdee" data-v="'+a.sug+'" style="margin-top:9px">'+
-        'Kalori hedefini '+ti(a.sug)+' yap ('+(a.delta>0?'+':'')+ti(a.delta)+')</button>'
-      :'<div class="sfoot" style="margin-top:8px">Mevcut hedefin '+ti(S.targets.kcal)+' kcal — uygun.</div>')+
-  '</div>';
+  /* tartılar ve trend */
+  ws.forEach(function(p){g+='<circle cx="'+X(p.d).toFixed(1)+'" cy="'+Y(p.v).toFixed(1)+'" r="1.9" fill="'+col+'" opacity=".4"/>';});
+  if(tw.length>1)g+='<path d="'+smoothPath(tw.map(function(p){return [X(p.d),Y(p.v)];}))+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>';
+  /* dokunma noktaları: her 2 günde bir */
+  var tm={},wm={};tw.forEach(function(p){tm[p.d]=p.v;});ws.forEach(function(p){wm[p.d]=p.v;});
+  for(var j=0;j<=span;j++){var dd=addD(d0,j),x=X(dd),bk=brkOn(dd);
+    if(dd<=td){var tv=trendAt(dd);if(tv==null)continue;
+      tips.push({x:x,y:Y(tv),tip:'<b>'+fdate(dd)+'</b> · '+(wm[dd]!=null?'tartı '+fx(wm[dd],1)+' · ':'tartı yok · ')+'trend '+fx(tv,1)+' kg'+(bk?' · planlı ara':'')});}
+    else if(pj&&pj.ok){var pm=projAt(pj,pj.r0,dd);if(pm<goal-0.3&&dd>((pj.etaSlow||{}).d||dd))continue;
+      tips.push({x:x,y:Y(Math.max(goal,pm)),tip:'<b>'+fdate(dd)+'</b> · beklenen '+fx(Math.max(goal,pm),1)+' kg (bant '+
+        fx(Math.max(goal,projAt(pj,pj.r0+pj.band,dd)),1)+'–'+fx(Math.max(goal,projAt(pj,Math.max(0,pj.r0-pj.band),dd)),1)+')'+(bk?' · planlı ara: kayıp 0 sayılır':'')+(dd>=pe&&dd<addD(pe,1)?' · plan bitişi':'')});}
+  }
+  g+='<g id="ch-pc1" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
+    '<circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP.pc1={W:W,H:H,pts:tips};
+  var tip0=pj&&pj.ok
+    ?(pj.eta?'<b>73 kg ≈ '+fdate(pj.eta.d)+'</b> · bant '+(pj.etaFast?fdate(pj.etaFast.d):'—')+' – '+(pj.etaSlow?fdate(pj.etaSlow.d):'varılmıyor')+
+       '<br><small>plan bitişi '+fdate(pe)+' · parmağını gezdir, günü gör</small>':'<b>Bu kaloriyle hedefe ulaşılmıyor</b><br><small>beklenen hız bakım düşüşünü karşılamıyor</small>')
+    :'<b>Projeksiyon için veri bekleniyor</b>';
+  tip0=tip0.replace('73 kg',fx(goal,0)+' kg');
+  return chWrap('pc1',g,W,H,tip0,
+    lgI(swDot(col,'c'),'tartı')+lgI(swLine(col),'trend')+lgI(swLine(col,'5 4',2),'projeksiyon')+lgI(swBox(hexa(col,.22)),'%95 bant')+
+    lgI(swLine(C.green,'6 4',1.6),'hedef')+lgI(swLine(THC.c6,'2 3',1.3),'plan bitişi')+(brkList().length?lgI(swBox(THC.c44,THC.c34),'planlı ara'):''));
+}
+
+/* ---- Grafik 2 · Hız geçmişi ---- */
+function paceChart2(st){
+  var ws=weightSeries();if(ws.length<4)return '';
+  var td=today(),rows=[];
+  for(var d=addD(ws[0].d,9);d<=td;d=addD(d,1)){
+    var s=slopeInfo(21,d);if(!s||s.band==null)continue;
+    var rq=reqInfo(d);rows.push({d:d,v:s.slope,b:s.band,n:s.n,req:rq?rq.today:null,v93:rq&&rq.v93});
+  }
+  if(rows.length<2)return '';
+  var d0=rows[0].d,d1=td,span=Math.max(1,dayDiff(d0,d1)),W=340,H=230,PL=36,PR=12,TP=20,BT=24;
+  var lo=0,hi=0;rows.forEach(function(r){lo=Math.min(lo,r.v-r.b,r.req||0);hi=Math.max(hi,r.v+r.b,r.req||0);});
+  lo=Math.floor((lo-0.05)*10)/10;hi=Math.ceil((hi+0.05)*10)/10;
+  function X(d){return PL+dayDiff(d0,d)/span*(W-PL-PR);}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var g='<defs>'+hatchDef('ht2')+'</defs>',step=(hi-lo)>1.6?0.5:((hi-lo)>0.8?0.2:0.1);
+  for(var v=Math.ceil(lo/step-1e-9)*step;v<=hi+1e-9;v+=step){var vv=+v.toFixed(2);
+    g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(vv).toFixed(1)+'" y2="'+Y(vv).toFixed(1)+'" stroke="'+(vv===0?THC.c34:THC.c44)+'"'+(vv===0?' stroke-width="1.4"':'')+'/>'+
+      axTxt(PL-6,Y(vv)+3.5,(vv>0?'+':(vv<0?'−':''))+fx(Math.abs(vv),1),'end');}
+  dateTicks(d0,d1,X,40).forEach(function(t){g+=axTxt(t.x,H-7,fdate(t.d),'middle');});
+  brkList().forEach(function(b){if(b.to<d0||b.from>d1)return;var x1=X(b.from<d0?d0:b.from),x2=X(addD(b.to>d1?d1:b.to,1));
+    g+='<rect x="'+x1.toFixed(1)+'" y="'+TP+'" width="'+Math.max(2,x2-x1).toFixed(1)+'" height="'+(H-TP-BT)+'" fill="url(#ht2)"/>';});
+  /* kalori hedefi değişiklikleri */
+  var h=S.tgtHist||[];
+  h.forEach(function(e,i){if(!i||e.from<d0||e.from>d1)return;if(e.t.kcal===h[i-1].t.kcal)return;var x=X(e.from);
+    g+='<line x1="'+x.toFixed(1)+'" x2="'+x.toFixed(1)+'" y1="'+(TP-4)+'" y2="'+(H-BT)+'" stroke="'+THC.c6+'" stroke-width="1.2" stroke-dasharray="1 3"/>'+
+      lblTxt(x>W-90?x-3:x+3,TP+6,h[i-1].t.kcal+'→'+e.t.kcal+' kcal',x>W-90?'end':'start');});
+  var col=C.blue;
+  g+='<path d="M'+rows.map(function(r){return X(r.d).toFixed(1)+','+Y(r.v+r.b).toFixed(1);}).join(' L')+' L'+
+    rows.slice().reverse().map(function(r){return X(r.d).toFixed(1)+','+Y(r.v-r.b).toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.16)+'"/>';
+  g+='<path d="M'+rows.map(function(r){return X(r.d).toFixed(1)+','+Y(r.v).toFixed(1);}).join(' L')+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linejoin="round"/>';
+  /* gereken: v93 öncesi ve sonrası ayrı parça (yöntem değişti, tarih kilidi) */
+  [false,true].forEach(function(f){var rr=rows.filter(function(r){return r.req!=null&&!!r.v93===f;});
+    if(rr.length)g+=(rr.length>1?'<path d="M'+rr.map(function(r){return X(r.d).toFixed(1)+','+Y(r.req).toFixed(1);}).join(' L')+'" fill="none" stroke="'+THC.c6+'" stroke-width="1.8" stroke-dasharray="5 4"/>'
+      :shapeAt('d',X(rr[0].d),Y(rr[0].req),4,THC.c6,false));});
+  var L=rows[rows.length-1];
+  g+=shapeAt('c',X(L.d),Y(L.v),4,col,true)+lblTxt(X(L.d)-7,Y(L.v)+(L.v<(L.req||0)?14:-8),sgn2(L.v),'end');
+  g+='<g id="ch-pc2" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
+    '<circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP.pc2={W:W,H:H,pts:rows.map(function(r){return {x:X(r.d),y:Y(r.v),
+    tip:'<b>'+fdate(r.d)+'</b> · hız '+sgn2(r.v)+' ±'+fx(r.b,2)+' kg/hf ('+r.n+' tartı)'+
+      (r.req!=null?'<br><small>o gün gereken '+sgn2(r.req)+(r.v93?'':' (v93 öncesi yöntem)')+' · bant '+sgn2(r.v-r.b)+' … '+sgn2(r.v+r.b)+'</small>':'')};})};
+  return chWrap('pc2',g,W,H,'<b>Bugün '+sgn2(L.v)+' ±'+fx(L.b,2)+' kg/hf</b><br><small>her gün o güne kadarki 21 günün eğimi · parmağını gezdir</small>',
+    lgI(swLine(col),'21 günlük hız')+lgI(swBox(hexa(col,.22)),'%95 bant')+lgI(swLine(THC.c6,'5 4',1.8),'o gün gereken')+(rows.some(function(r){return r.v93;})?lgI(swDot(THC.c6,'d'),'gereken (v93 yöntemi)'):'')+
+    lgI(swLine(THC.c6,'1 3',1.2),'kalori hedefi değişti'));
+}
+
+/* ---- Grafik 4 · Takıldı kartı: aynı kilodaki seansların set başı tekrarı ----
+   Değerlendirilen pencere (en iyiden sonraki seanslar) gölgeli, en iyi halkalı,
+   sıra değişen seans içi boş + *. */
+function stallChart(pg,key){
+  if(!pg||!pg.run||pg.run.length<2)return '';
+  var run=pg.run,n=run.length,W=320,H=96,PL=30,PR=14,TP=16,BT=20;
+  var vs=run.map(function(r){return r.avg;}),lo=Math.floor(Math.min.apply(null,vs))-1,hi=Math.ceil(Math.max.apply(null,vs))+1;
+  function X(i){return PL+(n<2?0:i/(n-1))*(W-PL-PR);}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var col=C.amber,g='',w0=pg.bi+1;
+  if(w0<n){var xa=X(w0)-((W-PL-PR)/Math.max(1,n-1))/2+2,xb=W-PR+6;
+    g+='<rect x="'+xa.toFixed(1)+'" y="'+(TP-10)+'" width="'+(xb-xa).toFixed(1)+'" height="'+(H-TP-BT+10)+'" rx="6" fill="'+hexa(col,.14)+'"/>'+
+      axTxt(xa+5,TP-1,'değerlendirilen','start',THC.c21);}
+  [lo,Math.round((lo+hi)/2),hi].forEach(function(v){g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="'+THC.c44+'"/>'+axTxt(PL-5,Y(v)+3.5,v,'end');});
+  g+='<path d="M'+run.map(function(r,i){return X(i).toFixed(1)+','+Y(r.avg).toFixed(1);}).join(' L')+'" fill="none" stroke="'+col+'" stroke-width="2"/>';
+  run.forEach(function(r,i){var x=X(i),y=Y(r.avg);
+    g+=shapeAt('c',x,y,4,col,!r.ord);
+    if(i===pg.bi)g+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="7.5" fill="none" stroke="'+THC.c6+'" stroke-width="1.6"/>'+lblTxt(x,y-11,'en iyi '+fx(r.avg,1),'middle');
+    else if(i===n-1)g+=lblTxt(x,y-10,fx(r.avg,1)+(r.ord?'*':''),'middle');
+    g+=axTxt(x,H-5,fdate(r.d).split(' ')[0],'middle');});
+  g+='<g id="ch-'+key+'" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-dasharray="3 3"/><circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP[key]={W:W,H:H,pts:run.map(function(r,i){return {x:X(i),y:Y(r.avg),
+    tip:'<b>'+fdate(r.d)+'</b> · '+pg.kg+' kg · set başı '+fx(r.avg,1)+' tekrar ('+r.sets+' set)'+(i===pg.bi?' · bu kilodaki en iyi':'')+(r.ord?' · sıra değişti':'')+(i>pg.bi?' · pencerede':'')};})};
+  return '<div class="stallch"><div class="wbwrap wbsc"><svg data-a="cpick" data-c="'+key+'" viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;cursor:pointer;touch-action:pan-y">'+g+'</svg></div>'+
+    '<div class="wbtip ctip" id="ct-'+key+'" style="margin:6px 0 0;min-height:0;font-size:11.5px">Noktaya dokun · içi boş = sıra değişen seans</div></div>';
+}
+/* ---- Hız kartı (Özet, masaüstü) — paceStatus'u okur ---- */
+function paceTone(t){return t==='ok'?[C.green,'✓']:(t==='slow'?[C.amber,'↓']:(t==='fast'?[C.blue,'↑']:(t==='goal'?[C.green,'🏁']:[THC.c21,'⏸'])));}
+function paceRows(st){
+  var si=st.si,rq=st.rq,pj=st.pj,o='';
+  if(si){
+    o+='<div class="pqrow"><div class="pql">Hız (21 gün)</div><div class="pqv">'+sgn2(si.slope)+' <span>±'+fx(si.band,2)+' kg/hf</span></div>'+
+      '<div class="pqs">'+si.n+' tartı · R² '+fx(si.r2,2)+' · sapma ±'+fx(si.sd,2)+' kg</div>'+
+      (st.hold?'<div class="pqwarn">⚠ Pencere planlı arayı kapsıyor, hız güvenilir değil ('+fdate(addD(st.hold.to,BRK_SETTLE))+'’e kadar).</div>':'')+
+      xp('hiz','Hız, son 21 günün tartılarına çizilen doğrunun eğimi: <b>'+sgn2(si.slope)+' kg/hf</b>. Günlük tartı ±'+fx(si.sd,2)+
+        ' kg oynadığı için eğim de kesin değil; gerçek hız %95 olasılıkla <b>'+sgn2(si.slope-si.band)+' ile '+sgn2(si.slope+si.band)+'</b> arasında (bant ±'+fx(si.band,2)+'). '+
+        'Bu yüzden tek bir okuma (6 Eki’deki −0.34 gibi) karar için yetmez; karar aşağıdaki projeksiyona göre verilir.')+'</div>';
+  }
+  if(rq&&!rq.done){
+    o+='<div class="pqrow"><div class="pql">Gereken hız</div><div class="pqv">'+sgn2(rq.today)+' <span>bugün</span></div>'+
+      '<div class="pqs">ortalama '+sgn2(rq.avg)+' · hedefe yakın '+sgn2(rq.fin)+(rq.brk?' · '+rq.brk+' gün planlı ara düşüldü':'')+'</div>'+
+      xp('ger','Kalan <b>'+fx(rq.dw,1)+' kg</b>, planlı aralar hariç kalan <b>'+fx(rq.T,1)+' haftaya</b> bölünür ('+rq.left+' gün'+(rq.brk?' − '+rq.brk+' gün ara':'')+
+        '): ortalama '+sgn2(rq.avg)+' kg/hf. Kilo düştükçe bakım da düştüğü için (kilo başına günde '+fx(rq.k,0)+' kcal) aynı kaloriyle hız kendiliğinden yavaşlar; '+
+        'bu yüzden bugün gereken hız (<b>'+sgn2(rq.today)+'</b>) ortalamadan yüksektir, hedefe yaklaşırken '+sgn2(rq.fin)+'’e iner.')+'</div>';
+  }
+  if(pj&&pj.ok){
+    var eta=pj.eta?fdate(pj.eta.d):'ulaşılmıyor';
+    o+='<div class="pqrow"><div class="pql">Projeksiyon (42 gün, '+ti(pj.kcalT)+' kcal)</div><div class="pqv">'+fx(pj.goal,0)+' kg ≈ '+eta+'</div>'+
+      '<div class="pqs">beklenen '+sgn2(-pj.r0)+' ±'+fx(pj.band,2)+' kg/hf · bant '+(pj.etaFast?fdate(pj.etaFast.d):'—')+' – '+(pj.etaSlow?fdate(pj.etaSlow.d):'ulaşılmıyor')+
+        ' · plan bitişi '+fdate(pj.planEnd)+'</div>'+
+      '<div class="pqs">bakım ≈ <b>'+ti(pj.mToday)+' kcal</b> (bugünkü kiloya düzeltilmiş) · '+pj.logged+'/'+pj.days+' gün kalori'+(pj.cut?' · pencere planlı aradan sonra başlıyor':'')+'</div>'+
+      xp('prj','Son 42 günün ('+fdate(pj.from)+'–'+fdate(pj.end)+') kalori ve tartı verisinden bakım hesaplanır: ortalama alım '+ti(pj.avg)+' + |hız| '+fx(Math.abs(pj.si.slope),2)+
+        '×1100 ≈ <b>'+ti(pj.mPen)+' kcal</b>. Bu, pencerenin ortasındaki kiloya ('+fx(pj.mid,1)+') ait; bugünkü kiloya ('+fx(pj.tNow,1)+') göre '+fx(pj.k,0)+'×'+fx(pj.mid-pj.tNow,1)+
+        ' kcal düzeltilir: <b>≈ '+ti(pj.mToday)+'</b>. Mevcut kalori hedefiyle ('+ti(pj.kcalT)+') beklenen hız '+sgn2(-pj.r0)+' ±'+fx(pj.band,2)+' kg/hf; '+
+        'varış tarihi ve öneri buradan çıkar. Planlı ara günlerinde kayıp 0 sayılır.')+'</div>';
+  }
+  return o;
+}
+function paceCard(desk){
+  var st=paceStatus();
+  var head='<div class="shead"><div><div class="stitle">Hız ve Hedef</div><div class="ssub">21 gün hız · 42 gün projeksiyon</div></div></div>';
+  if(!st)return '<div class="scard static dom dom-nut">'+head+'<div class="sempty">Kilo kaydı birikince dolacak</div></div>';
+  var tn=paceTone(st.type);
+  var o='<div class="pqstat" style="background:'+hexa(tn[0],.13)+';color:'+tn[0]+'"><b>'+tn[1]+' '+esc(st.title||'')+'</b><span>'+st.msg+'</span></div>'+paceRows(st);
+  if(st.type==='slow'&&st.sug!=null&&Math.abs(st.delta)>=30)
+    o+='<button class="mbtn dark" data-a="usetdee" data-v="'+st.sug+'" style="margin-top:6px">Adım yetmezse: kalori hedefini '+ti(st.sug)+' yap ('+(st.delta>0?'+':'')+ti(st.delta)+')</button>';
+  if(desk)o+='<div class="pdesk"><div>'+paceChart1(st)+'</div><div>'+paceChart2(st)+'</div></div>';
+  else o+='<button class="mbtn" data-a="dopen" data-kind="pace" data-key="" style="margin-top:8px">Grafikler: kilo projeksiyonu ve hız geçmişi ›</button>';
+  return desk?'<div class="card dom dom-nut"><div class="hd"><h2>Hız ve Hedef</h2><span class="meta">21 gün hız · 42 gün projeksiyon</span></div><div class="pad pacep">'+o+'</div></div>'
+    :'<div class="scard static dom dom-nut pacep">'+head+o+'</div>';
+}
+function paceDetail(){
+  var st=paceStatus();if(!st)return '<div class="sempty">Kilo kaydı birikince dolacak</div>';
+  var tn=paceTone(st.type);
+  return '<div class="pqstat" style="background:'+hexa(tn[0],.13)+';color:'+tn[0]+';margin-bottom:12px"><b>'+tn[1]+' '+esc(st.title||'')+'</b><span>'+st.msg+'</span></div>'+
+    '<div class="dxh">KİLO VE PROJEKSİYON</div>'+paceChart1(st)+
+    (st.pj&&st.pj.ok?xp('prj2','Kalın çizgi trend kilo, noktalar tartılar. Bugünden sonrası projeksiyon: son 42 günden hesaplanan bakım, kilo düştükçe kilo başına günde '+
+      fx(kDecay(),0)+' kcal azalır; bu yüzden eğri düz değil, yavaşlayarak iner. Soluk alan beklenen hızın %95 bandı ('+sgn2(-st.pj.r0)+' ±'+fx(st.pj.band,2)+
+      '). Taralı alanlar planlı aralar — orada kayıp 0 sayıldığı için eğri düz gider.'):'')+
+    '<div class="dxh" style="margin-top:18px">HIZ GEÇMİŞİ</div>'+paceChart2(st)+
+    xp('hg','Her gün, o güne kadarki son 21 günün tartılarından hesaplanan hız ve %95 bandı. Kesikli çizgi o gün gereken hız. '+
+      'Bant genişken (az tartı, büyük dalgalanma) tek bir okuma kolayca 0.2 kg/hf oynar: 6 Eki’deki −0.34 bandın içinde kalan bir okumaydı. '+
+      '16 Eki’den önceki “gereken” değerleri o gün geçerli olan yöntemle (bakım düşüşü ve ara hesaba katılmadan) çizildi; geçmiş değerlendirmeler geriye dönük değişmesin diye.')+
+    '<div class="dxh" style="margin-top:18px">AYRINTI</div>'+paceRows(st)+
+    (brkList().length?'<div class="dxh" style="margin-top:14px">PLANLI ARALAR</div><div class="dxt">'+brkList().map(function(b){return brkLabel(b,true);}).join('<br>')+
+      '</div><div class="mhint2" style="margin-top:6px">Daha → Hedefler’den eklenir, silinir.</div>':'');
 }
 /* --- haftalık kas grubu setleri --- */
 function musCard(mw,mt,wp,mex){
@@ -7432,7 +7900,11 @@ function cutMsg(rs){
     return ['Güç son iki haftadır düşüyor ('+wd.map(function(r){return 'H'+r.wk+' '+sgp(r.chg)+'%';}).join(', ')+
       '). Açık fazla gelmiş olabilir — önce uyku ve proteine bak.',C.orange];
   if(sC<-2)return ['Güç başlangıcın %'+fx(-sC,1)+' altında. Kalori açığını ve uykuyu kontrol et.',C.orange];
-  if(wC!=null&&wC<-0.5&&sC>=-1)return ['Kilo düşerken güç yerinde ya da artıyor — kesim kas kaybettirmiyor.',C.green];
+  /* v93: "kesim kas kaybettirmiyor" denmiyor — ilk aylardaki güç artışı çoğunlukla
+     sinirsel uyum ve hareket öğrenme; kasın korunduğunu tek başına kanıtlamaz. */
+  var CAV=' Ama ilk aylardaki güç artışının çoğu sinirsel uyum ve hareket öğrenme; kasın korunduğunu tek başına kanıtlamaz.';
+  if(wC!=null&&wC<-0.5&&sC>0.5)return ['Kilo düşerken güç artıyor; iyi bir işaret.'+CAV,C.green];
+  if(wC!=null&&wC<-0.5&&sC>=-1)return ['Kilo düşerken güç yerinde; iyi bir işaret.'+CAV,C.green];
   return ['Henüz net bir ayrışma yok; birkaç hafta daha veri birikince netleşir.',''+THC.c21+''];
 }
 /* v71: kart dokunulabilir (detay: açıklama + hafta hafta). desk = masaüstü, orada durağan. */
@@ -7485,33 +7957,35 @@ function musStrCard(desk){
       'deload hariç; bir hareket kasa programdaki ağırlığıyla katılır (ana kas 1, yardımcı 0.5).</div>'+
   (tap?'</button>':'</div>');
 }
-function sleepCard(desk){
-  var s=sleepInsight(),tap=(s.nLo+s.nHi)>0&&!desk;
-  var head='<div class="shead"><div><div class="stitle">Uyku → Performans</div>'+
-    '<div class="ssub">seansa giden uyku · geçen seansa göre güç</div></div>'+(tap?'<span class="schev">›</span>':'')+'</div>';
-  var open=tap?'<button class="scard dom dom-rec" data-a="dopen" data-kind="sleep" data-key="">':'<div class="scard static dom dom-rec">';
-  var close=tap?'</button>':'</div>';
-  if(!s.ok)return open+head+
-    '<div class="sexp" style="margin-top:0">Veri birikiyor: 7 saat altı <b>'+s.nLo+'</b>, 7 saat ve üstü <b>'+s.nHi+
-    '</b> seans. Her grupta en az 3 seans olunca karşılaştırma çıkar.</div>'+close;
-  function row(lbl,v,n){
-    var c=v>0.2?C.green:(v<-0.2?C.orange:''+THC.c21+'');
-    return '<div class="srow" style="pointer-events:none"><span class="sname"><b>'+lbl+'</b><i>'+n+' seans</i></span>'+
-      '<span class="sgain" style="color:'+c+';font-size:14px">'+sgp(v)+'%</span></div>';
-  }
-  var m=sleepMsg(s);
-  return open+head+
-    '<div class="exlist">'+row('7 saat altı',s.lo,s.nLo)+row('7 saat ve üstü',s.hi,s.nHi)+'</div>'+
-    '<div class="tdmsg" style="background:'+hexa(m[1],.12)+';color:'+m[1]+';margin-top:8px">'+m[0]+'</div>'+
-    '<div class="sexp">Seansa giden uyku = gece'+(s.pre?' + antrenmandan önce uyunan gündüz uykusu ('+s.pre+' gün)':'')+
-      '. Ölçü seansın geçen seansa göre ortalama güç değişimi; en az 3 kıyaslı, deload hariç seanslar.</div>'+
-  close;
+function sleepLine(s){
+  return 'Uyku +1 saat → performans '+sgp(s.b)+' puan (bant '+sgp(s.lo)+' … '+sgp(s.hi)+')';
 }
 function sleepMsg(s){
-  var d=s.diff;
-  if(d==null||Math.abs(d)<0.3)return ['Şimdilik uyku süresi performansı belirgin etkilemiyor.',''+THC.c21+''];
-  return d>0?['7 saatin altında uyuduğun seanslar ortalama '+fx(d,1)+' puan daha zayıf.',C.orange]
-            :['Az uykulu seanslar daha iyi çıkmış ('+fx(-d,1)+' puan) — büyük olasılıkla başka bir etken.',C.green];
+  if(!s.ok)return ['Veri birikiyor: plan günü başına en az 3 seans gerekiyor ('+s.n+' seans, '+s.G+' plan günü).',THC.c21];
+  if(s.cross0)return ['Veri, uykunun seans performansına etkisini ayırt edemiyor.',THC.c21];
+  return s.b>0?['Daha uzun uykuyla gelinen seanslar, aynı plan gününün ortalamasına göre daha güçlü.',C.green]
+              :['Daha uzun uykulu seanslar daha zayıf çıkmış — büyük olasılıkla başka bir etken.',C.amber];
+}
+function sleepXp(s){
+  return 'Her seans kendi plan gününün ortalamasıyla kıyaslanır; bacak günü zaten en hızlı ilerleyen gün olduğu için düz kıyas yanıltır. '+
+    (s.ok?'Bu kıyasla '+s.n+' seansta ('+s.G+' plan günü) uyku 1 saat artınca performans <b>'+sgp(s.b)+' puan</b> değişiyor; %95 bant <b>'+sgp(s.lo)+' … '+sgp(s.hi)+'</b>'+
+      (s.cross0?' — sıfırı kapsıyor, yani etki ayırt edilemiyor':'')+'. ':'')+
+    'Hariç: sıra değişen'+(s.exSira.length?' ('+s.exSira.map(function(r){return fdate(r.d);}).join(', ')+')':'')+', 3’ten az kıyaslı'+(s.exAz?' ('+s.exAz+')':'')+
+    ' ve deload seansları. Kesimde kısa uykunun asıl bedeli salonda değil, verilen kilonun kas payında görünür; bu grafik onu ölçemez.';
+}
+function sleepCard(desk){
+  var s=sleepInsight(),m=sleepMsg(s);
+  var head='<div class="shead"><div><div class="stitle">Uyku → Performans</div>'+
+    '<div class="ssub">plan günü etkisi çıkarıldı · '+s.n+' seans</div></div></div>';
+  var o='<div class="scard static dom dom-rec">'+head;
+  if(!s.ok)return o+'<div class="sexp" style="margin-top:0">'+m[0]+'</div></div>';
+  o+='<div class="pqrow" style="border-top:0;padding-top:2px"><div class="pqv" style="font-size:17px">'+sleepLine(s)+'</div>'+
+    '<div class="pqs">'+s.n+' seans · '+s.G+' plan günü · serbestlik '+s.df+'</div></div>'+
+    '<div class="tdmsg" style="background:'+hexa(m[1],.12)+';color:'+m[1]+';margin-top:4px">'+(m[1]===THC.c21?'≈ ':(s.b>0?'↑ ':'↓ '))+m[0]+'</div>'+
+    xp('slp',sleepXp(s));
+  if(desk)o+='<div style="margin-top:10px">'+sleepScatter(s,'sl2')+'</div>';
+  else o+='<button class="mbtn" data-a="dopen" data-kind="sleep" data-key="" style="margin-top:8px">Grafik ve seans listesi ›</button>';
+  return o+'</div>';
 }
 /* ---- v71 · detay pencereleri için çizimler ---- */
 function lineSVG(vals,col){
@@ -7525,21 +7999,42 @@ function lineSVG(vals,col){
     '<path d="'+d+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>'+
     '<circle cx="'+X(vals.length-1).toFixed(1)+'" cy="'+Y(vals[vals.length-1]).toFixed(1)+'" r="3.4" fill="'+col+'"/></svg>';
 }
-function sleepScatter(rows){
-  var W=340,H=176,PL=34,PR=10,TP=14,BT=26;
-  var xs=rows.map(function(r){return r.tot;}),ys=rows.map(function(r){return r.pf;});
+/* Grafik 3 · x: seansa giden uyku, y: o plan gününün ortalamasından fark (puan).
+   Plan günleri şekille ayrılır; eğim çizgisi pooled uyku ortalamasından geçer, bant
+   eğimin %95 aralığı (huni). */
+function sleepScatter(s,key){
+  key=key||'sl1';
+  if(!s||!s.rows||!s.rows.length)return '';
+  var rows=s.rows,W=340,H=226,PL=36,PR=12,TP=24,BT=30;
+  var xs=rows.map(function(r){return r.tot;}),ys=rows.map(function(r){return r.yd;});
   var x0=Math.min(5.5,Math.floor(Math.min.apply(null,xs)*2)/2),x1=Math.max(9.5,Math.ceil(Math.max.apply(null,xs)*2)/2);
-  var ya=Math.max(1,Math.ceil(Math.max.apply(null,ys.map(function(v){return Math.abs(v);}))));
+  var ya=Math.max(2,Math.ceil(Math.max.apply(null,ys.map(function(v){return Math.abs(v);}))+0.5));
+  var yst=ya>4?2:1;ya=Math.ceil(ya/yst)*yst;          /* ızgara sıfırdan geçsin */
   function X(v){return PL+(v-x0)/(x1-x0)*(W-PL-PR);}
   function Y(v){return TP+(1-(v+ya)/(2*ya))*(H-TP-BT);}
-  var g='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(0).toFixed(1)+'" y2="'+Y(0).toFixed(1)+'" stroke="'+THC.c34+'"/>'+
-    '<line x1="'+X(7).toFixed(1)+'" x2="'+X(7).toFixed(1)+'" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c34+'" stroke-dasharray="4 4"/>'+
-    '<text x="'+(X(7)+4).toFixed(1)+'" y="'+(TP+9)+'" font-family="Karla" font-size="9.5" font-weight="700" fill="'+THC.c23+'">7 saat</text>';
-  [ya,0,-ya].forEach(function(v){g+='<text x="'+(PL-5)+'" y="'+(Y(v)+3.5).toFixed(1)+'" text-anchor="end" font-family="Karla" font-size="9.5" font-weight="700" fill="'+THC.c23+'">'+(v>0?'+':'')+v+'%</text>';});
-  for(var h=Math.ceil(x0);h<=x1;h++)g+='<text x="'+X(h).toFixed(1)+'" y="'+(H-8)+'" text-anchor="middle" font-family="Karla" font-size="9.5" font-weight="700" fill="'+THC.c23+'">'+h+' sa</text>';
-  rows.forEach(function(r){g+='<circle cx="'+X(r.tot).toFixed(1)+'" cy="'+Y(r.pf).toFixed(1)+'" r="4.4" fill="'+(r.tot<7?C.orange:C.violet)+'" opacity=".85"/>';});
-  return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:'+H+'px;display:block">'+g+'</svg>'+
-    '<div class="dlbl2">her nokta bir seans · yatay: seansa giden uyku · dikey: geçen seansa göre güç</div>';
+  var g='';
+  for(var yv=-ya;yv<=ya;yv+=yst)g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(yv).toFixed(1)+'" y2="'+Y(yv).toFixed(1)+'" stroke="'+(yv===0?THC.c34:THC.c44)+'"'+(yv===0?' stroke-width="1.5"':'')+'/>'+
+    axTxt(PL-5,Y(yv)+3.5,(yv>0?'+':(yv<0?'−':''))+Math.abs(yv),'end');
+  for(var h=Math.ceil(x0);h<=x1;h++)g+=axTxt(X(h),H-14,h+' sa','middle');
+  g+=axTxt(W-PR,H-2,'seansa giden uyku','end',THC.c21)+axTxt(4,11,'puan (gün ortalamasından fark)','start',THC.c21);
+  if(s.ok){
+    var xb=s.xbar;
+    var up=[x0,xb,x1].map(function(x){var w=Math.abs(x-xb)*s.band;return X(x).toFixed(1)+','+Y(Math.max(-ya,Math.min(ya,s.b*(x-xb)+w))).toFixed(1);});
+    var dn=[x1,xb,x0].map(function(x){var w=Math.abs(x-xb)*s.band;return X(x).toFixed(1)+','+Y(Math.max(-ya,Math.min(ya,s.b*(x-xb)-w))).toFixed(1);});
+    g+='<path d="M'+up.join(' L')+' L'+dn.join(' L')+' Z" fill="'+hexa(C.violet,.15)+'"/>'+
+      '<line x1="'+X(x0).toFixed(1)+'" x2="'+X(x1).toFixed(1)+'" y1="'+Y(s.b*(x0-xb)).toFixed(1)+'" y2="'+Y(s.b*(x1-xb)).toFixed(1)+'" stroke="'+C.violet+'" stroke-width="2.2"/>';
+  }
+  var tips=[];
+  rows.forEach(function(r){var x=X(r.tot),y=Y(Math.max(-ya,Math.min(ya,r.yd))),c=PROGRAM[r.dt]?PROGRAM[r.dt].color:C.violet;
+    g+=shapeAt(DTSHAPE[r.dt]||'c',x,y,4.2,c,true);
+    tips.push({x:x,y:y,tip:'<b>'+fdate(r.d)+' · '+(PROGRAM[r.dt]?PROGRAM[r.dt].short:'')+'</b> · uyku '+fx(r.tot,1)+' sa'+(r.pre?' (önce '+fx(r.pre,1)+' gündüz dahil)':'')+
+      '<br><small>performans '+sgp(r.pf)+'% · gün ortalaması '+sgp(r.my)+'% → fark '+sgp(r.yd)+' puan</small>'});});
+  g+='<g id="ch-'+key+'" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-dasharray="3 3"/><circle cx="0" cy="0" r="7" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP[key]={W:W,H:H,pts:tips,xy:true};
+  var lg=ORDER.filter(function(dt){return rows.some(function(r){return r.dt===dt;});}).map(function(dt){
+    return lgI(swDot(PROGRAM[dt].color,DTSHAPE[dt]),esc(PROGRAM[dt].short));}).join('')+
+    (s.ok?lgI(swLine(C.violet),'eğim')+lgI(swBox(hexa(C.violet,.22)),'%95 bant'):'');
+  return chWrap(key,g,W,H,s.ok?'<b>'+sleepLine(s)+'</b><br><small>noktaya dokun · her nokta bir seans</small>':'<b>Noktaya dokun</b>',lg);
 }
 /* ---- v92 · ÖLÇÜM GRAFİĞİ (ekrana sığan) ----
    v71'de günde 30 px veriliyordu, grafik ekrandan taşıyor, yana kaydırmak gerekiyordu.
@@ -7697,7 +8192,7 @@ function gymSum(){
   var wk=weekLoad(),tadh=typeAdherence();
   var lastWk=wk.length?wk[wk.length-1]:null,prevWk=wk.length>1?wk[wk.length-2]:null;
   var di=(lastWk&&lastWk.chg!=null)?lastWk.chg:null;   /* v70: bu haftanın zincir değişimi (%) */
-  var tn=trendNow(),tdA=tdeeAdvice();
+  var tn=trendNow();
   var remT=(tn!=null)?tn-S.goal.weight:(lw!=null?lw-S.goal.weight:null);
   var _mon=monday(today());
   var mw=musWeek(_mon),mt=musPlanned(_mon),mex=musExpected(_mon),wp2=weekProgress(_mon);
@@ -7708,7 +8203,7 @@ function gymSum(){
     ['Trend kilo',(tn==null?(lw==null?'—':lw.toFixed(1)):tn.toFixed(1)),'kg',C.blue],
     ['Hedefe kalan',(remT==null?'—':(remT<=0?'0':remT.toFixed(1))),'kg',''+THC.c51+''],
     ['Bu hafta',tam+'/'+(plan||5),'antrenman',C.green],
-    ['Hız',(tdA?fx(tdA.act,2):'—'),'kg/hf',C.orange]
+    ['Hız',(function(){var q=slopeInfo(21);return q?sgn2(q.slope):'—';})(),'kg/hf · 21 gün',C.orange]
   ];
 
   /* Hareket ilerleme listesi — hareket başına DEĞİL, hareket+plan günü başına.
@@ -7742,7 +8237,7 @@ function gymSum(){
         '<div class="v">'+x[1]+'<span>'+x[2]+'</span></div></div>';}).join('')+'</div>'+
 
     adherenceM()+
-    tdeeCard(tdA)+
+    paceCard(false)+
     '<div class="scard static dom dom-bod">'+
       '<div class="shead"><div><div class="stitle">Ölçümler</div>'+
         '<div class="ssub">grafiğe dokun, detayı gör</div></div></div>'+
@@ -7955,10 +8450,11 @@ function detailLayer(){
             '<span><b>'+(r.rel==null?'—':fx(r.rel,1))+'</b><i>'+(r.rel==null?'':sgp(r.rel-100)+'%')+'</i></span></div>';
         }).join('')+'</div>'+
         '<div class="wkd"><div class="wkdh">NE ÖLÇÜYOR</div>'+
-        '<div class="dxt">Kesimde amaç yağ verirken kası korumak. Mezura kapalı olduğu için kas korumasının en doğrudan işareti '+
-          'şu: kilo düşerken salondaki güç yerinde kalıyor mu, artıyor mu? İkisi aynı grafikte, ikisi de başlangıçta 100.</div>'+
+        '<div class="dxt">Kesimde amaç yağ verirken kası korumak. Mezura kapalı olduğu için elimizdeki en yakın işaret '+
+          'şu: kilo düşerken salondaki güç yerinde kalıyor mu, artıyor mu? İkisi aynı grafikte, ikisi de başlangıçta 100. '+
+          'İşaret, kanıt değil: ilk aylardaki güç artışının çoğu sinirsel uyum ve hareket öğrenmeden gelir.</div>'+
         '<div class="wkdh" style="margin-top:12px">NASIL OKUNUR</div>'+
-        '<div class="dxt"><b>Güç ↑, kilo ↓</b> — en iyi durum: yağ gidiyor, kas korunuyor.<br>'+
+        '<div class="dxt"><b>Güç ↑, kilo ↓</b> — iyi bir işaret; ama tek başına kasın korunduğunu kanıtlamaz (ilk aylarda artışın çoğu sinirsel uyum).<br>'+
           '<b>Güç yatay, kilo ↓</b> — kesimde normal ve kabul edilebilir.<br>'+
           '<b>Güç 2 hafta üst üste ↓</b> — açık fazla gelmiş olabilir; uyku ve proteine bak. Tek haftalık düşüş gürültüdür.<br>'+
           '<b>Göreli güç</b> = güç ÷ kilo. Kilo düşerken aynı ağırlıkları kaldırman bile bunu yükseltir.</div>'+
@@ -8000,29 +8496,31 @@ function detailLayer(){
         'ana kas tam, yardımcı kas yarım.</div></div>';
   }
   else if(dOpen.kind==='sleep'){
-    var srD=sleepRows(),siD=sleepInsight();title='Uyku → Performans';sub=srD.length+' seans';
-    if(!srD.length)body='<div class="sempty">Uyku ve kıyaslanabilir seans girildikçe dolacak</div>';
+    var siD=sleepInsight();title='Uyku → Performans';sub=siD.n+' seans · plan günü etkisi çıkarıldı';
+    if(!siD.all.length)body='<div class="sempty">Uyku ve kıyaslanabilir seans girildikçe dolacak</div>';
     else{
       var smD=sleepMsg(siD);
-      body='<div class="tdmsg" style="background:'+hexa(siD.ok?smD[1]:''+THC.c21+'',.12)+';color:'+(siD.ok?smD[1]:''+THC.c21+'')+';margin-bottom:10px">'+
-          (siD.ok?smD[0]+' (7 saat altı '+sgp(siD.lo)+'% · '+siD.nLo+' seans | 7 saat ve üstü '+sgp(siD.hi)+'% · '+siD.nHi+' seans)'
-                 :'Her grupta en az 3 seans olunca kıyas çıkar — şu an 7 saat altı '+siD.nLo+', 7 saat ve üstü '+siD.nHi+' seans.')+'</div>'+
-        '<div class="dchart">'+sleepScatter(srD)+'</div>'+
-        '<div class="wkd"><div class="wkdh">SEANS SEANS</div>'+
-        srD.slice().reverse().map(function(x){
-          var cc=x.pf>0.2?C.green:(x.pf<-0.2?C.orange:''+THC.c21+''),tx=PROGRAM[x.dt];
-          return '<div class="ctrow" style="grid-template-columns:86px minmax(0,1fr) 72px">'+
+      body=(siD.ok?'<div class="pqrow" style="border-top:0;padding-top:0"><div class="pqv" style="font-size:18px">'+sleepLine(siD)+'</div>'+
+          '<div class="pqs">'+siD.n+' seans · '+siD.G+' plan günü · serbestlik '+siD.df+'</div></div>':'')+
+        '<div class="tdmsg" style="background:'+hexa(smD[1],.12)+';color:'+smD[1]+';margin:4px 0 10px">'+smD[0]+'</div>'+
+        sleepScatter(siD,'sl1')+
+        xp('slp2',sleepXp(siD))+
+        '<div class="wkd"><div class="wkdh">SEANS SEANS · GÜN ORTALAMASINDAN FARK</div>'+
+        siD.rows.slice().sort(function(a,b){return a.d<b.d?1:-1;}).map(function(x){
+          var cc=x.yd>0.2?C.green:(x.yd<-0.2?C.orange:''+THC.c21+''),tx=PROGRAM[x.dt];
+          return '<div class="ctrow" style="grid-template-columns:86px minmax(0,1fr) 78px">'+
             '<span><b>'+fdate(x.d)+'</b><i>'+(tx?tx.short:'')+'</i></span>'+
-            '<span><b style="color:'+(x.tot<7?C.orange:''+THC.c6+'')+'">'+fx(x.tot,1)+' sa</b><i>gece '+fx(x.sl,1)+(x.pre?' + önce '+fx(x.pre,1):'')+'</i></span>'+
-            '<span style="text-align:right"><b style="color:'+cc+'">'+sgp(x.pf)+'%</b><i>'+x.n+' kıyas</i></span></div>';
+            '<span><b>'+fx(x.tot,1)+' sa</b><i>gün ort. '+fx(x.mx,1)+' sa · '+(x.xd>0?'+':'')+fx(x.xd,1)+'</i></span>'+
+            '<span style="text-align:right"><b style="color:'+cc+'">'+sgp(x.yd)+'</b><i>'+sgp(x.pf)+'% · ort. '+sgp(x.my)+'%</i></span></div>';
         }).join('')+'</div>'+
-        '<div class="wkd"><div class="wkdh">NE ÖLÇÜYOR</div>'+
-        '<div class="dxt">Seansa ne kadar uyuyarak girdiğinle o seansın gücü arasındaki ilişki. Seansa giden uyku = gece uykusu + '+
-          'antrenmandan <b>önce</b> uyunan gündüz uykusu; antrenmandan sonraki gündüz uykusu o seansa yaramadığı için girmez. '+
-          'Performans = seanstaki hareketlerin geçen seansa göre ortalama güç değişimi (en az 3 kıyaslı, deload hariç). '+
-          'Tek seans çok şeyden etkilenir; anlamlı olan grupların ortalaması. Fark 0.3 puanın altındaysa uyku belirgin bir etken değil.</div></div>';
+        ((siD.exSira.length||siD.exAz||siD.exDl||siD.few.length)?'<div class="wkd"><div class="wkdh">HESABA GİRMEYENLER</div><div class="dxt">'+
+          [siD.exSira.length?'Sıra değişen seans: '+siD.exSira.map(function(r){return fdate(r.d)+' '+(PROGRAM[r.dt]?PROGRAM[r.dt].short:'');}).join(', '):'',
+           siD.exAz?siD.exAz+' seans 3’ten az kıyaslı':'',siD.exDl?siD.exDl+' deload seansı':'',
+           siD.few.length?'3’ten az seansı olan plan günü: '+siD.few.map(function(k){return PROGRAM[k].short;}).join(', '):''].filter(Boolean).join(' · ')+
+          '</div></div>':'');
     }
   }
+  else if(dOpen.kind==='pace'){title='Hız ve Hedef';sub='21 gün hız · 42 gün projeksiyon';body=paceDetail();}
   else if(dOpen.kind==='mbig'){
     var mkB=dOpen.key||'w',mmB=measMeta(mkB)||['w','Kilo','kg',C.blue];
     title=(mkB==='w'?'Kilo':(mkB==='slt'?'Uyku':(mkB==='b'?'Bel çevresi':mmB[1])))+' · gün gün';
@@ -8093,10 +8591,12 @@ function detailLayer(){
           return '<div><div class="l">'+x[0]+'</div>'+
             '<div class="v" style="color:'+x[4]+'">'+x[1]+'<span>'+x[2]+'</span></div>'+
             '<div class="s">'+esc(x[3])+'</div></div>';}).join('')+'</div>'+
-        (isW&&trendSlope()!=null
-          ?'<div class="tdmsg" style="background:'+hexa(C.blue,.1)+';color:'+C.blue+';margin-bottom:12px">'+
-            'Hız: haftada <b>'+sgn(trendSlope(),2)+' kg</b> — ham tartılara uygulanmış regresyon'+
-            (function(){var q=slopeInfo();return q?' ('+q.n+' tartı / '+q.span+' gün'+(q.gaps?', '+q.gaps+' gün boşluk denkleme girmedi':'')+')':'';})()+'.</div>'
+        (isW&&slopeInfo()!=null
+          ?(function(){var q=slopeInfo(),hb=brkRecent(today());
+            return '<div class="tdmsg" style="background:'+hexa(C.blue,.1)+';color:'+C.blue+';margin-bottom:12px">'+
+            'Hız (21 gün): <b>'+sgn2(q.slope)+' ±'+fx(q.band,2)+' kg/hf</b> — ham tartılara uygulanmış regresyon ('+q.n+' tartı / '+q.span+' gün'+
+            (q.gaps?', '+q.gaps+' gün boşluk denkleme girmedi':'')+'). Bant, tek bir okumanın ne kadar oynayabileceğini gösterir.'+
+            (hb?'<br><b>⚠ Pencere planlı arayı kapsıyor, hız güvenilir değil.</b>':'')+'</div>';})()
           :'')+
         (function(){
           /* hafta hafta net değişim — "ne zaman arttım" sorusunun cevabı burada.
@@ -8571,8 +9071,55 @@ function secTgt(){
     '</div>'+
     '<div class="mfield" style="margin-top:12px"><label>Program başlangıcı</label>'+
       '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'">'+
-      '<div class="mhint2" style="margin-top:5px">'+startHint()+'</div></div>';
+      '<div class="mhint2" style="margin-top:5px">'+startHint()+'</div></div>'+
+    brkEditor(false);
 }
+/* v93 · planlı aralar düzenleyicisi — telefon (Hedefler) ve masaüstü (Program & Hedefler) */
+var brkForm=false,brkDelArm=-1;
+function brkEditor(desk){
+  var ic=desk?'inp':'ginp',raw=Array.isArray(S.breaks)?S.breaks:[];
+  var rows=raw.map(function(b,i){
+    if(!b||!b.from||!b.to)return '';
+    var past=b.to<today(),arm=(brkDelArm===i);
+    return '<div class="brkrow'+(past?' past':'')+'"><span class="brktx"><b>'+fdate(b.from)+' – '+flong(b.to)+'</b>'+
+      '<i>'+esc(brkKind(b.kind))+' · '+(b.track?'kalori takibi var':'takip yok')+' · '+(b.train?'antrenman var':'antrenman yok')+
+      ' · '+(dayDiff(b.from,b.to)+1)+' gün'+(past?' · geçti':'')+'</i>'+(b.note?'<u>'+esc(b.note)+'</u>':'')+'</span>'+
+      '<button class="brkdel'+(arm?' arm':'')+'" data-a="brkdel" data-i="'+i+'" aria-label="Arayı sil">'+(arm?'Sil?':'✕')+'</button></div>';
+  }).join('');
+  var form=brkForm
+    ?'<div class="brkform">'+
+      '<div class="brk2"><div class="mfield"><label>Başlangıç</label><input type="date" class="'+ic+'" id="brkF" value="'+addD(today(),7)+'"></div>'+
+      '<div class="mfield"><label>Bitiş</label><input type="date" class="'+ic+'" id="brkT" value="'+addD(today(),13)+'"></div></div>'+
+      '<div class="mfield"><label>Tür</label><select class="'+ic+' sel" id="brkK">'+BRK_KIND.map(function(k){
+        return '<option value="'+k[0]+'">'+k[1]+'</option>';}).join('')+'</select></div>'+
+      '<label class="brkchk"><input type="checkbox" id="brkTr"> Kalori takibi var</label>'+
+      '<label class="brkchk"><input type="checkbox" id="brkTn"> Antrenman var</label>'+
+      '<div class="mfield"><label>Not</label><input class="'+ic+'" id="brkN" placeholder="isteğe bağlı"></div>'+
+      '<div class="brk2"><button class="mbtn dark" data-a="brksave">Kaydet</button><button class="mbtn" data-a="brkcancel">Vazgeç</button></div>'+
+     '</div>'
+    :'<button class="mbtn" data-a="brknew">+ Planlı ara ekle</button>';
+  return '<div class="brkbox"><div class="brkh">Planlı aralar</div>'+
+    (rows||'<div class="mhint2">Planlı ara yok.</div>')+form+
+    '<div class="mhint2" style="margin-top:8px">Takipsiz ara günleri gereken hızda kalan haftadan düşülür, projeksiyonda kayıp 0 sayılır ve gün puanına girmez. '+
+      'Antrenmansız aranın günleri takvimde Seyahat görünür. Ara bitince 21 gün hız “güvenilir değil” işaretlenir ve öneri verilmez.</div>'+
+    (desk?'<div style="max-width:260px"><label>Bakım düşüş katsayısı k (kcal/gün/kg)</label><input class="inp r" data-g="kDecay" inputmode="decimal" value="'+kDecay()+'"></div>'
+         :mfld('kDecay','Bakım düşüş katsayısı k (kcal/gün/kg)',kDecay()))+
+    '<div class="mhint2">Her kilo kayıpta bakım bu kadar düşer; varsayılan 30. 0 yazarsan gereken hız eski formüle döner (kalan kilo ÷ kalan hafta).</div>'+
+  '</div>';
+}
+function brkSave(){
+  function v(id){var e=document.getElementById(id);return e?e.value:'';}
+  function c(id){var e=document.getElementById(id);return !!(e&&e.checked);}
+  var f=v('brkF'),t=v('brkT');
+  if(!f||!t||t<f){toast('bitiş başlangıçtan önce olamaz');return;}
+  var clash=brkList().some(function(b){return !(t<b.from||f>b.to);});
+  if(clash){toast('bu tarihler başka bir arayla çakışıyor');return;}
+  S.breaks=Array.isArray(S.breaks)?S.breaks:[];
+  S.breaks.push({from:f,to:t,kind:v('brkK')||'seyahat',track:c('brkTr'),train:c('brkTn'),note:String(v('brkN')||'').slice(0,120)});
+  S.breaks.sort(function(a,b){return a.from<b.from?-1:1;});
+  S._bt=Date.now();brkForm=false;save();brkPaint();toast('planlı ara eklendi');
+}
+function brkPaint(){if(phone())gymPaint();else{zi('z-set',settings());refresh();}}
 var relOpen=null;
 function secApp(){
   var list=RELEASES.slice().sort(function(a,b){return a.d<b.d?1:-1;});
@@ -8584,6 +9131,8 @@ function secApp(){
     '<div class="mhint2" style="margin-top:6px">Otomatik: telefonun görünüm ayarını izler'+
     (themePref==='auto'?' — şu an <b>'+(darkOn()?'koyu':'açık')+'</b>':'')+'.</div></div>'+
   '<button class="mbtn" data-a="dl">Veri yedeği indir</button>'+
+    (function(){var bi=bakInfo();return bi?'<button class="mbtn" data-a="dlbak">Dönüşüm öncesi yedeği indir</button>'+
+      '<div class="mhint2" style="margin:-4px 0 8px">v93 dönüşümünden hemen önce otomatik alındı · '+flong(iso(new Date(bi.t)))+' · '+Math.round(bi.size/1024)+' KB</div>':'';})()+
     '<label class="mbtn" style="display:block;text-align:center">Veri yedeği yükle<input type="file" accept="application/json" data-a="imp" style="display:none"></label>'+
     '<button class="mbtn" data-a="desktop">Masaüstü görünüme geç</button>'+
     '<div class="mhint2" style="margin-top:10px">Sürüm '+APPVER+'</div>'+
@@ -8712,8 +9261,10 @@ function motJourney(){
   var span=b0-g0,lost=b0-tn,pW=Math.max(0,Math.min(1,lost/span));
   var totD=S.weeks*7,elD=Math.max(0,Math.min(totD,progDay(today())-1)),pT=elD/totD;
   var si=slopeInfo(21),act=si?si.slope:null,req=reqSlope();
-  var end=addD(S.startDate,totD-1),proj=null,lead=null;
-  if(si&&act<-0.1&&(si.r2==null||si.r2>=0.5)&&tn>g0){
+  var end=addD(S.startDate,totD-1),proj=null,lead=null,pjJ=projInfo(today());
+  /* v93: varış tarihi tek kaynaktan — 42 günlük projeksiyon (bakım düşüşü + planlı aralar) */
+  if(pjJ&&pjJ.ok&&pjJ.eta&&tn>g0){proj=pjJ.eta.d;lead=dayDiff(proj,end)/7;}
+  else if(si&&act<-0.1&&(si.r2==null||si.r2>=0.5)&&tn>g0){
     proj=addD(today(),Math.round((tn-g0)/-act*7));
     lead=dayDiff(proj,end)/7;
   }
@@ -8978,19 +9529,20 @@ function motJourneyCard(){
     (ahead?' — kilo takvimin önünde.':'.');
   var pace='';
   if(j.act!=null&&j.req!=null){
-    var ok=Math.abs(j.act)>=Math.abs(j.req)-0.05&&j.act<0;
+    var stJ=paceStatus(),ok=!!(stJ&&(stJ.type==='ok'||stJ.type==='fast'||stJ.type==='goal'));   /* v93: renk durum motorundan */
     pace='<div class="mjpace">'+
       '<div><i>Hızın</i><b style="color:'+(ok?C.green:C.orange)+'">'+fx(j.act,2)+'<span>kg/hf</span></b></div>'+
       '<div><i>Gereken</i><b>'+fx(j.req,2)+'<span>kg/hf</span></b></div>'+
-      '<div><i>Bu hızla '+fx(j.g0,0)+' kg</i><b>'+(j.proj?fshort(j.proj):'—')+'</b></div>'+
+      '<div><i>Projeksiyon '+fx(j.g0,0)+' kg</i><b>'+(j.proj?fshort(j.proj):'—')+'</b></div>'+
     '</div>';
   }
   var note='';
   if(j.proj&&j.lead!=null){
+    var pe=fshort(addD(j.end,1));
     note=j.lead>=1
-      ?'Program bitişi '+fshort(j.end)+' — bu hızda yaklaşık <b>'+Math.round(j.lead)+' hafta</b> tampon var. '
-      :(j.lead>-1?'Program bitişi '+fshort(j.end)+' — tam takvimde. ':'Program bitişi '+fshort(j.end)+'. ');
-    note+='Tahmin son 21 günün tartılarından; kesim ilerledikçe hız yavaşlar, tarih her tartıyla yeniden hesaplanır.';
+      ?'Plan bitişi '+pe+' — bu hızda yaklaşık <b>'+Math.round(j.lead)+' hafta</b> tampon var. '
+      :(j.lead>-1?'Plan bitişi '+pe+' — tam takvimde (±1 hafta). ':'Plan bitişi '+pe+' — projeksiyon '+Math.round(-j.lead)+' hafta sonra. ');
+    note+='Tahmin son 42 günün kalori ve tartısından; kilo düştükçe bakım da düştüğü için hız yavaşlar, planlı ara günlerinde kayıp 0 sayılır. Her tartıyla yeniden hesaplanır.';
   }
   var passed=j.stones.filter(function(s){return s.d;});
   var nx=j.next?'<div class="mjnext"><span>Sonraki durak <b>'+j.next.k+' kg</b></span>'+
@@ -9019,13 +9571,20 @@ function motJourneyCard(){
 function motForecast(){
   var j=motJourney();if(!j)return null;
   var tw=trendW();if(!tw.length)return null;
-  var base=tw[tw.length-1].d,rate=null,own=false;
-  if(j.si&&j.act<-0.1&&(j.si.r2==null||j.si.r2>=0.5)){rate=j.act;own=true;}
-  else if(j.req!=null&&j.req<0)rate=j.req;
-  if(rate==null)return null;
-  var perDay=rate/7;
-  function exp(d){return Math.max(j.g0,j.tn+perDay*dayDiff(base,d));}
-  var gd=(j.tn>j.g0)?addD(base,Math.ceil((j.tn-j.g0)/-perDay)):today();
+  var base=tw[tw.length-1].d,rate=null,own=false,exp,gd,pj=projInfo(today());
+  /* v93: önce 42 günlük projeksiyon — eğri yavaşlayarak iner, planlı arada düz gider */
+  if(pj&&pj.ok&&pj.r0>0&&pj.eta){
+    rate=-pj.r0;own='proj';
+    exp=function(d){return Math.max(j.g0,projAt(pj,pj.r0,d));};
+    gd=(j.tn>j.g0)?pj.eta.d:today();
+  }else{
+    if(j.si&&j.act<-0.1&&(j.si.r2==null||j.si.r2>=0.5)){rate=j.act;own=true;}
+    else if(j.req!=null&&j.req<0)rate=j.req;
+    if(rate==null)return null;
+    var perDay=rate/7;
+    exp=function(d){return Math.max(j.g0,j.tn+perDay*dayDiff(base,d));};
+    gd=(j.tn>j.g0)?addD(base,Math.ceil((j.tn-j.g0)/-perDay)):today();
+  }
   /* takvim: bu haftadan hedef gününün haftasına kadar (hedeften sonrası hep
      aynı sayı, gösterilmez); en az gelecek ayın sonu, en çok 30 hafta */
   var tod=today(),from=monday(tod);
@@ -9082,12 +9641,15 @@ function motCalCard(){
     var wn=weekIdx(rs);
     g+='<div class="ncalrow'+(w===0?' now':'')+'"><span class="nwk">'+(wn>0&&wn<=S.weeks?wkLabel(wn):'')+'</span>'+cells+'</div>';
   }
-  var note=(f.own
+  var note=(f.own==='proj'
+      ?'Projeksiyon: son 42 günün kalori ve tartısından beklenen hız <b>'+sgn2(f.rate)+' kg/hf</b>; kilo düştükçe yavaşlar, planlı ara günlerinde kayıp 0. '+
+        (f.gd<=f.to?'<b>'+fx(j.g0,0)+' kg</b> → <b>'+flong(f.gd)+'</b>. ':'')+'Geçmiş günlerde tartın, bugünden sonra beklenen trend kilo yazar; her tartıyla yeniden hesaplanır.'
+      :f.own
       ?'Hız: son 21 günün eğimi <b>'+fx(f.rate,2)+' kg/hf</b>. '
       :'<b style="color:'+C.amber+'">Kendi hızın henüz ölçülemedi</b> — programın gereken hızı (<b>'+fx(f.rate,2)+' kg/hf</b>) kullanıldı. ')+
-    (f.gd<=f.to?'Bu hızla <b>'+fx(j.g0,0)+' kg</b> → <b>'+flong(f.gd)+'</b>. ':'')+
+    (f.own==='proj'?'':(f.gd<=f.to?'Bu hızla <b>'+fx(j.g0,0)+' kg</b> → <b>'+flong(f.gd)+'</b>. ':'')+
     'Geçmiş günlerde tartın, bugünden sonra beklenen trend kilo yazar. Doğrusal tahmin: kesim ilerledikçe hız '+
-    'yavaşlar, uzak aylar iyimser kalır — her tartıyla yeniden hesaplanır.';
+    'yavaşlar, uzak aylar iyimser kalır — her tartıyla yeniden hesaplanır.');
   return '<div class="scard static dom dom-bod mcal">'+head+g+'<div class="mjnote">'+note+'</div></div>';
 }
 function motStrengthCard(){
@@ -9316,7 +9878,7 @@ function startHint(){
   var pdn=progDay(today()),wk=weekIdx(today());
   var last=addD(S.startDate,S.weeks*7-1);
   return flong(S.startDate)+' başlangıç · bugün <b>'+(pdn>0?pdn+'. gün':'başlamadı')+'</b>'+
-    (pdn>0?' · hafta '+wkLabel(wk)+'/'+S.weeks+' · bitiş '+flong(last):'');
+    (pdn>0?' · hafta '+wkLabel(wk)+'/'+S.weeks+' · son gün '+flong(last)+' (plan bitişi '+fdate(addD(last,1))+')':'');
 }
 function settings(){
   var T=S.targets;
@@ -9342,6 +9904,7 @@ function settings(){
     }).join('')+'</div>'+
     '<div class="mhint" style="margin-top:7px">Seçili günler dinlenme sayılır; kalan günlerde program sırayla Gün 1 → 5 ilerler.</div>'+
   '</div>'+
+  '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+brkEditor(true)+'</div>'+
   '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+
     '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:8px">Çevre ölçüleri</label>'+
     '<div class="rest7" style="max-width:260px">'+
@@ -9405,20 +9968,31 @@ function report(){
   var dlR=nextDeload();
   if(dlR)o+=dlR.now?' · BU HAFTA DELOAD':' · sonraki deload: hafta '+dlR.wk;
   o+='\n';
-  var tnR=trendNow(),siR=slopeInfo();
-  if(tnR!=null)o+='Trend kilo: '+fx(tnR,1)+' kg'+(siR?' ('+(siR.slope>0?'+':'')+fx(siR.slope,2)+' kg/hafta)':'')+
-    ' · hedefe '+fx(Math.max(0,tnR-S.goal.weight),1)+' kg\n';
-  if(siR)o+='Hız kaynağı: '+siR.n+' tartı / '+siR.span+' gün'+(siR.gaps?' ('+siR.gaps+' gün tartı yok, denkleme girmedi)':'')+
-    (siR.r2!=null?' · R²='+fx(siR.r2,2):'')+(siR.sd!=null?' · sapma ±'+fx(siR.sd,2)+' kg':'')+'\n';
-  var reqR=reqSlope(),wlR=weeksLeft();
-  if(reqR!=null&&wlR!=null)o+='Gereken hız: '+fx(reqR,2)+' kg/hafta ('+fx(wlR,1)+' hafta kaldı)\n';
-  var aR=tdeeAdvice();
-  if(aR)o+='Bakım (TÜRETİLMİŞ, ölçüm değil): '+aR.t.tdee+' kcal = ortalama alım '+aR.t.avg+
-    ' + hız×1100 · '+aR.t.logged+'/'+aR.t.days+' gün kalori, güven '+aR.t.conf+
-    '\n  → "açık" ile hız aynı denklemin iki yüzü; biri diğerini doğrulamaz. Karar hıza göre verilir.\n'+
-    (aR.type==='ok'
-      ? '  → Öneri: değişiklik yok.\n'
-      : '  → Öneri: '+String(aR.msg).replace(/<[^>]+>/g,'')+'\n');
+  /* v93 — başlık: hız ±bant, gereken hız (bugün/ortalama/sonda), 42 günlük projeksiyon ve durum,
+     bakım ve planlı aralar. Hepsi paceStatus'tan: kartla rapor aynı sayıyı söyler. */
+  var stR=paceStatus(),siR=slopeInfo(),tnR=trendNow();
+  if(tnR!=null)o+='Trend kilo: '+fx(tnR,1)+' kg'+(siR?' · hız (21 gün) '+sgn2(siR.slope)+' ±'+fx(siR.band,2)+' kg/hf'+
+    (siR.r2!=null?' · R²='+fx(siR.r2,2):'')+(siR.sd!=null?' · sapma ±'+fx(siR.sd,2)+' kg':''):'')+'\n';
+  if(siR&&siR.gaps)o+='  (hız: '+siR.n+' tartı / '+siR.span+' gün; '+siR.gaps+' gün tartı yok, denkleme girmedi)\n';
+  if(stR&&stR.hold)o+='  UYARI: Pencere planlı arayı kapsıyor, hız güvenilir değil — '+fdate(addD(stR.hold.to,BRK_SETTLE))+'’e kadar öneri yok.\n';
+  var rqR=stR&&stR.rq;
+  if(rqR&&rqR.done)o+='Gereken hız: hedefe ulaşıldı\n';
+  else if(rqR)o+='Gereken hız: bugün '+sgn2(rqR.today)+' · ortalama '+sgn2(rqR.avg)+' · hedefe yakın '+sgn2(rqR.fin)+
+    ' (k='+fx(rqR.k,0)+' kcal/kg'+(rqR.brk?', '+rqR.brk+' gün planlı ara düşüldü':'')+')\n';
+  var pjR=stR&&stR.pj;
+  if(pjR&&pjR.ok){
+    var dsR={ok:'Yolunda, değişiklik yok',fast:'Plandan hızlı — değişiklik gerekmiyor',hold:'Planlı ara — öneri yok',goal:'Hedefe ulaşıldı'}[stR.type]||
+      (stR.type==='slow'?'Yavaş — günde ~'+stR.gapK+' kcal açık eksik: önce günlük +'+stR.steps+' adım, yetmezse kalori '+stR.sug:stR.title);
+    o+='Projeksiyon (42 gün, '+pjR.kcalT+' kcal): '+fx(pjR.goal,0)+' kg ≈ '+(pjR.eta?flong(pjR.eta.d):'bu kaloriyle ulaşılmıyor')+
+      ' (bant '+(pjR.etaFast?fdate(pjR.etaFast.d):'—')+' – '+(pjR.etaSlow?fdate(pjR.etaSlow.d):'ulaşılmıyor')+') · plan bitişi '+fdate(pjR.planEnd)+
+      ' → Durum: '+dsR+'\n';
+    o+='Bakım (TÜRETİLMİŞ, 42 gün): ≈ '+Math.round(pjR.mToday)+' kcal (bugünkü kiloya düzeltilmiş)\n';
+    o+='  ('+fdate(pjR.from)+' – '+fdate(pjR.end)+': ortalama alım '+Math.round(pjR.avg)+' kcal, '+pjR.logged+'/'+pjR.days+' gün kayıtlı · hız '+
+      sgn2(pjR.si.slope)+' ±'+fx(pjR.band,2)+' · pencere bakımı '+Math.round(pjR.mPen)+' kcal @ '+fx(pjR.mid,1)+' kg · beklenen '+sgn2(-pjR.r0)+' kg/hf'+
+      (pjR.cut?' · pencere planlı aradan sonra başlıyor':'')+')\n';
+  }else if(stR)o+='Projeksiyon: '+stR.msg+'\n';
+  var blR=brkList();
+  if(blR.length)o+='Planlı aralar: '+blR.map(function(b){return brkLabel(b,true)+(b.note?' — '+b.note:'');}).join('; ')+'\n';
   if(measOn()){
     var shR=lastOf('sh'),bR=lastOf('b');
     if(shR!=null&&bR)o+='Omuz/bel oranı: '+fx(shR/bR,2)+' (omuz '+fx(shR,1)+' cm, bel '+fx(bR,1)+' cm)';
@@ -9540,8 +10114,8 @@ function report(){
       var tail=(pg.rir!=null?' [ort.RIR '+fx(pg.rir,1)+']':'');
       if(pg.type==='up')ups.push(lb+': '+pg.kg+' kg → '+pg.next+' kg'+tail);
       else if(pg.type==='ok')okg.push(lb+': '+pg.kg+' kg, '+(pg.why==='rep'?'tekrarlar artıyor':'RIR düşüyor')+' — takılma değil'+tail);
-      else stalls.push(lb+': '+pg.kg+' kg ('+pg.streak+' seanstır aynı, tekrar da artmıyor'+
-        (pg.avg0!=null?': set başı '+fx(pg.avg0,1)+' → '+fx(pg.avg,1)+' tekrar':'')+')'+tail);
+      else stalls.push(lb+': '+(pg.wtxt?pg.wtxt+(pg.why==='floor'?' · en düşük set tabanın altında, bir kademe geri in':(pg.rising?'':' · bu pencerede tekrar artmıyor'))
+        :pg.kg+' kg ('+pg.streak+' seanstır aynı)')+tail);
     });
   });
   if(ups.length||stalls.length||okg.length){
@@ -9615,12 +10189,21 @@ function report(){
     }
   }
   var slI=sleepInsight();
-  if(slI.nLo||slI.nHi)o+='## UYKU → PERFORMANS (seansa giden uyku: gece + antrenmandan önceki gündüz uykusu)\n'+
-    'Ölçü: seansın geçen seansa göre ortalama güç değişimi (en az 3 kıyaslı, deload hariç).\n'+
-    '7 saat altı ('+slI.nLo+' seans) ort. '+sgp(slI.lo)+(slI.lo!=null?'%':'')+
-    ' | 7 saat ve üstü ('+slI.nHi+' seans) ort. '+sgp(slI.hi)+(slI.hi!=null?'%':'')+
-    (slI.ok?'':' [her grupta en az 3 seans yok — henüz sonuç çıkarılmaz]')+'\n'+
-    (slI.ok?'Fark: '+sgp(slI.diff)+' puan (7 saat ve üstü − 7 saat altı) · uygulamanın yorumu: '+sleepMsg(slI)[0]+'\n':'')+'\n';
+  if(slI.all.length){
+    o+='## UYKU → PERFORMANS (plan günü etkisi çıkarılmış · seansa giden uyku: gece + antrenmandan önceki gündüz uykusu)\n'+
+      'Yöntem: seans değeri = geçen seansa göre ortalama güç değişimi. En az 3 seansı olan her plan gününde uyku ve performans o günün kendi '+
+      'ortalamasından çıkarılır, hepsi birleştirilir; eğim = Σxy/Σx², SE serbestliği = n − 1 − plan günü sayısı, bant ±1.96·SE. '+
+      'Hariç: sıra değişen seanslar'+(slI.exSira.length?' ('+slI.exSira.map(function(r){return fdate(r.d);}).join(', ')+')':'')+
+      ', 3’ten az kıyaslı seanslar'+(slI.exAz?' ('+slI.exAz+')':'')+', deload seansları'+(slI.exDl?' ('+slI.exDl+')':'')+
+      (slI.few.length?'; 3’ten az seansı olan plan günü: '+slI.few.map(function(k){return PROGRAM[k].short;}).join(', '):'')+'.\n';
+    if(slI.ok){
+      o+=sleepLine(slI)+' · '+slI.n+' seans, '+slI.G+' plan günü, serbestlik '+slI.df+'\n';
+      o+='Uygulamanın yorumu: '+sleepMsg(slI)[0]+'\n';
+      o+='Plan günü ortalamaları: '+ORDER.filter(function(k){return slI.rows.some(function(r){return r.dt===k;});}).map(function(k){
+        var a=slI.rows.filter(function(r){return r.dt===k;});return PROGRAM[k].short+' '+a.length+' seans · uyku '+fx(a[0].mx,1)+' sa · performans '+sgp(a[0].my)+'%';}).join(' | ')+'\n';
+    }else o+=sleepMsg(slI)[0]+'\n';
+    o+='Not: kesimde kısa uykunun asıl bedeli salonda değil, verilen kilonun kas payında görünür; bu analiz onu ölçemez.\n\n';
+  }
   /* Gündüz uykusuyla tamamlanan antrenman günleri ayrı listeleniyor: bu günlerde
      toplam iyi görünür ama seans az uykuyla yapılmıştır, ikisi karıştırılmasın. */
   var npD=napDays();
@@ -9683,39 +10266,6 @@ function header(){
       '<button class="ghostbtn" data-a="scroll">Ayarlar &amp; rapor</button></div></div>';
 }
 /* ============ MASAÜSTÜ: BAKIM KALORİSİ + KAS SETLERİ ============ */
-function tdeeCardD(){
-  var a=tdeeAdvice();
-  if(!a){
-    var t0=tdee();
-    return card('Gerçek Bakım Kalorisi','veri bekleniyor',null,'dom dom-nut',
-      '<div style="padding:22px 18px;color:'+THC.c17+';font-size:13.5px;line-height:1.6">'+
-      (t0.why==='kalori'?'Kalori kaydın yetersiz — en az 7 gün gerekiyor, şu an '+t0.n+' var.'
-        :'Kilo kaydın yetersiz — en az 8 gün gerekiyor, şu an '+t0.n+' var.')+
-      '<div style="margin-top:9px;font-size:12.5px;color:'+THC.c21+'">Bakım = ortalama alım − (haftalık kilo değişimi × 7700 ÷ 7). '+
-      'Bu bir ölçüm değil, iki girdiden türeyen bir kimlik: "açık" ile hız aynı şeyin iki yüzüdür. '+
-      'Karar hıza göre verilir, bakım rakamına göre değil.</div></div>');
-  }
-  var t=a.t,col=a.type==='ok'?C.green:(a.type==='fast'?C.orange:C.amber);
-  var cells=[
-    ['Gereken hız',fx(a.req,2),'kg/hf',''+THC.c6+'',fx(weeksLeft(),1)+' hafta kaldı'],
-    ['Gerçekleşen',fx(a.act,2),'kg/hf',col,t.si.n+' tartı / '+t.si.span+' gün'],
-    ['Bakım (türetilmiş)',ti(t.tdee),'kcal',''+THC.c21+'','ölçüm değil — alım + hız×1100'],
-    ['Ortalama alım',ti(t.avg),'kcal',''+THC.c6+'',t.logged+' gün kayıtlı']
-  ];
-  if(a.sug!=null)cells.push(['Önerilen hedef',ti(a.sug),'kcal',''+THC.c18+'',(a.delta>0?'+':'')+ti(a.delta)+' fark']);
-  return '<div class="card dom dom-nut"><div class="hd"><h2>Hız ve Bakım</h2>'+
-    '<span class="meta">'+t.days+' günlük pencere · güven '+t.conf+'</span></div>'+
-    '<div class="kpi" style="border:0;margin:0">'+cells.map(function(x){
-      return '<div style="border-top:3px solid '+x[3]+'"><div class="eyebrow">'+x[0]+'</div>'+
-        '<div class="v" style="color:'+x[3]+'">'+x[1]+'<span style="font-size:14px;color:'+THC.c21+'"> '+x[2]+'</span></div>'+
-        '<div class="s">'+x[4]+'</div></div>';}).join('')+'</div>'+
-    '<div style="padding:0 18px 16px"><div style="border-radius:11px;padding:12px 14px;font-size:13px;font-weight:700;line-height:1.55;background:'+
-      hexa(col,.12)+';color:'+col+'">'+a.msg+'</div>'+
-    (a.sug!=null&&Math.abs(a.delta)>=60
-      ?'<button class="ghostbtn" data-a="usetdee" data-v="'+a.sug+'" style="margin-top:10px">Kalori hedefini '+ti(a.sug)+' yap</button>'
-      :'<div class="mhint" style="margin-top:8px">Mevcut hedefin '+ti(S.targets.kcal)+' kcal — uygun, değiştirmeye gerek yok.</div>')+
-    '</div></div>';
-}
 function autoCardD(){
   var d=autoDiff(),on=!!S.autoTargets;
   var head='<div class="hd"><h2>Otomatik Hedef</h2>'+
@@ -9738,7 +10288,7 @@ function autoCardD(){
     '<div style="padding:0 18px 16px">'+
       '<div class="mhint">Trend kilo '+fx(a2.w,1)+' kg · türetilmiş bakım '+ti(a2.tdee)+' kcal · '+
       'protein '+PROT_PER_KG+' g/kg · yağ '+FAT_PER_KG+' g/kg · karbonhidrat kalandan. '+
-      'Hedef kayıp hızı haftada '+fx(Math.abs(a2.rate),2)+' kg (kalan kilo ÷ kalan hafta).</div>'+
+      'Kalori hedefine dokunmaz: o, Hız ve Hedef kartındaki öneriyle değişir (önce adım, sonra kalori).</div>'+
       (on?'':(d.any?'<button class="ghostbtn" data-a="applyauto" style="margin-top:10px">Hedefleri şimdi güncelle</button>'
                    :'<div class="mhint" style="margin-top:6px">Mevcut hedeflerin zaten uygun.</div>'))+
     '</div></div>';
@@ -11425,7 +11975,7 @@ function nyPanel(name){
     var pmsg=sNote?pg.msg.split(sNote).join(''):pg.msg;
     o+='<div class="nysec"><div class="nyk" style="color:'+pc+'">'+
       (pg.type==='up'?'AĞIRLIĞI ARTIR':(pg.type==='ok'?'İLERLİYORSUN':(pg.why==='dl'?'DELOAD':(pg.why==='floor'?'GERİ İN':'TAKILDIN'))))+'</div>'+
-      '<div class="nyt">'+pmsg+'</div></div>';
+      '<div class="nyt">'+pmsg+'</div>'+(pg.type==='stall'?stallChart(pg,'sny'):'')+'</div>';
   }
   if(sNote){
     o+='<div class="nysec"><div class="nyk" style="color:'+C.amber+'">BÜYÜK SIÇRAMA</div>'+
@@ -11608,7 +12158,7 @@ function deskBody(){
       '<div id="z-sync">'+syncCard()+'</div>';
   return '<div id="z-hero">'+heroD()+'</div>'+
     '<div id="z-kpi">'+kpi()+'</div>'+
-    '<div id="z-tdee">'+tdeeCardD()+autoCardD()+'</div>'+
+    '<div id="z-tdee">'+paceCard(true)+autoCardD()+'</div>'+
     '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
     '<div id="z-day">'+dayCard()+'</div>';
 }
@@ -11741,6 +12291,7 @@ app.addEventListener('input',function(ev){
     if(g==='startDate'){if(!v)return;S.startDate=v;}
     else{if(v==null)return;
       if(g==='deloadEvery'){if(v<0)return;S.deloadEvery=Math.round(v);S._st=Date.now();save();refresh();return;}
+      if(g==='kDecay'){if(v<0||v>100)return;S.kDecay=v;S._st=Date.now();save();refresh();return;}   /* v93: 0 = eski formül */
       if(v<=0)return;
       if(g.indexOf('.')>0){var a=g.split('.');S[a[0]][a[1]]=v;}else S[g]=Math.round(v);}
     S._st=Date.now();save();refresh();return;}
@@ -11808,6 +12359,8 @@ app.addEventListener('change',function(ev){
       if(!d||!d.days)throw 0;
       S.days=d.days;if(d.targets)S.targets=Object.assign(S.targets,d.targets);if(Array.isArray(d.tgtHist))S.tgtHist=d.tgtHist;
       if(d.startDate)S.startDate=d.startDate;if(d.base)S.base=d.base;if(d.goal)S.goal=d.goal;if(d.weeks)S.weeks=d.weeks;if(Array.isArray(d.restDays))S.restDays=d.restDays;if(d.restWeeks)S.restWeeks=d.restWeeks;if(d.plan)S.plan=d.plan;if(d.deloadEvery!=null)S.deloadEvery=d.deloadEvery;if(d.autoTargets!=null)S.autoTargets=!!d.autoTargets;if(d.meas!=null)S.meas=!!d.meas;
+      /* v93: eski yedekte planlı aralar yoksa mevcut liste korunur */
+      if(Array.isArray(d.breaks)){S.breaks=d.breaks;S._bt=Date.now();}if(d.kDecay!=null)S.kDecay=d.kDecay;
       save();render();toast('yedek yüklendi');}catch(e){toast('yedek okunamadı');}};
     fr.readAsText(file);ev.target.value='';}
 });
@@ -11886,6 +12439,7 @@ app.addEventListener('click',function(ev){
     zi('dlayer',''); var dl=document.getElementById('dlayer');
     if(dl)dl.outerHTML=detailLayer(); else render();}
   else if(a==='wpick'){wbPick(t,ev);}
+  else if(a==='cpick'){cpick(t,ev);}
   else if(a==='mbr'){
     var mkR=t.getAttribute('data-key');mbRange[mkR]=+t.getAttribute('data-n')||0;
     var bx=document.getElementById('mbx');if(bx)bx.innerHTML=measureBig(mkR);}
@@ -12234,6 +12788,18 @@ app.addEventListener('click',function(ev){
     var ta=document.getElementById('rep');
     try{navigator.clipboard.writeText(ta.value);}catch(e){ta.removeAttribute('readonly');ta.select();document.execCommand('copy');ta.setAttribute('readonly','');}
     t.textContent='Kopyalandı';setTimeout(function(){t.textContent='Raporu kopyala';},1600);}
+  else if(a==='brknew'){brkForm=true;brkDelArm=-1;brkPaint();}
+  else if(a==='brkcancel'){brkForm=false;brkPaint();}
+  else if(a==='brksave'){brkSave();}
+  else if(a==='brkdel'){
+    var bi2=+t.getAttribute('data-i');
+    if(brkDelArm!==bi2){brkDelArm=bi2;brkPaint();return;}
+    if(Array.isArray(S.breaks))S.breaks.splice(bi2,1);
+    brkDelArm=-1;S._bt=Date.now();save();brkPaint();toast('planlı ara silindi');}
+  else if(a==='dlbak'){
+    var bi=bakInfo();if(!bi){toast('yedek bulunamadı');return;}
+    var bb=new Blob([bi.o.data],{type:'application/json'}),bu=URL.createObjectURL(bb),be=document.createElement('a');
+    be.href=bu;be.download='form-yedek-v92-donusum-oncesi.json';be.click();setTimeout(function(){URL.revokeObjectURL(bu);},900);}
   else if(a==='dl'){
     var blob=new Blob([JSON.stringify(payload(),null,2)],{type:'application/json'});
     var u=URL.createObjectURL(blob),el=document.createElement('a');
@@ -12273,14 +12839,18 @@ STORE.get(KEY).then(function(res){
     if(p.restWeeks&&typeof p.restWeeks==='object')S.restWeeks=p.restWeeks;
     if(p.plan&&typeof p.plan==='object')S.plan=p.plan;
     S._pt=p._pt||0;S._st=p._st||0;
+    if(Array.isArray(p.breaks))S.breaks=p.breaks;S._bt=p._bt||0;
+    if(p.kDecay!=null)S.kDecay=p.kDecay;S.schema=p.schema||2;
     if(p.sync&&typeof p.sync==='object')S.sync=Object.assign(S.sync,p.sync);}
   /* Başlangıç tarihi SADECE hiç kayıt yoksa bugüne çekilir.
      Kayıtlı bir tarih varsa asla üzerine yazma. */
   if(!had)S.startDate=today();
   try{tgtInit();tgtTrack();}catch(e){}
-  if(migrateNames())STORE.set(KEY,JSON.stringify(S));
+  var mg93=false;try{mg93=migrate93(res&&res.value);}catch(e){}
+  if(migrateNames()||mg93)STORE.set(KEY,JSON.stringify(S));
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
+  try{if(migrate93(null))STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
   cur=today();
   applyTheme();
   try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').then(pushVerify,function(){});}catch(e){}
