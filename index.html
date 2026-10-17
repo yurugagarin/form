@@ -2699,6 +2699,17 @@ function planLen(dt,d){return planEx(dt,d).length;}
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-10-18',
+  t:'Haftalık takvim: Bacak Pazar\'dan Salı\'ya, dinlenme Salı\'dan Pazar\'a',
+  y:['SEBEP: Almanca kursu bitti, Salı dinlenmesine gerek kalmadı. Bacak en kısa seans, iş günü arasına sığıyor; en uzun seans olan Omuz/Kol hafta sonunda kalıyor.',
+     'HAREKET/HACİM DEĞİŞMEDİ: listeler, set sayıları ve haftalık efektif set hedefleri aynı.',
+     'YENİ DÜZEN: 3 gün antrenman (Pzt–Çar) → Per dinlenme → 2 gün (Cum–Cmt) → Paz dinlenme.',
+     'GEÇİŞ: 12–18 Eki haftasında Bacak yapılmadı (18 Eki dinlenme). Sonraki Bacak 20 Eki; 11 Eki\'den 9 günlük ara tek seferlik.',
+     'GEÇMİŞ VERİ: 18 Eki öncesi bütün günler eski takvimle değerlendiriliyor (tarih kilidi).']},
+ {d:'2026-10-17',
+  t:'Hafta 11 deload\'u kaldırıldı, seyahat yerine geçiyor',
+  y:['SEBEP: 26 Kas – 6 Ara seyahatinde 11 gün antrenman yok; bu, deload\'dan daha uzun bir toparlanma. Bir ay arayla ikisini birden yapmak gereksiz hacim kaybı.',
+     'KOŞUL: 25 Kasım\'a kadar iki seans üst üste güç düşüşü görülürse deload elle yapılır.']},
  {d:'2026-09-29',
   t:'Yan kaldırışlar ve face pull: tekrar aralığı 12-20 / 15-20 → 10-15 ve 12-15',
   y:['SEBEP: 20 tekrarlık setleri kas değil yanma ve genel yorgunluk bitiriyordu, form da sonlara doğru bozuluyordu. '+
@@ -2802,6 +2813,12 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-17',
+  t:'Yeni haftalık takvim ve deload kapalı (v94)',
+  y:['18 Eki’den itibaren: Pzt Çekiş · Sal Bacak · Çar Üst/Karın · Per Dinlenme · Cum İtiş · Cmt Omuz/Kol · Paz Dinlenme. Haftalık takvim artık tarihli saklanıyor (PROGHIST gibi): 17 Eki ve öncesi eski takvimle değerlendiriliyor.',
+     'Tarih bazlı işaretler (takvimde boyanan günler, SYH, planlı aralar) her zaman haftalık takvimin önüne geçer. Takvimde eski desenle boyanmış gelecek Salı/Pazar günleri bir kez yeni desene çevrildi; desenden farklı işaretlere dokunulmadı.',
+     'Geçiş haftası (12–18 Eki): 18 Eki dinlenme, antrenman uyumu 4/4. Bacak setleri gerçek sayıyla (0) ve “geçiş haftası” notuyla gösteriliyor, uyarı rengi yok. Raporda dinlenme “Sal, Per (+Paz, geçiş)”.',
+     'Deload: 0 = kapalı seçeneği. Hafta 11 deload’u iptal; “Deload: seyahat (26 Kas – 6 Ara) yerine geçiyor”. 19 Eki öncesi haftalar ayar ne olursa olsun deload sayılmaz (tarih kilidi).']},
  {d:'2026-10-16',
   t:'Hız, projeksiyon ve planlı aralar (v93)',
   y:['Gereken hız artık iki şeyi hesaba katıyor: kilo düştükçe bakımın da düşmesi (k = 30 kcal/gün/kg, Hedefler’den değişir) ve takipsiz planlı aralar. Bugün gereken −0.52, ortalama −0.42, hedefe yakın −0.34 kg/hf. 16 Eki öncesi günler eski yöntemle kalır, geçmiş değerlendirmeler değişmez.',
@@ -3916,7 +3933,38 @@ function dtOf(d){var r=S.days[d];return (r&&r.dt)||null;}
    eski plan geri gelir). Gün içinde elle seçilen tür (dtOf) yine önce gelir. */
 function planned(d){var b=brkOn(d);if(b&&!b.train)return 'trav';return (S.plan&&S.plan[d])||null;}
 /* o gün fiilen ne: kayıtlı tür → takvim planı → haftalık dinlenme kuralı */
-function effDt(d){return dtOf(d)||planned(d)||(restOf(d).indexOf(pd(d).getDay())>=0?'rest':null);}
+/* ============ v94 · HAFTALIK TAKVİM GEÇMİŞİ (PROGHIST mantığı, tarih kilidi) ============
+   getDay: 0=Paz 1=Pzt … 6=Cmt. Bir günün şablonu = from'u o güne eşit ya da önce olan son kayıt.
+   İlk kayıt (t:null) ESKİ DAVRANIŞ: dinlenme S.restDays'ten, antrenman günü tarih bazlı plandan
+   (S.plan) — 17 Eki ve öncesi hiçbir gün geriye dönük değişmesin diye o mantık aynen korunuyor.
+   Öncelik her zaman: o gün seçilen tür (dtOf) → planlı ara → tarih bazlı plan (S.plan) → şablon.
+   Hareket listeleri, setler, sıralama şablonla değişmez; şablon yalnız hangi plan gününün
+   haftanın hangi gününe düştüğünü söyler. Kıyaslar plan günü (dt) bazında kalır. */
+var WEEK_V94='2026-10-18';
+var WEEKOLD={1:'gun2',2:'rest',3:'gun5',4:'rest',5:'gun1',6:'gun4',0:'gun3'};   /* 17 Eki'ye kadar (bilgi için) */
+var WEEKHIST=[
+  {from:'2000-01-01',t:null,show:WEEKOLD},
+  {from:WEEK_V94,t:{1:'gun2',2:'gun3',3:'gun5',4:'rest',5:'gun1',6:'gun4',0:'rest'}}
+];
+function tplAt(d){for(var i=WEEKHIST.length-1;i>=0;i--)if(d>=WEEKHIST[i].from)return WEEKHIST[i];return WEEKHIST[0];}
+function tplDt(d){var t=tplAt(d).t;return t?t[pd(d).getDay()]:null;}
+function tplRestDays(tp){var t=tp.t||tp.show,o=[];[1,2,3,4,5,6,0].forEach(function(k){if(t[k]==='rest')o.push(k);});return o;}
+/* haftanın içinde şablon değişiyor mu — değiştiği gün */
+/* raporun "Dinlenme" alanı — o haftanın kendi takvimiyle. Hafta içinde takvim değiştiyse
+   haftanın başındaki takvim yazılır, farkı "(+Paz, geçiş)" biçiminde eklenir. */
+function weekRestLabel(mon){
+  var srt=function(a){return a.slice().sort(function(x,y){return ((x+6)%7)-((y+6)%7);});};
+  var base=srt(restOf(mon)),add=[],rem=[];
+  for(var i=0;i<7;i++){var d=addD(mon,i),w=pd(d).getDay(),r=restOf(d).indexOf(w)>=0,b=base.indexOf(w)>=0;
+    if(r&&!b)add.push(w);else if(!r&&b)rem.push(w);}
+  var t=base.map(function(x){return GUN[x];}).join(', ')||'yok';
+  if(add.length)t+=' (+'+add.map(function(x){return GUN[x];}).join(', ')+', geçiş)';
+  if(rem.length)t+=' (−'+rem.map(function(x){return GUN[x];}).join(', ')+', geçiş)';
+  return t;
+}
+function weekTplChange(mon){for(var i=1;i<7;i++){var d=addD(mon,i);if(tplAt(d)!==tplAt(addD(d,-1)))return d;}return null;}
+function tplText(tp){var t=tp.t||tp.show;return [1,2,3,4,5,6,0].map(function(k){return GUN[k]+' '+(t[k]==='rest'?'Dinlenme':(PROGRAM[t[k]]?PROGRAM[t[k]].short:'—'));}).join(' · ');}
+function effDt(d){return dtOf(d)||planned(d)||(restOf(d).indexOf(pd(d).getDay())>=0?'rest':tplDt(d));}
 function setPlan(d,val){
   S.plan=S.plan||{};
   if(val==='clear'){delete S.plan[d];if(S.days[d])delete S.days[d].dt;}
@@ -3930,6 +3978,8 @@ function autoFill(){
     if(d<S.startDate)continue;
     if(S.plan[d]==='trav'||dtOf(d)==='trav')continue;
     var bk=brkOn(d);if(bk&&!bk.train)continue;          /* v93: planlı ara */
+    if(d<today()){if(ORDER.indexOf(S.plan[d])>=0)i++;continue;}   /* v94: geçmiş günlere dokunulmaz */
+    var td0=tplDt(d);if(td0){S.plan[d]=td0;continue;}   /* v94: haftalık şablon */
     if(restOf(d).indexOf(pd(d).getDay())>=0)S.plan[d]='rest';
     else{S.plan[d]=ORDER[i%5];i++;}
   }
@@ -3944,7 +3994,8 @@ function suggestDt(d){
   if(!ks.length)return 'gun1';
   return ORDER[(ORDER.indexOf(seen[ks[ks.length-1]])+1)%ORDER.length];
 }
-function restOf(d){var r=S.restWeeks&&S.restWeeks[monday(d)];return (r&&r.length!=null)?r:S.restDays;}
+function restOf(d){var r=S.restWeeks&&S.restWeeks[monday(d)];if(r&&r.length!=null)return r;
+  var tp=tplAt(d);return tp.t?tplRestDays(tp):S.restDays;}
 function isRest(d){var e=dtOf(d)||planned(d);if(e)return e==='rest';return restOf(d).indexOf(pd(d).getDay())>=0;}
 /* o gün, kendi haftasında (Pzt–Paz) kaçıncı antrenman? */
 function weekOrd(d){
@@ -4073,6 +4124,28 @@ function migrate93(raw){
     S.breaks=[{from:'2026-11-26',to:'2026-12-06',kind:'seyahat',track:false,train:false,note:''}];S._bt=1;}
   if(S.kDecay==null)S.kDecay=30;
   S.schema=3;
+  return true;
+}
+/* ============ v94 · ŞEMA 4 (bir kez) ============
+   1) 18 Eki ve sonrasında S.plan'da ESKİ haftalık desenle aynı olan girişler (Salı = dinlenme,
+      Pazar = Bacak) yeni desene çevrilir. Desenden farklı her tarih bazlı işaret (SYH, elle
+      yapılan takaslar) olduğu gibi kalır; 17 Eki ve öncesine dokunulmaz.
+      Silmek yerine üzerine yazılıyor: senkronda Gist'teki eski giriş geri gelmesin (_pt yeni).
+   2) Hafta 11 deload'u iptal: deloadEvery 11 → 0 (kapalı). Başka bir değer elle seçilmişse dokunulmaz.
+   Önce o anki verinin tam yedeği alınır (emre:form:yedek-v93). */
+var BAKKEY94='emre:form:yedek-v93';
+function migrate94(raw){
+  if((S.schema||2)>=4)return false;
+  try{if(Object.keys(S.days||{}).length&&!localStorage.getItem(BAKKEY94))
+    localStorage.setItem(BAKKEY94,JSON.stringify({t:Date.now(),from:'v93',data:raw||JSON.stringify(S)}));}catch(e){}
+  var nw=tplAt(WEEK_V94).t,n=0;
+  function conv(d,v){if(d<WEEK_V94)return null;var w=pd(d).getDay();return (WEEKOLD[w]!==nw[w]&&v===WEEKOLD[w])?nw[w]:null;}
+  Object.keys(S.plan||{}).forEach(function(d){var c=conv(d,S.plan[d]);if(c){S.plan[d]=c;n++;}});
+  Object.keys(S.days||{}).forEach(function(d){var r=S.days[d];if(!r||!r.dt||loggedSets(r))return;
+    var c=conv(d,r.dt);if(c){r.dt=c;r._t=Date.now();n++;}});
+  if(n)S._pt=Date.now();
+  if(S.deloadEvery===11){S.deloadEvery=0;S._st=Date.now();}
+  S.schema=4;
   return true;
 }
 function bakInfo(){try{var v=localStorage.getItem(BAKKEY);if(!v)return null;var o=JSON.parse(v);return {t:o.t,size:v.length,o:o};}catch(e){return null;}}
@@ -4767,12 +4840,26 @@ var KCAL_PER_KG=7700;
 var RATE_MAX=0.7;            /* haftada bundan hızlısı kas maliyeti getirir (yalnız bilgi) */
 var KCAL_PER_1000_STEPS=35;
 /* ============ DELOAD ============ */
+/* v94 — 0 = deload kapalı. TARİH KİLİDİ: 19 Eki (hafta 10) öncesi hiçbir hafta deload değildi
+   (11'de bir ayarıyla ilk deload hafta 11 olacaktı); ayar sonradan değişse de bu haftalar
+   geriye dönük deload'a dönmez. */
+var DELOAD_LOCK='2026-10-19';
 function deloadEvery(){return (S.deloadEvery==null)?7:S.deloadEvery;}
-function isDeload(d){var w=weekIdx(d);return w>0&&deloadEvery()>0&&w%deloadEvery()===0;}
+function weekStartOf(w){return addD(monday(S.startDate),(w-1)*7);}
+function deloadWk(w){var e=deloadEvery();return w>0&&e>0&&w%e===0&&weekStartOf(w)>=DELOAD_LOCK;}
+function isDeload(d){return deloadWk(weekIdx(d));}
+/* deload kapalıyken: yerine geçen planlı ara (antrenmansız, bugünden sonra biten ilk ara) */
+function deloadNote(){
+  var e=deloadEvery(),dl=nextDeload();
+  if(dl)return dl.now?'Bu hafta deload':'Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)';
+  if(e>0)return '';
+  var b=brkList().filter(function(x){return !x.train&&x.to>=today();})[0];
+  return b?'Deload: '+brkKind(b.kind).toLowerCase()+' ('+fdate(b.from)+' – '+fdate(b.to)+') yerine geçiyor':'Deload kapalı';
+}
 function nextDeload(){
   var w=weekIdx(today()),e=deloadEvery();if(w<1||!e)return null;
-  if(w%e===0)return {wk:w,now:true};
-  var nx=Math.ceil(w/e)*e;
+  if(deloadWk(w))return {wk:w,now:true};
+  var nx=Math.ceil(w/e)*e;if(nx===w)nx+=e;
   return nx<=S.weeks?{wk:nx,now:false,inWeeks:nx-w}:null;
 }
 
@@ -5840,7 +5927,7 @@ function calendar(){
   var cols='30px repeat('+nW+',1fr)';
   var g='<div class="calg" style="grid-template-columns:'+cols+'"><span></span>';
   for(var w=wFrom;w<=S.weeks;w++){
-    var wdl=w>0&&deloadEvery()>0&&w%deloadEvery()===0;
+    var wdl=deloadWk(w);
     g+='<span class="hl'+(w===wkNow?' now':'')+(w<1?' pre':'')+(wdl?' dl':'')+'"'+
       (wdl?' title="Deload haftası — set sayısı yarıya iner"':'')+'>'+
       ((w%5===0||w===1||w<1||w===wkNow||wdl)?wkLabel(w):'')+(wdl?'<i>D</i>':'')+'</span>';
@@ -6663,7 +6750,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v93 · 16 Eki 2026';
+var APPVER='v94 · 17 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7767,8 +7854,20 @@ function paceDetail(){
       '</div><div class="mhint2" style="margin-top:6px">Daha → Hedefler’den eklenir, silinir.</div>':'');
 }
 /* --- haftalık kas grubu setleri --- */
+/* v94 — takvimin değiştiği hafta (geçiş): normal haftada çalışan ama bu hafta planda olmayan
+   kaslar (12–18 Eki'de Bacak). Gerçek sayı (0) gösterilir, hacim başka haftaya dağıtılmaz,
+   uyarı rengi yok — yalnız not. */
+function musTransit(mon,mt){
+  var ch=weekTplChange(mon);if(!ch)return [];
+  var ref=musPlanned(addD(monday(ch),7));
+  return MUSORD.filter(function(k){return !(mt[k]>0)&&ref[k]>0;});
+}
+var TRANS_NOTE='geçiş haftası — program takvimi değişti';
 function musCard(mw,mt,wp,mex){
-  var rows=MUSORD.filter(function(k){return mt[k]>0;}).map(function(k){
+  var trk=musTransit(monday(today()),mt);
+  var rows=MUSORD.filter(function(k){return mt[k]>0||trk.indexOf(k)>=0;}).map(function(k){
+    if(trk.indexOf(k)>=0)return '<div class="musrow"><span class="musn">'+MUS[k].s+'<i class="muspri" style="background:none;color:'+THC.c21+'">'+TRANS_NOTE+'</i></span>'+
+      '<span class="mustrack"></span><span class="musv" style="color:'+THC.c17+'">'+fx(mw[k]||0,1).replace(/\.0$/,'')+'<b>/—</b></span></div>';
     var tgt=mt[k],exp=mex[k],have=mw[k];
     var pct=tgt?Math.min(100,have/tgt*100):0;
     var epct=tgt?Math.min(100,exp/tgt*100):0;
@@ -8261,7 +8360,7 @@ function gymSum(){
     autoCard()+
     musCard(mw,mt,wp2,mex)+
     (dl&&dl.now?'<div class="dlbanner">Bu hafta <b>deload</b> — set sayısını yarıya indir, ağırlıkları koru.</div>'
-      :(dl?'<div class="dlnote">Sonraki deload: hafta '+dl.wk+' ('+dl.inWeeks+' hafta sonra)</div>':''))+
+      :(deloadNote()?'<div class="dlnote">'+deloadNote()+'</div>':''))+
     (prToday.length?'<div class="prbanner">🏅 Bugün '+prToday.length+' rekor: '+
       prToday.map(function(x){return esc(x.n)+' '+x.kg+'×'+x.rep;}).join(' · ')+'</div>':'')+
     cutCard()+
@@ -8825,7 +8924,7 @@ function calendarM(){
   var g='<div class="mcal"><div class="mcalhd"><span></span>'+
     WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
   for(var w=0;w<nW;w++){
-    var cells='',wn=wFrom+w,preW=wn<1,wdl=wn>0&&deloadEvery()>0&&wn%deloadEvery()===0;
+    var cells='',wn=wFrom+w,preW=wn<1,wdl=deloadWk(wn);
     for(var i=0;i<7;i++){
       var d=addD(m0,w*7+i),future=d>tod;
       var dt=effDt(d),t=dt?PROGRAM[dt]:null,code=(t&&t.code)||'';
@@ -8913,7 +9012,7 @@ function calGrid(){
     WL.map(function(x){return '<span>'+x+'</span>';}).join('')+'</div>';
   var lastMon=-1;
   for(var w=0;w<nW;w++){
-    var wn=wFrom+w,preW=wn<1,wdl=wn>0&&deloadEvery()>0&&wn%deloadEvery()===0;
+    var wn=wFrom+w,preW=wn<1,wdl=deloadWk(wn);
     var rowStart=addD(m0,w*7);
     /* ay çizgisi: ayın 1'inin düştüğü haftanın önüne */
     for(var mi=0;mi<7;mi++){
@@ -9067,7 +9166,7 @@ function secTgt(){
       mfld('targets.carbs','Karbonhidrat (g)',S.targets.carbs)+mfld('targets.fat','Yağ (g)',S.targets.fat)+
       mfld('targets.steps','Adım',S.targets.steps)+mfld('goal.weight','Hedef kilo',S.goal.weight)+
       mfld('base.weight','Başlangıç kilo',S.base.weight)+mfld('weeks','Süre (hafta)',S.weeks)+
-      mfld('deloadEvery','Deload (kaç haftada bir)',S.deloadEvery)+
+      mfld('deloadEvery','Deload (kaç haftada bir · 0 = kapalı)',S.deloadEvery)+
     '</div>'+
     '<div class="mfield" style="margin-top:12px"><label>Program başlangıcı</label>'+
       '<input type="date" class="ginp" data-g="startDate" value="'+S.startDate+'">'+
@@ -9897,12 +9996,10 @@ function settings(){
   '</div>'+
   '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+
     '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:8px">'+
-      'Dinlenme günleri <span style="text-transform:none;letter-spacing:0;color:'+THC.c28+';font-weight:600">— dokunarak seç · şu an '+S.restDays.length+' gün</span></label>'+
-    '<div class="rest7">'+[1,2,3,4,5,6,0].map(function(wd,i){
-      var lbl=['Pzt','Sal','Çar','Per','Cum','Cmt','Paz'][i];
-      return '<button data-a="rest7" data-w="'+wd+'"'+(S.restDays.indexOf(wd)>=0?' class="on"':'')+'>'+lbl+'</button>';
-    }).join('')+'</div>'+
-    '<div class="mhint" style="margin-top:7px">Seçili günler dinlenme sayılır; kalan günlerde program sırayla Gün 1 → 5 ilerler.</div>'+
+      'Haftalık takvim <span style="text-transform:none;letter-spacing:0;color:'+THC.c28+';font-weight:600">— tarih kilitli, PROGRAM DEĞİŞİKLİKLERİ ile değişir</span></label>'+
+    WEEKHIST.map(function(h,i){var nx=WEEKHIST[i+1];
+      return '<div class="mhint" style="margin-top:4px"><b>'+(i?fdate(h.from):'Başlangıç')+(nx?' – '+fdate(addD(nx.from,-1)):' → bugün')+':</b> '+tplText(h)+'</div>';}).join('')+
+    '<div class="mhint" style="margin-top:7px">Her gün kendi tarihindeki takvimle değerlendirilir. Tek bir günü değiştirmek için takvimde boya; tarih bazlı işaret her zaman haftalık takvimin önüne geçer.</div>'+
   '</div>'+
   '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+brkEditor(true)+'</div>'+
   '<div style="margin-top:16px;padding-top:15px;border-top:1px dashed '+THC.c38+'">'+
@@ -9967,6 +10064,7 @@ function report(){
   o+='Bugün: '+flong(today())+' (Hafta '+weekIdx(today())+', '+progDay(today())+'. gün)';
   var dlR=nextDeload();
   if(dlR)o+=dlR.now?' · BU HAFTA DELOAD':' · sonraki deload: hafta '+dlR.wk;
+  else if(deloadNote())o+=' · '+deloadNote();
   o+='\n';
   /* v93 — başlık: hız ±bant, gereken hız (bugün/ortalama/sonda), 42 günlük projeksiyon ve durum,
      bakım ve planlı aralar. Hepsi paceStatus'tan: kartla rapor aynı sayıyı söyler. */
@@ -10022,7 +10120,7 @@ function report(){
         (napD?' | gündüz uykusu '+napD+' gün':'')+'\n';
     }
     var gp=0,gd=0;ds.forEach(function(d){var t=PROGRAM[dtOf(d)];if(t&&t.ex.length){gp++;var e=sessionEval(d);if(e&&!e.empty&&e.tam/e.total>=.6)gd++;}});
-    var rl=restOf(ds[0]).map(function(x){return GUN[x];}).join(', ');
+    var rl=weekRestLabel(monday(ds[0]));
     var krh=ds.filter(function(d){return tookSup(d,'kreatin');}).length;
     o+='Antrenman: '+gd+'/'+gp+' | Kreatin: '+krh+'/'+ds.length+' gün | Dinlenme: '+(rl||'yok');
     if(isDeload(ds[0]))o+=' | DELOAD HAFTASI';
@@ -10038,7 +10136,9 @@ function report(){
     var wMon=monday(ds[0]),wEnd=addD(wMon,6);
     var mwR=musWeek(wMon),partial=(wEnd>today());
     var mtR=partial?musExpected(wMon):musPlanned(wMon);
-    var musLine=MUSORD.filter(function(k){return mtR[k]>0&&mwR[k]>0;}).map(function(k){
+    var trR=musTransit(wMon,musPlanned(wMon));
+    var musLine=MUSORD.filter(function(k){return (mtR[k]>0&&mwR[k]>0)||trR.indexOf(k)>=0;}).map(function(k){
+      if(trR.indexOf(k)>=0)return MUS[k].s+' '+fx(mwR[k]||0,1).replace(/\.0$/,'')+' ['+TRANS_NOTE+']';
       return MUS[k].s+' '+fx(mwR[k],1).replace(/\.0$/,'')+'/'+fx(mtR[k],1).replace(/\.0$/,'');}).join(' | ');
     if(musLine)o+='Kas seti (efektif): '+musLine+(partial?'  [hafta sürüyor — hedef bugüne kadarki]':'')+'\n';
     o+='\n';
@@ -10295,7 +10395,11 @@ function autoCardD(){
 }
 function musCardD(){
   var mon=monday(today()),mw=musWeek(mon),mt=musPlanned(mon),mex=musExpected(mon),wp=weekProgress(mon);
-  var rows=MUSORD.filter(function(k){return mt[k]>0;}).map(function(k){
+  var trk=musTransit(mon,mt);
+  var rows=MUSORD.filter(function(k){return mt[k]>0||trk.indexOf(k)>=0;}).map(function(k){
+    if(trk.indexOf(k)>=0)return '<div style="display:flex;align-items:center;gap:12px"><span style="width:104px;flex:none;font-size:12.5px;font-weight:700;color:'+THC.c8+'">'+MUS[k].n+'</span>'+
+      '<span style="flex:1;font-size:11.5px;font-weight:700;color:'+THC.c21+'">'+TRANS_NOTE+'</span>'+
+      '<span style="width:74px;flex:none;text-align:right;font-size:12.5px;font-weight:700;color:'+THC.c17+'">'+fx(mw[k]||0,1).replace(/\.0$/,'')+'<span style="color:'+THC.c28+'"> / —</span></span></div>';
     var tgt=mt[k],exp=mex[k],have=mw[k],pct=tgt?Math.min(100,have/tgt*100):0;
     var epct=tgt?Math.min(100,exp/tgt*100):0;
     var behind=exp>0&&have<exp*0.85;
@@ -12757,10 +12861,6 @@ app.addEventListener('click',function(ev){
   else if(a==='restd'){
     var rd=t.getAttribute('data-d');
     setPlan(rd,effDt(rd)==='rest'?'clear':'rest');repaint();}
-  else if(a==='rest7'){
-    var wd=+t.getAttribute('data-w'),ix=S.restDays.indexOf(wd);
-    if(ix>=0)S.restDays.splice(ix,1);else S.restDays.push(wd);
-    S._st=Date.now();save();render();}
   else if(a==='ptab'){pTab=t.getAttribute('data-k');
     if(phone())gymPaint();else zi('z-prog',programCard());}
   else if(a==='theme'){setTheme(t.getAttribute('data-k'));}
@@ -12847,10 +12947,11 @@ STORE.get(KEY).then(function(res){
   if(!had)S.startDate=today();
   try{tgtInit();tgtTrack();}catch(e){}
   var mg93=false;try{mg93=migrate93(res&&res.value);}catch(e){}
+  try{if(migrate94(res&&res.value))mg93=true;}catch(e){}
   if(migrateNames()||mg93)STORE.set(KEY,JSON.stringify(S));
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
-  try{if(migrate93(null))STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
+  try{var m3=migrate93(null),m4=migrate94(null);if(m3||m4)STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
   cur=today();
   applyTheme();
   try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').then(pushVerify,function(){});}catch(e){}
