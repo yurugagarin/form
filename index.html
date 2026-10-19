@@ -2208,6 +2208,27 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+/* v95 · Gün sekmesi gün değiştirici */
+.dnavm{display:flex;align-items:center;gap:6px;margin:10px 14px 0;padding:4px;border-radius:14px;
+  background:rgba(252,249,243,.86);border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(60,52,44,.08)}
+.dnavm>button:not(.dnl){flex:none;width:40px;height:36px;border-radius:10px;border:0;background:#f3ecdd;color:#3a342c;
+  font:inherit;font-size:22px;font-weight:700;line-height:1;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dnavm>button:disabled{opacity:.35;cursor:default}
+.dnavm .dnl{flex:1;min-width:0;display:flex;align-items:baseline;justify-content:center;gap:7px;border:0;background:none;
+  font:inherit;padding:0;color:#3a342c;white-space:nowrap;overflow:hidden}
+.dnavm .dnl b{font-size:14px;font-weight:800}
+.dnavm .dnl span{font-size:12px;font-weight:700;color:#a8987c;overflow:hidden;text-overflow:ellipsis}
+.dnavm.past{background:#fdf1d6;border-color:#f1d9a6}
+.dnavm.past .dnl b{color:#a15c00}
+.dnavm.past .dnl span{color:#b9822e}
+.dnavm.past .dnl{cursor:pointer}
+html.dark .dnavm{background:#211e1b;border-color:#3a342d;box-shadow:none}
+html.dark .dnavm>button:not(.dnl){background:#2c2824;color:#eae4dd}
+html.dark .dnavm .dnl{color:#eae4dd}
+html.dark .dnavm .dnl span{color:#a49889}
+html.dark .dnavm.past{background:#2c2519;border-color:#4a3b22}
+html.dark .dnavm.past .dnl b{color:#e3b75e}
+html.dark .dnavm.past .dnl span{color:#c9a463}
 /* v93 · hız kartı, açıklamalar, grafik lejantı */
 .pqstat{border-radius:12px;padding:11px 13px;margin:2px 0 10px;font-size:12.5px;font-weight:600;line-height:1.5}
 .pqstat b{display:block;font-size:14px;font-weight:800;margin-bottom:2px}
@@ -2813,6 +2834,9 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-19',
+  t:'Gün sekmesinde önceki gün (v95)',
+  y:['Gün sekmesinin üstünde küçük bir gün çubuğu: ‹ ile önceki güne geçip gece yarısını geçtiğinde dünün kilo, uyku, kalori ve adım değerlerini girebilirsin. Ortadaki etikete ya da › düğmesine basınca bugüne dönersin; bugünden ileri gidilmez. Geçmiş günde çubuk vurgulu görünür.']},
  {d:'2026-10-17',
   t:'Yeni haftalık takvim ve deload kapalı (v94)',
   y:['18 Eki’den itibaren: Pzt Çekiş · Sal Bacak · Çar Üst/Karın · Per Dinlenme · Cum İtiş · Cmt Omuz/Kol · Paz Dinlenme. Haftalık takvim artık tarihli saklanıyor (PROGHIST gibi): 17 Eki ve öncesi eski takvimle değerlendiriliyor.',
@@ -6750,7 +6774,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v94 · 17 Eki 2026';
+var APPVER='v95 · 19 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7122,6 +7146,19 @@ function gymWorkout(){
 }
 
 /* --- gün sekmesi --- */
+/* v95 · Gün sekmesinde önceki güne geçiş — gece yarısını geçince dünün değerlerini girmek için.
+   Tek satır: ‹ önceki gün · etiket · sonraki gün ›. Bugünden ileri gidilmez. Geçmiş günde
+   etiket vurgulu ve "değerler bu güne kaydedilir" der; bugünün özet kartı gizlenir. */
+function dayNav(){
+  var td=today(),n=dayDiff(cur,td),past=n>0;
+  var lbl=n===0?'Bugün':(n===1?'Dün':n+' gün önce');
+  return '<div class="dnavm'+(past?' past':'')+'">'+
+    '<button data-a="dayprev" aria-label="Önceki gün">‹</button>'+
+    (past?'<button class="dnl" data-a="daytoday" aria-label="Bugüne dön">':'<div class="dnl">')+
+      '<b>'+lbl+'</b><span>'+GUN[pd(cur).getDay()]+' '+fdate(cur)+(past?' · bugüne dön':'')+'</span>'+
+    (past?'</button>':'</div>')+
+    '<button data-a="daynext" aria-label="Sonraki gün"'+(past?'':' disabled')+'>›</button></div>';
+}
 function gymDay(){
   var r=D(cur),T=TG(cur);
   function fld(k,lbl,unit,tgt,col,inv){
@@ -7162,7 +7199,7 @@ function gymDay(){
   var rt=(r.sh!=null&&r.b)?r.sh/r.b:null;
   var md=measDue();
   var trv=travDay(cur);
-  return heroM()+'<div class="gsec">Her gün'+
+  return dayNav()+(cur===today()?heroM():'')+'<div class="gsec">Her gün'+
       (trv?' <span style="text-transform:none;letter-spacing:0;color:'+THC.c28+'">· seyahat — tartı beklenmiyor</span>':'')+'</div>'+
     (trv?'<div class="gduenote">Seyahat işaretli gün: tartı ve mezura beklenmiyor, gün puanı eksik saymıyor. Kalori, protein ve adım normal işliyor.</div>':'')+
     '<div class="ggrid">'+fld('w','Kilo','kg',null,C.blue)+
@@ -12523,6 +12560,12 @@ app.addEventListener('click',function(ev){
   if(t&&t.closest){var wrp=t.closest('[data-a]');if(wrp)t=wrp;}
   var a=t.getAttribute&&t.getAttribute('data-a');if(!a)return;
   if(a==='prev'){cur=addD(cur,-1);render();}
+  else if(a==='dayprev'||a==='daynext'||a==='daytoday'){
+    var nd=a==='daytoday'?today():addD(cur,a==='dayprev'?-1:1);
+    if(nd>today())nd=today();
+    if(S.startDate&&nd<addD(S.startDate,-7))return;
+    cur=nd;gymPaint();
+    var tp=document.querySelector('.gtop');if(tp)tp.outerHTML=gymTop();}   /* üst çubuktaki tarih de değişsin */
   else if(a==='next'){cur=addD(cur,1);render();}
   else if(a==='fig'){openFig(t.getAttribute('data-n'));}
   else if(a==='connect'){
