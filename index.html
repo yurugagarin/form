@@ -2208,6 +2208,8 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+.gexnote{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:800;color:#a15c00;background:#fdf1d6;border-radius:7px;padding:2px 8px}
+html.dark .gexnote{color:#e3b75e;background:#2c2519}
 /* v96 · hedef şeridi */
 .gstrip{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 12px;border-radius:13px;
   background:rgba(22,168,90,.07);border:1px solid rgba(22,168,90,.16)}
@@ -2733,6 +2735,10 @@ var PROGHIST=[
 ];
 /* d tarihinde o plan gününde yürürlükte olan hareket listesi.
    d verilmezse bugünkü (yani PROGRAM'daki) liste döner. */
+/* v98 · hareket adının altındaki kısa ekipman notu — yalnız gösterim; ad, hedef,
+   kayıtlar ve hesaplar aynı. Hareket hangi plan gününde geçiyorsa orada çıkar. */
+var EXNOTE={'Halat pushdown':'Z bar ile yap'};
+function exNote(n,cls){return EXNOTE[n]?'<div class="'+(cls||'gexnote')+'">'+esc(EXNOTE[n])+'</div>':'';}
 function planEx(dt,d){
   var t=PROGRAM[dt];if(!t)return [];
   if(d)for(var i=0;i<PROGHIST.length;i++){
@@ -2753,6 +2759,9 @@ function planLen(dt,d){return planEx(dt,d).length;}
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-10-23',
+  t:'Halat pushdown: Z bar ile yapılmaya başlandı',
+  y:['Yalnız ekipman değişikliği; form daha düzgün oturuyor. Hareket, set/tekrar hedefi ve geçmiş kayıtlar değişmedi, aynı hatta devam ediyor.']},
  {d:'2026-10-23',
   t:'İtiş günü: Kablo yan kaldırış 4 → 3 set',
   y:['SEBEP: Hareket üç presten (eğik, düz, omuz press) sonra geliyor, omuz önden yorgun. 20 kg\'da 5 seanstır tekrar 12-14\'te dönüyor ve 4. set her seferinde düşüyor. Son set kas uyarımından çok yorgunluk ekliyordu.',
@@ -2872,6 +2881,9 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-23',
+  t:'Halat pushdown notu (v98)',
+  y:['Antrenman ekranında Halat pushdown adının altında “Z bar ile yap” notu. Hareketin adı, hedefi ve kayıtları aynı.']},
  {d:'2026-10-23',
   t:'İtiş: Kablo yan kaldırış 3 set (v97)',
   y:['23 Eki’den itibaren İtiş günü Kablo yan kaldırış 3×10-15 (RIR 2 / 2 / 2). 23 Eki öncesi İtiş seansları tarih kilidiyle 4 setle değerlendiriliyor; o günlerin 4. setleri plan dışı sayılmıyor, tamamlama yüzdesi değişmedi.',
@@ -5849,7 +5861,7 @@ function exRow(e,r){
         '<div class="exhd"><span class="exname">'+esc(e.n)+'</span>'+
           '<span class="extgt">'+e.s+' × '+e.r[0]+'-'+e.r[1]+(e.off?' · PLAN DIŞI':'')+'</span>'+
           '<span class="badge" data-badge style="color:'+ev.color+';background:'+ev.bg+'">'+ev.label+'</span></div>'+
-        '<div class="exdesc">'+esc(descOf(e.n))+'</div>'+
+        exNote(e.n)+'<div class="exdesc">'+esc(descOf(e.n))+'</div>'+
         (function(){var kk=exKind(e.n),kc=(kk==='p'||kk==='f')?C.violet:(kk==='c'?C.teal:C.green);
           return '<div class="rirsch" style="background:'+hexa(kc,.13)+';color:'+kc+'" title="'+esc(rirWhy(e.n))+'">'+
             KINDN[kk].toUpperCase()+' <i>· hedef RIR '+rirScheme(e.n,count)+'</i></div>';})()+
@@ -6824,7 +6836,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v97 · 23 Eki 2026';
+var APPVER='v98 · 23 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7165,7 +7177,7 @@ function gymWorkout(){
         '<div class="gnum">'+(exIdx+1)+' / '+TEX.length+' · HAREKET'+
           (function(){var oi=ordInfo(cur),b=oi&&oi.by[e.n];if(!b||b.d===0)return '';
             return ' <span class="gord">↕ bugün '+b.act+'. yapıldı</span>';})()+'</div>'+
-        '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+
+        '<div class="gname">'+esc(e.n)+(isPR(e.n,cur)?' <span class="prtag">PR</span>':'')+'</div>'+exNote(e.n)+
         '<div class="gtgt">'+te.s+' set × '+e.r[0]+'-'+e.r[1]+' tekrar · '+mmss(restSec(e.n))+' dinlenme'+
           (te.dl?' <b style="color:'+C.amber+'">· DELOAD ('+e.s+'→'+te.s+' set)</b>':'')+'</div>'+
       '</div></div>'+
