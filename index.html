@@ -2208,6 +2208,31 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+/* v96 · hedef şeridi */
+.gstrip{display:flex;align-items:center;gap:12px;margin-top:12px;padding:10px 12px;border-radius:13px;
+  background:rgba(22,168,90,.07);border:1px solid rgba(22,168,90,.16)}
+.gstrip .gsn{flex:none;display:flex;flex-direction:column;align-items:flex-start;line-height:1}
+.gstrip .gsn.r{align-items:flex-end}
+.gstrip .gsn b{font-family:'Fraunces';font-size:22px;font-weight:600;color:#3a342c;letter-spacing:-.3px}
+.gstrip .gsn b small{font-family:Karla,system-ui,sans-serif;font-size:11px;font-weight:700;color:#8a7f6f;margin-left:2px}
+.gstrip .gsn i{font-style:normal;font-size:10px;letter-spacing:.8px;text-transform:uppercase;font-weight:800;color:#8a7f6f;margin-top:4px}
+.gstrip .gsb{flex:1;min-width:0}
+.gstrip .gst{height:8px;border-radius:99px;background:rgba(60,52,44,.1);overflow:hidden}
+.gstrip .gst i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#5fb98a,#16a85a)}
+.gstrip .gse{display:flex;justify-content:space-between;gap:4px;margin-top:5px;font-size:10.5px;font-weight:700;color:#a8987c;white-space:nowrap}
+.gstrip .gse span:nth-child(2){overflow:hidden;text-overflow:ellipsis;color:#8a7f6f}
+.gstrip.desk{margin:0 0 14px;padding:14px 20px;border-radius:16px;background:var(--card);border:1px solid var(--line)}
+.gstrip.desk .gsn b{font-size:30px}
+.gstrip.desk .gst{height:10px}
+.gstrip.desk .gse{font-size:12px}
+html.dark .gstrip{background:rgba(147,194,125,.08);border-color:rgba(147,194,125,.18)}
+html.dark .gstrip.desk{background:var(--card);border-color:var(--line)}
+html.dark .gstrip .gsn b{color:#f7f5f2}
+html.dark .gstrip .gsn b small,html.dark .gstrip .gsn i,html.dark .gstrip .gse span:nth-child(2){color:#bbb2a7}
+html.dark .gstrip .gse{color:#a49889}
+html.dark .gstrip .gst{background:rgba(255,255,255,.1)}
+html.dark .gstrip .gst i{background:linear-gradient(90deg,#6f9e5c,#93c27d)}
+@media (max-width:350px){.gstrip{gap:8px;padding:9px 10px}.gstrip .gsn b{font-size:19px}.gstrip .gse span:nth-child(2){display:none}}
 /* v95 · Gün sekmesi gün değiştirici */
 .dnavm{display:flex;align-items:center;gap:6px;margin:10px 14px 0;padding:4px;border-radius:14px;
   background:rgba(252,249,243,.86);border:1px solid rgba(255,255,255,.7);box-shadow:0 1px 2px rgba(60,52,44,.08)}
@@ -2834,6 +2859,9 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-23',
+  t:'Hedef şeridi (v96)',
+  y:['Kaç kilo verdiğin ve hedefe kaç kaldığı artık göz önünde: telefonda Gün ve Özet sekmelerinin üstündeki ana kartta, bilgisayarda ölçüm kartlarının üstünde ince bir şerit. Sayılar trend kiloyla (Motivasyon’daki Yolculuk kartıyla aynı), arada başlangıçtan hedefe ilerleme çubuğu.']},
  {d:'2026-10-19',
   t:'Gün sekmesinde önceki gün (v95)',
   y:['Gün sekmesinin üstünde küçük bir gün çubuğu: ‹ ile önceki güne geçip gece yarısını geçtiğinde dünün kilo, uyku, kalori ve adım değerlerini girebilirsin. Ortadaki etikete ya da › düğmesine basınca bugüne dönersin; bugünden ileri gidilmez. Geçmiş günde çubuk vurgulu görünür.']},
@@ -5267,8 +5295,10 @@ function wkLabel(w){return w>0?String(w):(w===0?'0':String(w));}
 function kpi(){
   var lw=lastW(),lb=lastB(),fb=firstB(),T=S.targets;
   var dw=lw!=null?lw-S.base.weight:null;
-  var rem=lw!=null?lw-S.goal.weight:null;
-  var pct=lw!=null?clamp((S.base.weight-lw)/(S.base.weight-S.goal.weight)*100):0;
+  /* v96: hedefe kalan trend kiloyla — üstteki hedef şeridiyle aynı sayı */
+  var twK=trendNow();if(twK==null)twK=lw;
+  var rem=twK!=null?twK-S.goal.weight:null;
+  var pct=twK!=null?clamp((S.base.weight-twK)/(S.base.weight-S.goal.weight)*100):0;
   var db=(lb!=null&&fb!=null)?lb-fb:null;
 
   /* bu haftanın antrenmanı — PLANLANMIŞ günlere bakar (dtOf değil effDt).
@@ -5292,7 +5322,7 @@ function kpi(){
       s:dw==null?'kayıt bekleniyor':(dw>0?'+':'')+fx(dw)+' kg · başlangıca göre',
       top:dw==null?''+THC.c34+'':(dw<0?C.green:C.red),vc:dw==null?''+THC.c6+'':(dw<0?C.green:C.red)},
     {l:'Hedefe kalan',v:rem==null?'—':(rem<=0?'ulaşıldı':fx(rem)+' <span style="font-size:15px;color:'+THC.c21+'">kg</span>'),
-      s:Math.round(pct)+'% tamamlandı · hedef '+S.goal.weight+' kg',top:''+THC.c51+'',vc:''+THC.c6+''},
+      s:Math.round(pct)+'% tamamlandı · trend kiloyla · hedef '+S.goal.weight+' kg',top:''+THC.c51+'',vc:''+THC.c6+''},
     {l:'Bel çevresi',v:lb==null?'—':fx(lb)+' <span style="font-size:15px;color:'+THC.c21+'">cm</span>',
       s:db==null?'ilk ölçüm bekleniyor':(db>0?'+':'')+fx(db)+' cm · ilk ölçüme göre',
       top:db==null?''+THC.c34+'':(db<0?C.green:C.orange),vc:db==null?''+THC.c6+'':(db<0?C.green:''+THC.c6+'')},
@@ -6774,7 +6804,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v95 · 19 Eki 2026';
+var APPVER='v96 · 23 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -11873,6 +11903,22 @@ function heroD(){
     '</div>'+
   '</div>';
 }
+/* v96 · HEDEF ŞERİDİ — kaç kilo verildi, hedefe kaç kaldı. Trend kilo üzerinden (tek
+   tartının su dalgalanması sayıyı oynatmasın); Motivasyon'daki Yolculuk kartıyla aynı sayı.
+   Telefonda ana kartın içinde (Gün ve Özet), masaüstünde ölçüm kartlarının üstünde. */
+function goalStrip(desk){
+  var b0=S.base&&S.base.weight,g0=S.goal&&S.goal.weight,tn=trendNow();
+  if(tn==null)tn=lastW();
+  if(b0==null||g0==null||tn==null||!(b0>g0))return '';
+  var lost=b0-tn,left=Math.max(0,tn-g0),pct=Math.max(0,Math.min(100,lost/(b0-g0)*100));
+  var done=left<=0.05;
+  return '<div class="gstrip'+(desk?' desk':'')+'">'+
+    '<div class="gsn"><b style="color:'+(lost>=0?C.green:C.orange)+'">'+(lost>=0?'−':'+')+fx(Math.abs(lost),1)+'<small>kg</small></b><i>verildi</i></div>'+
+    '<div class="gsb"><div class="gst"><i style="width:'+pct.toFixed(1)+'%"></i></div>'+
+      '<div class="gse"><span>'+fx(b0,1)+'</span><span>%'+Math.round(pct)+' · trend '+fx(tn,1)+'</span><span>'+fx(g0,0)+' 🏁</span></div></div>'+
+    '<div class="gsn r"><b>'+(done?'🏁':fx(left,1)+'<small>kg</small>')+'</b><i>'+(done?'hedefte':'kaldı')+'</i></div>'+
+  '</div>';
+}
 function heroM(){
   var h=todayHero(),f=h.f;
   var pct=f.fs.done/f.fs.total;
@@ -11882,7 +11928,7 @@ function heroM(){
         '<div class="mheroH">'+esc(h.head)+'</div>'+
         '<div class="mheroS">'+esc(h.line)+'</div></div>'+
       ringSVG(pct,pct>=1?C.green:''+THC.c40+'',62,f.fs.done+'/'+f.fs.total)+
-    '</div>'+
+    '</div>'+goalStrip(false)+
     '<div class="mheroPills">'+h.pills.map(function(p){
       return '<div class="hpill"><b style="color:'+p[2]+'">'+p[0]+'</b><i>'+p[1]+'</i></div>';}).join('')+'</div>'+
   '</div>';
@@ -12298,7 +12344,7 @@ function deskBody(){
       (phPurgeNote()?'<div class="card"><div style="padding:6px 18px 16px">'+phPurgeNote()+'</div></div>':'')+
       '<div id="z-sync">'+syncCard()+'</div>';
   return '<div id="z-hero">'+heroD()+'</div>'+
-    '<div id="z-kpi">'+kpi()+'</div>'+
+    '<div id="z-kpi">'+goalStrip(true)+kpi()+'</div>'+
     '<div id="z-tdee">'+paceCard(true)+autoCardD()+'</div>'+
     '<div class="charts" id="z-ch">'+trendChart()+adherence()+'</div>'+
     '<div id="z-day">'+dayCard()+'</div>';
@@ -12321,7 +12367,7 @@ function repaint(){
   if(phone()){gymPaint();return;}
   zi('z-cal',calendar());zi('z-scal',scoreCalendar());
   zi('z-day',dayCard());
-  zi('z-week',weekTable());zi('z-kpi',kpi());zi('z-prg',progressCard());
+  zi('z-week',weekTable());zi('z-kpi',goalStrip(true)+kpi());zi('z-prg',progressCard());
   zi('z-ch',trendChart()+adherence());
 }
 /* input odağını bozmadan hesaplananları tazele */
@@ -12333,7 +12379,7 @@ function ziPulse(id,html){
 }
 function refresh(){
   if(phone()){gymRefresh();return;}
-  zi('z-kpi',kpi());
+  zi('z-kpi',goalStrip(true)+kpi());
   zi('z-ch',trendChart()+adherence());
   zi('z-prg',progressCard());
   zi('z-week',weekTable());
