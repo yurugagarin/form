@@ -2597,7 +2597,7 @@ var PROGRAM={
     {n:'Eğik dambıl press',s:3,r:[8,12]},
     {n:'Düz dambıl press',s:3,r:[8,12]},
     {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
-    {n:'Kablo yan kaldırış',s:4,r:[10,15]},
+    {n:'Kablo yan kaldırış',s:3,r:[10,15]},          /* v97 · 23 Eki: 4 → 3 set */
     {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
     {n:'Halat pushdown',s:3,r:[12,15]}]},
   gun2:{label:'Çekiş · Sırt / Biceps',name:'Çekiş',short:'Çekiş',code:'ÇEK',color:C.blue,ex:[
@@ -2721,7 +2721,15 @@ var PROGHIST=[
           {n:'Makine row',s:3,r:[8,12]},
           {n:'Eğik dambıl press',s:3,r:[8,12]},
           {n:'Oturarak dambıl yan kaldırış',s:3,r:[12,20]},
-          {n:'Kablo fly',s:3,r:[12,15]}]}}
+          {n:'Kablo fly',s:3,r:[12,15]}]}},
+  /* 23 Eki öncesi — İtiş'te Kablo yan kaldırış 4 setti */
+  {to:'2026-10-23',days:{
+    gun1:[{n:'Eğik dambıl press',s:3,r:[8,12]},
+          {n:'Düz dambıl press',s:3,r:[8,12]},
+          {n:'Oturarak dambıl omuz press',s:3,r:[8,12]},
+          {n:'Kablo yan kaldırış',s:4,r:[10,15]},
+          {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
+          {n:'Halat pushdown',s:3,r:[12,15]}]}}
 ];
 /* d tarihinde o plan gününde yürürlükte olan hareket listesi.
    d verilmezse bugünkü (yani PROGRAM'daki) liste döner. */
@@ -2745,6 +2753,11 @@ function planLen(dt,d){return planEx(dt,d).length;}
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-10-23',
+  t:'İtiş günü: Kablo yan kaldırış 4 → 3 set',
+  y:['SEBEP: Hareket üç presten (eğik, düz, omuz press) sonra geliyor, omuz önden yorgun. 20 kg\'da 5 seanstır tekrar 12-14\'te dönüyor ve 4. set her seferinde düşüyor. Son set kas uyarımından çok yorgunluk ekliyordu.',
+     'HACİM: Yan delt haftalık efektif set 17 → 16. Yan delt hâlâ 4 ayrı harekette çalışılıyor, kayıp önemsiz.',
+     'GEÇMİŞ VERİ: 23 Eki öncesi İtiş günleri tarih kilidiyle 4 setle değerlendiriliyor. Hiçbir kayıt değiştirilmedi.']},
  {d:'2026-10-18',
   t:'Haftalık takvim: Bacak Pazar\'dan Salı\'ya, dinlenme Salı\'dan Pazar\'a',
   y:['SEBEP: Almanca kursu bitti, Salı dinlenmesine gerek kalmadı. Bacak en kısa seans, iş günü arasına sığıyor; en uzun seans olan Omuz/Kol hafta sonunda kalıyor.',
@@ -2859,6 +2872,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-23',
+  t:'İtiş: Kablo yan kaldırış 3 set (v97)',
+  y:['23 Eki’den itibaren İtiş günü Kablo yan kaldırış 3×10-15 (RIR 2 / 2 / 2). 23 Eki öncesi İtiş seansları tarih kilidiyle 4 setle değerlendiriliyor; o günlerin 4. setleri plan dışı sayılmıyor, tamamlama yüzdesi değişmedi.',
+     'Ağırlık önerisi yeni sayıyla: 3 setin hepsi üst sınıra (15) ulaşınca artış. Yan delt haftalık hedefi 23 Eki’yi içeren haftadan itibaren 16.',
+     'Düzeltme: haftalık kas seti hedefi artık her günün kendi tarihindeki programla hesaplanıyor. Önceden bugünkü program kullanılıyordu; bu yüzden Romanian deadlift’in programda olduğu ilk üç haftanın Bacak/Sırt hedefi eksik görünüyordu (Bacak 17 → 18, Sırt 19 → 20.5).']},
  {d:'2026-10-23',
   t:'Hedef şeridi (v96)',
   y:['Kaç kilo verdiğin ve hedefe kaç kaldığı artık göz önünde: telefonda Gün ve Özet sekmelerinin üstündeki ana kartta, bilgisayarda ölçüm kartlarının üstünde ince bir şerit. Sayılar trend kiloyla (Motivasyon’daki Yolculuk kartıyla aynı), arada başlangıçtan hedefe ilerleme çubuğu.']},
@@ -5075,7 +5093,7 @@ function musPlanned(mon){
   for(var i=0;i<7;i++){
     var d=addD(mon,i),dt=effDt(d),t=dt?PROGRAM[dt]:null;
     if(!t||!t.ex.length)continue;
-    t.ex.forEach(function(e){
+    planEx(dt,d).forEach(function(e){          /* v97: o günün programı (PROGHIST), bugünkü değil */
       var m=EXMUS[e.n];if(!m)return;
       var need=tgtOn(e,d).s;
       Object.keys(m).forEach(function(g){if(o[g]!=null)o[g]+=need*m[g];});
@@ -5095,7 +5113,7 @@ function musExpected(mon){
     var dt=effDt(d),t=dt?PROGRAM[dt]:null;
     if(!t||!t.ex.length)continue;
     if(d===td){var ev=sessionEval(d);if(!ev||ev.empty)continue;}
-    t.ex.forEach(function(e){
+    planEx(dt,d).forEach(function(e){          /* v97: tarih kilidi */
       var m=EXMUS[e.n];if(!m)return;
       var need=tgtOn(e,d).s;
       Object.keys(m).forEach(function(g){if(o[g]!=null)o[g]+=need*m[g];});
@@ -6404,7 +6422,9 @@ function _progression(name,dt,before){
      seansın gününden kalır (o seans o sayıyla yapıldı). Farklı plan günleri
      karışmaz: dt verilmişse seanslar zaten yalnız o günden. */
   if(dt){var ce=null;planEx(dt,before||td).forEach(function(x){if(x.n===name)ce=x;});
-    if(ce&&(ce.r[0]!==e.r[0]||ce.r[1]!==e.r[1]))e={n:e.n,s:e.s,r:ce.r,dl:e.dl,off:e.off};}
+    if(ce&&(ce.r[0]!==e.r[0]||ce.r[1]!==e.r[1]||ce.s<e.s))e={n:e.n,s:Math.min(e.s,ce.s),r:ce.r,dl:e.dl,off:e.off};}
+  /* v97: set sayısı azaldıysa (Kablo yan kaldırış 4 → 3) karar yeni sayıyla verilir — son seans 4 setle
+     yapılmış olsa da "3 setin hepsi üst sınırda mı" diye bakılır. Artarsa son seansın sayısı kalır. */
   var sets=wSets((D(last).ex||{})[name]);
   if(!sets.length)return null;
   var mx=Math.max.apply(null,sets.map(function(s){return s.kg;}));
@@ -6804,7 +6824,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v96 · 23 Eki 2026';
+var APPVER='v97 · 23 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
