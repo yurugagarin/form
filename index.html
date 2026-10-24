@@ -2623,7 +2623,7 @@ var PROGRAM={
      alındı, böylece kablo istasyonundaki üç hareket arka arkaya geliyor. */
   gun4:{label:'Omuz & Kol ⭐ (öncelik)',name:'Omuz & Kol',short:'Omuz/Kol',code:'OMZ',color:C.green,ex:[
     {n:'Oturarak dambıl yan kaldırış',s:4,r:[10,15]},
-    {n:'Hammer curl',s:3,r:[10,15]},
+    {n:'Kablo curl',s:3,r:[10,15]},                  /* v99 · 24 Eki: Hammer curl yerine (kablo) */
     {n:'Face pull',s:3,r:[12,15]},
     {n:'Tek kol kablo yan kaldırış',s:3,r:[12,15]},
     {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
@@ -2724,6 +2724,16 @@ var PROGHIST=[
           {n:'Eğik dambıl press',s:3,r:[8,12]},
           {n:'Oturarak dambıl yan kaldırış',s:3,r:[12,20]},
           {n:'Kablo fly',s:3,r:[12,15]}]}},
+  /* 24 Eki öncesi — Omuz/Kol'da 2. hareket Hammer curl'dü (sonra Kablo curl) */
+  {to:'2026-10-24',days:{
+    gun4:[{n:'Oturarak dambıl yan kaldırış',s:4,r:[10,15]},
+          {n:'Hammer curl',s:3,r:[10,15]},
+          {n:'Face pull',s:3,r:[12,15]},
+          {n:'Tek kol kablo yan kaldırış',s:3,r:[12,15]},
+          {n:'Kafa üstü triceps ekstansiyon',s:3,r:[10,15]},
+          {n:'Makine omuz press',s:3,r:[8,12]},
+          {n:'Dar tutuş bench / Dips',s:3,r:[8,12]},
+          {n:'Preacher curl',s:3,r:[10,12]}]}},
   /* 23 Eki öncesi — İtiş'te Kablo yan kaldırış 4 setti */
   {to:'2026-10-23',days:{
     gun1:[{n:'Eğik dambıl press',s:3,r:[8,12]},
@@ -2759,6 +2769,11 @@ function planLen(dt,d){return planEx(dt,d).length;}
    Uygulamanın kendi sürüm notları buraya GİRMEZ; onlar RELEASES'te ve
    yalnızca Daha → Uygulama ekranında görünür. */
 var CHANGES=[
+ {d:'2026-10-24',
+  t:'Omuz/Kol: Hammer curl yerine Kablo curl',
+  y:['SEBEP: Hareket kabloyla yapılmaya başlandı. Kabloda gerginlik hareket boyunca kaybolmuyor; dambılla aynı hat sayılamaz (yük, makara oranı ve kuvvet eğrisi farklı), bu yüzden aynı ad altında devam etmek kıyasları bozardı.',
+     'AYNI SIRA VE HEDEF: 2. hareket, 3×10-15. Kablo curl Çekiş gününde de var ama her plan günü ayrı hat: Omuz/Kol\'daki Kablo curl kıyasları, rekorları ve ağırlık önerileri kendi seanslarından başlar, Çekiş\'tekini etkilemez.',
+     'GEÇMİŞ VERİ: 24 Eki öncesi Omuz/Kol günleri tarih kilidiyle Hammer curl\'lü değerlendiriliyor; Hammer curl kayıtları duruyor. 24 Eki\'de geçiş sırasında Hammer curl adıyla girilen kablo setleri o gün için Kablo curl\'e taşındı.']},
  {d:'2026-10-23',
   t:'Halat pushdown: Z bar ile yapılmaya başlandı',
   y:['Yalnız ekipman değişikliği; form daha düzgün oturuyor. Hareket, set/tekrar hedefi ve geçmiş kayıtlar değişmedi, aynı hatta devam ediyor.']},
@@ -2881,6 +2896,9 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-24',
+  t:'Omuz/Kol: Kablo curl (v99)',
+  y:['24 Eki’den itibaren Omuz/Kol’un 2. hareketi Kablo curl (3×10-15). Önceki Omuz/Kol günleri Hammer curl’lü kalıyor; bugün Hammer curl adıyla girilen kablo setleri Kablo curl’e taşındı. Önce verinin yedeği alındı.']},
  {d:'2026-10-23',
   t:'Halat pushdown notu (v98)',
   y:['Antrenman ekranında Halat pushdown adının altında “Z bar ile yap” notu. Hareketin adı, hedefi ve kayıtları aynı.']},
@@ -4228,6 +4246,26 @@ function migrate94(raw){
   if(n)S._pt=Date.now();
   if(S.deloadEvery===11){S.deloadEvery=0;S._st=Date.now();}
   S.schema=4;
+  return true;
+}
+/* ============ v99 · ŞEMA 5 (bir kez) ============
+   24 Eki'de Omuz/Kol'da Hammer curl yerine Kablo curl başladı; geçiş anında o günün setleri
+   eski adla (Hammer curl) girildi. 24 Eki ve sonrasındaki Omuz/Kol günlerinde Hammer curl adıyla
+   duran setler Kablo curl'e taşınır — yoksa Hammer curl hattına sahte bir 10 → 30 kg sıçrama ve
+   rekor düşerdi. 24 Eki öncesine dokunulmaz. Önce yedek (emre:form:yedek-v98). */
+var BAKKEY99='emre:form:yedek-v98',HC_FROM='2026-10-24';
+function migrate99(raw){
+  if((S.schema||2)>=5)return false;
+  try{if(Object.keys(S.days||{}).length&&!localStorage.getItem(BAKKEY99))
+    localStorage.setItem(BAKKEY99,JSON.stringify({t:Date.now(),from:'v98',data:raw||JSON.stringify(S)}));}catch(e){}
+  Object.keys(S.days||{}).forEach(function(d){
+    var r=S.days[d];if(d<HC_FROM||!r||r.dt!=='gun4'||!r.ex||!r.ex['Hammer curl'])return;
+    if(r.ex['Kablo curl']&&r.ex['Kablo curl'].length)return;
+    r.ex['Kablo curl']=r.ex['Hammer curl'];delete r.ex['Hammer curl'];
+    if(Array.isArray(r.ord))r.ord=r.ord.map(function(n){return n==='Hammer curl'?'Kablo curl':n;});
+    r._t=Date.now();
+  });
+  S.schema=5;
   return true;
 }
 function bakInfo(){try{var v=localStorage.getItem(BAKKEY);if(!v)return null;var o=JSON.parse(v);return {t:o.t,size:v.length,o:o};}catch(e){return null;}}
@@ -6836,7 +6874,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v98 · 23 Eki 2026';
+var APPVER='v99 · 24 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -13069,10 +13107,11 @@ STORE.get(KEY).then(function(res){
   try{tgtInit();tgtTrack();}catch(e){}
   var mg93=false;try{mg93=migrate93(res&&res.value);}catch(e){}
   try{if(migrate94(res&&res.value))mg93=true;}catch(e){}
+  try{if(migrate99(res&&res.value))mg93=true;}catch(e){}
   if(migrateNames()||mg93)STORE.set(KEY,JSON.stringify(S));
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
-  try{var m3=migrate93(null),m4=migrate94(null);if(m3||m4)STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
+  try{var m3=migrate93(null),m4=migrate94(null),m5=migrate99(null);if(m3||m4||m5)STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
   cur=today();
   applyTheme();
   try{if(pushCan()&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').then(pushVerify,function(){});}catch(e){}
