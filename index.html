@@ -2208,6 +2208,9 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+.svmk{display:inline-block;margin-left:8px;font-size:10.5px;letter-spacing:0;text-transform:none;font-weight:800;color:#16a85a;opacity:0;transition:opacity .25s ease}
+.svmk.on{opacity:1}
+html.dark .svmk{color:#93c27d}
 .gexnote{display:inline-block;margin-top:3px;font-size:11.5px;font-weight:800;color:#a15c00;background:#fdf1d6;border-radius:7px;padding:2px 8px}
 html.dark .gexnote{color:#e3b75e;background:#2c2519}
 /* v96 · hedef şeridi */
@@ -2896,6 +2899,9 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-10-26',
+  t:'Yazarken “kaydedildi” kutusu kalktı (v100)',
+  y:['Not ya da başka bir alana yazarken her harften sonra çıkan “kaydedildi” kutusu klavyenin üstünde yazılanı kapatıyordu. Artık yazarken kutu çıkmıyor; Not başlığının yanında küçük bir “✓ kaydedildi” işareti yanıp sönüyor. Kayıt hatası olursa uyarı yine görünür.']},
  {d:'2026-10-24',
   t:'Omuz/Kol: Kablo curl (v99)',
   y:['24 Eki’den itibaren Omuz/Kol’un 2. hareketi Kablo curl (3×10-15). Önceki Omuz/Kol günleri Hammer curl’lü kalıyor; bugün Hammer curl adıyla girilen kablo setleri Kablo curl’e taşındı. Önce verinin yedeği alındı.']},
@@ -4283,7 +4289,9 @@ function save(d){
   try{tgtTrack();}catch(e){}
   _pc={};_sc={};_gc={};_lf=null;
   clearTimeout(st);st=setTimeout(function(){
-    STORE.set(KEY,JSON.stringify(S)).then(function(){toast('kaydedildi');})
+    /* v100: yazarken (klavye açık) "kaydedildi" kutusu yazılanın üstüne düşüyordu — o sırada
+       kutu yerine alanın yanındaki küçük işaret yanar; hata uyarısı her zaman çıkar. */
+    STORE.set(KEY,JSON.stringify(S)).then(function(){if(typing())savedMark();else toast('kaydedildi');})
      .catch(function(){toast('kaydedilemedi — tekrar dene');});
     if(S.sync&&S.sync.token&&S.sync.gist&&S.sync.auto)schedulePush();
   },450);}
@@ -5830,7 +5838,7 @@ function dayCard(){
   }
 
   h+='<div style="padding:14px 18px;border-top:1px solid '+THC.c44+'">'+
-      '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:6px">Not</label>'+
+      '<label style="display:block;font-size:11px;letter-spacing:.6px;text-transform:uppercase;color:'+THC.c21+';font-weight:700;margin-bottom:6px">Not <span class="svmk">✓ kaydedildi</span></label>'+
       '<textarea class="note" data-f="note" placeholder="Enerji, ağrı, iştah, aksaklık…">'+esc(r.note)+'</textarea></div>';
   return h+'</div>';
 }
@@ -6874,7 +6882,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v99 · 24 Eki 2026';
+var APPVER='v100 · 26 Eki 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -7346,7 +7354,7 @@ function gymDay(){
         return '<button class="lwchip'+(on?' on':'')+'" data-a="daytype" data-k="'+x[0]+'">'+x[1]+'</button>';
       }).join('')+'</div>'+
     '<div class="gduenote" style="margin-top:8px">Seyahat işaretlediğin gün antrenman beklenmez; takvim, haftalık set sayacı ve gün puanı o günü eksik saymaz. Gün gün işaretlenir — seyahat 2 gün de sürse 5 gün de.</div>'+
-    '<div class="gsec">Not</div>'+
+    '<div class="gsec">Not <span class="svmk">✓ kaydedildi</span></div>'+
     '<div style="padding:0 14px"><textarea class="note" data-f="note" placeholder="Enerji, ağrı, iştah…">'+esc(r.note)+'</textarea></div>';
 }
 
@@ -10091,6 +10099,11 @@ function drawerPaint(){
   syncLock();
 }
 var pendingRefresh=false;
+function savedMark(){
+  var els=document.querySelectorAll('.svmk');
+  for(var i=0;i<els.length;i++){var e=els[i];e.classList.add('on');clearTimeout(e._t);
+    (function(x){x._t=setTimeout(function(){x.classList.remove('on');},1600);})(e);}
+}
 function typing(){
   var ae=document.activeElement;
   return !!(ae&&(ae.tagName==='INPUT'||ae.tagName==='TEXTAREA'||ae.tagName==='SELECT'));
