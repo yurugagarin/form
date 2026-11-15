@@ -2230,6 +2230,18 @@ html.dark .kgtog i{color:#a49889}
 .kgleg span{display:inline-flex;align-items:center;gap:5px}
 .kgleg i{width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(60,52,44,.18)}
 html.dark .kgleg{color:#bbb2a7}
+.kgtr{margin:2px 0 8px}
+.kgtr1{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
+.kgtr1 span{display:flex;flex-direction:column;background:#fffdf8;border-radius:12px;padding:10px 12px;box-shadow:inset 0 0 0 1px #e8dcc6;min-width:0}
+.kgtr1 i{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a8987c}
+.kgtr1 b{font-family:'Fraunces';font-size:24px;font-weight:600;color:#3a342c;line-height:1.2;margin-top:2px}
+.kgtr1 small{font-size:11px;font-weight:600;color:#8a7f6f;line-height:1.35}
+.kgtr2{font-size:12.5px;font-weight:600;color:#6f6556;line-height:1.5;padding:0 2px 8px}
+.kgtr2 b{color:#3a342c;font-weight:800}
+html.dark .kgtr1 span{background:#3a352f;box-shadow:inset 0 0 0 1px #5a5248}
+html.dark .kgtr1 b,html.dark .kgtr2 b{color:#f7f5f2}
+html.dark .kgtr1 i{color:#a49889}
+html.dark .kgtr1 small,html.dark .kgtr2{color:#bbb2a7}
 .kgsum{font-size:12px;font-weight:600;color:#8a7f6f;padding:2px 2px 4px;line-height:1.5}
 .kgsum b{color:#3a342c;font-weight:800}
 html.dark .kgsum{color:#bbb2a7}
@@ -2947,6 +2959,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-11-15',
+  t:'Kilo sekmesi: gerçek kilo tahmini (v102)',
+  y:['Kilo sekmesinin üstünde artık “Gerçek kilo tahmini” ve “Hız” var. Yalnız temiz (beyaz) tartılara son 28 günde düz bir çizgi oturtulur: bugünkü değeri gerçek kilon, eğimi haftalık hızın, yanında belirsizlik bandı.',
+     'Eski “trend” her tartıyı sayıyordu. Su tutma kiloyu hep yukarı ittiği için alkollü ya da tuzlu günler sıklaşınca o trend gerçek kilonun üstünde kalıyordu. Grafikte temiz tartılar dolu, gürültülüler içi boş nokta; ham trend karşılaştırma için kesikli çizgi.',
+     'Gün detayında “Trend o gün” yerine “Temiz trend o gün”.']},
  {d:'2026-11-15',
   t:'Takvim: Kilo sekmesi ve tartı gürültüsü (v101)',
   y:['Takvim’de üçüncü sekme “Kilo”: her günün kutusunda o günün tartısı. “Gürültüyü göster” açıkken kutular boyanır: beyaz temiz (gerçek kilona en yakın okuma), açık pembe/pembe/kırmızı giderek artan gürültü.',
@@ -6934,7 +6951,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v101 · 15 Kas 2026';
+var APPVER='v102 · 15 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -9250,21 +9267,96 @@ function calCellKg(d,tod){
   return {cls:'nc kg'+(calNoise?' nz'+o.lv:''),st:st,
     inner:'<span class="dn">'+pd(d).getDate()+'</span><span class="kv">'+fx(o.v,1)+'</span>'+mark};
 }
+/* ============ v102 TEMİZ TREND ============
+   Ham trend (EMA) her tartıyı sayar. Alkol/tuz/karbonhidrat günleri sık olunca suyla şişmiş
+   tartılar onu yukarı çeker: gürültü hep YUKARI yönlüdür, ortalamada sönmez.
+   Temiz trend yalnız beyaz (temiz) günlere düz bir çizgi oturtur (son 28 gün; az temiz gün
+   varsa 42 gün). Çizginin bugünkü değeri = gerçek kilo tahmini, eğimi = haftalık hız.
+   Bant: çizginin istatistik belirsizliği (%95). Temiz günler de ±0.3-0.5 kg oynar; bu yüzden
+   tek bir temiz günü başka bir temiz günle karşılaştırmak yanıltır. */
+function cleanFit(d){
+  d=d||today();var nz=noiseMap(),ws=weightSeries(),f=null;
+  [28,42].some(function(n){
+    var P=ws.filter(function(p){var x=dayDiff(d,p.d);return x<=0&&x>-n&&nz[p.d]&&nz[p.d].lv===0;})
+            .map(function(p){return {x:dayDiff(d,p.d),y:p.v,d:p.d};});
+    if(P.length<6||P[P.length-1].x-P[0].x<10)return false;
+    var k=P.length,mx=0,my=0;P.forEach(function(p){mx+=p.x;my+=p.y;});mx/=k;my/=k;
+    var sxx=0,sxy=0;P.forEach(function(p){sxx+=(p.x-mx)*(p.x-mx);sxy+=(p.x-mx)*(p.y-my);});
+    var b=sxy/sxx,a=my-b*mx,ss=0;P.forEach(function(p){var r=p.y-(a+b*p.x);ss+=r*r;});
+    var s=Math.sqrt(ss/(k-2));
+    f={d:d,n:n,k:k,v:a,r:b*7,rb:1.96*s/Math.sqrt(sxx)*7,sd:s,mx:mx,sxx:sxx,b:b,
+       at:function(x){return a+b*x;},band:function(x){return 1.96*s*Math.sqrt(1/k+(x-mx)*(x-mx)/sxx);}};
+    return true;
+  });
+  return f;
+}
+function kgChart(f){
+  var ws=weightSeries(),nz=noiseMap(),td=today(),d0=addD(td,-(f.n-1));
+  var pts=ws.filter(function(p){return p.d>=d0&&p.d<=td;});if(pts.length<2)return '';
+  var ema=trendW().filter(function(p){return p.d>=d0&&p.d<=td;});
+  var W=340,H=210,PL=34,PR=12,TP=14,BT=24,span=f.n-1;
+  var vs=pts.map(function(p){return p.v;}).concat([f.at(-span)+f.band(-span),f.v-f.band(0)]);
+  var hi=Math.max.apply(null,vs)+0.2,lo=Math.min.apply(null,vs)-0.2;
+  function X(d){return PL+dayDiff(d0,d)/span*(W-PL-PR);}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var g='',step=(hi-lo)>4?1:0.5,col=C.blue,nzc=C.red;
+  for(var v=Math.ceil(lo/step)*step;v<=hi;v+=step)
+    g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="'+THC.c44+'"/>'+axTxt(PL-6,Y(v)+3.5,fx(v,step<1?1:0),'end');
+  dateTicks(d0,td,X,42).forEach(function(t){g+=axTxt(t.x,H-7,fdate(t.d),'middle');});
+  /* bant + temiz trend çizgisi */
+  var up=[],dn=[];
+  for(var i=0;i<=span;i+=2){var x=-span+i,dd=addD(d0,i);up.push([X(dd),Y(f.at(x)+f.band(x))]);dn.push([X(dd),Y(f.at(x)-f.band(x))]);}
+  up.push([X(td),Y(f.v+f.band(0))]);dn.push([X(td),Y(f.v-f.band(0))]);
+  g+='<path d="M'+up.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' L'+
+    dn.reverse().map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.13)+'"/>';
+  /* ham trend (karşılaştırma) */
+  if(ema.length>1)g+='<path d="'+smoothPath(ema.map(function(p){return [X(p.d),Y(p.v)];}))+'" fill="none" stroke="'+THC.c23+'" stroke-width="1.4" stroke-dasharray="4 3"/>';
+  g+='<line x1="'+X(d0).toFixed(1)+'" x2="'+X(td).toFixed(1)+'" y1="'+Y(f.at(-span)).toFixed(1)+'" y2="'+Y(f.v).toFixed(1)+'" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>';
+  /* tartılar: temiz dolu, gürültülü içi boş */
+  var tips=[];
+  pts.forEach(function(p){var o=nz[p.d],x=X(p.d),y=Y(p.v),cl=o&&o.lv===0;
+    g+=cl?'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.4" fill="'+col+'" stroke="'+THC.c53+'" stroke-width="1.5"/>'
+         :'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="'+THC.c53+'" stroke="'+nzc+'" stroke-width="1.6" opacity="'+(o&&o.lv>=2?1:.7)+'"/>';
+    var xx=dayDiff(td,p.d);
+    tips.push({x:x,y:y,tip:'<b>'+fdate(p.d)+'</b> · tartı '+fx(p.v,1)+' · '+(cl?'temiz':'gürültülü')+
+      '<br><small>temiz trend '+fx(f.at(xx),1)+(trendAt(p.d)!=null?' · ham trend '+fx(trendAt(p.d),1):'')+'</small>'});});
+  g+=lblTxt(X(td)-2,Y(f.v)-9,fx(f.v,1),'end',col);
+  g+='<g id="ch-kgt" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
+    '<circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP.kgt={W:W,H:H,pts:tips};
+  return chWrap('kgt',g,W,H,'<b>Son '+f.n+' gün</b> · parmağını gezdir, günü gör',
+    lgI(swDot(col,'c'),'temiz tartı')+lgI('<svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="none" stroke="'+nzc+'" stroke-width="1.6"/></svg>','gürültülü tartı')+
+    lgI(swLine(col),'temiz trend')+lgI(swBox(hexa(col,.22)),'%95 bant')+lgI(swLine(THC.c23,'4 3',1.4),'ham trend'));
+}
+function sg2(v){return (v<0?'−':'+')+fx(Math.abs(v),2);}
+function kgTruth(){
+  var f=cleanFit(),tn=trendNow();
+  if(!f)return '<div class="kgsum">Temiz trend için son 4-6 haftada en az 6 temiz (beyaz) tartı gerekiyor.</div>';
+  var lo=f.r-f.rb,hi=f.r+f.rb,dir=hi<0?'down':(lo>0?'up':'flat');
+  var verdict=dir==='down'?'Kilo veriyorsun.':dir==='up'?'Temiz tartılar yükseliyor.':'Bu aralıkta düşüş ya da artış ayırt edilemiyor.';
+  return '<div class="kgtr">'+
+    '<div class="kgtr1"><span><i>Gerçek kilo tahmini</i><b>'+fx(f.v,1)+' kg</b><small>yalnız temiz tartılara göre · ±'+fx(f.band(0),1)+'</small></span>'+
+      '<span><i>Hız</i><b>'+(f.r<0?'−':'+')+fx(Math.abs(f.r),2)+'</b><small>kg/hafta · bant '+sg2(lo)+' … '+sg2(hi)+'</small></span></div>'+
+    '<div class="kgtr2"><b>'+verdict+'</b> Son '+f.n+' günde '+f.k+' temiz tartı. '+
+      (tn!=null&&Math.abs(tn-f.v)>=0.2?'Ham trend '+fx(tn,1)+': gürültülü günleri de saydığı için '+(tn>f.v?'yüksek':'düşük')+'. ':'')+
+      'Temiz günler de kendi içinde ±'+fx(f.sd,1)+' kg oynar; tek temiz günü başka bir temiz günle değil, çizgiyle karşılaştır.</div>'+
+    kgChart(f)+
+  '</div>';
+}
 function calFootKg(){
-  var nz=noiseMap(),tod=today(),cl=[],all=0;
-  for(var i=0;i<14;i++){var d=addD(tod,-i),o=nz[d];if(!o)continue;all++;if(o.lv===0)cl.push(o.v);}
-  var avgC=cl.length?cl.reduce(function(a,b){return a+b;},0)/cl.length:null,tn=trendNow();
   return '<div class="cwrap">'+
     '<div class="kgtog"><span><b>Gürültüyü göster</b><i>alkol, tuz, karbonhidrat, tartı koşulu ve sapma</i></span>'+
       '<button class="tgl'+(calNoise?' on':'')+'" data-a="calnoise" aria-label="Gürültüyü göster"><i></i></button></div>'+
     (calNoise?'<div class="kgleg">'+[[0,'temiz'],[1,'hafif'],[2,'orta'],[3,'güçlü']].map(function(x){
       return '<span><i style="background:'+nzColor(x[0])+'"></i>'+x[1]+'</span>';}).join('')+'</div>':'')+
-    '<div class="kgsum">Son 14 gün: <b>'+cl.length+'/'+all+'</b> temiz tartı'+
-      (avgC!=null?' · temizlerin ortalaması <b>'+fx(avgC,1)+' kg</b>':'')+(tn!=null?' · trend <b>'+fx(tn,1)+'</b>':'')+'</div>'+
+    kgTruth()+
     xp('kgnz','Temiz (beyaz) tartı: önceki 3 günde alkol, tuzlu/dışarıda yemek ya da yüksek karbonhidrat yok, tartı koşulu normal ve '+
       'tartı çevresindeki günlerle tutarlı — o günün kilosu gerçek kilona en yakın okuma. Alkol, tuz ve karbonhidrat suyu tutturur: '+
       'etkisi ertesi sabah en güçlü (kırmızı), sonra iki gün azalarak (pembe, açık pembe) söner. Tuvaletsiz ya da geç saatte tartı yalnız o günü bozar. '+
-      'Bir güne olay işaretlemek için o günün kutusuna dokun; notlarından ve karbonhidrat sıçramalarından bulunanlar “otomatik” yazar, istersen kapatırsın.')+
+      'Bir güne olay işaretlemek için o günün kutusuna dokun; notlarından ve karbonhidrat sıçramalarından bulunanlar “otomatik” yazar, istersen kapatırsın. '+
+      'Gerçek kilo tahmini: son 28 günün yalnız temiz tartılarına oturtulan düz çizginin bugünkü değeri (temiz tartı azsa 42 gün). Eğimi haftalık hızın; bant, çizginin ne kadar kesin olduğunu gösterir. '+
+      'Ham trend her tartıyı sayar. Gürültü hep yukarı yönlü olduğu için (su tutma kiloyu düşürmez) alkollü ya da tuzlu günler sıklaşınca ham trend gerçek kilonun üstünde kalır. '+
+      'Bandın tamamı sıfırın altındaysa düşüş kesin; bant sıfırı kesiyorsa o aralıktaki tartılar düşüşü de durmayı da ayırt edemiyor demektir.')+
   '</div>';
 }
 function kgDayBody(d){
@@ -9276,7 +9368,7 @@ function kgDayBody(d){
       '<div class="kgrow">'+
         '<div><i>Önceki tartı</i><b>'+(o.prev?fx(o.prev.v,1)+' <small>('+fdate(o.prev.d)+', '+sgp(Math.round((o.v-o.prev.v)*10)/10)+')</small>':'—')+'</b></div>'+
         '<div><i>Sonraki tartı</i><b>'+(o.next?fx(o.next.v,1)+' <small>('+fdate(o.next.d)+', '+sgp(Math.round((o.next.v-o.v)*10)/10)+')</small>':'—')+'</b></div>'+
-        '<div><i>Trend o gün</i><b>'+fx(trendAt(d),1)+'</b></div>'+
+        (function(){var cf=cleanFit(d);return '<div><i>Temiz trend o gün</i><b>'+(cf?fx(cf.v,1):'—')+'</b></div>';})()+
         '<div><i>Çevre medyanı (±3 gün)</i><b>'+(o.med!=null?fx(o.med,1):'—')+'</b></div></div>'+
       (o.rs.length?'<div class="dxh">NEDEN</div><div class="dxt">'+o.rs.sort(function(a,b){return b.lv-a.lv;}).map(function(x){return '· '+esc(x.t);}).join('<br>')+'</div>'
         :'<div class="dxt" style="margin-top:8px">Bilinen bir bozucu yok ve tartı komşu günlerle tutarlı — bu, gerçek kilona yakın bir okuma.</div>');
