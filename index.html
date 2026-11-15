@@ -2960,6 +2960,12 @@ var CHANGES=[
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
  {d:'2026-11-15',
+  t:'Eski sürüm koruması (v103)',
+  y:['Telefon bazen önbellekten eski bir sürümü açabiliyor (15 Kas’ta v84 açıldı). Eski sürümler gün kayıtlarını (antrenman, kilo, beslenme, not) korur ama sonradan eklenen ayarları tanımaz ve kaydederken düşürür: hedef geçmişi, planlı aralar, bakım düşüşü ve şema numarası.',
+     'Artık bu ayarların bir kopyası eski sürümlerin bilmediği yerlerde de tutuluyor: telefonda ayrı bir kayıt, Gist’te ayrı bir dosya. Eski bir sürüm bunları silse de bir sonraki açılışta ya da senkronda geri konuyor.',
+     'Önceki olayda hedef geçmişi baştan kurulduysa bir kereliğine telefondaki dönüşüm yedeğinden onarılıyor.',
+     'Uygulama açılırken sunucudaki sürümü denetliyor; önbellekten eski sayfa açıldıysa kendini yeniliyor.']},
+ {d:'2026-11-15',
   t:'Kilo sekmesi: gerçek kilo tahmini (v102)',
   y:['Kilo sekmesinin üstünde artık “Gerçek kilo tahmini” ve “Hız” var. Yalnız temiz (beyaz) tartılara son 28 günde düz bir çizgi oturtulur: bugünkü değeri gerçek kilon, eğimi haftalık hızın, yanında belirsizlik bandı.',
      'Eski “trend” her tartıyı sayıyordu. Su tutma kiloyu hep yukarı ittiği için alkollü ya da tuzlu günler sıklaşınca o trend gerçek kilonun üstünde kalıyordu. Grafikte temiz tartılar dolu, gürültülüler içi boş nokta; ham trend karşılaştırma için kesikli çizgi.',
@@ -4241,9 +4247,48 @@ var STORE=(function(){
   };
 })();
 
+/* ============ v103 · ESKİ SÜRÜM KORUMASI ============
+   15 Kas'ta telefonda önbellekten eski bir sürüm (v84) açıldı. Eski sürümler sonradan
+   eklenen ayar alanlarını tanımaz: kaydederken ve buluta yazarken onları DÜŞÜRÜR
+   (gün kayıtları — antrenman, kilo, beslenme, not — olduğu gibi korunur; onları tanır).
+   Düşen alanlar: schema, tgtHist (hedef geçmişi), breaks/_bt (planlı aralar), kDecay.
+   schema düşünce yeni sürüm göçleri yeniden çalıştırır, hedef geçmişini baştan kurar.
+   Çözüm: bu alanların bir kopyası, eski sürümlerin hiç bilmediği yerlerde de tutulur —
+   telefonda ayrı bir anahtar (emre:form:ext), Gist'te ayrı bir dosya (form-ext.json;
+   eski sürüm Gist'e yazarken yalnız kendi dosyasını değiştirir, diğer dosyalara dokunmaz).
+   Açılışta ya da senkronda bu alanlar ana kayıtta yoksa kopyadan geri konur. */
+var EXTKEY='emre:form:ext',GXFILE='form-ext.json',EXTF=['schema','tgtHist','breaks','_bt','kDecay'],_extMsg='';
+/* Sürüm denetimi: telefon (ana ekran uygulaması) eski bir sayfayı önbellekten açarsa sunucudaki
+   ver.json daha yeni bir sürüm söyler → kayıt diske yazılır, sayfa sürüm adıyla (önbelleği atlayarak)
+   yeniden yüklenir. Yazarken yenilenmez; o zaman uyarı çıkar. Her sürümde ver.json da güncellenir. */
+function verCheck(){
+  if(location.protocol!=='https:'||!window.fetch)return;
+  fetch('ver.json?t='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(j){
+    if(!j||!(j.v>appN()))return;
+    var k='emre:form:yenile-'+j.v;
+    try{if(sessionStorage.getItem(k))return;}catch(e){}
+    if(typing()){toast('Yeni sürüm (v'+j.v+') hazır — yazmayı bitirince uygulamayı kapatıp aç',5000);return;}
+    try{sessionStorage.setItem(k,'1');}catch(e){}
+    try{clearTimeout(st);}catch(e){}
+    try{localStorage.setItem(KEY,JSON.stringify(S));extSave();}catch(e){}
+    location.replace(location.pathname+'?v='+j.v);
+  }).catch(function(){});
+}
+function appN(){return parseInt(String(APPVER).replace(/^v/,''),10)||0;}
+function extSnap(){var o={_xt:Date.now(),app:appN()};EXTF.forEach(function(k){if(S[k]!=null)o[k]=S[k];});return o;}
+function extSave(){try{if(S&&S.days&&Object.keys(S.days).length)localStorage.setItem(EXTKEY,JSON.stringify(extSnap()));}catch(e){}}
+function extLoad(){try{var v=localStorage.getItem(EXTKEY);return v?JSON.parse(v):null;}catch(e){return null;}}
+/* p: okunmuş ana kayıt (yerel ya da Gist). Eksik alanları x'ten tamamlar; kaç alan döndüğünü verir. */
+function extRestore(p,x){
+  if(!p||!x||typeof x!=='object')return 0;var n=0;
+  EXTF.forEach(function(k){if(k!=='schema'&&p[k]==null&&x[k]!=null){p[k]=x[k];n++;}});
+  if(x.schema&&(p.schema||2)<x.schema){p.schema=x.schema;n++;}
+  return n;
+}
+(function(){try{var s0=STORE.set;STORE.set=function(k,v){if(k===KEY)extSave();return s0.call(STORE,k,v);};}catch(e){}})();
 var st=null,tt=null;
-function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');
-  clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on');},1400);}
+function toast(m,ms){var t=document.getElementById('toast');t.textContent=m;t.classList.add('on');
+  clearTimeout(tt);tt=setTimeout(function(){t.classList.remove('on');},ms||1400);}
 /* ============ v90 · HEDEF GEÇMİŞİ (tarih kilidi) ============
    HATA: S.targets tek bir "bugünkü hedef" tutuyordu; geçmiş günler de onunla
    puanlanıyordu. 6 Eki'de kalori/makro/adım hedefi ve hedef kilo değişince geçmiş
@@ -4342,6 +4387,48 @@ function migrate99(raw){
   });
   S.schema=5;
   return true;
+}
+/* ============ v103 · 15 KAS ONARIMI (bir kez) ============
+   v103'ten önce eski sürüm açıldıysa hedef geçmişi (tgtHist) düşmüş ve açılışta baştan kurulmuş
+   olabilir: [başlangıç → eski hedef, son ayar günü → bugünkü hedef]. Bu, 6 Eki'deki gerçek hedef
+   değişikliğinin tarihini kaydırır ve aradaki günler yanlış hedefle puanlanır.
+   Telefondaki dönüşüm yedekleri (yedek-v98 → v93 → v92) gerçek geçmişi taşıyor. Şu anki geçmiş
+   "baştan kurulmuş" biçimdeyse ve yedektekinden farklıysa yedekteki geçmiş geri konur; bugünkü
+   hedef yedektekinin sonuyla aynı değilse sona eklenir. Planlı aralar ve bakım düşüşü de
+   varsayılana dönmüşse yedekteki değerler geri gelir. Hiçbir gün kaydına dokunulmaz. */
+var RP103='emre:form:onarim-v103';
+function repair103(){
+  try{if(localStorage.getItem(RP103))return false;}catch(e){return false;}
+  if(!Object.keys(S.days||{}).length)return false;
+  var b=null;
+  [BAKKEY99,BAKKEY94,BAKKEY].some(function(k){
+    try{var v=localStorage.getItem(k);if(!v)return false;var o=JSON.parse(v),d=JSON.parse(o.data);
+      if(d&&Array.isArray(d.tgtHist)&&d.tgtHist.length){b=d;b._bk=o.t;return true;}}catch(e){}
+    return false;});
+  try{localStorage.setItem(RP103,String(Date.now()));}catch(e){}
+  if(!b)return false;
+  var OLD={steps:10000,kcal:2150,protein:177,carbs:215,fat:64,goalW:73,weeks:25},J=JSON.stringify,ch=false;
+  var cur=S.tgtHist||[],bt=b.tgtHist;
+  var reinit=cur.length<=2&&cur[0]&&J(cur[0].t)===J(OLD)&&J(cur)!==J(bt);
+  if(reinit){
+    var nh=bt.slice(),now=tgtSnap(),last=nh[nh.length-1];
+    if(J(last.t)!==J(now)){var fr=cur.length?cur[cur.length-1].from:today();if(fr<=last.from)fr=addD(last.from,1);nh.push({from:fr,t:now});}
+    S.tgtHist=nh;ch=true;
+  }
+  if(Array.isArray(b.breaks)&&(b._bt||0)>1&&(S._bt||0)<=1&&J(S.breaks)!==J(b.breaks)){S.breaks=b.breaks;S._bt=b._bt;ch=true;}
+  if(b.kDecay!=null&&b.kDecay!==30&&S.kDecay===30){S.kDecay=b.kDecay;ch=true;}
+  /* v94 göçü yeniden çalıştıysa: yedek (v94 sonrası) bir tarihte bilerek ESKİ desenin değerini tutuyordu
+     (ör. bir Salı'yı elle dinlenme yapmışsın), şimdi orada yeni desenin değeri var → yedektekine dön. */
+  if((b.schema||2)>=4){
+    var nw=tplAt(WEEK_V94).t,pn=0;
+    function flip(d,bv,cv){if(d<WEEK_V94)return false;var w=pd(d).getDay();return WEEKOLD[w]!==nw[w]&&bv===WEEKOLD[w]&&cv===nw[w];}
+    Object.keys(b.plan||{}).forEach(function(d){if(S.plan&&flip(d,b.plan[d],S.plan[d])){S.plan[d]=b.plan[d];pn++;}});
+    Object.keys(b.days||{}).forEach(function(d){var bd=b.days[d],r=S.days[d];
+      if(bd&&r&&!loggedSets(r)&&flip(d,bd.dt,r.dt)){r.dt=bd.dt;r._t=Date.now();pn++;}});
+    if(pn){S._pt=Date.now();ch=true;}
+  }
+  if(ch){S._st=Date.now();_extMsg='Eski sürümün sildiği ayarlar telefondaki yedekten geri kondu.';}
+  return ch;
 }
 function bakInfo(){try{var v=localStorage.getItem(BAKKEY);if(!v)return null;var o=JSON.parse(v);return {t:o.t,size:v.length,o:o};}catch(e){return null;}}
 function tgtInit(){
@@ -6777,7 +6864,7 @@ function payload(){
   return {v:2,days:S.days,plan:S.plan,_pt:S._pt||0,_st:S._st||0,
     startDate:S.startDate,weeks:S.weeks,restDays:S.restDays,restWeeks:S.restWeeks,
     base:S.base,goal:S.goal,targets:S.targets,tgtHist:S.tgtHist,deloadEvery:S.deloadEvery,autoTargets:S.autoTargets,
-    meas:!!S.meas,schema:S.schema||2,breaks:S.breaks,_bt:S._bt||0,kDecay:S.kDecay};
+    meas:!!S.meas,schema:S.schema||2,breaks:S.breaks,_bt:S._bt||0,kDecay:S.kDecay,app:appN()};
 }
 /* gün gün birleştir: her iki tarafta da en yeni kayıt kazanır */
 function mergeRemote(rm){
@@ -6817,29 +6904,34 @@ function syncNow(silent){
   if(syncing||!S.sync.token||!S.sync.gist)return Promise.resolve();
   syncing=true;setSyncMsg('senkronize ediliyor…');
   return gh('/gists/'+S.sync.gist).then(function(g){
-    var f=g.files&&g.files[GFILE];
+    var f=g.files&&g.files[GFILE],fx2=g.files&&g.files[GXFILE];
     var pre=f&&!f.truncated?Promise.resolve(f.content)
       :(f?fetch(f.raw_url).then(function(r){return r.text();}):Promise.resolve(null));
-    return pre;
-  }).then(function(txt){
-    var n=0;
+    return pre.then(function(t){return {t:t,x:fx2&&!fx2.truncated?fx2.content:null};});
+  }).then(function(o){
+    var n=0,txt=o.t;
     if(txt){
       var rm=null;
       try{rm=JSON.parse(txt);}catch(e){}
       /* Bulutta veri VAR ama okunamıyorsa asla üzerine yazma —
          yoksa bozuk bir indirme tüm bulut yedeğini silebilir. */
       if(rm==null)throw new Error('buluttaki veri okunamadı, üzerine yazılmadı — tekrar dene');
+      /* v103: Gist'e en son eski bir sürüm yazdıysa (app damgası yok) silinen ayarları ext dosyasından tamamla */
+      var rx=null;try{rx=o.x?JSON.parse(o.x):null;}catch(e){}
+      if(rm.app==null&&rx&&extRestore(rm,rx))_extMsg=_extMsg||'Eski bir uygulama sürümü buluttaki bazı ayarları silmişti; kopyadan geri kondu.';
       n=mergeRemote(rm);
     }
     if(migrateNames())n++;
     var body={files:{}};body.files[GFILE]={content:JSON.stringify(payload())};
+    body.files[GXFILE]={content:JSON.stringify(extSnap())};
     return gh('/gists/'+S.sync.gist,{method:'PATCH',body:body}).then(function(){return n;});
   }).then(function(n){
     S.sync.last=Date.now();syncing=false;
     if(n){_pc={};_sc={};_gc={};_lf=null;_nzc=null;}   /* v70: buluttan gelen kayıt eski hesapları geçersiz kılar */
     STORE.set(KEY,JSON.stringify(S));
     setSyncMsg('');
-    if(!silent)toast(n?n+' kayıt güncellendi':'senkron tamam');
+    if(_extMsg){toast(_extMsg,5000);_extMsg='';}
+    else if(!silent)toast(n?n+' kayıt güncellendi':'senkron tamam');
     /* yazarken ekranı yeniden kurma — imleç kaybolur.
        Ayrıca uzaktan bir şey değişmediyse zaten yenilemeye gerek yok. */
     if(!n){var bd=document.getElementById('syncbadge');if(bd)bd.textContent=syncLabel();return;}
@@ -6951,7 +7043,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v102 · 15 Kas 2026';
+var APPVER='v103 · 15 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -13383,6 +13475,7 @@ document.addEventListener('focusout',function(){
 STORE.get(KEY).then(function(res){
   var had=false;
   if(res&&res.value){var p=JSON.parse(res.value);
+    if(p&&p.days&&Object.keys(p.days).length&&extRestore(p,extLoad()))_extMsg='Eski bir uygulama sürümü bazı ayarları silmişti; kopyadan geri kondu.';
     had=!!p.startDate;
     S.days=p.days||{};S.startDate=p.startDate||today();S.weeks=p.weeks||20;
     if(p.deloadEvery!=null)S.deloadEvery=p.deloadEvery;
@@ -13406,7 +13499,9 @@ STORE.get(KEY).then(function(res){
   var mg93=false;try{mg93=migrate93(res&&res.value);}catch(e){}
   try{if(migrate94(res&&res.value))mg93=true;}catch(e){}
   try{if(migrate99(res&&res.value))mg93=true;}catch(e){}
-  if(migrateNames()||mg93)STORE.set(KEY,JSON.stringify(S));
+  var rp=false;try{rp=repair103();}catch(e){}
+  if(migrateNames()||mg93||rp||_extMsg)STORE.set(KEY,JSON.stringify(S));
+  else extSave();
 }).catch(function(){S.startDate=today();}).then(function(){
   if(!S.startDate)S.startDate=today();
   try{var m3=migrate93(null),m4=migrate94(null),m5=migrate99(null);if(m3||m4||m5)STORE.set(KEY,JSON.stringify(S));}catch(e){}   /* hiç kaydı olmayan cihaz */
@@ -13419,7 +13514,7 @@ STORE.get(KEY).then(function(res){
       return STORE.get(MODEKEY).then(function(r){forceMode=(r&&r.value&&r.value!=='auto')?r.value:null;})
         .catch(function(){});
     }).then(function(){render();}).catch(function(){render();})
-      .then(function(){restoreRest();phPurge();});
+      .then(function(){restoreRest();phPurge();verCheck();if(_extMsg&&!(S.sync.token&&S.sync.gist)){toast(_extMsg,5000);_extMsg='';}});
     /* kayıt 450ms gecikmeli yazılıyor; o aralıkta uygulama kapanırsa son giriş uçmasın */
     function flushSave(){
       try{clearTimeout(st);}catch(e){}
@@ -13428,7 +13523,7 @@ STORE.get(KEY).then(function(res){
     }
     window.addEventListener('pagehide',flushSave);
     document.addEventListener('visibilitychange',function(){
-      if(document.hidden)flushSave();else resumeRest();});
+      if(document.hidden)flushSave();else{resumeRest();verCheck();}});
     window.addEventListener('pageshow',function(){resumeRest();});
     window.addEventListener('focus',function(){resumeRest();});
     if(S.sync.token&&S.sync.gist){
