@@ -2208,6 +2208,54 @@ html.dark .wbtip{background:#1d1b18;color:#eae4dd}
 html.dark .wbwrap{background:#1d1b18}
 .wbwrap svg{display:block;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .mbx{margin-bottom:14px}
+/* v101 · kilo takvimi */
+.nc.kg{position:relative}
+.nc .kv{font-family:'Fraunces';font-size:13px;font-weight:600;line-height:1.2;margin-top:2px;color:#3a342c;letter-spacing:-.2px}
+.nc .kev{position:absolute;top:1px;right:2px;font-size:8.5px;line-height:1}
+.nc.kgn{position:relative}
+.nc.nz0{box-shadow:inset 0 0 0 1px #e8dcc6}
+.nc.nz3 .kv{color:#5a1a20}
+.nc.nz2 .dn,.nc.nz3 .dn{color:rgba(90,26,32,.6)}
+html.dark .nc.nz2 .dn,html.dark .nc.nz3 .dn{color:rgba(255,255,255,.6)}
+html.dark .nc .kv{color:#f7f5f2}
+html.dark .nc.nz0{box-shadow:inset 0 0 0 1px #5a5248}
+html.dark .nc.nz3 .kv{color:#fff}
+.kgtog{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 2px 8px}
+.kgtog span{display:flex;flex-direction:column;min-width:0}
+.kgtog b{font-size:13.5px;font-weight:800;color:#3a342c}
+.kgtog i{font-style:normal;font-size:11px;font-weight:600;color:#a8987c;margin-top:1px}
+html.dark .kgtog b{color:#f7f5f2}
+html.dark .kgtog i{color:#a49889}
+.kgleg{display:flex;gap:12px;flex-wrap:wrap;font-size:11.5px;font-weight:700;color:#8a7f6f;padding:0 2px 6px}
+.kgleg span{display:inline-flex;align-items:center;gap:5px}
+.kgleg i{width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(60,52,44,.18)}
+html.dark .kgleg{color:#bbb2a7}
+.kgsum{font-size:12px;font-weight:600;color:#8a7f6f;padding:2px 2px 4px;line-height:1.5}
+.kgsum b{color:#3a342c;font-weight:800}
+html.dark .kgsum{color:#bbb2a7}
+html.dark .kgsum b{color:#f7f5f2}
+.kgdh{display:flex;align-items:baseline;justify-content:space-between;border-radius:14px;padding:14px 16px;margin-bottom:12px;box-shadow:inset 0 0 0 1px rgba(60,52,44,.12)}
+.kgdh b{font-family:'Fraunces';font-size:28px;font-weight:600;color:#3a342c}
+.kgdh span{font-size:13px;font-weight:800;color:#3a342c}
+html.dark .kgdh b,html.dark .kgdh span{color:#f7f5f2}
+.kgrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kgrow>div{border-radius:11px;background:#f7f1e4;padding:9px 11px}
+.kgrow i{display:block;font-style:normal;font-size:10px;letter-spacing:.7px;text-transform:uppercase;font-weight:800;color:#a8987c}
+.kgrow b{display:block;font-size:15px;font-weight:800;color:#3a342c;margin-top:3px}
+.kgrow small{font-size:11px;font-weight:700;color:#8a7f6f}
+html.dark .kgrow>div{background:#1d1b18}
+html.dark .kgrow b{color:#f7f5f2}
+html.dark .kgrow i,html.dark .kgrow small{color:#a49889}
+.kgev{display:flex;align-items:center;gap:10px;width:100%;border:1px solid #e4d9c2;background:#fbf8f2;border-radius:12px;
+  padding:11px 12px;margin-top:7px;font:inherit;text-align:left;cursor:pointer;color:#3a342c}
+.kgev span{font-size:18px}
+.kgev b{flex:1;font-size:13.5px;font-weight:700}
+.kgev i{font-style:normal;font-size:10.5px;font-weight:800;color:#a8987c;text-transform:uppercase;letter-spacing:.5px}
+.kgev u{text-decoration:none;width:24px;height:24px;border-radius:7px;border:1.5px solid #d8c9ad;display:grid;place-items:center;font-weight:900;color:#fff}
+.kgev.on{border-color:#ec8a92;background:#fdeff0}
+.kgev.on u{background:#d9534f;border-color:#d9534f}
+html.dark .kgev{background:#211e1b;border-color:#3a342d;color:#eae4dd}
+html.dark .kgev.on{background:#3a2426;border-color:#8a4a50}
 .svmk{display:inline-block;margin-left:8px;font-size:10.5px;letter-spacing:0;text-transform:none;font-weight:800;color:#16a85a;opacity:0;transition:opacity .25s ease}
 .svmk.on{opacity:1}
 html.dark .svmk{color:#93c27d}
@@ -2899,6 +2947,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-11-15',
+  t:'Takvim: Kilo sekmesi ve tartı gürültüsü (v101)',
+  y:['Takvim’de üçüncü sekme “Kilo”: her günün kutusunda o günün tartısı. “Gürültüyü göster” açıkken kutular boyanır: beyaz temiz (gerçek kilona en yakın okuma), açık pembe/pembe/kırmızı giderek artan gürültü.',
+     'Gürültü kaynakları: alkol, tuzlu/dışarıda yemek, yüksek karbonhidrat (ertesi sabah güçlü, sonraki iki gün azalarak), tuvaletsiz/geç tartı (yalnız o gün), kısa uyku, seyahat dönüşü ve çevre günlerden belirgin sapma. Bir güne dokunup olay işaretleyebilirsin; notlarından ve karbonhidrat sıçramalarından bulunanlar “otomatik” yazar.']},
  {d:'2026-10-26',
   t:'Yazarken “kaydedildi” kutusu kalktı (v100)',
   y:['Not ya da başka bir alana yazarken her harften sonra çıkan “kaydedildi” kutusu klavyenin üstünde yazılanı kapatıyordu. Artık yazarken kutu çıkmıyor; Not başlığının yanında küçük bir “✓ kaydedildi” işareti yanıp sönüyor. Kayıt hatası olursa uyarı yine görünür.']},
@@ -4287,7 +4339,7 @@ function tgtInit(){
 function save(d){
   if(d&&S.days[d])S.days[d]._t=Date.now();
   try{tgtTrack();}catch(e){}
-  _pc={};_sc={};_gc={};_lf=null;
+  _pc={};_sc={};_gc={};_lf=null;_nzc=null;
   clearTimeout(st);st=setTimeout(function(){
     /* v100: yazarken (klavye açık) "kaydedildi" kutusu yazılanın üstüne düşüyordu — o sırada
        kutu yerine alanın yanındaki küçük işaret yanar; hata uyarısı her zaman çıkar. */
@@ -6767,7 +6819,7 @@ function syncNow(silent){
     return gh('/gists/'+S.sync.gist,{method:'PATCH',body:body}).then(function(){return n;});
   }).then(function(n){
     S.sync.last=Date.now();syncing=false;
-    if(n){_pc={};_sc={};_gc={};_lf=null;}   /* v70: buluttan gelen kayıt eski hesapları geçersiz kılar */
+    if(n){_pc={};_sc={};_gc={};_lf=null;_nzc=null;}   /* v70: buluttan gelen kayıt eski hesapları geçersiz kılar */
     STORE.set(KEY,JSON.stringify(S));
     setSyncMsg('');
     if(!silent)toast(n?n+' kayıt güncellendi':'senkron tamam');
@@ -6882,7 +6934,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v100 · 26 Eki 2026';
+var APPVER='v101 · 15 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -8764,6 +8816,7 @@ function detailLayer(){
           '</div></div>':'');
     }
   }
+  else if(dOpen.kind==='kgday'){var kd2=dOpen.key;title=GUNU[pd(kd2).getDay()]+', '+fdate(kd2);sub='tartı ve gürültü';body=kgDayBody(kd2);}
   else if(dOpen.kind==='pace'){title='Hız ve Hedef';sub='21 gün hız · 42 gün projeksiyon';body=paceDetail();}
   else if(dOpen.kind==='mbig'){
     var mkB=dOpen.key||'w',mmB=measMeta(mkB)||['w','Kilo','kg',C.blue];
@@ -9107,7 +9160,135 @@ function paintBar(){
    Her kutuda ayın günü var; ayın 1'inin düştüğü haftanın önüne ince
    bir ay çizgisi giriyor. "Hafta 3 nereye denk geliyor" sorusu bitiyor.
    ============================================================ */
-var calSkin='plan';     /* 'plan' | 'puan' */
+/* ============ v101 · KİLO TAKVİMİ VE TARTI GÜRÜLTÜSÜ ============
+   Takvim'in üçüncü derisi: her günde o günün tartısı. "Gürültü" anahtarı açıkken kutu,
+   o tartının gerçek kiloyu ne kadar yansıttığına göre boyanır:
+     beyaz      temiz — bilinen bir bozucu yok, komşu günlerle tutarlı
+     açık pembe hafif · pembe orta · kırmızı güçlü gürültü
+   Gürültünün iki kaynağı var, büyük olan kazanır:
+   1) OLAYLAR (o gün olur, etkisi sonraki sabahlara düşer, azalarak):
+        alkol, tuzlu/dışarıda yemek, yüksek karbonhidrat → ertesi gün güçlü, 2. gün orta, 3. gün hafif
+        tartı koşulu (tuvaletsiz, geç saatte)               → yalnız o günün tartısı, güçlü
+        kısa gece uykusu (< 5.5 sa)                        → o sabah hafif
+        tartısız ara (seyahat; 3+ gün)                     → dönüşteki ilk tartı orta, sonraki hafif
+      Olaylar elle işaretlenir (günün kutusuna dokun) ya da notlardan ve karbonhidrat/kalori
+      sıçramasından otomatik bulunur; otomatik olan elle kapatılabilir.
+   2) SAPMA: tartının, çevresindeki ±3 günün tartı medyanından farkı. Fark, bütün sapmaların
+      sağlam yayılımının (MAD×1.48) 1.5 katını geçerse hafif, 2 katını geçerse orta. */
+var calNoise=true;
+try{calNoise=localStorage.getItem('emre:form:calnoise')!=='0';}catch(e){}
+var EVK=[['alk','Alkol','🍷'],['salt','Tuzlu / dışarıda yemek','🧂'],['carb','Yüksek karbonhidrat','🍞'],['wt','Tartı koşulu bozuk (tuvaletsiz, geç saat)','⏱']];
+function evAuto(d){
+  var r=S.days[d],o={};if(!r)return o;
+  var n=String(r.note||'').toLocaleLowerCase('tr');
+  /* kelime başından eşleşir: "biraz" bira, "bırakıldı" rakı sayılmasın */
+  var B='(^|[^a-zçğıöşü])';
+  if(new RegExp(B+'(alkol|votka|vodka|bira(?!z)|şarap|rakı|viski|shot|kokteyl|içki)').test(n))o.alk=true;
+  if(new RegExp(B+'(döner|restoran|dışarıda ye|iş yemeğ|pizza|burger|fast ?food|cips|tuzlu)').test(n))o.salt=true;
+  if(/tuvalet/.test(n)&&/gitme|gidemedi|gelmedi|gitmeden/.test(n))o.wt=true;
+  if(/öğle saat|akşam tartıl|geç tartıl/.test(n))o.wt=true;
+  /* karbonhidrat ya da kalori, önceki 14 günün medyanının belirgin üstünde */
+  if(r.c!=null||r.kcal!=null){
+    var cs=[],ks=[];
+    for(var i=1;i<=14;i++){var q=S.days[addD(d,-i)];if(!q)continue;if(q.c!=null)cs.push(q.c);if(q.kcal!=null)ks.push(q.kcal);}
+    function med(a){if(a.length<5)return null;a=a.slice().sort(function(x,y){return x-y;});return a[Math.floor(a.length/2)];}
+    var mc=med(cs),mk=med(ks);
+    if((r.c!=null&&mc!=null&&r.c>=mc+70)||(r.kcal!=null&&mk!=null&&r.kcal>=mk+400))o.carb=true;
+  }
+  return o;
+}
+/* elle işaret: S.days[d].ev[k] = true/false; tanımsızsa otomatik geçerli */
+function evOn(d){
+  var a=evAuto(d),m=(S.days[d]&&S.days[d].ev)||{},o={};
+  EVK.forEach(function(k){var v=(m[k[0]]!=null)?m[k[0]]:a[k[0]];if(v)o[k[0]]={auto:m[k[0]]==null};});
+  return o;
+}
+var _nzc=null;            /* save() ve senkron sıfırlar */
+function noiseMap(){
+  if(_nzc)return _nzc;
+  var ws=weightSeries();
+  var out={},res=[];
+  ws.forEach(function(p,i){
+    var nb=ws.filter(function(q){return q.d!==p.d&&Math.abs(dayDiff(p.d,q.d))<=3;}).map(function(q){return q.v;});
+    if(nb.length<3){out[p.d]={v:p.v,lv:0,rs:[],prev:ws[i-1]||null,next:ws[i+1]||null};return;}
+    nb.sort(function(a,b){return a-b;});
+    var m=nb.length%2?nb[(nb.length-1)/2]:(nb[nb.length/2-1]+nb[nb.length/2])/2;
+    out[p.d]={v:p.v,med:m,res:p.v-m,lv:0,rs:[],prev:ws[i-1]||null,next:ws[i+1]||null};res.push(Math.abs(p.v-m));
+  });
+  res.sort(function(a,b){return a-b;});
+  var sig=res.length>=6?Math.max(0.15,res[Math.floor(res.length/2)]*1.4826):0.35;
+  function bump(d,lv,txt){var o=out[d];if(!o)return;if(lv>o.lv)o.lv=lv;o.rs.push({lv:lv,t:txt});}
+  ws.forEach(function(p){
+    var o=out[p.d];
+    if(o.res!=null){var z=Math.abs(o.res)/sig;
+      if(z>=2)bump(p.d,2,'Çevresindeki günlerden '+(o.res>0?'+':'−')+fx(Math.abs(o.res),1)+' kg sapıyor');
+      else if(z>=1.5)bump(p.d,1,'Çevresindeki günlerden '+(o.res>0?'+':'−')+fx(Math.abs(o.res),1)+' kg sapıyor');}
+    /* olaylar: önceki 3 gün */
+    for(var k=0;k<=3;k++){
+      var ed=addD(p.d,-k),ev=evOn(ed);
+      [['alk','alkol'],['salt','tuzlu/dışarıda yemek'],['carb','yüksek karbonhidrat']].forEach(function(e){
+        if(!ev[e[0]]||k===0)return;
+        bump(p.d,4-k,fdate(ed)+' '+e[1]+(ev[e[0]].auto?' (otomatik)':'')+' · '+k+'. gün');});
+      if(k===0&&ev.wt)bump(p.d,3,'Tartı koşulu bozuk'+(ev.wt.auto?' (nottan)':''));
+    }
+    var sl=D(p.d).sl;if(sl!=null&&sl<5.5)bump(p.d,1,'Kısa gece uykusu ('+fx(sl,1)+' sa)');   /* sabah tartısını gece uykusu etkiler */
+  });
+  ws.forEach(function(p,i){
+    if(i>=1&&dayDiff(ws[i-1].d,p.d)>=4)bump(p.d,2,dayDiff(ws[i-1].d,p.d)+' gün tartısız aradan sonraki ilk tartı');
+    else if(i>=2&&dayDiff(ws[i-2].d,ws[i-1].d)>=4)bump(p.d,1,'Tartısız aradan sonraki ikinci tartı');
+  });
+  out._sig=sig;_nzc=out;return out;
+}
+function nzColor(lv){var dk=darkOn();
+  return lv>=3?(dk?'rgba(231,119,108,.62)':'#ec8a92'):lv===2?(dk?'rgba(231,119,108,.38)':'#f5bcc1'):lv===1?(dk?'rgba(231,119,108,.2)':'#fbe1e3'):(dk?'#46413a':'#fffdf8');}
+function calCellKg(d,tod){
+  var nz=noiseMap(),o=nz[d],ev=evOn(d),evs=EVK.filter(function(k){return ev[k[0]];}).map(function(k){return k[2];}).join('');
+  var mark=evs?'<span class="kev">'+evs+'</span>':'';
+  if(d>tod)return {cls:'nc fut',st:'',inner:'<span class="dn">'+pd(d).getDate()+'</span>'};
+  if(!o)return {cls:'nc kgn',st:'',inner:'<span class="dn">'+pd(d).getDate()+'</span><span class="cd" style="color:'+THC.c28+'">·</span>'+mark};
+  var st=calNoise?'background:'+nzColor(o.lv)+';':'';
+  return {cls:'nc kg'+(calNoise?' nz'+o.lv:''),st:st,
+    inner:'<span class="dn">'+pd(d).getDate()+'</span><span class="kv">'+fx(o.v,1)+'</span>'+mark};
+}
+function calFootKg(){
+  var nz=noiseMap(),tod=today(),cl=[],all=0;
+  for(var i=0;i<14;i++){var d=addD(tod,-i),o=nz[d];if(!o)continue;all++;if(o.lv===0)cl.push(o.v);}
+  var avgC=cl.length?cl.reduce(function(a,b){return a+b;},0)/cl.length:null,tn=trendNow();
+  return '<div class="cwrap">'+
+    '<div class="kgtog"><span><b>Gürültüyü göster</b><i>alkol, tuz, karbonhidrat, tartı koşulu ve sapma</i></span>'+
+      '<button class="tgl'+(calNoise?' on':'')+'" data-a="calnoise" aria-label="Gürültüyü göster"><i></i></button></div>'+
+    (calNoise?'<div class="kgleg">'+[[0,'temiz'],[1,'hafif'],[2,'orta'],[3,'güçlü']].map(function(x){
+      return '<span><i style="background:'+nzColor(x[0])+'"></i>'+x[1]+'</span>';}).join('')+'</div>':'')+
+    '<div class="kgsum">Son 14 gün: <b>'+cl.length+'/'+all+'</b> temiz tartı'+
+      (avgC!=null?' · temizlerin ortalaması <b>'+fx(avgC,1)+' kg</b>':'')+(tn!=null?' · trend <b>'+fx(tn,1)+'</b>':'')+'</div>'+
+    xp('kgnz','Temiz (beyaz) tartı: önceki 3 günde alkol, tuzlu/dışarıda yemek ya da yüksek karbonhidrat yok, tartı koşulu normal ve '+
+      'tartı çevresindeki günlerle tutarlı — o günün kilosu gerçek kilona en yakın okuma. Alkol, tuz ve karbonhidrat suyu tutturur: '+
+      'etkisi ertesi sabah en güçlü (kırmızı), sonra iki gün azalarak (pembe, açık pembe) söner. Tuvaletsiz ya da geç saatte tartı yalnız o günü bozar. '+
+      'Bir güne olay işaretlemek için o günün kutusuna dokun; notlarından ve karbonhidrat sıçramalarından bulunanlar “otomatik” yazar, istersen kapatırsın.')+
+  '</div>';
+}
+function kgDayBody(d){
+  var nz=noiseMap(),o=nz[d],r=D(d),ev=evOn(d),man=r.ev||{},au=evAuto(d);
+  var lvT=['Temiz','Hafif gürültü','Orta gürültü','Güçlü gürültü'];
+  var h='';
+  if(o){
+    h+='<div class="kgdh" style="background:'+nzColor(o.lv)+'"><b>'+fx(o.v,1)+' kg</b><span>'+lvT[Math.min(3,o.lv)]+'</span></div>'+
+      '<div class="kgrow">'+
+        '<div><i>Önceki tartı</i><b>'+(o.prev?fx(o.prev.v,1)+' <small>('+fdate(o.prev.d)+', '+sgp(Math.round((o.v-o.prev.v)*10)/10)+')</small>':'—')+'</b></div>'+
+        '<div><i>Sonraki tartı</i><b>'+(o.next?fx(o.next.v,1)+' <small>('+fdate(o.next.d)+', '+sgp(Math.round((o.next.v-o.v)*10)/10)+')</small>':'—')+'</b></div>'+
+        '<div><i>Trend o gün</i><b>'+fx(trendAt(d),1)+'</b></div>'+
+        '<div><i>Çevre medyanı (±3 gün)</i><b>'+(o.med!=null?fx(o.med,1):'—')+'</b></div></div>'+
+      (o.rs.length?'<div class="dxh">NEDEN</div><div class="dxt">'+o.rs.sort(function(a,b){return b.lv-a.lv;}).map(function(x){return '· '+esc(x.t);}).join('<br>')+'</div>'
+        :'<div class="dxt" style="margin-top:8px">Bilinen bir bozucu yok ve tartı komşu günlerle tutarlı — bu, gerçek kilona yakın bir okuma.</div>');
+  }else h+='<div class="sempty">Bu gün tartı yok</div>';
+  h+='<div class="dxh" style="margin-top:16px">BU GÜN OLAN (sonraki sabahların tartısını etkiler)</div>'+
+    EVK.map(function(k){var on=!!ev[k[0]],auto=on&&ev[k[0]].auto;
+      return '<button class="kgev'+(on?' on':'')+'" data-a="kgev" data-d="'+d+'" data-k="'+k[0]+'"><span>'+k[2]+'</span><b>'+k[1]+'</b>'+
+        (auto?'<i>otomatik</i>':(man[k[0]]===false&&au[k[0]]?'<i>kapatıldı</i>':''))+'<u>'+(on?'✓':'')+'</u></button>';}).join('')+
+    '<div class="mhint2" style="margin-top:8px">Alkol, tuz ve karbonhidrat sonraki 3 sabahı etkiler; tartı koşulu yalnız bu günün tartısını.</div>';
+  return h;
+}
+var calSkin='plan';     /* 'plan' | 'puan' | 'kg' */
 var calEdit=false;      /* plan boyama açık mı */
 
 function calHero(){
@@ -9159,6 +9340,7 @@ function calGrid(){
   for(var w=0;w<nW;w++){
     var wn=wFrom+w,preW=wn<1,wdl=deloadWk(wn);
     var rowStart=addD(m0,w*7);
+    if(calSkin==='kg'&&rowStart>tod)break;          /* kilo takviminde gelecek boş haftalar yok */
     /* ay çizgisi: ayın 1'inin düştüğü haftanın önüne */
     for(var mi=0;mi<7;mi++){
       var md=pd(addD(rowStart,mi));
@@ -9170,12 +9352,13 @@ function calGrid(){
     var cells='';
     for(var i=0;i<7;i++){
       var d=addD(rowStart,i);
-      var o=(calSkin==='plan')?calCellPlan(d,tod):calCellScore(d);
+      var o=(calSkin==='plan')?calCellPlan(d,tod):(calSkin==='kg'?calCellKg(d,tod):calCellScore(d));
       var extra=(d===tod?' today':'')+(d===cur&&d!==tod?' sel':'')+(calEdit?' paintable':'');
       /* boyama açık VE bir tür seçiliyse kare boyanır; değilse her koşulda
          o güne gider — "Git ↗" seçiliyken de dokunma boşa gitmesin. */
       var act=(calEdit&&paintMode)?'data-a="cell" data-d="'+d+'"'
-             :(calSkin==='puan'&&dayScore(d)?'data-a="dopen" data-kind="score" data-key="'+d+'"'
+             :(calSkin==='kg'?(d<=tod?'data-a="dopen" data-kind="kgday" data-key="'+d+'"':'')
+             :calSkin==='puan'&&dayScore(d)?'data-a="dopen" data-kind="score" data-key="'+d+'"'
                                             :'data-a="calgo" data-d="'+d+'"');
       cells+='<button class="'+o.cls+extra+'" style="'+o.st+'" '+act+'>'+o.inner+'</button>';
     }
@@ -9210,7 +9393,8 @@ function gymCal(){
     '<div class="cseg">'+
       '<button class="'+(calSkin==='plan'?'on':'')+'" data-a="calskin" data-k="plan">Plan</button>'+
       '<button class="'+(calSkin==='puan'?'on':'')+'" data-a="calskin" data-k="puan">Puan</button>'+
-    '</div>'+calGrid()+calFoot();
+      '<button class="'+(calSkin==='kg'?'on':'')+'" data-a="calskin" data-k="kg">Kilo</button>'+
+    '</div>'+(calSkin==='kg'?calFootKg():'')+calGrid()+(calSkin==='kg'?'':calFoot());
 }
 
 /* --- daha sekmesi: açılır kapanır bölümler --- */
@@ -12765,8 +12949,17 @@ app.addEventListener('click',function(ev){
     if(phone())gymPaint();else repaint();}
   else if(a==='calskin'){
     calSkin=t.getAttribute('data-k')||'plan';
-    if(calSkin==='puan'){calEdit=false;paintMode=null;}
+    if(calSkin!=='plan'){calEdit=false;paintMode=null;}
     gymPaint();}
+  else if(a==='calnoise'){calNoise=!calNoise;try{localStorage.setItem('emre:form:calnoise',calNoise?'1':'0');}catch(e){}gymPaint();}
+  else if(a==='kgev'){
+    var kd=t.getAttribute('data-d'),kk=t.getAttribute('data-k'),kr=touch(kd),cur0=!!evOn(kd)[kk];
+    kr.ev=kr.ev||{};kr.ev[kk]=!cur0;
+    if(kr.ev[kk]===!!evAuto(kd)[kk])delete kr.ev[kk];      /* otomatikle aynıysa elle kayda gerek yok */
+    save(kd);if(phone())gymPaint();                       /* arkadaki takvim de yeni renklerle */
+    var dl=document.getElementById('dlayer'),dsc=dl&&dl.querySelector('.dsheet'),sy=dsc?dsc.scrollTop:0;
+    if(dl)dl.outerHTML=detailLayer();
+    var ds2=document.querySelector('#dlayer .dsheet');if(ds2)ds2.scrollTop=sy;}
   else if(a==='caledit'){
     calEdit=!calEdit;if(!calEdit)paintMode=null;
     gymPaint();}
