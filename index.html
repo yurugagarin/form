@@ -2231,6 +2231,17 @@ html.dark .kgtog i{color:#a49889}
 .kgleg i{width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(60,52,44,.18)}
 html.dark .kgleg{color:#bbb2a7}
 .kgtr{margin:2px 0 8px}
+.kgct{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#a8987c;margin:14px 2px 6px}
+.kgwk{margin-top:6px}
+.kgwr{display:grid;grid-template-columns:28px 1fr 1.15fr .8fr 1.3fr;gap:6px;align-items:center;padding:6px 2px;border-top:1px solid #efe6d6;font-size:12.5px;font-weight:700;color:#3a342c;font-variant-numeric:tabular-nums}
+.kgwr small{font-size:10.5px;font-weight:600;color:#a8987c}
+.kgwh{border-top:0;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#a8987c;padding-bottom:4px}
+.kgwc{display:flex;align-items:center;gap:6px;min-width:0}
+.kgwb{flex:1 1 auto;min-width:6px;max-width:44px;text-decoration:none}
+.kgwc i{display:block;height:8px;border-radius:2px}
+.kgwc b{font-weight:800}
+html.dark .kgct,html.dark .kgwh,html.dark .kgwr small{color:#a49889}
+html.dark .kgwr{color:#f7f5f2;border-top-color:#4a443d}
 .kgtr1{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .kgtr1 span{display:flex;flex-direction:column;background:#fffdf8;border-radius:12px;padding:10px 12px;box-shadow:inset 0 0 0 1px #e8dcc6;min-width:0}
 .kgtr1 i{font-style:normal;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#a8987c}
@@ -2959,6 +2970,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-11-15',
+  t:'Kilo: temiz trend baştan sona (v104)',
+  y:['Kilo sekmesindeki grafik artık ilk tartıdan bugüne kadar. Her gün için o günün çevresindeki 28 günün temiz tartılarından temiz trend ve o günkü hız hesaplanıyor; eğrinin ucu “Gerçek kilo tahmini” ile aynı.',
+     'Yeni “Hız geçmişi” grafiği: haftalık kayıp zaman içinde nasıl değişti, nerede yavaşladı, en hızlı nerede indi.',
+     'Takvimin altında “Hafta hafta” tablosu: her haftanın temiz tartı ortalaması, hafta sonundaki temiz trend ve bir önceki haftaya göre değişim.']},
  {d:'2026-11-15',
   t:'Eski sürüm koruması (v103)',
   y:['Telefon bazen önbellekten eski bir sürümü açabiliyor (15 Kas’ta v84 açıldı). Eski sürümler gün kayıtlarını (antrenman, kilo, beslenme, not) korur ama sonradan eklenen ayarları tanımaz ve kaydederken düşürür: hedef geçmişi, planlı aralar, bakım düşüşü ve şema numarası.',
@@ -7043,7 +7059,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v103 · 15 Kas 2026';
+var APPVER='v104 · 15 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -9382,45 +9398,145 @@ function cleanFit(d){
   });
   return f;
 }
-function kgChart(f){
-  var ws=weightSeries(),nz=noiseMap(),td=today(),d0=addD(td,-(f.n-1));
-  var pts=ws.filter(function(p){return p.d>=d0&&p.d<=td;});if(pts.length<2)return '';
-  var ema=trendW().filter(function(p){return p.d>=d0&&p.d<=td;});
-  var W=340,H=210,PL=34,PR=12,TP=14,BT=24,span=f.n-1;
-  var vs=pts.map(function(p){return p.v;}).concat([f.at(-span)+f.band(-span),f.v-f.band(0)]);
+function sg2(v){return (v<0?'−':'+')+fx(Math.abs(v),2);}
+/* ============ v104 · TEMİZ TREND: BAŞTAN SONA ============
+   Her gün için 28 günlük bir pencere (o günün 14 gün öncesi – 13 gün sonrası) içindeki temiz
+   tartılara düz çizgi oturtulur; çizginin o günkü değeri = o günün temiz trendi, eğimi = o günün hızı.
+   Pencere veri dışına taşarsa içeri kaydırılır, hep 28 gün kalır: bugün için pencere son 28 gün olur,
+   yani eğrinin ucu yukarıdaki "Gerçek kilo tahmini" ve "Hız" ile birebir aynıdır. Pencerede 6'dan az
+   temiz tartı varsa pencere 42 güne açılır; yine yetmezse o gün boş kalır. */
+function cleanCurve(){
+  var nz=noiseMap();if(nz._cc)return nz._cc;
+  var ws=weightSeries(),td=today(),out=[];
+  if(!ws.length){nz._cc=out;return out;}
+  var d0=ws[0].d,N=dayDiff(d0,td);
+  var P=ws.filter(function(p){return nz[p.d]&&nz[p.d].lv===0&&p.d<=td;}).map(function(p){return {t:dayDiff(d0,p.d),y:p.v};});
+  function fit(lo,hi){
+    var Q=P.filter(function(p){return p.t>=lo&&p.t<=hi;});
+    if(Q.length<6||Q[Q.length-1].t-Q[0].t<10)return null;
+    var k=Q.length,mx=0,my=0;Q.forEach(function(p){mx+=p.t;my+=p.y;});mx/=k;my/=k;
+    var sxx=0,sxy=0;Q.forEach(function(p){sxx+=(p.t-mx)*(p.t-mx);sxy+=(p.t-mx)*(p.y-my);});
+    var b=sxy/sxx,a=my-b*mx,ss=0;Q.forEach(function(p){var r=p.y-(a+b*p.t);ss+=r*r;});
+    return {a:a,b:b,s:Math.sqrt(ss/(k-2)),k:k,mx:mx,sxx:sxx};
+  }
+  function win(t,L){var lo=t-Math.floor(L/2),hi=lo+L-1,e=0;if(lo<0){hi-=lo;lo=0;e=-1;}if(hi>N){lo-=hi-N;hi=N;if(lo<0)lo=0;e=1;}return [lo,hi,e];}
+  for(var t=0;t<=N;t++){
+    var w=win(t,28),f=fit(w[0],w[1]);
+    if(!f){w=win(t,42);f=fit(w[0],w[1]);}
+    if(!f){out.push({d:addD(d0,t),v:null});continue;}
+    out.push({d:addD(d0,t),e:w[2],v:f.a+f.b*t,r:f.b*7,rb:1.96*f.s/Math.sqrt(f.sxx)*7,
+      vb:1.96*f.s*Math.sqrt(1/f.k+(t-f.mx)*(t-f.mx)/f.sxx)});
+  }
+  nz._cc=out;return out;
+}
+function segs(arr,fn){var o=[],c=[];arr.forEach(function(p){var q=fn(p);if(q){c.push(q);}else if(c.length){o.push(c);c=[];}});if(c.length)o.push(c);return o;}
+function pth(P){return 'M'+P.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L');}
+function kgChartAll(){
+  var ws=weightSeries(),nz=noiseMap(),cc=cleanCurve(),td=today();
+  if(ws.length<2||!cc.length)return '';
+  var d0=ws[0].d,span=Math.max(1,dayDiff(d0,td)),ema=trendW();
+  var W=340,H=250,PL=34,PR=14,TP=16,BT=24;
+  var vs=ws.map(function(p){return p.v;});
+  cc.forEach(function(p){if(p.v!=null){vs.push(p.v+p.vb);vs.push(p.v-p.vb);}});
   var hi=Math.max.apply(null,vs)+0.2,lo=Math.min.apply(null,vs)-0.2;
   function X(d){return PL+dayDiff(d0,d)/span*(W-PL-PR);}
   function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
-  var g='',step=(hi-lo)>4?1:0.5,col=C.blue,nzc=C.red;
+  var g='',col=C.blue,nzc=C.red,step=(hi-lo)>5?1:0.5;
   for(var v=Math.ceil(lo/step)*step;v<=hi;v+=step)
     g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="'+THC.c44+'"/>'+axTxt(PL-6,Y(v)+3.5,fx(v,step<1?1:0),'end');
-  dateTicks(d0,td,X,42).forEach(function(t){g+=axTxt(t.x,H-7,fdate(t.d),'middle');});
-  /* bant + temiz trend çizgisi */
-  var up=[],dn=[];
-  for(var i=0;i<=span;i+=2){var x=-span+i,dd=addD(d0,i);up.push([X(dd),Y(f.at(x)+f.band(x))]);dn.push([X(dd),Y(f.at(x)-f.band(x))]);}
-  up.push([X(td),Y(f.v+f.band(0))]);dn.push([X(td),Y(f.v-f.band(0))]);
-  g+='<path d="M'+up.map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' L'+
-    dn.reverse().map(function(p){return p[0].toFixed(1)+','+p[1].toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.13)+'"/>';
-  /* ham trend (karşılaştırma) */
-  if(ema.length>1)g+='<path d="'+smoothPath(ema.map(function(p){return [X(p.d),Y(p.v)];}))+'" fill="none" stroke="'+THC.c23+'" stroke-width="1.4" stroke-dasharray="4 3"/>';
-  g+='<line x1="'+X(d0).toFixed(1)+'" x2="'+X(td).toFixed(1)+'" y1="'+Y(f.at(-span)).toFixed(1)+'" y2="'+Y(f.v).toFixed(1)+'" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>';
-  /* tartılar: temiz dolu, gürültülü içi boş */
-  var tips=[];
-  pts.forEach(function(p){var o=nz[p.d],x=X(p.d),y=Y(p.v),cl=o&&o.lv===0;
-    g+=cl?'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3.4" fill="'+col+'" stroke="'+THC.c53+'" stroke-width="1.5"/>'
-         :'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="3" fill="'+THC.c53+'" stroke="'+nzc+'" stroke-width="1.6" opacity="'+(o&&o.lv>=2?1:.7)+'"/>';
-    var xx=dayDiff(td,p.d);
-    tips.push({x:x,y:y,tip:'<b>'+fdate(p.d)+'</b> · tartı '+fx(p.v,1)+' · '+(cl?'temiz':'gürültülü')+
-      '<br><small>temiz trend '+fx(f.at(xx),1)+(trendAt(p.d)!=null?' · ham trend '+fx(trendAt(p.d),1):'')+'</small>'});});
-  g+=lblTxt(X(td)-2,Y(f.v)-9,fx(f.v,1),'end',col);
-  g+='<g id="ch-kgt" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
+  dateTicks(d0,td,X,40).forEach(function(t){g+=axTxt(t.x,H-7,t.m?AY[pd(t.d).getMonth()]:fdate(t.d),'middle');});
+  segs(cc,function(p){return p.v!=null?p:null;}).forEach(function(sg){
+    g+='<path d="'+pth(sg.map(function(p){return [X(p.d),Y(p.v+p.vb)];}))+' L'+
+      sg.slice().reverse().map(function(p){return X(p.d).toFixed(1)+','+Y(p.v-p.vb).toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.13)+'"/>';});
+  if(ema.length>1)g+='<path d="'+smoothPath(ema.map(function(p){return [X(p.d),Y(p.v)];}))+'" fill="none" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="4 3"/>';
+  ws.forEach(function(p){var o=nz[p.d],x=X(p.d),y=Y(p.v);
+    g+=(o&&o.lv===0)?'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.7" fill="'+col+'" stroke="'+THC.c53+'" stroke-width="1"/>'
+      :'<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="2.4" fill="'+THC.c53+'" stroke="'+nzc+'" stroke-width="1.3" opacity=".8"/>';});
+  segs(cc,function(p){return p.v!=null?[X(p.d),Y(p.v)]:null;}).forEach(function(sg){
+    g+='<path d="'+smoothPath(sg)+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linecap="round"/>';});
+  var first=null,last=null;cc.forEach(function(p){if(p.v!=null){if(!first)first=p;last=p;}});
+  if(last)g+=lblTxt(X(last.d)-2,Y(last.v)-9,fx(last.v,1),'end',col);
+  var wm={};ws.forEach(function(p){wm[p.d]=p;});
+  var tips=cc.filter(function(p){return p.v!=null;}).map(function(p){var w=wm[p.d],o=nz[p.d];
+    return {x:X(p.d),y:Y(p.v),tip:'<b>'+fdate(p.d)+'</b> · temiz trend '+fx(p.v,1)+' kg · kayıp '+fx(-p.r,2)+' kg/hf'+
+      '<br><small>'+(w?'tartı '+fx(w.v,1)+' ('+(o&&o.lv===0?'temiz':'gürültülü')+')':'tartı yok')+(trendAt(p.d)!=null?' · ham trend '+fx(trendAt(p.d),1):'')+'</small>'};});
+  g+='<g id="ch-kga" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
     '<circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
-  CHP.kgt={W:W,H:H,pts:tips};
-  return chWrap('kgt',g,W,H,'<b>Son '+f.n+' gün</b> · parmağını gezdir, günü gör',
+  CHP.kga={W:W,H:H,pts:tips};
+  var tot=first&&last?last.v-first.v:null,wk=span/7;
+  return chWrap('kga',g,W,H,
+    first?'<b>'+fdate(first.d)+' → bugün: '+sg2(tot).replace(/(\.\d)\d$/,'$1')+' kg</b> · '+fx(wk,1)+' haftada, ortalama '+fx(-tot/wk,2)+' kg/hf<br><small>parmağını gezdir, günü gör</small>':'<b>Temiz trend</b>',
     lgI(swDot(col,'c'),'temiz tartı')+lgI('<svg width="14" height="14" aria-hidden="true"><circle cx="7" cy="7" r="4" fill="none" stroke="'+nzc+'" stroke-width="1.6"/></svg>','gürültülü tartı')+
-    lgI(swLine(col),'temiz trend')+lgI(swBox(hexa(col,.22)),'%95 bant')+lgI(swLine(THC.c23,'4 3',1.4),'ham trend'));
+    lgI(swLine(col),'temiz trend')+lgI(swBox(hexa(col,.22)),'%95 bant')+lgI(swLine(THC.c23,'4 3',1.2),'ham trend'));
 }
-function sg2(v){return (v<0?'−':'+')+fx(Math.abs(v),2);}
+/* Hız geçmişi: temiz trendin o günkü eğimi, haftalık KAYIP olarak (yukarı = daha hızlı iniş, 0 = durma, eksi = artış) */
+function kgSpeedChart(){
+  var cc=cleanCurve().filter(function(p){return p.v!=null;});if(cc.length<2)return '';
+  var d0=cc[0].d,td=cc[cc.length-1].d,span=Math.max(1,dayDiff(d0,td));
+  var W=340,H=180,PL=34,PR=14,TP=14,BT=24,col=C.blue;
+  var vs=[0];cc.forEach(function(p){vs.push(-p.r+p.rb);vs.push(-p.r-p.rb);});
+  var hi=Math.max.apply(null,vs)+0.1,lo=Math.min.apply(null,vs)-0.1;
+  function X(d){return PL+dayDiff(d0,d)/span*(W-PL-PR);}
+  function Y(v){return TP+(1-(v-lo)/(hi-lo))*(H-TP-BT);}
+  var g='',step=(hi-lo)>1.6?0.5:0.25;
+  for(var v=Math.ceil(lo/step)*step;v<=hi+1e-9;v+=step){var z=Math.abs(v)<1e-9;
+    g+='<line x1="'+PL+'" x2="'+(W-PR)+'" y1="'+Y(v).toFixed(1)+'" y2="'+Y(v).toFixed(1)+'" stroke="'+(z?THC.c23:THC.c44)+'"'+(z?' stroke-width="1.3"':'')+'/>'+
+      axTxt(PL-6,Y(v)+3.5,(v<-1e-9?'−':'')+fx(Math.abs(v),2),'end');}
+  g+=lblTxt(PL+4,Y(0)+13,'durma','start',THC.c23);
+  dateTicks(d0,td,X,40).forEach(function(t){g+=axTxt(t.x,H-7,t.m?AY[pd(t.d).getMonth()]:fdate(t.d),'middle');});
+  g+='<path d="'+pth(cc.map(function(p){return [X(p.d),Y(-p.r+p.rb)];}))+' L'+
+    cc.slice().reverse().map(function(p){return X(p.d).toFixed(1)+','+Y(-p.r-p.rb).toFixed(1);}).join(' L')+' Z" fill="'+hexa(col,.13)+'"/>';
+  /* kenarlar: pencere ortalanamıyor (ilk 2 hafta ileriye, son 2 hafta geriye kaymış tek pencere) → kesikli */
+  var mid=cc.filter(function(p){return !p.e;}),ed0=cc.filter(function(p){return p.e<0;}),ed1=cc.filter(function(p){return p.e>0;});
+  if(mid.length>1)g+='<path d="'+smoothPath(mid.map(function(p){return [X(p.d),Y(-p.r)];}))+'" fill="none" stroke="'+col+'" stroke-width="2.2" stroke-linecap="round"/>';
+  [ed0,ed1].forEach(function(E,i){if(!E.length)return;var j=i?mid[mid.length-1]:mid[0],P=E.slice();if(j){if(i)P.unshift(j);else P.push(j);}
+    if(P.length>1)g+='<path d="'+pth(P.map(function(p){return [X(p.d),Y(-p.r)];}))+'" fill="none" stroke="'+col+'" stroke-width="2" stroke-dasharray="4 3" opacity=".75"/>';});
+  if(ed1.length>2){var xe=X(ed1[0].d);g+='<line x1="'+xe.toFixed(1)+'" x2="'+xe.toFixed(1)+'" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c34+'" stroke-dasharray="2 3"/>'+
+    lblTxt(W-PR,Y(0)+13,'son '+ed1.length+' gün: tek pencere','end',THC.c23);}
+  var mx=cc[0];cc.forEach(function(p){if(-p.r>-mx.r)mx=p;});
+  var last=cc[cc.length-1];
+  g+=lblTxt(X(last.d)-2,Y(-last.r)-8,fx(-last.r,2),'end',col);
+  if(dayDiff(mx.d,last.d)>10)g+='<circle cx="'+X(mx.d).toFixed(1)+'" cy="'+Y(-mx.r).toFixed(1)+'" r="3.5" fill="'+col+'"/>'+lblTxt(X(mx.d),Y(-mx.r)-8,'en hızlı '+fx(-mx.r,2),X(mx.d)<PL+50?'start':'middle',col);
+  var tips=cc.map(function(p){return {x:X(p.d),y:Y(-p.r),tip:'<b>'+fdate(p.d)+'</b> · haftalık kayıp '+fx(-p.r,2)+' kg'+
+    '<br><small>bant '+fx(-p.r-p.rb,2)+' … '+fx(-p.r+p.rb,2)+(p.e>0?' · son 28 gün (yeni tartılarla değişir)':p.e<0?' · ilk 28 gün':' · çevresindeki 28 gün')+'</small>'};});
+  g+='<g id="ch-kgs" style="display:none"><line x1="0" x2="0" y1="'+TP+'" y2="'+(H-BT)+'" stroke="'+THC.c23+'" stroke-width="1.2" stroke-dasharray="3 3"/>'+
+    '<circle cx="0" cy="0" r="6" fill="none" stroke="'+THC.c6+'" stroke-width="2"/></g>';
+  CHP.kgs={W:W,H:H,pts:tips};
+  return '<div class="kgct">Hız geçmişi · haftalık kayıp</div>'+chWrap('kgs',g,W,H,
+    '<b>Şu an '+fx(-last.r,2)+' kg/hf</b> · en hızlı '+fx(-mx.r,2)+' ('+fdate(mx.d)+')<br><small>yukarı = daha hızlı iniş · 0 çizgisi = durma</small>',
+    lgI(swLine(col),'haftalık kayıp')+lgI(swLine(col,'4 3',2),'kenar: tek pencere')+lgI(swBox(hexa(col,.22)),'%95 bant'))+
+    xp('kghz','Her günün hızı, o günün 14 gün öncesi ile 13 gün sonrası arasındaki temiz tartılara oturtulan düz çizginin eğimi. '+
+      'İlk ve son iki haftada pencere ortalanamaz: başta ilk 28 gün, sonda son 28 gün kullanılır. Bu yüzden o kısımlar düz ve kesikli görünür. '+
+      'Sondaki düz kısım bir durma değil, “son 28 günün ortalama hızı”dır; yeni tartı geldikçe pencere kayar ve eğri şekillenir. '+
+      'Bant, o hızın ne kadar kesin olduğunu gösterir: bant sıfırın üstündeyse o tarihte kesin kilo veriyordun.');
+}
+/* Hafta hafta: temiz tartıların ham ortalaması (yumuşatılmamış) ve temiz trendin hafta sonundaki değeri */
+function kgWeeks(){
+  var ws=weightSeries(),nz=noiseMap(),cc=cleanCurve(),td=today();if(!ws.length||!cc.length)return '';
+  var cm={};cc.forEach(function(p){cm[p.d]=p.v;});
+  var m0=monday(ws[0].d),rows=[],prevT=null;
+  for(var m=m0;m<=td;m=addD(m,7)){
+    var e=addD(m,6);if(e>td)e=td;
+    var all=ws.filter(function(p){return p.d>=m&&p.d<=e;}),cl=all.filter(function(p){return nz[p.d]&&nz[p.d].lv===0;});
+    var avg=cl.length?cl.reduce(function(a,p){return a+p.v;},0)/cl.length:null;
+    var te=null;for(var d=e;d>=m;d=addD(d,-1)){if(cm[d]!=null){te=cm[d];break;}}
+    var ts=prevT;if(ts==null){for(var d2=m;d2<=e;d2=addD(d2,1)){if(cm[d2]!=null){ts=cm[d2];break;}}}
+    rows.push({m:m<ws[0].d?ws[0].d:m,e:e,wk:weekIdx(m),n:all.length,k:cl.length,avg:avg,te:te,ch:(te!=null&&ts!=null)?te-ts:null,part:e<addD(m,6)||m<ws[0].d});
+    if(te!=null)prevT=te;
+  }
+  var mxa=0.05;rows.forEach(function(r){if(r.ch!=null)mxa=Math.max(mxa,Math.abs(r.ch));});
+  return '<div class="cwrap kgwk"><div class="kgct" style="margin-top:2px">Hafta hafta</div>'+
+    '<div class="kgwr kgwh"><span>Hf</span><span>Tarih</span><span>Temiz ort.</span><span>Trend</span><span>Değişim</span></div>'+
+    rows.reverse().map(function(r){
+      var bw=r.ch!=null?Math.max(4,Math.round(Math.abs(r.ch)/mxa*100)):0,gain=r.ch!=null&&r.ch>0;
+      return '<div class="kgwr"><span>'+wkLabel(r.wk)+'</span><span>'+fdate(r.m)+(r.part?' →':'')+'</span>'+
+        '<span>'+(r.avg!=null?fx(r.avg,1)+' <small>'+r.k+'/'+r.n+'</small>':'<small>'+(r.n?'temiz yok':'tartı yok')+'</small>')+'</span>'+
+        '<span>'+(r.te!=null?fx(r.te,1):'—')+'</span>'+
+        '<span class="kgwc">'+(r.ch!=null?'<u class="kgwb"><i style="width:'+bw+'%;background:'+(gain?C.red:C.blue)+'"></i></u><b>'+(r.ch<0?'−':'+')+fx(Math.abs(r.ch),2)+'</b>':'—')+'</span></div>';
+    }).join('')+
+    '<div class="mhint2" style="margin-top:6px">Temiz ort.: o haftanın temiz tartılarının düz ortalaması (yanında temiz/toplam tartı). Trend: hafta sonundaki temiz trend; değişim bir önceki haftanın sonuna göre. → yarım hafta.</div>'+
+  '</div>';
+}
 function kgTruth(){
   var f=cleanFit(),tn=trendNow();
   if(!f)return '<div class="kgsum">Temiz trend için son 4-6 haftada en az 6 temiz (beyaz) tartı gerekiyor.</div>';
@@ -9432,7 +9548,7 @@ function kgTruth(){
     '<div class="kgtr2"><b>'+verdict+'</b> Son '+f.n+' günde '+f.k+' temiz tartı. '+
       (tn!=null&&Math.abs(tn-f.v)>=0.2?'Ham trend '+fx(tn,1)+': gürültülü günleri de saydığı için '+(tn>f.v?'yüksek':'düşük')+'. ':'')+
       'Temiz günler de kendi içinde ±'+fx(f.sd,1)+' kg oynar; tek temiz günü başka bir temiz günle değil, çizgiyle karşılaştır.</div>'+
-    kgChart(f)+
+    '<div class="kgct">Baştan bugüne · temiz trend</div>'+kgChartAll()+kgSpeedChart()+
   '</div>';
 }
 function calFootKg(){
@@ -9578,7 +9694,7 @@ function gymCal(){
       '<button class="'+(calSkin==='plan'?'on':'')+'" data-a="calskin" data-k="plan">Plan</button>'+
       '<button class="'+(calSkin==='puan'?'on':'')+'" data-a="calskin" data-k="puan">Puan</button>'+
       '<button class="'+(calSkin==='kg'?'on':'')+'" data-a="calskin" data-k="kg">Kilo</button>'+
-    '</div>'+(calSkin==='kg'?calFootKg():'')+calGrid()+(calSkin==='kg'?'':calFoot());
+    '</div>'+(calSkin==='kg'?calFootKg():'')+calGrid()+(calSkin==='kg'?kgWeeks():calFoot());
 }
 
 /* --- daha sekmesi: açılır kapanır bölümler --- */
