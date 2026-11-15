@@ -2231,6 +2231,24 @@ html.dark .kgtog i{color:#a49889}
 .kgleg i{width:14px;height:14px;border-radius:4px;box-shadow:inset 0 0 0 1px rgba(60,52,44,.18)}
 html.dark .kgleg{color:#bbb2a7}
 .kgtr{margin:2px 0 8px}
+.bkbox{margin-top:16px;padding-top:14px;border-top:1px dashed #e0d4bf}
+.bkh{font-size:13.5px;font-weight:800;color:#3a342c;margin-bottom:4px}
+.bkst{font-size:12.5px;font-weight:600;color:#6f6556;margin:6px 0 8px}
+.bkst b{color:#3a342c}
+.bkwarn{font-size:12.5px;font-weight:700;color:#b42318;background:rgba(220,38,38,.08);border-radius:10px;padding:8px 10px;margin:6px 0}
+.bklist{display:flex;flex-direction:column;gap:6px;margin:8px 0}
+.bkrow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;background:#fffdf8;border:0;box-shadow:inset 0 0 0 1px #e8dcc6;border-radius:10px;padding:9px 12px;font:inherit;color:#3a342c;cursor:pointer}
+.bkrow b{font-size:13px;font-weight:800}
+.bkrow i{font-style:normal;font-size:11.5px;font-weight:600;color:#a8987c}
+.bkrow.on{box-shadow:inset 0 0 0 2px #3b82f6}
+.bksel{font-size:12.5px;font-weight:600;color:#6f6556;line-height:1.5;padding:4px 4px 6px}
+.bksel b{color:#3a342c}
+html.dark .bkbox{border-top-color:#5a5248}
+html.dark .bkh,html.dark .bkst b,html.dark .bksel b,html.dark .bkrow{color:#f7f5f2}
+html.dark .bkst,html.dark .bksel{color:#bbb2a7}
+html.dark .bkrow{background:#3a352f;box-shadow:inset 0 0 0 1px #5a5248}
+html.dark .bkrow.on{box-shadow:inset 0 0 0 2px #93c5fd}
+html.dark .bkwarn{color:#fca5a5;background:rgba(248,113,113,.12)}
 .kgct{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#a8987c;margin:14px 2px 6px}
 .kgwk{margin-top:6px}
 .kgwr{display:grid;grid-template-columns:28px 1fr 1.15fr .8fr 1.3fr;gap:6px;align-items:center;padding:6px 2px;border-top:1px solid #efe6d6;font-size:12.5px;font-weight:700;color:#3a342c;font-variant-numeric:tabular-nums}
@@ -2970,6 +2988,11 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-11-15',
+  t:'Otomatik yedek (v105)',
+  y:['Artık yedek için bir şey yapman gerekmiyor. Her gün ilk senkronda bütün veri ayrı, gizli bir Gist’e (“FORM — günlük yedek”) yazılıyor; Gist her günün sürümünü sakladığı için geçmişteki herhangi bir günün yedeği geri yüklenebilir. Telefonda da son 3 günün kopyası kendiliğinden tutuluyor.',
+     'Kayıtlı gün sayısı birden düşerse (bir şey silinmiş olabilir) otomatik yedek alınmıyor, iyi yedeğin üzerine yazılmıyor ve uyarı çıkıyor.',
+     'Geri yükleme: Ayarlar → Bulut → “Yedekleri göster / geri yükle”. Yedeği seçince kaç gün içerdiği ve son tartı görünür; geri yüklemeden önce şimdiki veri ayrıca saklanır, yedekte olmayan günler silinmez.']},
  {d:'2026-11-15',
   t:'Kilo: temiz trend baştan sona (v104)',
   y:['Kilo sekmesindeki grafik artık ilk tartıdan bugüne kadar. Her gün için o günün çevresindeki 28 günün temiz tartılarından temiz trend ve o günkü hız hesaplanıyor; eğrinin ucu “Gerçek kilo tahmini” ile aynı.',
@@ -6943,6 +6966,7 @@ function syncNow(silent){
     return gh('/gists/'+S.sync.gist,{method:'PATCH',body:body}).then(function(){return n;});
   }).then(function(n){
     S.sync.last=Date.now();syncing=false;
+    setTimeout(function(){autoBackup(false);},1500);
     if(n){_pc={};_sc={};_gc={};_lf=null;_nzc=null;}   /* v70: buluttan gelen kayıt eski hesapları geçersiz kılar */
     STORE.set(KEY,JSON.stringify(S));
     setSyncMsg('');
@@ -7004,6 +7028,125 @@ function readCode(c){
     return {token:raw.slice(0,i),gist:raw.slice(i+1),repo:''};
   }catch(e){return null;}
 }
+/* ============ v105 · OTOMATİK YEDEK ============
+   Kullanıcı hiçbir şey yapmadan:
+   1) Bulut: günde bir kez (ilk başarılı senkronda) bütün veri AYRI, gizli bir Gist'e yazılır
+      ("FORM — günlük yedek (otomatik)", dosya form-yedek.json). Gist her yazımda sürüm tutar:
+      her gün bir sürüm = geriye dönük her gün geri yüklenebilir. Ana senkron Gist'inden bağımsızdır;
+      ana veri bozulsa da yedek defteri ayrı kalır.
+   2) Telefon: günün ilk açılışında son 3 günün kopyası telefonda (emre:form:gunluk).
+   Güvenlik: gün sayısı son yedektekinin %90'ının altına düştüyse (bir şey silinmiş olabilir)
+   otomatik yedek ALINMAZ — iyi yedeğin üzerine kötü veri yazılmasın — ve uyarı çıkar.
+   Geri yükleme Uygulama/Bulut bölümünden: önce o anki veri ayrıca saklanır (emre:form:geri-oncesi),
+   sonra yedekteki günler en yeni sayılarak yüklenir ve buluta itilir. Yedekte olmayan günler silinmez. */
+var BKD='FORM — günlük yedek (otomatik)',BKF='form-yedek.json',LDK='emre:form:gunluk',PREK='emre:form:geri-oncesi';
+var bkBusy=false,bkList=null,bkSel=null,bkMsg='',bkWarn='';
+function bkSnap(){var k=keys();return {meta:{t:Date.now(),app:appN(),days:k.length,last:k[k.length-1]||null},data:payload(),ext:extSnap()};}
+function localDaily(){
+  try{
+    var nd=Object.keys(S.days||{}).length;if(!nd)return;
+    var a=[];try{a=JSON.parse(localStorage.getItem(LDK)||'[]');}catch(e){a=[];}
+    var td=today();if(a.length&&a[0].d===td)return;
+    if(a.length&&a[0].meta&&nd<a[0].meta.days*0.9){bkWarn='Kayıtlı gün sayısı düştü ('+nd+' / '+a[0].meta.days+'). Yedekler korunuyor; Bulut bölümünden geri yükleyebilirsin.';return;}
+    var s=bkSnap();s.d=td;a.unshift(s);a=a.slice(0,3);
+    try{localStorage.setItem(LDK,JSON.stringify(a));}catch(e){localStorage.setItem(LDK,JSON.stringify(a.slice(0,1)));}
+  }catch(e){}
+}
+function bkFind(body){
+  return gh('/gists?per_page=100').then(function(arr){
+    var g=(arr||[]).filter(function(x){return x&&x.description===BKD;})[0];
+    if(g){S.sync.bgist=g.id;return gh('/gists/'+g.id,{method:'PATCH',body:body});}
+    body.public=false;
+    return gh('/gists',{method:'POST',body:body}).then(function(g2){S.sync.bgist=g2.id;});
+  });
+}
+function autoBackup(force){
+  if(bkBusy||!S.sync.token||!S.sync.gist)return Promise.resolve();
+  var td=today(),nd=Object.keys(S.days||{}).length;
+  if(!nd||(!force&&S.sync.bday===td))return Promise.resolve();
+  if(!force&&S.sync.bdays&&nd<S.sync.bdays*0.9){
+    bkWarn='Kayıtlı gün sayısı son yedektekinden çok az ('+nd+' / '+S.sync.bdays+'). İyi yedeğin üzerine yazmamak için otomatik yedek alınmadı.';
+    return Promise.resolve();}
+  bkBusy=true;
+  var body={description:BKD,files:{}};body.files[BKF]={content:JSON.stringify(bkSnap())};
+  var p=S.sync.bgist
+    ?gh('/gists/'+S.sync.bgist,{method:'PATCH',body:body}).catch(function(e){
+        if(/bulunamadı/.test(e.message)){S.sync.bgist=null;return bkFind(body);}throw e;})
+    :bkFind(body);
+  return p.then(function(){
+    bkBusy=false;S.sync.bday=td;S.sync.bdays=nd;S.sync.blast=Date.now();bkWarn='';
+    try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}
+    if(force){toast('yedek alındı');brkPaint();}
+  }).catch(function(e){bkBusy=false;if(force)toast('yedek alınamadı: '+e.message);});
+}
+function bkLoadList(){
+  bkMsg='yükleniyor…';bkList=[];bkSel=null;brkPaint();
+  var loc=[];try{loc=JSON.parse(localStorage.getItem(LDK)||'[]');}catch(e){}
+  loc.forEach(function(s,i){bkList.push({src:'tel',i:i,t:s.meta&&s.meta.t,days:s.meta&&s.meta.days});});
+  if(!S.sync.bgist){bkMsg='';brkPaint();return;}
+  gh('/gists/'+S.sync.bgist+'/commits?per_page=100').then(function(arr){
+    var seen={};
+    (arr||[]).forEach(function(c){var t=Date.parse(c.committed_at),d=iso(new Date(t));
+      if(seen[d])return;seen[d]=1;bkList.push({src:'bulut',v:c.version,t:t});});
+    bkMsg='';brkPaint();
+  }).catch(function(e){bkMsg='bulut yedekleri okunamadı: '+e.message;brkPaint();});
+}
+function bkPick(src,id){
+  bkSel={src:src,id:id,st:'loading'};brkPaint();
+  var pr;
+  if(src==='tel'){var loc=[];try{loc=JSON.parse(localStorage.getItem(LDK)||'[]');}catch(e){}pr=Promise.resolve(loc[+id]||null);}
+  else pr=gh('/gists/'+S.sync.bgist+'/'+id).then(function(g){var f=g.files&&g.files[BKF];if(!f)return null;
+    return (f.truncated?fetch(f.raw_url).then(function(r){return r.text();}):Promise.resolve(f.content)).then(function(t){return JSON.parse(t);});});
+  pr.then(function(o){
+    if(!o||!o.data||!o.data.days){bkSel.st='err';bkSel.msg='yedek okunamadı';brkPaint();return;}
+    var ks=Object.keys(o.data.days).sort(),w=null;
+    for(var i=ks.length-1;i>=0;i--){if(o.data.days[ks[i]].w!=null){w={d:ks[i],v:o.data.days[ks[i]].w};break;}}
+    bkSel.st='ok';bkSel.o=o;bkSel.n=ks.length;bkSel.last=ks[ks.length-1];bkSel.w=w;brkPaint();
+  }).catch(function(e){bkSel.st='err';bkSel.msg=e.message;brkPaint();});
+}
+function bkRestore(){
+  if(!bkSel||bkSel.st!=='ok')return;
+  var o=bkSel.o,p=JSON.parse(JSON.stringify(o.data));
+  try{localStorage.setItem(PREK,JSON.stringify({t:Date.now(),data:JSON.stringify(S)}));}catch(e){toast('geri yükleme öncesi kopya alınamadı — iptal');return;}
+  extRestore(p,o.ext);
+  var now=Date.now();
+  Object.keys(p.days).forEach(function(d){p.days[d]._t=now;S.days[d]=p.days[d];});
+  if(p.plan)S.plan=p.plan;S._pt=now;
+  ['startDate','weeks','restDays','restWeeks','base','goal','targets','tgtHist','deloadEvery','autoTargets','kDecay','breaks'].forEach(function(k){if(p[k]!=null)S[k]=p[k];});
+  if(p.meas!=null)S.meas=!!p.meas;if(p.schema&&(S.schema||2)<p.schema)S.schema=p.schema;
+  S._st=now;S._bt=now;
+  _pc={};_sc={};_gc={};_lf=null;_nzc=null;
+  STORE.set(KEY,JSON.stringify(S));
+  bkSel=null;bkList=null;toast('yedek geri yüklendi',3000);
+  if(S.sync.token&&S.sync.gist)syncNow(true);
+  render();
+}
+function bkWhen(t){var d=new Date(t);return fdate(iso(d))+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
+function bkBlock(){
+  var on=!!(S.sync.token&&S.sync.gist),h='<div class="bkbox"><div class="bkh">Otomatik yedek</div>';
+  h+='<div class="mhint2">'+(on
+    ?'Her gün kendiliğinden ayrı bir gizli Gist’e yedek alınıyor; geçmiş her günün yedeği saklanıyor. Telefonda da son 3 günün kopyası duruyor. Senin bir şey yapman gerekmiyor.'
+    :'Telefonda son 3 günün kopyası kendiliğinden tutuluyor. Bulut bağlanırsa her günün yedeği ayrıca buluta da alınır.')+'</div>';
+  if(bkWarn)h+='<div class="bkwarn">'+esc(bkWarn)+'</div>';
+  if(on)h+='<div class="bkst">Son bulut yedeği: <b>'+(S.sync.blast?bkWhen(S.sync.blast)+' · '+S.sync.bdays+' gün':'henüz yok — ilk senkronda alınacak')+'</b></div>';
+  if(!bkList)h+='<button class="mbtn" data-a="bklist">Yedekleri göster / geri yükle</button>';
+  else{
+    h+=bkMsg?'<div class="mhint2">'+esc(bkMsg)+'</div>':'';
+    h+='<div class="bklist">'+bkList.map(function(r){var id=r.src==='tel'?r.i:r.v,sel=bkSel&&bkSel.src===r.src&&String(bkSel.id)===String(id);
+      return '<button class="bkrow'+(sel?' on':'')+'" data-a="bkpick" data-s="'+r.src+'" data-v="'+id+'"><b>'+(r.t?bkWhen(r.t):'—')+'</b><i>'+(r.src==='tel'?'telefonda':'bulutta')+(r.days?' · '+r.days+' gün':'')+'</i></button>'+
+        (sel?bkSelHtml():'');}).join('')+(bkList.length||bkMsg?'':'<div class="mhint2">Henüz yedek yok.</div>')+'</div>';
+    h+='<button class="mbtn" data-a="bkclose">Kapat</button>';
+  }
+  if(on)h+='<button class="mbtn" data-a="bknow">Şimdi yedekle</button>';
+  return h+'</div>';
+}
+function bkSelHtml(){
+  if(bkSel.st==='loading')return '<div class="bksel">yedek okunuyor…</div>';
+  if(bkSel.st==='err')return '<div class="bksel">'+esc(bkSel.msg||'hata')+'</div>';
+  return '<div class="bksel">Bu yedekte <b>'+bkSel.n+' gün</b> kayıt var, son kayıt <b>'+fdate(bkSel.last)+'</b>'+
+    (bkSel.w?', son tartı '+fx(bkSel.w.v,1)+' kg ('+fdate(bkSel.w.d)+')':'')+'.<br>Geri yüklersen yedekteki günler şimdiki hâllerinin yerine geçer; yedekte olmayan günler silinmez. Şimdiki veri önce ayrıca saklanır.'+
+    '<button class="mbtn dark" data-a="bkrestore" style="margin-top:8px">Bu yedeği geri yükle</button></div>';
+}
 function syncCard(){
   var on=!!(S.sync.token&&S.sync.gist);
   return '<div class="card"><div class="hd"><h2>Bulut Senkron</h2>'+
@@ -7022,7 +7165,7 @@ function syncCard(){
              '<textarea class="inp" style="height:70px;font-size:11px;font-family:monospace" readonly onclick="this.select()">'+esc(makeCode())+'</textarea></div>'+
          '</div>'+
          '<button class="ghostbtn" data-a="syncoff">Bağlantıyı kes</button>'+
-       '</div>'+
+       '</div>'+bkBlock()+
        '<div class="mhint" style="margin-top:9px">Yeni bir cihaz (ya da “Ana Ekrana Ekle” ile açılan uygulama) eklerken bu kodu kopyalayıp oraya yapıştır — anahtar ve gist ID’si tek seferde geçer.</div>'+
        '<div style="margin-top:16px;padding-top:14px;border-top:1px dashed '+THC.c38+'">'+
          '<div class="settings" style="grid-template-columns:1fr">'+
@@ -7059,7 +7202,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v104 · 15 Kas 2026';
+var APPVER='v105 · 15 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -9783,11 +9926,11 @@ function secSync(){
      '<div class="mfield" style="margin-top:16px"><label>Anahtarı değiştir (gist + repo yetkili)</label>'+
        '<input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
      '<button class="mbtn" data-a="tokupd">Anahtarı güncelle</button>'+
-     '<button class="mbtn" data-a="syncoff">Bağlantıyı kes</button>'
+     '<button class="mbtn" data-a="syncoff">Bağlantıyı kes</button>'+bkBlock()
     :'<div class="mfield"><label>Bağlantı kodu</label><input class="ginp" data-a="codeinp" placeholder="FORM2-…"></div>'+
      '<button class="mbtn dark" data-a="usecode">Kodu kullan ve bağlan</button>'+
      '<div class="mfield" style="margin-top:14px"><label>Ya da GitHub anahtarı</label><input class="ginp" data-a="tokinp" type="password" placeholder="ghp_…"></div>'+
-     '<button class="mbtn" data-a="connect">Bağlan (yeni gist)</button>');
+     '<button class="mbtn" data-a="connect">Bağlan (yeni gist)</button>'+bkBlock());
 }
 function secTgt(){
   return '<div class="mrow2">'+
@@ -13193,6 +13336,11 @@ app.addEventListener('click',function(ev){
     if(phone()){gTab='d';mSect=null;mDrawer=false;calEdit=false;}else{dTab='today';}
     render();window.scrollTo(0,0);}
   else if(a==='syncnow'){syncNow();}
+  else if(a==='bklist'){bkLoadList();}
+  else if(a==='bkclose'){bkList=null;bkSel=null;brkPaint();}
+  else if(a==='bkpick'){bkPick(t.getAttribute('data-s'),t.getAttribute('data-v'));}
+  else if(a==='bkrestore'){bkRestore();}
+  else if(a==='bknow'){autoBackup(true);}
   else if(a==='dopen'){
     dOpen={kind:t.getAttribute('data-kind'),key:t.getAttribute('data-key'),
            dt:t.getAttribute('data-dt')||null};dClosing=false;
@@ -13616,6 +13764,7 @@ STORE.get(KEY).then(function(res){
   try{if(migrate94(res&&res.value))mg93=true;}catch(e){}
   try{if(migrate99(res&&res.value))mg93=true;}catch(e){}
   var rp=false;try{rp=repair103();}catch(e){}
+  try{localDaily();}catch(e){}
   if(migrateNames()||mg93||rp||_extMsg)STORE.set(KEY,JSON.stringify(S));
   else extSave();
 }).catch(function(){S.startDate=today();}).then(function(){
