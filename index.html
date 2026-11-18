@@ -2988,6 +2988,10 @@ var CHANGES=[
    yüzden rapora BASILMAZ — rapor beslenme ve antrenman kaydıdır, yazılım
    günlüğü değil. Daha → Uygulama ekranından okunur. */
 var RELEASES=[
+ {d:'2026-11-18',
+  t:'GitHub yedeği: bağlantı kopunca uyarı yok (v107)',
+  y:['Antrenmanda “GitHub yedeği yazılamadı: Load failed” çıkıyordu. Bu, o an internetin kopmasıydı; yedek bozuk değildi. Artık bağlantı hatasında uyarı çıkmıyor, yedek birkaç dakika sonra kendiliğinden tekrar deneniyor.',
+     'Yedek artık her sette değil: açılışta, kullanırken en sık 5 dakikada bir ve uygulamadan çıkarken. Antrenman sırasında mobil veri yemiyor. Gerçek bir sorun (anahtar/izin) varsa günde en fazla bir kez ve dinlenme sayacı çalışmıyorken haber verir.']},
  {d:'2026-11-15',
   t:'GitHub deposuna otomatik yedek (v106)',
   y:['Uygulamayı her açtığında ve her veri girdiğinde (en sık 20 saniyede bir) bütün veri ve tüm programın raporu gizli GitHub deposuna yükleniyor: yedek/form.json ve yedek/rapor.txt. Her yükleme ayrı bir kayıt; deponun geçmişi her değişikliği tarihiyle saklıyor.',
@@ -7127,7 +7131,7 @@ function bkRestore(){
   render();
 }
 /* ============ v106 · GITHUB DEPOSUNA OTOMATİK YEDEK ============
-   Her açılışta ve her veri girişinden sonra (en sık 20 sn'de bir) bütün veri ve
+   Her açılışta ve veri girerken (en sık 5 dk'da bir; uygulamadan çıkarken hemen) bütün veri ve
    tüm programın raporu, kullanıcının GİZLİ GitHub deposuna yazılır:
      yedek/form.json  — ham veri (gist'tekiyle aynı gövde + korunan ayarlar + özet)
      yedek/rapor.txt  — "Tüm program" raporu, okunur metin
@@ -7136,7 +7140,7 @@ function bkRestore(){
    Depo: eski fotoğraf deposu (gizli, anahtarın zaten yazabildiği yer). Herkese açık form
    deposuna kişisel veri ASLA yazılmaz. İçerik değişmediyse yazılmaz. Gün sayısı son yüklenenin
    %90'ının altına düşerse yazılmaz ve uyarı çıkar (iyi yedeğin üstüne bozuk veri yazılmasın). */
-var BKREPO_DEF='yurugagarin/form-fotograf',rbBusy=false,rbT=null,rbErr='';
+var BKREPO_DEF='yurugagarin/form-fotograf',rbBusy=false,rbT=null,rbErr='',rbNet=0;
 function bkRepo(){var r=S.sync.brepo;if(!r){try{r=localStorage.getItem(PHREPOKEY);}catch(e){}}return r||BKREPO_DEF;}
 function fullReport(){var r=repRange;repRange='all';try{return report();}catch(e){return 'rapor üretilemedi: '+e.message;}finally{repRange=r;}}
 function b64u(s){return btoa(unescape(encodeURIComponent(s)));}
@@ -7153,7 +7157,9 @@ function rbPut(path,content,msg){
 function repoBackup(now){
   if(!S.sync.token)return;
   clearTimeout(rbT);
-  var wait=now?0:Math.max(0,20000-(Date.now()-(S.sync.rbLast||0)));
+  /* v107: kullanırken en sık 5 dakikada bir (antrenmanda her sette ~300 KB yükleme olmasın); açılışta ve
+     uygulamadan çıkarken hemen. Bağlantı hatası geçicidir: sessizce 2 dk sonra tekrar denenir. */
+  var wait=now?0:Math.max(0,300000-(Date.now()-(S.sync.rbLast||0)));
   if(wait>0){rbT=setTimeout(function(){repoBackup(true);},wait);return;}
   if(rbBusy){rbT=setTimeout(function(){repoBackup(true);},5000);return;}
   var nd=Object.keys(S.days||{}).length;if(!nd)return;
@@ -7165,16 +7171,22 @@ function repoBackup(now){
   var snap=bkSnap(),k=keys(),msg='yedek · '+today()+' · '+nd+' gün · '+APPVER.split(' ')[0];
   rbPut('yedek/form.json',JSON.stringify(snap,null,1),msg)
     .then(function(){return rbPut('yedek/rapor.txt',fullReport(),msg);})
-    .then(function(){rbBusy=false;rbErr='';S.sync.rbH=h;S.sync.rbLast=Date.now();S.sync.rbDays=nd;
+    .then(function(){rbBusy=false;rbErr='';rbNet=0;S.sync.rbH=h;S.sync.rbLast=Date.now();S.sync.rbDays=nd;
       try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}})
-    .catch(function(e){rbBusy=false;var first=!rbErr;rbErr=e.message||String(e);
-      if(first)toast('GitHub yedeği yazılamadı: '+rbErr,6000);});
+    .catch(function(e){rbBusy=false;var m=e&&e.message||String(e);
+      if(/load failed|failed to fetch|networkerror|network connection|internet|offline|timed out/i.test(m)||e instanceof TypeError){
+        /* bağlantı yok: uyarı yok, kendiliğinden tekrar */
+        rbNet++;rbErr='';clearTimeout(rbT);rbT=setTimeout(function(){repoBackup(true);},Math.min(30,2*rbNet)*60000);return;}
+      rbErr=m;
+      /* gerçek hata (anahtar/izin): günde en fazla bir kez, antrenman sürerken değil */
+      var td=today();
+      if(S.sync.rbErrDay!==td&&!(typeof restLeft==='function'&&restLeft()>0)){S.sync.rbErrDay=td;toast('GitHub yedeği yazılamadı: '+m,6000);}});
 }
 function bkWhen(t){var d=new Date(t);return fdate(iso(d))+' '+('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);}
 function bkBlock(){
   var on=!!(S.sync.token&&S.sync.gist),h='<div class="bkbox"><div class="bkh">Otomatik yedek</div>';
   h+='<div class="mhint2">'+(on
-    ?'Her açılışta ve her veri girişinden sonra bütün veri ve tüm programın raporu gizli GitHub deposuna yükleniyor; her değişiklik tarihiyle saklanıyor. Ayrıca her gün ayrı bir gizli Gist’e ve telefona kopya. Senin bir şey yapman gerekmiyor — sorun olursa söylemen yeterli.'
+    ?'Her açılışta, veri girerken (en sık 5 dakikada bir) ve uygulamadan çıkarken bütün veri ve tüm programın raporu gizli GitHub deposuna yükleniyor; her değişiklik tarihiyle saklanıyor. Ayrıca her gün ayrı bir gizli Gist’e ve telefona kopya. Senin bir şey yapman gerekmiyor — sorun olursa söylemen yeterli.'
     :'Telefonda son 3 günün kopyası kendiliğinden tutuluyor. Bulut bağlanırsa her günün yedeği ayrıca buluta da alınır.')+'</div>';
   if(bkWarn)h+='<div class="bkwarn">'+esc(bkWarn)+'</div>';
   if(S.sync.token)h+='<div class="bkst">GitHub deposu (gizli): <b>'+esc(bkRepo())+'</b><br>Son yükleme: <b>'+(S.sync.rbLast?bkWhen(S.sync.rbLast)+' · '+S.sync.rbDays+' gün · veri + tam rapor':'henüz yok')+'</b></div>'+
@@ -7253,7 +7265,7 @@ function syncCard(){
 }
 
 /* ============ SALON MODU (telefon) ============ */
-var APPVER='v106 · 15 Kas 2026';
+var APPVER='v107 · 18 Kas 2026';
 var MODEKEY='emre:form:mode', forceMode=null, gTab='w', exIdx=0, dtPick=false;
 var timer={endAt:0,total:0,name:'',iv:null,done:false,mini:false};
 var RESTKEY='emre:form:rest';
@@ -13839,7 +13851,7 @@ STORE.get(KEY).then(function(res){
     }
     window.addEventListener('pagehide',flushSave);
     document.addEventListener('visibilitychange',function(){
-      if(document.hidden)flushSave();else{resumeRest();verCheck();}});
+      if(document.hidden){flushSave();try{repoBackup(true);}catch(e){}}else{resumeRest();verCheck();}});
     window.addEventListener('pageshow',function(){resumeRest();});
     window.addEventListener('focus',function(){resumeRest();});
     if(S.sync.token&&S.sync.gist){
